@@ -1,0 +1,191 @@
+{% extends "login/index.html" %}
+{% load static %}
+ {% block styl_parent %}
+  <title>enseignant | Accueil</title>
+
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+
+ {% block body %}
+<body class="hold-transition sidebar-mini">
+ {% endblock body %}
+
+
+
+
+{% block contenu %}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+         
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="">accueil</a></li>
+              <li class="breadcrumb-item active">Tableau de bord</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              
+              <!-- /.card-header -->
+        
+              <div class="card-body">
+                <h2 class="text-center bg-secondary" >LISTE DES UTILISATEURS DE LA PLATEFORME</h2>
+              <hr>
+                <div class="text-center">
+                  <a href="{% url 'bloquer_compte' %}" class="btn btn-success mb-2 mt-4 col-md-5">Bloquer tous les utilisateurs</a>
+                <a href="{% url 'deloquer_compte' %}" class="btn btn-warning mb-2 mt-4 col-md-5">Débloquer tous les utilisateurs</a>
+                </div>
+                  <hr>
+                
+          <table id="example2" class="table table-bordered table-hover">
+        <thead class="btn-secondary">
+            <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Téléphone</th>
+                <th>Fonction</th>
+                <th>Username</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for administrateur in administrateurs %}
+            <tr>
+                <td>{{ administrateur.nom }}</td>
+                <td>{{ administrateur.prenom }}</td>
+                <td>{{ administrateur.telephone }}</td>
+                <td>{{ administrateur.fonction }}</td>
+                <td>{{ administrateur.username }}</td>
+                <td>
+                    <!-- Bouton pour ouvrir le modal -->
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#supprimerModal{{ administrateur.id }}">
+                        Supprimer
+                    </button>
+
+                    <!-- Modal de confirmation de suppression -->
+                    <div class="modal fade" id="supprimerModal{{ administrateur.id }}" tabindex="-1" aria-labelledby="supprimerModalLabel{{ administrateur.id }}" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="supprimerModalLabel{{ administrateur.id }}">Confirmer la suppression</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Êtes-vous sûr de vouloir supprimer l'administrateur {{ administrateur.nom }} {{ administrateur.prenom }} ?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                    <!-- Formulaire de suppression -->
+                                    <form action="{% url 'supprimer_administrateur' administrateur.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Supprimer</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                {% if administrateur.is_active %}
+                    <a href="{% url 'bloquer_utilisateur' administrateur.id %}" class="btn btn-warning">Bloquer</a>
+                {% else %}
+                    <a href="{% url 'debloquer_utilisateur' administrateur.id %}" class="btn btn-success">Débloquer</a>
+                {% endif %}
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+      </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+  
+
+  
+{% block scripte %}
+
+
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+<script src="{% static 'base/js/ajax.js' %}"></script>
+<!-- Page specific script -->
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+{% endblock %}

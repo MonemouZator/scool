@@ -1,0 +1,70 @@
+{% extends "login/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>Détail de l'enseignant | {{ enseignant.nom }} {{ enseignant.prenom }}</title>
+  
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/bootstrap/css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/custom.css' %}">
+{% endblock %}
+
+{% block contenu %}
+<div class="content-wrapper">
+  <div class="content-header">
+    <h1 class="bg-primary text-center">INFORMATIONS COMPLÈTES DE L'ENSEIGNANT</h1>
+  </div>
+
+  <div class="content-body">
+    <div class="container">
+      <div class="row">
+        <!-- Photo Section -->
+        <div class="col-md-4">
+          <div class="card card-secondary">
+            <div class="card-header">
+              <h3 class="card-title">Photo</h3>
+            </div>
+            <div class="card-body text-center">
+              {% if enseignant.photo %}
+                <img src="{{ enseignant.photo.url }}" alt="Photo de {{ enseignant.nom }} {{ enseignant.prenom }}" class="img-fluid">
+              {% else %}
+                <p>Aucune photo disponible.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- Teacher Info Section -->
+        <div class="col-md-8">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">Informations de l'enseignant</h3>
+            </div>
+            <div class="card-body">
+              <p><strong>Nom :</strong> {{ enseignant.nom }}</p>
+              <p><strong>Prénom :</strong> {{ enseignant.prenom }}</p>
+              <p><strong>Téléphone :</strong> {{ enseignant.telephone }}</p>
+              <p><strong>Sexe :</strong> {{ enseignant.Sexe }}</p>
+              <p><strong>Date de naissance :</strong> {{ enseignant.date_naiss }}</p>
+              <p><strong>Lieu de naissance :</strong> {{ enseignant.lieu_naiss }}</p>
+              <p><strong>Adresse :</strong> {{ enseignant.adresse }}</p>
+              <p><strong>Fonction :</strong> {{ enseignant.specialite }}</p>
+              <p><strong>Email :</strong> {{ enseignant.email }}</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripte %}
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<script src="{% static 'base/js/custom.js' %}"></script>
+{% endblock %}

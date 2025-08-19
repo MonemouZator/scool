@@ -1,0 +1,274 @@
+{% extends "login/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+<title>Bulletins des Élèves</title>
+<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9fafc;
+    color: #000;
+  }
+
+  .content-wrapper {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  h5 {
+    margin-top: 15px;
+    font-weight: 600;
+  }
+
+  form {
+    background: #fff;
+    padding: 15px;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+  }
+
+  form select, form button {
+    margin: 10px 0;
+  }
+
+  select {
+    padding: 8px;
+    font-size: 16px;
+    width: 100%;
+    border-radius: 4px;
+  }
+
+  button {
+    padding: 8px 16px;
+  }
+
+  .table {
+    margin-bottom: 10px;
+    font-size: 15px;
+  }
+
+  .student-container {
+    margin-bottom: 15px;
+  }
+
+  .student-header {
+    background-color: #003366;
+    color: white;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .student-header img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border: 2px solid #fff;
+    border-radius: 8px;
+  }
+
+  .student-header .text-center {
+    flex-grow: 1;
+    text-align: center;
+  }
+
+  .student-header .text-right {
+    font-size: 13px;
+    text-align: right;
+  }
+
+  .republique h1, .republique h2 {
+    font-size: 24px;
+    margin: 0;
+  }
+
+  .devise {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+
+  .section {
+    margin-bottom: 10px;
+  }
+
+  .section table {
+    margin-bottom: 0;
+  }
+
+  .remarque-zone hr {
+    margin: 5px 0;
+  }
+
+  @media print {
+    body {
+      margin: 0;
+      padding: 10px;
+    }
+
+    form, button, .btn, footer, .copyright {
+      display: none !important;
+    }
+
+    .student-container {
+      margin-bottom: 10px;
+      page-break-before: always;
+    }
+
+    .student-container:first-child {
+      page-break-before: auto;
+    }
+
+    .section-wrapper {
+      margin-top: 10px;
+    }
+
+    .section {
+      margin-bottom: 8px;
+      padding: 8px;
+    }
+
+    .table, .table th, .table td {
+      border: 1px solid #000 !important;
+      border-collapse: collapse !important;
+      color: #000 !important;
+      font-size: 18px;
+    }
+
+    .remarque-zone hr {
+      margin: 5px 0;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block contenu %}
+<div class="content-wrapper">
+  <section class="content">
+    <div class="container-fluid">
+      <form method="get">
+        <h1 class="text-center bg-primary text-white">Filtrer les Bulletins</h1>
+
+        <label for="niveau">Niveau :</label>
+        <select name="niveau" id="niveau" required>
+          <option value="" disabled selected>Choisir un niveau</option>
+          {% for groupe in niveaux %}
+            <option value="{{ groupe.id }}" {% if groupe.id|stringformat:"s" == niveau_id %}selected{% endif %}>{{ groupe.nom }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="annee_scolaire">Année scolaire :</label>
+        <select name="annee_scolaire" id="annee_scolaire" required>
+          <option value="" disabled selected>Choisir une année scolaire</option>
+          {% for annee in annees_scolaires %}
+            <option value="{{ annee.id }}" {% if annee.id|stringformat:"s" == annee_scolaire_id %}selected{% endif %}>{{ annee.nom }}</option>
+          {% endfor %}
+        </select>
+
+        <label for="trimestre">Trimestre :</label>
+        <select name="trimestre" id="trimestre" required>
+          <option value="" disabled selected>Choisir un trimestre</option>
+          <option value="1" {% if trimestre == '1' %}selected{% endif %}>1er Trimestre</option>
+          <option value="2" {% if trimestre == '2' %}selected{% endif %}>2ème Trimestre</option>
+          <option value="3" {% if trimestre == '3' %}selected{% endif %}>3ème Trimestre</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary">Filtrer</button>
+        <a href="javascript:void(0);" class="btn btn-secondary" onclick="window.print();">Imprimer</a>
+      </form>
+
+      {% if niveau_id and annee_scolaire_id and trimestre %}
+        {% for bulletin in bulletins_trimestriels %}
+        <div class="student-container">
+          <div class="student-header">
+            <div>
+              <img src="{{ bulletin.eleve.photo.url|default:'https://via.placeholder.com/100' }}" alt="Photo élève">
+            </div>
+
+            <div class="text-center">
+              <h1>RÉPUBLIQUE DE GUINÉE</h1>
+              <div class="devise">Travail - Justice - Solidarité</div>
+              <h2>Groupe Scolaire Privé BNB</h2>
+              <div class="devise">Union - Sincérité - Excellence</div>
+              <h3>Bulletin du {{ trimestre }}ᵉ Trimestre - {{ annee_scolaire_obj.nom }}</h3>
+              <h4>Niveau : {{ niveau_obj.nom }}</h4>
+            </div>
+
+            <div class="text-right">
+              <p>IRE/KANKAN</p>
+              <p>DPE/KANKAN</p>
+              <p>DSSE/KANKAN4</p>
+            </div>
+          </div>
+
+          <div class="section-wrapper">
+            <div class="section">
+              <h6 class="text-center">Informations de l'Élève</h6>
+              <table class="table table-bordered">
+                <tr><th>Nom</th><th>Prénom</th><th>Date de naissance</th></tr>
+                <tr>
+                  <td>{{ bulletin.eleve.nom }}</td>
+                  <td>{{ bulletin.eleve.prenom }}</td>
+                  <td>{{ bulletin.eleve.date_naissance }}</td>
+                </tr>
+              </table>
+            </div>
+
+            <div class="section">
+              <h6 class="text-center">Matières et Notes du Trimestre {{ trimestre }}</h6>
+              <table class="table table-bordered table-striped">
+                <tr><th>Matière</th><th>Note</th></tr>
+                {% for note in bulletin.notes_par_matiere %}
+                <tr>
+                  <td>{{ note.matiere__nom }}</td>
+                  <td>{{ note.moyenne_matiere }}</td>
+                </tr>
+                {% endfor %}
+              </table>
+            </div>
+
+            <div class="section">
+              <h6 class="text-center">Résultats</h6>
+              <table class="table table-bordered">
+                <tr><th>Rang</th><th>Moyenne</th><th>Observation</th></tr>
+                <tr>
+                  <td>{{ bulletin.rang_formate }}</td>
+                  <td>{{ bulletin.moyenne_totale }}</td>
+                  <td>{{ bulletin.observation }}</td>
+                </tr>
+              </table>
+            </div>
+
+            <h4 class="text-center">Remarques et suggestions sur l'élève</h4>
+            <hr><br><hr>
+
+            <div class="remarque-zone">
+              <h4>Directeur</h4><br><br>
+              <h4>M. Maurice GUILAVOGUI</h4>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <p class="text-center bg-danger text-white p-2">Aucun résultat disponible. Veuillez sélectionner un niveau, une année scolaire et un trimestre.</p>
+      {% endif %}
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripte %}
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,104 @@
+{% extends "login/comptable_dashboard.html" %}
+{% load static %}
+
+{% block styl_parent %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+<link rel="stylesheet" href="{% static 'eleve/css/recu_paiement.css' %}">
+<style>
+    
+</style>
+{% endblock %}
+
+{% block body %}
+<body class="hold-transition sidebar-mini">
+{% endblock body %}
+
+{% block contenu %}
+<div class="content-wrapper container" id="impression">  <!-- ID ajouté ici -->
+    <!-- En-tête -->
+    <div class="republic-section">
+        <h1>RÉPUBLIQUE DE GUINÉE</h1>
+    </div>
+    <div class="devise-section">
+        <p>Travail - Justice - Solidarité</p>
+    </div>
+    <div class="republic-section">
+        <h2>Groupe Scolaire Privé BNB</h2>
+    </div>
+    <div class="devise-section">
+        <p>Union - Sincérité - Réussite</p>
+    </div>
+
+    <h3 class="text-center mt-4">Reçu de Paiement</h3><hr>
+
+    <!-- Infos Élève -->
+    <div class="info-section">
+        <div class="info-row">
+            <strong>Année Scolaire :</strong> <span>{{ recu.frais_scolarite.annee_scolaire }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Niveau :</strong> <span>{{ recu.frais_scolarite.eleve.niveau }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Élève :</strong> <span>{{ recu.frais_scolarite.eleve.nom }} {{ recu.frais_scolarite.eleve.prenom }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Parent :</strong> <span>{{ recu.frais_scolarite.eleve.pere }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Profession parent :</strong> <span>{{ recu.frais_scolarite.eleve.profession_pere }}</span>
+        </div>
+        <div class="info-row">
+            <strong>Contact Parent :</strong> <span>{{ recu.frais_scolarite.eleve.contact_parent }}</span>
+        </div>
+    </div>
+
+    <!-- Détails -->
+    <center>
+        <p><strong>Détails :</strong> {{ recu.details }}</p>
+    </center>
+
+    <!-- Paiement -->
+    <div class="table-responsive">
+        <table class="table table-bordered" style="width: 100%; margin: auto;">
+            <thead class="bg-primary text-white">
+                <tr>
+                    <th>Date</th>
+                    <th>Montant total</th>
+                    <th>Montant payé</th>
+                    <th>Reste à payer</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ recu.date_recu|date:"d/m/Y H:i" }}</td>
+                    <td>{{ recu.frais_scolarite.montant_total }} GNF</td>
+                    <td class="text-success font-weight-bold">{{ recu.montant }} GNF</td>
+                    <td class="text-danger font-weight-bold">{{ recu.frais_scolarite.solde }} GNF</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bouton Imprimer -->
+    <div class="print-button">
+        <button onclick="imprimer()" class="btn btn-primary">
+            <i class="fas fa-print"></i> Imprimer
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripte %}
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+<script>
+  function imprimer() {
+    window.print();  // Impression propre sans modifier le DOM
+  }
+</script>
+{% endblock %}

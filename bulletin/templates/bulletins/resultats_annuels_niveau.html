@@ -1,0 +1,246 @@
+{% extends "login/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>Résultat | Résultat</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+
+  <style>
+    body {
+      background-color: #f4f6f9;
+      font-family: 'Source Sans Pro', sans-serif;
+      color: #333;
+    }
+
+    .content-wrapper {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h1, h2, h3 {
+      color: #0056b3;
+      font-weight: bold;
+    }
+
+    .form-inline {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: flex-end;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 20px;
+    }
+
+    .form-control {
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      padding: 8px 12px;
+    }
+
+    .btn {
+      border-radius: 5px;
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background-color: #007bff;
+      border-color: #007bff;
+    }
+
+    .table {
+      background-color: #f9f9f9;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .table th {
+      background-color: #007bff;
+      color: #fff;
+      text-align: center;
+      font-size: 16px;
+      padding: 12px;
+    }
+
+    .table td {
+      text-align: none;
+      padding: 12px;
+    }
+
+    @media print {
+      body {
+        visibility: hidden;
+      }
+
+      .content-wrapper, .content-wrapper * {
+        visibility: visible;
+      }
+
+      .content-wrapper {
+        width: 100%;
+        margin: 0;
+        padding: 20px;
+        box-shadow: none;
+      }
+
+      .table, .table th, .table td {
+        border: 1px solid #000 !important;
+        border-collapse: collapse !important;
+        color: #000 !important;
+        font-size: 20px;
+      }
+
+    
+
+      .form-inline, form, #imprimer, header, footer, .sidebar, .navbar {
+        display: none !important;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block contenu %}
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6"></div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Accueil</a></li>
+            <li class="breadcrumb-item active">Résultats</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="card">
+        <div class="card-header">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show bg-danger" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="get" class="form-inline">
+            <div>
+              <label for="niveau">Niveau :</label>
+              <select name="niveau" id="niveau" class="form-control">
+                <option value="">-- Sélectionnez un niveau --</option>
+                {% for niveau in niveaux %}
+                  <option value="{{ niveau.id }}" {% if niveau_selectionne == niveau.id %}selected{% endif %}>{{ niveau.nom }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div>
+              <label for="annee_scolaire">Année scolaire :</label>
+              <select name="annee_scolaire" id="annee_scolaire" class="form-control">
+                <option value="">-- Sélectionnez une année --</option>
+                {% for annee in annees_scolaires %}
+                  <option value="{{ annee.id }}" {% if annee_scolaire_selectionnee == annee.id %}selected{% endif %}>{{ annee.nom }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Filtrer</button>
+            <button id="imprimer" class="btn btn-secondary" onclick="window.print()">Imprimer</button>
+          </form>
+        </div>
+
+        <div class="card-body">
+          {% if bulletins %}
+            <div id="impression">
+              <center>
+                <h1>RÉPUBLIQUE DE GUINÉE</h1>
+                <p><em>Travail - Justice - Solidarité</em></p>
+                <h2>Groupe Scolaire Privé BNB</h2>
+                <p><em>Union - Sincérité - Excellence</em></p>
+                <h4>Résultat annuel de la {{ niveau_obj.nom }}</h4>
+                <p>Année scolaire : <strong>{{ annee_scolaire_obj.nom }}</strong></p>
+              </center>
+                 <h5 class="text-center text-primary">Classement par ordre de mérite</h5>
+              <div class="card-body table-responsive">
+                      <table id="example2" class="table table-bordered table-hover mt-4">
+                        <thead>
+                          <tr>
+                            <th>Rang</th>
+                            <th>Nom et Prénom</th>
+                            <th>Moyenne Annuelle</th>
+                            <th>Observation</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for bulletin in bulletins %}
+                            <tr>
+                              <td>
+                                {% if bulletin.rang == 1 %}
+                                  1er(e)
+                                {% elif bulletin.rang == 2 %}
+                                  2ème
+                                {% elif bulletin.rang == 3 %}
+                                  3ème
+                                {% else %}
+                                  {{ bulletin.rang }}
+                                {% endif %}
+                              </td>
+                              <td>{{ bulletin.eleve.nom }} {{ bulletin.eleve.prenom }}</td>
+                              <td>{{ bulletin.moyenne_annuelle|floatformat:2 }}</td>
+                              <td>{{ bulletin.observation }}</td>
+                            </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+
+                </div>
+              
+            </div>
+          {% else %}
+            <p>Aucun bulletin disponible pour cette sélection.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripte %}
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+<script>
+  $(function () {
+    $('#example2').DataTable({
+      paging: false,
+      lengthChange: false,
+      searching: false,
+      ordering: false,
+      info: false,
+      autoWidth: false,
+      responsive: true,
+    });
+  });
+</script>
+{% endblock %}

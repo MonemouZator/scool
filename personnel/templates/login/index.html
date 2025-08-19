@@ -1,0 +1,319 @@
+{% extends "base/index.html" %}
+{% load static %}
+
+{% block chat %}
+<a class="nav-link" href="#">
+  <i class="far fa-comments"></i>
+</a>
+{% endblock %}
+
+{% block menu_sidebar %}
+<!-- Section Tableau de bord -->
+<li class="nav-item">
+  <a href="{%url 'fondateur.dashbord' %}" class="nav-link {% if request.resolver_match.url_name == 'comptable_dashboard' %}active{% endif %}">
+    <i class="nav-icon fas fa-tachometer-alt"></i>
+    <p>Tableau de bord</p>
+  </a>
+</li
+           
+
+<!-- Gestion enseignants -->
+<li class="nav-item">
+  <a href="#" class="nav-link">
+    <p>Gestion enseignants <span class="right badge badge-danger">voir +</span></p>
+  </a>
+  <ul class="nav nav-treeview">
+    <li class="nav-item">
+      <a href="{% url 'enseignant' %}" class="nav-link {% if request.resolver_match.url_name == 'enseignant' %}active{% endif %}">
+        <i class="badge badge-danger"><span class="text-white">1</span></i>
+        <p>Enseignants</p>
+      </a>
+    </li>
+  </ul>
+</li>
+
+<!-- Gestion élèves -->
+<li class="nav-item">
+  <a href="#" class="nav-link">
+    <p>Gestion élèves <span class="right badge badge-danger">voir +</span></p>
+  </a>
+  <ul class="nav nav-treeview">
+    <li class="nav-item">
+      <a href="{% url 'forme' %}" class="nav-link {% if request.resolver_match.url_name == 'forme' %}active{% endif %}">
+        <i class="badge badge-danger"><span class="text-white">1</span></i>
+        <p>Inscription</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'eleve' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">2</span></i>
+        <p>Liste des élèves</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'liste_eleves_par_niveau_annee' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">3</span></i>
+        <p>Élèves par niveau</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'liste_eleves_par_groupe' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">4</span></i>
+        <p>Élèves par option</p>
+      </a>
+    </li>
+  </ul>
+</li>
+
+<!-- Gestion bulletins -->
+<li class="nav-item">
+  <a href="#" class="nav-link">
+    <p>Gestion bulletins <span class="right badge badge-danger">voir +</span></p>
+  </a>
+  <ul class="nav nav-treeview">
+    <li class="nav-item">
+      <a href="{% url 'attribuer-notes' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">1</span></i>
+        <p>Affecter Note</p>
+      </a>
+    </li>
+    
+    <li class="nav-item">
+      <a href="{% url 'trimestre' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">2</span></i>
+        <p>Valider bulletin trimestriel</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'valider_bulletin' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">3</span></i>
+        <p>Valider bulletin annuel</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'bulletins_trimestriels' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">4</span></i>
+        <p>Bulletin par niveau</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'bulletins_option' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">5</span></i>
+        <p>Bulletin par classe</p>
+      </a>
+    </li>
+  </ul>
+</li>
+
+<li class="nav-item">
+  <a href="#" class="nav-link">
+
+    <p>
+  Affichage des resultats
+      <span class="right badge badge-danger">voir +</span>
+    </p>
+  </a>
+  <ul class="nav nav-treeview">
+                    <li class="nav-item">
+        <a href="{% url 'resultat_groupe' %}" class="nav-link">
+          <i class="badge badge-danger"><span class="text-white">1</span></i>
+          <p>Resultat trimestriel classe</p>
+        </a>
+      </li>
+                      <li class="nav-item">
+        <a href="{% url 'resultat_annuel' %}" class="nav-link">
+          <i class="badge badge-danger"><span class="text-white">2</span></i>
+          <p>Resultat Annuel classe</p>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="{% url 'resultats_trimestriels' %}" class="nav-link">
+          <i class="badge badge-danger"><span class="text-white">3</span></i>
+          <p>Resultat trimestriel niveau</p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'resultats_annuels' %}" class="nav-link">
+          <i class="badge badge-danger"><span class="text-white">4</span></i>
+          <p>Resultat annuel par niveau</p>
+        </a>
+      </li>
+
+  </ul>
+</li>
+
+<!-- Paramètres -->
+<li class="nav-item">
+  <a href="#" class="nav-link">
+    <p>Paramètres <span class="right badge badge-danger">voir +</span></p>
+  </a>
+  <ul class="nav nav-treeview">
+    <li class="nav-item">
+      <a href="{% url 'an' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">1</span></i>
+        <p>Années Scolaires</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'cycle' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">2</span></i>
+        <p>Gestion des Cycles</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'niveau' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">3</span></i>
+        <p>Gestion des Niveaux</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'groupe' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">4</span></i>
+        <p>Groupes de classes</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'matiere' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">5</span></i>
+        <p>Gestion des Matières</p>
+      </a>
+    </li>
+  </ul>
+</li>
+
+<!-- Gestion utilisateurs -->
+<li class="nav-item">
+  <a href="#" class="nav-link">
+    <p>Gestion utilisateurs <span class="right badge badge-danger">voir +</span></p>
+  </a>
+  <ul class="nav nav-treeview">
+    <li class="nav-item">
+      <a href="{% url 'ajouter_administrateur' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">1</span></i>
+        <p>Ajouter utilisateur</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'liste_administrateurs' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">2</span></i>
+        <p>Liste des utilisateurs</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'password_reset_request' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">3</span></i>
+        <p>Changer mot de passe</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'profil' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">4</span></i>
+        <p>Profil</p>
+      </a>
+    </li>
+  </ul>
+</li>
+
+<li class="nav-item">
+  <a href="{% url 'logout' %}" class="nav-link">
+    <i class="fas fa-sign-out-alt fa-2x text-warning"></i>
+    <p>Déconnexion</p>
+  </a>
+</li>
+{% endblock %}
+
+{% block contenu %}
+<div class="content-wrapper">
+  {% block content_wrapper %}
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Tableau de bord du Fondateur</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{% url 'fondateur.dashbord' %}">Accueil</a></li>
+            <li class="breadcrumb-item active">Tableau de bord</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <!-- Carte des élèves -->
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-info">
+            <div class="inner">
+              {% if annee_selectionnee %}
+               <p>Année scolaire en cours : <br>
+              {{ annee_selectionnee.nom }}
+               </p>
+                            <h1><p>Nombre d'élèves inscrits :{{ nombre_eleves_par_annee }}</h1></p>
+                <a href="{% url 'eleve' %}" class="btn btn-light btn-block">Voir </a>
+              {% else %}
+                <p>Aucune année scolaire en cours définie.</p>
+              {% endif %}
+            </div>
+            <div class="icon">
+              <i class="ion ion-bag"></i>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Carte des enseignants -->
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-success">
+            <div class="inner">
+              <h3>{{ nombre_enseignants }}</h3>
+              <p>Enseignants</p>
+              <a href="{% url 'enseignant' %}" class="btn btn-light btn-block">Voir</a>
+            </div>
+            <div class="icon">
+              <i class="ion ion-stats-bars"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carte des utilisateurs -->
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-warning">
+            <div class="inner">
+              <h3>{{ nombre_utilisateurs }}</h3>
+              <p>Utilisateurs</p>
+              <a href="{% url 'liste_administrateurs' %}" class="btn btn-light btn-block">Voir</a>
+            </div>
+            <div class="icon">
+              <i class="ion ion-person-add"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Carte des niveaux -->
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-danger">
+            <div class="inner">
+              <h3>{{ nombre_niveaux }}</h3>
+              <p>Niveaux</p>
+              <a href="{% url 'niveau' %}" class="btn btn-light btn-block">Voir</a>
+            </div>
+            <div class="icon">
+              <i class="ion ion-pie-graph"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  {% endblock %}
+</div>
+{% endblock %}
+
+{% block script_fils %}
+
+{% endblock %}

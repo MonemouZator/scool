@@ -1,0 +1,246 @@
+{% extends "base/index.html" %}
+{% load static %}
+{% block chat %}
+<a class="nav-link" href="">
+  <i class="far fa-comments"></i>
+</a>
+{% endblock %}
+
+{% block menu_sidebar %}
+<!--section tableau de bord-->
+<li class="nav-item">
+  <a href="{% url 'comptable_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'comptable_dashboard' %}active{% endif %}">
+    <i class="nav-icon fas fa-tachometer-alt"></i>
+    <p>Tableau de bord</p>
+  </a>
+</li>
+<a href="#" class="nav-link">
+  <p>Comptabilité</p>
+</a>
+
+<li class="nav-item">
+  <a href="{% url 'configuration' %}" class="nav-link {% if request.resolver_match.url_name == 'configuration' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">1</span></i>
+    <p>Frais scolarité</p>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a href="{% url 'liste_eleves' %}" class="nav-link {% if request.resolver_match.url_name == 'liste_eleves' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">2</span></i>
+    <p>Statut de Paiement</p>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a href="{% url 'paiement_salaire' %}" class="nav-link {% if request.resolver_match.url_name == 'paiement_salaire' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">3</span></i>
+    <p>Paiement de Salaire</p>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a href="{% url 'depense' %}" class="nav-link {% if request.resolver_match.url_name == 'depense' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">4</span></i>
+    <p>Dépense</p>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a href="{% url 'bilan_financier' %}" class="nav-link {% if request.resolver_match.url_name == 'bilan_financier' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">5</span></i>
+    <p>Finance</p>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a href="{% url 'profi' %}" class="nav-link {% if request.resolver_match.url_name == 'profi' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">6</span></i>
+    <p>Profile</p>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a href="{% url 'logout' %}" class="nav-link">
+    <i class="fas fa-sign-out-alt fa-2x text-warning"></i>
+    <p>Deconnexion</p>
+  </a>
+</li>
+{% endblock %}
+
+<!-- Content Wrapper. Contains page content -->
+{% block contenu %}
+<div class="content-wrapper">
+  {% block content_wrapper %}
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Tableau de bord Du Comptable</h1>
+        </div>
+        <!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{% url 'comptable_dashboard' %}">acceuil</a></li>
+            <li class="breadcrumb-item active">tableau de bord</li>
+          </ol>
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-info">
+            <div class="inner">
+              {% if annee_selectionnee %}
+                <p>Année scolaire en cours : <br> {{ annee_selectionnee.nom }}</p>
+                <h5>Elèves inscrits : {{ nombre_eleves_par_annee }}</h5>
+              
+              {% else %}
+                <p>Aucune année scolaire en cours définie.</p>
+              {% endif %}
+            </div>
+            <div class="icon">
+              <i class="ion ion-bag"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-success">
+            <div class="inner">
+              <h3>{{ nombre_enseignants }}</h3>
+              <p>Enseignants</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="javascript:void(0)" class="small-box-footer">
+              <i class="fas fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-warning">
+            <div class="inner">
+              <h3>{{ nombre_utilisateurs }}</h3>
+              <p>Utilisateurs</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-person-add"></i>
+            </div>
+            <a href="javascript:void(0)" class="small-box-footer">
+              <i class="fas fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-danger">
+            <div class="inner">
+              <h3>{{ nombre_niveaux }}</h3>
+              <p>Niveaux</p>
+            </div>
+            <div class="icon">
+              <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="javascript:void(0)" class="small-box-footer">
+              <i class="fas fa-arrow-circle-right"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main row -->
+      <div class="row">
+        <!-- Left col -->
+        <section class="col-12 connectedSortable">
+          <!-- Custom tabs (Charts with tabs)-->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">
+                <i class="fas fa-chart-pie mr-1"></i>
+                Paiements des élèves
+              </h3>
+            </div>
+            <div class="card-body">
+              <div class="tab-content p-0">
+                <!-- Chart -->
+                <div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px; width: 100%;">
+                  <canvas id="revenue-chart-canvas" height="300" style="height: 300px; width: 100%;"></canvas>
+                </div>
+              </div>
+            </div><!-- /.card-body -->
+          </div>
+        </section>
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  <!-- Inclure Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+  const labels = {{ labels|safe }};
+  const data = {{ data|safe }};
+  
+  const ctx = document.getElementById('revenue-chart-canvas').getContext('2d');
+  const revenueChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Paiements par mois (FGN)',
+        data: data,
+        backgroundColor: 'rgba(0, 123, 255, 0.7)',
+        borderColor: 'rgba(0, 123, 255, 1)',
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            callback: function(value) {
+              return value.toLocaleString() + ' FGN';
+            }
+          }
+        }
+      },
+      plugins: {
+        legend: {
+          position: 'top'
+        },
+        title: {
+          display: true,
+          text: 'Évolution des paiements des élèves par mois'
+        }
+      }
+    }
+  });
+</script>
+
+
+  {% endblock %}
+</div>
+<!-- /.content-wrapper -->
+{% endblock contenu %}
+
+{% block script_fils %}
+{% comment %} <script src="{% static 'administration/js/dashboard.js' %}"></script> {% endcomment %}
+<script></script>
+{% endblock script_fils %}

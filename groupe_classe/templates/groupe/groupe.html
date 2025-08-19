@@ -1,0 +1,285 @@
+{% extends "login/index.html" %}
+{% load static %}
+ {% block styl_parent %}
+  <title>classe | Accueil</title>
+
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+
+
+ {% block body %}
+<body class="hold-transition sidebar-mini">
+ {% endblock body %}
+
+
+
+
+{% block contenu %}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>GESTION DES CLASSES</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="">accueil</a></li>
+              <li class="breadcrumb-item active">Tableau de bord</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                
+                
+                 <!-- DEBUT DE LA FENETRE MODALE D'ENREGISTREMENT -->
+                                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                        Ajouter une classe
+                      </button>
+        
+                      <!-- Modal -->
+                      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header bg-primary">
+                              <h5 class="modal-title" id="exampleModalLabel">Enregistrement des classes</h5>
+                        
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <form action="{% url 'ajout-groupe' %}" method="post" class="row">
+
+                                      {% csrf_token %}
+
+                                <div class="form-group col-md-12">
+                                  <input type="hidden" value="{{niveau.id}}" name="niveau">
+                                  <label for="niveau">Niveau(*):</label>
+                                  <select name="niveau" class="form-control" id="niveau" required>
+                                  <option value=""> selectioner un niveau</option>
+                                      {% for niveau in niveaus %}
+                                      <option value="{{niveau.id}}">{{niveau}}</option>
+                                      {% endfor %}
+                                  </select>
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                  <label for="nom" class="col-form-label">Classe(*):</label>
+                                  <input type="text" class="form-control" id="nom" name="nom" required placeholder="veuillez saisir la classe">
+                                </div>
+        
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Quitter</button>
+                              <button type="submit" class="btn btn-primary">Enregistrer</button>
+                            </div>
+                          </form>
+                          </div>
+                        </div>
+                      </div>
+               <!-- FIN DE LA FENETRE MODALE D'ENREGISTREMENT -->
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+              <div class="card-body table-responsive">
+                <table id="example" class="table table-bordered table-hover">
+                  <thead class="bg-primary">
+                  <tr>
+                    <th>N°</th>
+                    <th>Niveau</th>
+                    <th>Classe</th>
+                    <th>Actions</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for groupe in groupes  %}
+                    
+                 
+                  <tr>
+                    <td>
+                        {{groupe.id}}
+                    </td>
+                    <td>
+                        {{groupe.niveau}}
+                       
+                    </td>
+                    <td>
+                        {{groupe.nom}}
+                    
+                    </td>
+                    <td>
+                    
+
+                 
+                   <a href="#" data-toggle="modal" data-target="#modifie{{ groupe.id }}" title="Modifier">
+                      <i class="fas fa-edit text-primary" style="font-size: 1.5rem;"></i>
+                  </a>
+                  
+                  <div class="modal fade" id="modifie{{ groupe.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                          <div class="modal-content">
+                              <div class="modal-header bg-primary text-white">
+                                  <h5 class="modal-title" id="exampleModalLabel">Modifier les informations</h5>
+                                  <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                  </button>
+                              </div>
+                              <div class="modal-body">
+                                  <form action="{% url 'modifi-groupe' %}" method="post" enctype="multipart/form-data" class="row">
+                                      {% csrf_token %}
+                                      
+
+                                <div class="form-group col-md-12">
+                                  <input type="hidden" value="{{niveau.id}}" name="niveau">
+                                  <label for="niveau">Cycle scolaire:</label>
+                                  <select name="niveau" class="form-control" id="niveau">
+                                     {% for niveau in niveaus %}
+                                      <option value="{{ niveau.id }}" {% if groupe.id == niveau %} checked {% endif %}>{{niveau}}</option>
+                                      {% endfor %}
+                                  </select>
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                    <label for="nom" class="col-form-label">Niveau d'etude :</label>
+                                    <input type="text" class="form-control" id="nom" name="nom" required value="{{ groupe.nom }}">
+                                </div>
+                        
+                                <input type="hidden" name="id" value="{{ groupe.id }}">
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Modifier</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                </div>
+                    
+                                  </form>
+                              </div>
+                                    
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  
+                         <!-- Début de la fenêtre modale de suppression -->
+                    <a href="#" data-toggle="modal" data-target="#supprime{{ groupe.id }}" title="Supprimer">
+                        <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
+                    </a>
+
+                      <div class="modal fade" id="supprime{{ groupe.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                  <div class="modal-header bg-primary">
+                                      <h5 class="modal-title" id="exampleModalLabel">SUPPRESSION DES INFOS</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                      </button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <form action="{% url 'supprimer-groupe' groupe.id %}" method="post" class="row">
+                                          {% csrf_token %}
+                                          <p>
+                                              Voulez-vous vraiment supprimer les informations de :
+                                              <span class="text-primary">{{ groupe.nom }}</span> ?
+                                          </p>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-primary" data-dismiss="modal">Non</button>
+                                      <button type="submit" class="btn btn-danger">Oui</button>
+                                  </div>
+                                      </form>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- Fin de la fenêtre modale de suppression -->
+                    
+                    </td>
+                  </tr>
+                  {% endfor %}
+                  </tbody>
+                 
+                </table>
+              </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+  
+
+  
+{% block scripte %}
+
+
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+<!-- Page specific script -->
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+{% endblock %}

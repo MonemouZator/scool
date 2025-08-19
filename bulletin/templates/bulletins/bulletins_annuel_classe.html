@@ -1,0 +1,90 @@
+{% extends "login/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>Bulletins des Élèves</title>
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+  
+  <style>
+    
+  </style>
+{% endblock %}
+
+{% block contenu %}
+  <div class="content-wrapper">
+    <section class="content">
+      <div class="container-fluid">
+        <div id="contenu-a-imprimer">
+          {% if bulletins_trimestriels %}
+            {% for bulletin in bulletins_trimestriels %}
+              <div class="bulletin-eleve">
+                <center>
+                  <div class="republique">
+                    <h1>RÉPUBLIQUE DE GUINÉE</h1>
+                  </div>
+                  <div class="devise">Travail - Justice - Solidarité</div>
+                  <div class="republique">
+                    <h2>Groupe Scolaire Privé BNB</h2>
+                  </div>
+                  <div class="devise">Union - Sincérité - Excellence</div>
+                  <h3>Bulletin du {{ trimestre }}ᵉ Trimestre</h3>
+                </center>
+
+                <table class="table table-bordered">
+                  <tr><th>Nom</th><th>Prénom</th><th>Date de naissance</th></tr>
+                  <tr>
+                    <td>{{ bulletin.eleve.nom }}</td>
+                    <td>{{ bulletin.eleve.prenom }}</td>
+                    <td>{{ bulletin.eleve.date_naissance }}</td>
+                  </tr>
+                </table>
+
+                <table class="table table-bordered">
+                  <tr><th>Matière</th><th>Moyenne</th></tr>
+                  {% for note in bulletin.notes_par_matiere %}
+                    <tr>
+                      <td>{{ note.matiere__nom }}</td>
+                      <td>{{ note.moyenne_matiere|default:"N/A" }}</td>
+                    </tr>
+                  {% endfor %}
+                </table>
+
+                
+                <table class="table table-bordered">
+                  <tr><th>Rang</th><th>Moyenne </th><th>Observation</th></tr>
+                  <tr>
+                    <td>{{ bulletin.rang|default:"Non classé" }}</td>
+                    <td>{{ bulletin.moyenne_totale|default:"-" }}</td> <!-- Assure-toi que la moyenne annuelle est calculée et envoyée dans la vue -->
+                    <td>{{ bulletin.observation|default:"Aucune observation" }}</td>
+                  </tr>
+                </table>
+                
+              </div>
+              
+              <!-- ✅ Saut de page pour chaque élève -->
+              <div class="page-break"></div>
+            {% endfor %}
+          {% else %}
+            <p>Aucun bulletin disponible pour les critères sélectionnés.</p>
+          {% endif %}
+        </div>
+
+        <!-- Bouton d'impression -->
+        <button onclick="imprimer()" class="btn btn-primary mt-3">Imprimer</button>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block scripte %}
+  <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+  <script>
+    function imprimer() {
+      window.print();
+    }
+  </script>
+{% endblock %}

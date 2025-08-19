@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Google Fonts for Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    
+    <title>Connexion</title>
+    
+    <style>
+        /* Arrière-plan */
+        body {
+            background-color: #9A616D; /* Fond coloré de la page */
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .card {
+            border-radius: 1rem;
+        }
+
+        .card-body {
+            padding: 4rem 2rem;
+        }
+
+        /* Boutons personnalisés */
+        .btn-dark {
+            background-color: #333;
+            color: white;
+            font-weight: bold;
+        }
+
+        .btn-dark:hover {
+            background-color: #444;
+        }
+
+        /* Liens */
+        .text-muted {
+            color: #6c757d !important;
+        }
+
+        .text-muted:hover {
+            text-decoration: underline;
+        }
+        
+        .form-label {
+            color: #555;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+            }
+
+            .col-md-6, .col-lg-5, .col-lg-7 {
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+<section class="vh-100" style="background-color: #9A616D;">
+  <div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+      <div class="col col-xl-10">
+        <div class="card">
+          <div class="row g-0">
+            <!-- Section Image -->
+            <div class="col-md-6 col-lg-5 d-none d-md-block">
+              <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/img1.webp" alt="login form" class="img-fluid" style="border-radius: 1rem 0 0 1rem;" />
+            </div>
+
+            <!-- Formulaire -->
+            <div class="col-md-6 col-lg-7 d-flex align-items-center">
+              <div class="card-body p-4 p-lg-5 text-black">
+
+                <form method="POST" action="{% url 'login' %}">
+                  {% csrf_token %}
+                  
+                  <!-- Logo section -->
+                  <div class="d-flex align-items-center mb-3 pb-1">
+                    <i class="fas fa-cubes fa-2x me-3" style="color: #ff6219;"></i>
+                    <span class="h1 fw-bold mb-0">GSP/BNB</span>
+                  </div>
+  
+                  <h5 class="fw-normal mb-3 pb-3" style="letter-spacing: 1px;">Entrer vos informations de connexion</h5>
+
+                  <!-- Affichage des erreurs -->
+                  {% if messages %}
+                      <div class="alert alert-danger">
+                          {% for message in messages %}
+                              <p>{{ message }}</p>
+                          {% endfor %}
+                      </div>
+                  {% endif %}
+
+                  <!-- Email input -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="login">Nom utilisateur</label>
+                    <input type="text" id="username" name="username" class="form-control form-control-lg" required />
+                  </div>
+
+                  <!-- Password input -->
+                  <div class="form-outline mb-4">
+                    <label class="form-label" for="form2Example27">Mot de passe</label>
+                    <input type="password" id="form2Example27" name="password" class="form-control form-control-lg" required />
+                  </div>
+
+
+                  <!-- Mot de passe oublié -->
+                  <a class="small text-muted text-decoration" href="{% url 'forgot' %}">Mot de passe oublié?</a><br><br>
+
+                  <!-- Login Button -->
+                  <div class="btn-block">
+                    <button class="btn btn-primary btn-lg btn-block" type="submit">Se connecter</button>
+                  </div>
+                  
+                </form>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

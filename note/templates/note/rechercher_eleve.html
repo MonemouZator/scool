@@ -1,0 +1,230 @@
+{% extends "login/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>note | Accueil</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+{% block body %}
+<body class="hold-transition sidebar-mini">
+{% endblock %}
+
+{% block contenu %}
+<div class="content-wrapper p-4">
+  <h2><p class="my-4 bg-primary text-center">ATTRIBUTION DES NOTES AUX ELEVES PAR MATIERE ET ANNEE SCOLAIRE</p></h2>
+
+  <!-- Affichage des messages globaux (non AJAX) -->
+  {% if messages %}
+    <div class="alert alert-info">
+      {% for message in messages %}
+        <p>{{ message }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Formulaire de filtrage -->
+  <form method="get" action="">
+    <div class="row">
+      <div class="form-group col-md-4">
+        <select name="niveau" class="form-control" required>
+          <option value="">-- Sélectionnez un niveau --</option>
+          {% for niveau in niveaux %}
+          <option value="{{ niveau.id }}" {% if niveau_id|stringformat:"s" == niveau.id|stringformat:"s" %}selected{% endif %}>{{ niveau.nom }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group col-md-4">
+        <select name="groupe_classe" class="form-control" required>
+          <option value="">-- Sélectionnez un groupe-classe --</option>
+          {% for groupe in groupes %}
+          <option value="{{ groupe.id }}" {% if groupe_id|stringformat:"s" == groupe.id|stringformat:"s" %}selected{% endif %}>{{ groupe.nom }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group col-md-4">
+        <select name="annee_scolaire" class="form-control" required>
+          <option value="">-- Sélectionnez une année scolaire --</option>
+          {% for annee in annees_scolaires %}
+          <option value="{{ annee.id }}" {% if annee_id|stringformat:"s" == annee.id|stringformat:"s" %}selected{% endif %}>{{ annee.nom }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary mt-3">Rechercher</button>
+  </form>
+
+  <!-- Tableau des élèves -->
+  <div class="table-responsive mt-4">
+    <table id="elevesTable" class="table table-bordered table-striped">
+      <thead class="bg-primary">
+        <tr>
+          <th>Nom</th>
+          <th>Prénom</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for eleve in eleves %}
+        <tr>
+          <td>{{ eleve.nom }}</td>
+          <td>{{ eleve.prenom }}</td>
+          <td>
+            <!-- Bouton pour ouvrir la fenêtre modale -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#noteModal{{ eleve.id }}">
+              Noter
+            </button>
+
+            <!-- Fenêtre modale -->
+            <div class="modal fade" id="noteModal{{ eleve.id }}" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel{{ eleve.id }}" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="noteModalLabel{{ eleve.id }}">
+                      Attribuer une note à {{ eleve.nom }} {{ eleve.prenom }}
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form method="post" action="{% url 'attribuer-notes' %}" id="frm-attribu-note-{{ eleve.id }}">
+                      {% csrf_token %}
+                      <input type="hidden" name="eleve" value="{{ eleve.id }}">
+
+                      <div class="form-group">
+                        <label for="annee{{ eleve.id }}">Année scolaire :</label>
+                        <select name="anne" class="form-control" id="annee{{ eleve.id }}" required>
+                          <option value="">-- Sélectionnez une année scolaire --</option>
+                          {% for annee in annees_scolaires %}
+                          <option value="{{ annee.id }}">{{ annee.nom }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="matiere{{ eleve.id }}">Matière :</label>
+                        <select name="mat" class="form-control" id="matiere{{ eleve.id }}" required>
+                          <option value="">-- Sélectionnez une matière --</option>
+                          {% for matiere in matieres %}
+                          <option value="{{ matiere.id }}">{{ matiere.nom }}</option>
+                          {% endfor %}
+                        </select>
+                      </div>
+
+                      <div class="form-group">
+                        <label for="trimestre{{ eleve.id }}">Trimestre :</label>
+                        <input type="number" name="trimestre" class="form-control" id="trimestre{{ eleve.id }}" required min="1" max="3">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="noteCours{{ eleve.id }}">Note Cours :</label>
+                        <input type="number" name="nc" class="form-control" id="noteCours{{ eleve.id }}" required min="0" max="10" step="0.5">
+                      </div>
+
+                      <div class="form-group">
+                        <label for="noteCompo{{ eleve.id }}">Note Composition :</label>
+                        <input type="number" name="nco" class="form-control" id="noteCompo{{ eleve.id }}" required min="0" max="10" step="0.5">
+                      </div>
+
+                      <button type="submit" class="btn btn-success">Enregistrer</button>
+                    </form>
+                    <div id="message-{{ eleve.id }}" class="mt-2"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <a href="{% url 'note' %}">
+              <i class="fas fa-eye" style="font-size: 1.5rem;"></i> Voir
+            </a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="3">Aucun élève trouvé.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripte %}
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+
+<script>
+$(document).ready(function () {
+    // Initialiser DataTable
+    $('#elevesTable').DataTable({
+        responsive: true,
+        lengthChange: false,
+        autoWidth: false,
+    });
+
+    // Soumission AJAX des formulaires modales
+    {% for eleve in eleves %}
+    $('#frm-attribu-note-{{ eleve.id }}').submit(function (e) {
+        e.preventDefault();
+        var form = $(this);
+        var url = form.attr('action');
+        var data = form.serialize();
+        var messageBox = $('#message-{{ eleve.id }}');
+
+        messageBox.html(''); // vider messages précédents
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: data,
+            headers: {'X-Requested-With': 'XMLHttpRequest'},
+            success: function (response) {
+                if (response.success) {
+                    messageBox.html('<div class="alert alert-success">' + response.success + '</div>');
+                    form.trigger('reset');
+                }
+            },
+            error: function (xhr) {
+                var errMsg = 'Une erreur est survenue.';
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    errMsg = xhr.responseJSON.error;
+                }
+                messageBox.html('<div class="alert alert-danger">' + errMsg + '</div>');
+            }
+        });
+    });
+    {% endfor %}
+});
+</script>
+{% endblock %}

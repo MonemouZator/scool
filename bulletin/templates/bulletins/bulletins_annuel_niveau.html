@@ -1,0 +1,141 @@
+{% extends "login/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>Enseignant | Bulletins Annuels</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+{% block body %}
+<body class="hold-transition sidebar-mini">
+{% endblock body %}
+
+{% block contenu %}
+  <div class="content-wrapper">
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h1 class="card-title">Bulletins Annuels des Élèves par Classe</h1>
+              </div>
+
+              <div class="card-body">
+                <!-- Formulaire de filtrage -->
+                <form method="get" class="form-inline mb-4">
+  <div class="d-flex justify-content-between">
+    <div class="form-group col-md-3">
+      {% comment %} <label class="mr-2" for="niveau">Niveau :</label> {% endcomment %}
+      <select name="niveau" id="niveau" class="form-control mr-3" required>
+        <option value="">-- Sélectionnez un niveau --</option>
+        {% for niveau in niveaux %}
+          <option value="{{ niveau.id }}" {% if request.GET.niveau == niveau.id|stringformat:"s" %}selected{% endif %}>
+            {{ niveau.nom }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group col-md-4">
+      {% comment %} <label class="mr-2" for="annee_scolaire">Année Scolaire :</label> {% endcomment %}
+      <select name="annee_scolaire" id="annee_scolaire" class="form-control mr-4" required>
+        <option value="">-- Sélectionnez une année scolaire --</option>
+        {% for annee in annees_scolaires %}
+          <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>
+            {{ annee.nom }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group col-md-3 mr-14">
+      <button type="submit" class="btn btn-primary">Rechercher</button>
+    </div>
+  </div>
+</form>
+
+
+                <!-- Tableau des bulletins -->
+                {% if bulletins_annuels %}
+                  <table id="bulletinsTable" class="table table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>Élève</th>
+                        {% comment %} <th>Niveau</th>
+                        <th>Année scolaire</th> {% endcomment %}
+                        <th>Trimestre 1</th>
+                        <th>Trimestre 2</th>
+                        <th>Moyenne </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for bulletin in bulletins_annuels %}
+                        <tr>
+                          <td>{{ bulletin.eleve.nom }} {{ bulletin.eleve.prenom }}</td>
+                          {% comment %} <td>{{ bulletin.eleve.niveau.nom }}</td>
+                          <td>{{ bulletin.annee_scolaire.nom }}</td> {% endcomment %}
+                          <td>{{ bulletin.moyenne_totale_par_trimestre.moyenne_t1 }}</td>
+                          <td>{{ bulletin.moyenne_totale_par_trimestre.moyenne_t2 }}</td>
+                          <td>{{ bulletin.moyenne_totale_annuelle }}</td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                {% else %}
+                  <p>Aucun bulletin trouvé pour les critères sélectionnés.</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+{% block scripte %}
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+<!-- Initialisation de DataTables -->
+<script>
+  $(document).ready(function() {
+    $('#bulletinsTable').DataTable({
+      "responsive": true,
+      "autoWidth": false,
+      "lengthChange": false,
+      "paging": true,
+      "info": true,
+      "buttons": ["copy", "excel", "pdf", "print"]
+    }).buttons().container().appendTo('#bulletinsTable_wrapper .col-md-6:eq(0)');
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,213 @@
+{% extends "login/index.html" %}
+{% load static %}
+ {% block styl_parent %}
+  <title>eleve | Accueil</title>
+
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+
+ {% block body %}
+<body class="hold-transition sidebar-mini">
+ {% endblock body %}
+
+
+
+
+{% block contenu %}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h4>LISTE DES ELEVES PAR CLASSE</h4>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="">accueil</a></li>
+              <li class="breadcrumb-item active">Tableau de bord</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+           
+
+            <div class="card">
+              <!-- Formulaire de filtre -->
+                    <form method="GET" class="form-inline mt-5 md-3">
+
+                                <div class="form-group mr-3 col-md-4">
+                                    <label for="groupe"> Classe:</label>
+                                    <select name="groupe" class="form-control ml-2">
+                                        <option value="">selectionner une  classe -------------</option>
+                                        {% for groupe in groupes %}
+                                            <option value="{{ groupe.id }}" {% if request.GET.groupe == groupe.id|stringformat:"s" %}selected{% endif %}>
+                                                {{ groupe.nom }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group ml-2 col-md-4">
+                                    
+                                    <select name="annee_scolaire" id="annee_scolaire" class="form-control">
+                                        <option value="">selectionner une année scolaire-----</option>
+                                        {% for annee in annees %}
+                                            <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>
+                                                {{ annee.nom }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary ml-2">Filtrer</button>
+                             </form>
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                  <!-- Tableau des élèves -->
+                                  {% if request.GET.groupe and request.GET.annee_scolaire %}
+    {% if eleves %}
+        <div class="card-body table-responsive">
+            <table id="example" class="table table-bordered table-striped">
+                <thead class="bg-primary">
+                    <tr>
+                        <th>N°</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Sexe</th>
+                        <th>Adresse</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for eleve in eleves %}
+                    <tr>
+                        <td>{{ eleve.id }}</td>
+                        <td>{{ eleve.nom }}</td>
+                        <td>{{ eleve.prenom }}</td>
+                        <td>{{ eleve.genre }}</td>
+                        <td>{{ eleve.lieu_naissance }}</td>
+                        <td>
+                            <a href="{% url 'eleve_detail' pk=eleve.id %}">
+                                <i class="fas fa-eye" style="font-size: 1.5rem;"></i> 
+                            </a>
+                            <a href="{% url 'modifier_eleve' pk=eleve.id %}" class="btn btn-primary">
+                                <i class="fas fa-edit"></i> 
+                            </a>
+                            <a href="#" data-toggle="modal" data-target="#supprime{{ eleve.id }}" title="Supprimer">
+                                <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
+                            </a>
+                            <!-- Modal suppression -->
+                            <div class="modal fade" id="supprime{{ eleve.id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-primary">
+                                            <h5 class="modal-title">SUPPRESSION</h5>
+                                            <button type="button" class="close" data-dismiss="modal">
+                                                <span>&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Voulez-vous vraiment supprimer {{ eleve.nom }} {{ eleve.prenom }} ?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Non</button>
+                                            <a href="{% url 'supprimer-eleve' eleve.id %}" class="btn btn-danger">Oui</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-muted text-center mt-4">Aucun élève trouvé pour les critères sélectionnés.</p>
+    {% endif %}
+{% else %}
+    <p class="text-center text-info mt-4">Veuillez sélectionner une classe et une année scolaire pour afficher la liste des élèves.</p>
+{% endif %}
+
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+  
+
+  
+{% block scripte %}
+
+
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+<!-- Page specific script -->
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+    
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+{% endblock %}

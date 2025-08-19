@@ -1,0 +1,106 @@
+{% extends "login/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>Validation des Bulletins Annuels</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+{% block contenu %}
+
+<center>
+  <div class="content-wrapper container">
+    <!-- Centrer le titre -->
+    <h1 class="text-center mb-4 bg-primary">Validation des Bulletins Trimestriels</h1>
+
+    {% if messages %}
+    <center>
+      <div class="messages mt-3 center">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+         
+          </div>
+        {% endfor %}
+      </div>
+    </center>
+
+    {% endif %}
+
+    <!-- Formulaire centré -->
+    <form method="post" action="{% url 'trimestre' %}" class="mx-auto" style="max-width: 600px;">
+      {% csrf_token %}
+      
+      <div class="form-group">
+            <select id="annee_scolaire" name="annee_scolaire" class="form-control" required>
+              <option value="">Sélectionnez une année scolaire</option>
+              {% for annee in annees_scolaires %}
+                <option value="{{ annee.id }}">{{ annee.nom }}</option>
+              {% endfor %}
+            </select>
+        
+        </div>
+
+       
+          <div class="form-group">
+            <select id="groupe_classe" name="groupe_classe" class="form-control" required>
+              <option value="">Sélectionnez un groupe de classe</option>
+              {% for groupe in groupes_classes %}
+                <option value="{{ groupe.id }}">{{ groupe.nom }}</option>
+              {% endfor %}
+            </select>
+          </div>
+       
+
+          <div class="form-group">
+            <select id="trimestre" name="trimestre" class="form-control" required>
+            <option value="">Sélectionnez un trimestre</option>
+              <option value="1">Trimestre 1</option>
+              <option value="2">Trimestre 2</option>
+              <option value="3">Trimestre 3</option>
+            </select>
+          </div>
+     
+     
+
+      <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary">Valider les Bulletins</button>
+      </div>
+    </form>
+
+    {% if eleves %}
+      <h2 class="text-center mt-5">Élèves concernés</h2>
+      <table class="table table-bordered mt-4 mx-auto" style="max-width: 800px;">
+        <thead>
+          <tr>
+            <th>Nom de l'Élève</th>
+            <th>Validation</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for eleve in eleves %}
+            <tr>
+              <td>{{ eleve.nom }} {{ eleve.prenom }}</td>
+              <td>
+                {% if eleve.bulletintrimestriel_set.exists %}
+                 <center> <span class="badge badge-success">Bulletin Validé</span> </center>
+                {% else %}
+                  <span class="badge badge-warning">En Attente</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+  </div>
+{% endblock %}
+</center>
+{% block scripte %}
+  <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'base/js/adminlte.min.js' %}"></script>
+{% endblock %}

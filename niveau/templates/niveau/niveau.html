@@ -1,0 +1,287 @@
+{% extends "login/index.html" %}
+{% load static %}
+ {% block styl_parent %}
+  <title>niveau | Accueil</title>
+
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+
+ {% block body %}
+<body class="hold-transition sidebar-mini">
+ {% endblock body %}
+
+
+
+
+{% block contenu %}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>GESTION DES NIVEAUX D'ETUDES</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="">accueil</a></li>
+              <li class="breadcrumb-item active">Tableau de bord</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                
+                  {% if messages %}
+                {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show bg-danger" role="alert">
+                      {{ message }}
+
+                  </div>
+                {% endfor %}
+              {% endif %}
+<!-- DEBUT DE LA FENETRE MODALE D'ENREGISTREMENT -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                  Ajouter un niveau 
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header bg-primary">
+                        <h5 class="modal-title" id="exampleModalLabel">Enregistrement des niveaux</h5>
+
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        <form action="{% url 'ajout-niveau' %}" method="post" class="row">
+                          {% csrf_token %}
+                          <div class="form-group col-md-12">
+                            <input type="hidden" value="{{cy.id}}" name="cy">
+                            <label for="cy">Cycle(*):</label>
+                            <select name="cy" class="form-control" id="cy" required>
+                              <option value="">Selectionner un cycle</option>
+                              {% for cy in cycles %}
+                              <option value="{{cy.id}}">{{cy}}</option>
+                              {% endfor %}
+                            </select>
+                          </div>
+
+                          <div class="form-group col-md-12">
+                            <label for="nom" class="col-form-label">Niveau (*):</label>
+                            <input type="text" class="form-control" id="nom" name="nom" required placeholder="veuillez saisir le niveau">
+                          </div>
+
+                          <!-- Champ Frais Scolaires -->
+                          <div class="form-group col-md-12">
+                            <label for="frais_scolaires" class="col-form-label">Frais Scolaires(*):</label>
+                            <input type="number" class="form-control" id="frais_scolaires" name="frais_scolaires" required placeholder="veuillez saisir le frais scolaire (800 000)">
+                          </div>
+                                            <!-- Bouton Enregistrer à l'intérieur du form -->
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Quitter</button>
+                            <button type="submit" class="btn btn-primary">Enregistrer</button>
+                          </div>
+                        </form>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+                <!-- FIN DE LA FENETRE MODALE D'ENREGISTREMENT -->
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <div class="card-body table-responsive">
+                 <table id="example" class="table table-bordered table-hover">
+                   <thead class="bg-primary">
+                    <tr>
+                  
+                      <th>Cycle scolaire</th>
+                      <th>Niveau d'etude</th>
+                      <th>Frais Scolaires</th>
+                      <th>Actions</th>
+                    </tr>
+                   </thead>
+                   <tbody>
+                    {% for nive in niveaus %}
+                    <tr>
+                      
+                      <td>{{nive.cycle}}</td>
+                      <td>{{nive.nom}}</td>
+                      <td>{{nive.montant_frais}} FGN</td>
+                      <td>
+                        <a href="#" data-toggle="modal" data-target="#modifie{{ nive.id }}" title="Modifier">
+                          <i class="fas fa-edit text-primary" style="font-size: 1.5rem;"></i>
+                        </a>
+                        <div class="modal fade" id="modifie{{ nive.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title" id="exampleModalLabel">Modifier les informations</h5>
+                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                              </div>
+                              <div class="modal-body">
+                                <form action="{% url 'modifi-niveau' %}" method="post" enctype="multipart/form-data" class="row">
+                                  {% csrf_token %}
+                                  <div class="form-group col-md-12">
+                                    <input type="hidden" value="{{cy.id}}" name="cy">
+                                    <label for="cy">Cycle scolaire:</label>
+                                    <select name="cy" class="form-control" id="cy">
+                                      {% for cy in cycles %}
+                                      <option value="{{ cy.id }}" {% if nive.cycle.id == cy.id %} selected {% endif %}>{{cy}}</option>
+                                      {% endfor %}
+                                    </select>
+                                  </div>
+
+                                  <div class="form-group col-md-12">
+                                    <label for="nom" class="col-form-label">Niveau d'etude :</label>
+                                    <input type="text" class="form-control" id="nom" name="nom" required value="{{ nive.nom }}">
+                                  </div>
+
+                               
+
+                                  <!-- Champ Frais Scolaires -->
+                                  <div class="form-group col-md-12">
+                                    <label for="frais_scolaires" class="col-form-label">Frais Scolaires (FGN):</label>
+                                    <input type="float" class="form-control" id="frais_scolaires" name="frais_scolaires" required value="{{ nive.montant_frais }}">
+                                  </div>
+
+                                  <input type="hidden" name="id" value="{{ nive.id }}">
+                                  <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Modifier</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                               <a href="#" data-toggle="modal" data-target="#supprime{{ nive.id }}" title="Supprimer">
+                        <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
+                    </a>
+
+                      <!-- Début de la fenêtre modale de suppression -->
+                      <div class="modal fade" id="supprime{{ nive.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                          <div class="modal-dialog" role="document">
+                              <div class="modal-content">
+                                  <div class="modal-header bg-primary">
+                                      <h5 class="modal-title" id="exampleModalLabel">SUPPRESSION DES INFOS</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                          <span aria-hidden="true">&times;</span>
+                                      </button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <form action="{% url 'supprimer-niveau' pk=nive.id %}" method="post" class="row">
+                                          {% csrf_token %}
+                                          <p>
+                                              Voulez-vous vraiment supprimer cette ligne ?{{nive.nom}}
+                                              
+                                          </p>
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-primary" data-dismiss="modal">Non</button>
+                                      <button type="submit" class="btn btn-danger">Oui</button>
+                                  </div>
+                                      </form>
+                              </div>
+                          </div>
+                      </div>
+                      <!-- Fin de la fenêtre modale de suppression -->
+
+                      </td>
+                    </tr>
+                    {% endfor %}
+                   </tbody>
+                </table>
+              </div>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+
+            <!-- /.card -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+{% endblock %}
+
+  
+
+  
+{% block scripte %}
+
+
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+<script src="{% static 'base/js/ajax.js' %}"></script>
+<!-- Page specific script -->
+<script>
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+{% endblock %}

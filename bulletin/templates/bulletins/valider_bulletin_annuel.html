@@ -1,0 +1,71 @@
+{% extends "login/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>Validation des Bulletins Annuels</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+ {% block body %}
+
+ {% endblock body %}
+
+
+
+{% block contenu %}
+
+  <div class="content-wrapper container">
+    <h1 class="text-center mb-4 bg-primary">Validation des Bulletins Annuels</h1>
+
+    {% if messages %}
+      <div class="messages mt-3">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="post" action="{% url 'valider_bulletin' %}" class="mx-auto" style="max-width: 600px;">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label for="annee_scolaire">Année Scolaire</label>
+        <select id="annee_scolaire" name="annee_scolaire" class="form-control" required>
+          <option value="">Sélectionnez une année scolaire</option>
+          {% for annee in annees_scolaires %}
+            <option value="{{ annee.id }}">{{ annee.nom }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="groupe_classe">Groupe de Classe</label>
+        <select id="groupe_classe" name="groupe_classe" class="form-control" required>
+          <option value="">Sélectionnez un groupe de classe</option>
+          {% for groupe in groupes_classes %}
+            <option value="{{ groupe.id }}">{{ groupe.nom }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group text-center">
+        <button type="submit" class="btn btn-primary">Valider les Bulletins Annuels</button>
+      </div>
+    </form>
+  </div>
+
+{% endblock %}
+
+{% block scripte %}
+  <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'base/js/adminlte.min.js' %}"></script>
+{% endblock %}

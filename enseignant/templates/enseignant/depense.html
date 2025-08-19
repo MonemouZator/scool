@@ -1,0 +1,313 @@
+{% extends "login/comptable_dashboard.html" %}
+{% load static %}
+
+{% block styl_parent %}
+<title>GESTION DES DÉPENSES</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+<style>
+    body {
+        background-color: #f4f6f9;
+        font-family: 'Source Sans Pro', sans-serif;
+    }
+
+    .content-wrapper {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-top: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #34495e;
+        text-align: center;
+        background-color: #f39c12;
+        padding: 15px 30px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-transform: uppercase;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: #495057;
+        margin-top: 40px;
+        text-align: center;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #495057;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-inline-flex {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        align-items: center;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        font-size: 1rem;
+        padding: 10px;
+        border: 1px solid #ced4da;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        color: white;
+        font-weight: 600;
+        border-radius: 8px;
+        padding: 12px 25px;
+        border: none;
+    }
+
+    .alert {
+        padding: 10px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
+
+    .table th, .table td {
+        padding: 12px;
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .table th {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .table-striped tbody tr:nth-child(odd) {
+        background-color: #f9f9f9;
+    }
+
+    .empty-message {
+        text-align: center;
+        font-style: italic;
+        color: #6c757d;
+    }
+
+    @media (max-width: 768px) {
+        .form-inline-flex {
+            flex-direction: column;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<body class="hold-transition sidebar-mini">
+{% endblock %}
+
+{% block contenu %}
+<div class="content-wrapper p-4">
+    <h2>GESTION DES DÉPENSES</h2>
+
+    {% if solde <= 0 %}
+        <div class="alert alert-danger">
+            Le solde est insuffisant pour effectuer des dépenses. Veuillez vérifier vos entrées et sorties financières.
+        </div>
+    {% endif %}
+
+    {% if messages %}
+        <div class="alert-container">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} bg-danger">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <form method="post" autocomplete="off">
+        {% csrf_token %}
+        <div class="form-inline-flex mb-3">
+            <div class="row w-100">
+                <div class="form-group col-md-6">
+                    <label for="description" class="form-label">Description :</label>
+                    <input type="text" name="description" id="description" class="form-control" required placeholder="Motif de la dépense">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="montant" class="form-label">Montant (GNF) :</label>
+                    <input type="number" name="montant" id="montant" class="form-control" step="0.01" required placeholder="Montant en GNF">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="date_depense" class="form-label">Date :</label>
+                    <input type="date" name="date_depense" id="date_depense" class="form-control" required>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="annee_scolaire" class="form-label">Année Scolaire :</label>
+                    <select name="annee_scolaire" id="annee_scolaire" class="form-control" required>
+                        <option value="">Choisir une année scolaire</option>
+                        {% for annee in annees_scolaires %}
+                            <option value="{{ annee.id }}">{{ annee.nom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary">Enregistrer</button>
+            </div>
+        </div>
+    </form>
+
+    <hr style="border: 1px solid #16A085; margin: 20px 0;">
+
+    {% if depenses %}
+        <h3>Liste des dépenses effectuées</h3>
+        <div class="table-responsive">
+            <table id="example" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Montant</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for depense in depenses %}
+                        <tr>
+                            <td>{{ depense.description }}</td>
+                            <td>{{ depense.montant|floatformat:0 }} GNF</td>
+                            <td>{{ depense.date_depense }}</td>
+
+                            <td>
+                  <!-- Modifier -->
+                  <a href="#" data-toggle="modal" data-target="#modifie{{ depense.id }}" title="Modifier">
+                    <i class="fas fa-edit text-primary" style="font-size: 1.5rem;"></i>
+                  </a>
+
+                  <!-- MODAL MODIFIER -->
+                  <div class="modal fade" id="modifie{{ depense.id }}" tabindex="-1">
+                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                      <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                          <h5 class="modal-title">Modifier les informations</h5>
+                          <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+                        </div>
+            <div class="modal-body">
+                <form method="post" class="row px-3" action="{% url 'modifier_depense' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="modifier">
+                            <input type="hidden" name="depense_id" value="{{ depense.id }}">
+
+                            <div class="form-group col-md-12">
+                                <label>Description :</label>
+                                <input type="text" name="description" class="form-control" required value="{{ depense.description }}">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>Montant :</label>
+                                <input type="number" name="montant" class="form-control" required value="{{ depense.montant }}">
+                            </div>
+
+                            <div class="form-group col-md-6">
+                                <label>Date :</label>
+                                <input type="date" name="date_depense" class="form-control" required value="{{ depense.date_depense|date:'Y-m-d' }}">
+                            </div>
+
+                            <div class="form-group col-md-12">
+                                <label>Année Scolaire :</label>
+                                <select name="annee_scolaire" class="form-control" required>
+                                    {% for annee in annees_scolaires %}
+                                        <option value="{{ annee.id }}" {% if depense.annee_scolaire.id == annee.id %}selected{% endif %}>{{ annee.nom }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="modal-footer col-md-12">
+                                <button type="submit" class="btn btn-primary">Modifier</button>
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                            </div>
+                        </form>
+
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Supprimer -->
+                  <a href="#" data-toggle="modal" data-target="#supprime{{ depense.id }}" title="Supprimer">
+                    <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
+                  </a>
+
+                  <!-- MODAL SUPPRIMER -->
+                  <div class="modal fade" id="supprime{{ depense.id }}" tabindex="-1">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <form method="post" action="{% url 'supprimer_depense' %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="action" value="supprimer">
+                          <input type="hidden" name="depense_id" value="{{ depense.id }}">
+                          <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Suppression</h5>
+                            <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+                          </div>
+                          <div class="modal-body">
+                            <p>Voulez-vous vraiment supprimer cette ligne ?</p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="submit" class="btn btn-danger">Oui</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+
+                </td>
+
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+          </div>
+    {% else %}
+        <p class="empty-message mt-4">Aucune dépense enregistrée pour le moment.</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripte %}
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+{% if depenses %}
+<script>
+  $(function () {
+    $("#example2").DataTable({
+      responsive: true,
+      lengthChange: false,
+      autoWidth: false
+    });
+  });
+</script>
+{% endif %}
+{% endblock %}
