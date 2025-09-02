@@ -43,10 +43,6 @@ def ajout(request):
     
 
 from decimal import Decimal
-from django.shortcuts import get_object_or_404, redirect
-from decimal import Decimal
-from django.shortcuts import get_object_or_404, redirect
-
 def modifier(request):
     if request.method == 'POST':
         # Récupérer les valeurs envoyées par le formulaire
