@@ -23,5 +23,6 @@ urlpatterns = [
     path('eleve-par-niveau/',views.liste_eleves_par_niveau_annee, name='liste_eleves_par_niveau_annee'),
     path('liste-eleves-par-groupe/',views.liste_eleves_par_groupe, name='liste_eleves_par_groupe'),
 
+
 ]
 

@@ -4,8 +4,11 @@ from django.contrib import admin
 from .models import Enseignant
 from enseignant.models import PaiementSalaire
 from enseignant.models import Depense
+
+
 admin.site.register(Enseignant)
 
 admin.site.register(PaiementSalaire)
 
 admin.site.register(Depense)
+

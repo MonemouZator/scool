@@ -1,30 +1,41 @@
 from django.db import models
 from matiere.models import Matiere
 from django.utils import timezone
+from groupe_classe.models import GroupeClasse
+from niveau.models import Niveau
+
 from annee_scolaire.models import AnneeScolaire
 from cloudinary.models import CloudinaryField
 
 
 
-class Enseignant(models.Model):
-        
-        Sexe=[
-        ("Homme","Masculin"),
-        ("Femme","Feminin"),
-    ]
-        nom=models.CharField(max_length=40,db_index=False ,unique=True)
-        prenom=models.CharField(max_length=40,db_index=False)
-        specialite=models.CharField(max_length=40,db_index=False)
-        telephone=models.CharField(max_length=15,db_index=False)
-        Sexe=models.CharField(max_length=10,choices=Sexe,db_index=False)
-        adresse=models.CharField(max_length=60,db_index=False)
-        date_naiss=models.DateField()
-        lieu_naiss=models.CharField(max_length=30,db_index=False)
-        photo = CloudinaryField('image', blank=True, null=True, overwrite=True)
+from django.conf import settings
 
-        email = models.EmailField( max_length=254)  # Limitation explicite
-        def __str__(self) -> str:
-            return f"{self.nom}{self.prenom}{self.telephone}"
+class Enseignant(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='enseignant_profile'
+    )
+    nom = models.CharField(max_length=40)
+    prenom = models.CharField(max_length=40)
+    specialite = models.CharField(max_length=40)
+    telephone = models.CharField(max_length=15)
+    sexe = models.CharField(max_length=10, choices=[("Homme", "Masculin"), ("Femme", "Feminin")])
+    adresse = models.CharField(max_length=60)
+    date_naiss = models.DateField()
+    lieu_naiss = models.CharField(max_length=30)
+    photo = CloudinaryField('image', blank=True, null=True, overwrite=True)
+    email = models.EmailField(max_length=254)
+
+    class Meta:
+        unique_together = ('nom', 'prenom')
+
+    def __str__(self):
+        return f"{self.nom} {self.prenom}"
+    
 
 class PaiementSalaire(models.Model):
     enseignant = models.ForeignKey(Enseignant, on_delete=models.CASCADE)

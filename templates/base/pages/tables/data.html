@@ -1,321 +1,294 @@
 {% extends "login/index.html" %}
 {% load static %}
- {% block styl_parent %}
-  <title>enseignant | Accueil</title>
 
-
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-  <!-- DataTables -->
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
- 
-
+{% block styl_parent %}
+<title>Enseignant | Gestion</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
 {% endblock %}
 
-
- {% block body %}
+{% block body %}
 <body class="hold-transition sidebar-mini">
- {% endblock body %}
-
-
-
+{% endblock %}
 
 {% block contenu %}
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>GESTION DES ENSEIGNANTS</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="">accueil</a></li>
-              <li class="breadcrumb-item active">Tableau de bord</li>
-            </ol>
-          </div>
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6"><h1>GESTION DES ENSEIGNANTS</h1></div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Accueil</a></li>
+            <li class="breadcrumb-item active">Enseignants</li>
+          </ol>
         </div>
-      </div><!-- /.container-fluid -->
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-           
-
-            <div class="card">
-
-              <div class="card-header">
-
-                <!-- DEBUT DE LA FENETRE MODALE D'ENREGISTREMENT -->
-                          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                            Ajouter un enseignant
-                          </button>
-
-                          <!-- Modal -->
-                          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                <div class="modal-header bg-primary">
-                                  <h5 class="modal-title" id="exampleModalLabel">Enregistrement des enseignants</h5>
-                                  <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                  </button>
-                                </div>
-                                <div class="modal-body">
-                                  <form action="{% url 'ajout-enseignant' %}" method="post" enctype="multipart/form-data" class="row">
-
-
-                              {% csrf_token %}
-                              <div class="form-group col-md-6">
-                                  <label for="nom">Nom:</label>
-                                  <input type="text" class="form-control" id="nom" name="nom"  required placeholder="veuillez saisir le nom de l'enseignant">
-                              </div>
-                              <div class="form-group col-md-6">
-                                  <label for="prenom">Prénom:</label>
-                                  <input type="text" class="form-control" id="prenom" name="prenom"  required placeholder="veuillez saisir le prénom de l'enseignant">
-                              </div>
-                              <div class="form-group col-md-6">
-                                  <label for="sexe">Sexe:</label>
-                                  <select class="form-control" id="sexe" name="sexe" required>
-                                      <option value="H" {% if ensei.sexe == 'H' %}selected{% endif %}>Masculin</option>
-                                      <option value="F" {% if ensei.sexe == 'F' %}selected{% endif %}>Féminin</option>
-                                  </select>
-                              </div>
-                              <div class="form-group col-md-6">
-                                  <label for="tel">Téléphone:</label>
-                                  <input type="text" class="form-control" id="tel" name="tel"  required placeholder="veuillez saisir le numéro de téléphone">
-                              </div>
-                              <div class="form-group col-md-6">
-                                  <label for="adresse">Adresse:</label>
-                                  <input type="text" class="form-control" id="adresse" name="adresse"  required placeholder="veuillez saisir le domicil">
-                              </div>
-                              <div class="form-group col-md-6">
-                                  <label for="naissance">Date de naissance:</label>
-                                  <input type="date" class="form-control" id="naissance" name="naissance" required >
-                              </div>
-
-                              <div class="form-group col-md-6">
-                                  <label for="lieu">Lieu de naissance:</label>
-                                  <input type="text" class="form-control" id="lieu" name="lieu"  required  placeholder="veuillez saisir le lieu de naissance">
-                              </div>
-                              <div class="form-group col-md-6">
-                                  <label for="photo">Photo:</label>
-                       
-                                  <input type="file" class="form-control" id="photo" name="photo" required placeholder="veuillez selectionner une photo">
-                              </div>
-
-                              <div class="form-group col-md-6">
-                                  <label for="sp">Fonction:</label>
-                                  <input type="text" class="form-control" id="sp" name="sp"  required  placeholder="veuillez saisir la fonctiion">
-                              </div>
-                              <div class="form-group col-md-6">
-                                  <label for="email">Email:</label>
-                                  <input type="email" class="form-control" id="email" name="email"  required placeholder="veuillez saisir l'adresse email">
-                              </div>
-                            
-                              <div class="modal-footer">
-                                  <button type="submit" class="btn btn-primary">Enregistrer</button>
-                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Quitter</button>
-                              </div>
-                          </form>
-                                </div>
-                                
-                              </div>
-                            </div>
-                          </div>
-                          <!-- FIN DE LA FENETRE MODALE D'ENREGISTREMENT --> 
-              </div>
-
-
-             
-              <!-- /.card-header -->
-              <div class="card-body">
-                <table id="example1" class="table table-bordered table-striped">
-                  <thead class="bg-primary">
-                    <tr>
-                      <th>N°</th>
-                      <th>Nom</th>
-                      <th>Prénom</th>
-                      <th>Sexe</th>
-                      <th>Contact</th>
-                      <th>Adresse</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for ensei in enseignants %}
-                    <tr>
-                      <td>{{ ensei.id }}</td>
-                      <td>{{ ensei.nom }}</td>
-                      <td>{{ ensei.prenom }}</td>
-                      <td>{{ ensei.Sexe }}</td>
-                      <td>{{ ensei.telephone }}</td>
-                      <td>{{ ensei.adresse }}</td>
-                      <td>
-                        <a href="{% url 'enseignant_detail' ensei.id %}" class="btn btn-info">
-                          <i class="fas fa-eye"></i> Voir Détails
-                        </a>
-
-                        <!-- Modifier Button -->
-<!-- Modifier Button -->
-<a href="#" data-toggle="modal" data-target="#modifie{{ ensei.id }}" title="Modifier">
-    <i class="fas fa-edit text-primary" style="font-size: 1.5rem;"></i>
-</a>
-
-<!-- Modifier Modal -->
-<div class="modal fade" id="modifie{{ ensei.id }}" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title">Modifier les informations</h5>
-                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form action="{% url 'modifier' ensei.id %}" method="post" enctype="multipart/form-data" class="row">
-
-
-                    {% csrf_token %}
-                    <div class="form-group col-md-6">
-                        <label for="nom">Nom:</label>
-                        <input type="text" class="form-control" id="nom" name="nom" value="{{ ensei.nom }}" required>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="prenom">Prénom:</label>
-                        <input type="text" class="form-control" id="prenom" name="prenom" value="{{ ensei.prenom }}" required>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="sexe">Sexe:</label>
-                        <select class="form-control" id="sexe" name="sexe" required>
-                            <option value="H" {% if ensei.sexe == 'H' %}selected{% endif %}>Masculin</option>
-                            <option value="F" {% if ensei.sexe == 'F' %}selected{% endif %}>Féminin</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="tel">Téléphone:</label>
-                        <input type="text" class="form-control" id="tel" name="tel" value="{{ ensei.telephone }}" required>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="adresse">Adresse:</label>
-                        <input type="text" class="form-control" id="adresse" name="adresse" value="{{ ensei.adresse }}" required>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="naissance">Date de naissance:</label>
-                        <input type="date" class="form-control" id="naissance" name="naissance" value="{{ ensei.date_naiss|date:'Y-m-d' }}" required>
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="lieu">Lieu de naissance:</label>
-                        <input type="text" class="form-control" id="lieu" name="lieu" value="{{ ensei.lieu_naiss }}" required>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="photo">Photo:</label>
-                        <!-- Afficher la photo actuelle -->
-                        {% if ensei.photo %}
-                            <img src="{{ ensei.photo.url }}" alt="Photo actuelle" style="max-width: 100px; max-height: 100px; display: block;">
-                        {% else %}
-                            <p>Aucune photo disponible</p>
-                        {% endif %}
-                        <input type="file" class="form-control" id="photo" name="photo">
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label for="sp">Fonction:</label>
-                        <input type="text" class="form-control" id="sp" name="sp" value="{{ ensei.specialite }}" required>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="email">Email:</label>
-                        <input type="email" class="form-control" id="email" name="email" value="{{ ensei.email }}" required>
-                    </div>
-                    <input type="hidden" name="id" value="{{ ensei.id }}">
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Modifier</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-   <!-- FIN DE MODAL MODIFICATION  -->
-
-
-                        <!-- Supprimer Button -->
-                        <a href="#" data-toggle="modal" data-target="#supprime{{ ensei.id }}" title="Supprimer">
-                          <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
-                        </a>
-
-                        <!-- Supprimer Modal -->
-                        <div class="modal fade" id="supprime{{ ensei.id }}" tabindex="-1" role="dialog" aria-hidden="true">
-                          <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                              <div class="modal-header bg-primary text-white">
-                                <h5 class="modal-title">Supprimer l'enseignant</h5>
-                                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                                </button>
-                              </div>
-                              <div class="modal-body">
-                                <form action="{% url 'supprimer-enseignant' ensei.id %}" method="post">
-                                  {% csrf_token %}
-                                  <p>Voulez-vous vraiment supprimer {{ ensei.nom }} {{ ensei.prenom }} ?</p>
-                                  <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
-                                    <button type="submit" class="btn btn-danger">Oui</button>
-                                  </div>
-                                </form>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                      </td>
-                    </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
-              </div>
-              <!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
-        </div>
-        <!-- /.row -->
       </div>
-      <!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+
+          <div class="card">
+            <div class="card-header">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAjouter">
+                Ajouter un enseignant
+              </button>
+              <a href="{% url 'suivie' %}" class="btn btn-primary">Suivi des enseignants</a>
+            </div>
+
+            <div class="card-body">
+              <table id="example1" class="table table-bordered table-striped">
+                <thead class="bg-primary text-white">
+                  <tr>
+                    <th>N°</th>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Sexe</th>
+                    <th>Contact</th>
+                    <th>Adresse</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                 {% for ensei in enseignants %}
+
+                  <tr>
+                    <td>{{ ensei.id }}</td>
+                    <td>{{ ensei.nom }}</td>
+                    <td>{{ ensei.prenom }}</td>
+                    <td>{{ ensei.sexe }}</td>
+                    <td>{{ ensei.telephone }}</td>
+                    <td>{{ ensei.adresse }}</td>
+                    <td>
+                      <a href="{% url 'enseignant_detail' ensei.id %}" class="btn btn-info" title="Voir Détails">
+                        <i class="fas fa-eye"></i>
+                      </a>
+                      <a href="#" data-toggle="modal" data-target="#modifie{{ ensei.id }}" title="Modifier">
+                        <i class="fas fa-edit text-primary" style="font-size: 1.5rem;"></i>
+                      </a>
+                      <a href="#" data-toggle="modal" data-target="#supprime{{ ensei.id }}" title="Supprimer">
+                        <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
+                      </a>
+                      <a href="#" data-toggle="modal" data-target="#affecte{{ ensei.id }}" title="Affecter">
+                        <i class="fas fa-user-plus text-success" style="font-size: 1.5rem;"></i>
+                      </a>
+                    </td>
+                  </tr>
+
+                  <!-- MODALE MODIFIER -->
+                  <div class="modal fade" id="modifie{{ ensei.id }}" tabindex="-1" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                          <h5 class="modal-title">Modifier {{ ensei.nom }} {{ ensei.prenom }}</h5>
+                          <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                          <form action="{% url 'modifier' ensei.id %}" method="post" enctype="multipart/form-data" class="row">
+                            {% csrf_token %}
+                            <div class="form-group col-md-6"><label>Nom</label><input type="text" class="form-control" name="nom" value="{{ ensei.nom }}" required></div>
+                            <div class="form-group col-md-6"><label>Prénom</label><input type="text" class="form-control" name="prenom" value="{{ ensei.prenom }}" required></div>
+                            <div class="form-group col-md-6"><label>Sexe</label>
+                              <select class="form-control" name="sexe" required>
+                                <option value="H" {% if ensei.sexe == 'Homme' %}selected{% endif %}>Masculin</option>
+                                <option value="F" {% if ensei.sexe == 'Femme' %}selected{% endif %}>Féminin</option>
+                              </select>
+                            </div>
+                            <div class="form-group col-md-6"><label>Téléphone</label><input type="text" class="form-control" name="telephone" value="{{ ensei.telephone }}" required></div>
+                            <div class="form-group col-md-6"><label>Adresse</label><input type="text" class="form-control" name="adresse" value="{{ ensei.adresse }}" required></div>
+                            <div class="form-group col-md-6"><label>Date de naissance</label><input type="date" class="form-control" name="date_naiss" value="{{ ensei.date_naiss }}" required></div>
+                            <div class="form-group col-md-6"><label>Lieu de naissance</label><input type="text" class="form-control" name="lieu_naiss" value="{{ ensei.lieu_naiss }}" required></div>
+                            <div class="form-group col-md-6"><label>Spécialité</label><input type="text" class="form-control" name="specialite" value="{{ ensei.specialite }}" required></div>
+                            <div class="form-group col-md-6"><label>Email</label><input type="email" class="form-control" name="email" value="{{ ensei.email }}" required></div>
+                            <div class="form-group col-md-6"><label>Photo</label><input type="file" class="form-control" name="photo"></div>
+                            <div class="modal-footer col-12">
+                              <button type="submit" class="btn btn-primary">Modifier</button>
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- MODALE SUPPRIMER -->
+                  <div class="modal fade" id="supprime{{ ensei.id }}" tabindex="-1" role="dialog">
+                    <div class="modal-dialog" role="document">
+                      <div class="modal-content">
+                        <div class="modal-header bg-primary text-white">
+                          <h5 class="modal-title">Supprimer {{ ensei.nom }}</h5>
+                          <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+                        </div>
+                        <div class="modal-body">
+                          <form action="{% url 'supprimer-enseignant' ensei.id %}" method="post">
+                            {% csrf_token %}
+                            <p>Voulez-vous vraiment supprimer {{ ensei.nom }} {{ ensei.prenom }} ?</p>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
+                              <button type="submit" class="btn btn-danger">Oui</button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- MODALE AFFECTER -->
+                  <!-- MODALE AFFECTER -->
+<div class="modal fade" id="affecte{{ ensei.id }}" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">Affecter {{ ensei.nom }} {{ ensei.prenom }}</h5>
+        <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'ajouter-affectation' %}">
+          {% csrf_token %}
+          <input type="hidden" name="enseignant" value="{{ ensei.id }}">
+          
+          <div class="form-group">
+            <label>Niveau :</label>
+            <select name="niveau" class="form-control" id="niveau{{ ensei.id }}" required>
+              <option value="">-- Sélectionnez un niveau --</option>
+              {% for niveau in niveaux %}
+                <option value="{{ niveau.id }}">{{ niveau.nom }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Classe :</label>
+            <select name="classe" class="form-control" id="classe{{ ensei.id }}" required>
+              <option value="">-- Sélectionnez une classe --</option>
+              {% for classe in groupes %}
+                <option value="{{ classe.id }}">{{ classe.nom }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Matière :</label>
+            <select name="matiere" class="form-control" id="matiere{{ ensei.id }}" required>
+              <option value="">-- Sélectionnez une matière --</option>
+              {% for matiere in matieres %}
+                <option value="{{ matiere.id }}">{{ matiere.nom }}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Affecter</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
-  <!-- /.content-wrapper -->
+</div>
+
+
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- MODALE AJOUTER ENSEIGNANT -->
+<div class="modal fade" id="modalAjouter" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">Enregistrement des enseignants</h5>
+        <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'ajout_enseignant' %}" method="post" enctype="multipart/form-data" class="row">
+          {% csrf_token %}
+          
+          <div class="form-group col-md-6">
+            <label>Nom</label>
+            <input type="text" class="form-control" name="nom" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Prénom</label>
+            <input type="text" class="form-control" name="prenom" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Sexe</label>
+            <select class="form-control" name="genre" required>
+              <option value="">-- Sélectionnez --</option>
+              <option value="H">Masculin</option>
+              <option value="F">Féminin</option>
+            </select>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Téléphone</label>
+            <input type="text" class="form-control" name="telephone" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Adresse</label>
+            <input type="text" class="form-control" name="adresse" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Date de naissance</label>
+            <input type="date" class="form-control" name="date_naissance" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Lieu de naissance</label>
+            <input type="text" class="form-control" name="lieu_naiss" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Spécialité</label>
+            <input type="text" class="form-control" name="specialite" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Email</label>
+            <input type="email" class="form-control" name="email" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Nom d'utilisateur</label>
+            <input type="text" class="form-control" name="username" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Mot de passe</label>
+            <input type="password" class="form-control" name="password" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label>Photo</label>
+            <input type="file" class="form-control" name="photo">
+          </div>
+
+          <div class="modal-footer col-12">
+            <button type="submit" class="btn btn-primary">Enregistrer</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Quitter</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 {% endblock %}
 
-  
-
-  
 {% block scripte %}
-<!-- jQuery -->
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
-
-<!-- Popper.js (pour compatibilité mobile) -->
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-
-<!-- Bootstrap -->
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
-
-<!-- DataTables et Plugins -->
 <script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
@@ -328,33 +301,22 @@
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
-
-<!-- AdminLTE -->
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
-<script src="{% static 'base/js/demo.js' %}"></script>
 
-<!-- Correction Android modals focus aria-hidden -->
 <script>
-  $(document).ready(function () {
-    console.log("jQuery opérationnel");
-
-    // Corrige aria-hidden sur Android
-    $('.modal').on('shown.bs.modal', function () {
-      $(this).attr('aria-hidden', 'false');
-      console.log("Modale affichée !");
-    });
-
-    $('.modal').on('hide.bs.modal', function () {
-      $(this).attr('aria-hidden', 'true');
-    });
-
-    // Initialisation DataTable
-    $("#example1").DataTable({
-      "responsive": true,
-      "lengthChange": false,
-      "autoWidth": false,
-      "buttons": []
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+$(document).ready(function() {
+  $("#example1").DataTable({
+    "responsive": true,
+    "lengthChange": false,
+    "autoWidth": false
   });
+
+  $('.modal').on('shown.bs.modal', function () {
+    $(this).attr('aria-hidden', 'false');
+  });
+  $('.modal').on('hide.bs.modal', function () {
+    $(this).attr('aria-hidden', 'true');
+  });
+});
 </script>
 {% endblock %}

@@ -13,7 +13,7 @@ urlpatterns = [
     # Routes de l'application personnel
     path('', include('personnel.urls')),  # Route principale
     path('accueil/', include('personnel.urls')),
-
+    path('dashbaord/directeur/', include('personnel.urls')),
     # Routes de l'application enseignant
     path('enseignant/', include('enseignant.urls')),
     path('ajout-enseignant/', include('enseignant.urls')),

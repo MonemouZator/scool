@@ -24,10 +24,6 @@ class Administrateur(AbstractUser):
   # Dossier de stockage
     email = models.EmailField(max_length=191, unique=True)
 
-
-    # USERNAME_FIELD = 'email'  # On utilise email comme identifiant au lieu de username
-    # REQUIRED_FIELDS = ['username', 'nom', 'prenom', 'telephone', 'fonction']  # Champs obligatoires pour createsuperuser
-
     def __str__(self):
         return f"{self.nom} {self.prenom} - {self.fonction}"
 

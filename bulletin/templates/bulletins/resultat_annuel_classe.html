@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block styl_parent %}
-  <title>Résultat | Résultats Annuels</title>
+  <title>Résultat Annuel | Classe</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
   <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
@@ -11,98 +11,58 @@
     body {
       background-color: #f4f6f9;
       font-family: 'Source Sans Pro', sans-serif;
-      color: #333333;
+      color: #333;
     }
-
     .content-wrapper {
-      background-color: #ffffff;
+      background-color: #fff;
       padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-
     h1, h2, h3 {
       color: #0056b3;
       font-weight: bold;
     }
-
     .form-inline {
       display: flex;
       flex-wrap: wrap;
-      justify-content: flex-start;
       gap: 10px;
       margin-bottom: 20px;
       border-bottom: 2px solid #007bff;
       padding-bottom: 20px;
     }
-
     .form-control {
       border-radius: 5px;
       border: 1px solid #ccc;
       padding: 10px;
     }
-
     .btn {
       border-radius: 5px;
       padding: 10px 20px;
       font-size: 16px;
       text-transform: uppercase;
     }
-
-    .btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
-    }
-
+    .btn-primary { background-color: #007bff; border-color: #007bff; }
     .table {
       background-color: #f9f9f9;
       border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-
     .table th {
       background-color: #007bff;
-      color: #ffffff;
+      color: #fff;
       text-align: center;
       font-size: 16px;
       padding: 12px;
     }
-
-    .table td {
-      text-align: none;
-      padding: 12px;
-    }
-
-    /* Style pour l'impression */
+    .table td { text-align: center; padding: 12px; }
     @media print {
-      body {
-        visibility: hidden;
-      }
-
-      .content-wrapper, .content-wrapper * {
-        visibility: visible;
-      }
-
-      .content-wrapper {
-        width: 100%;
-        margin: 0;
-        padding: 10px;
-        box-shadow: none;
-      }
-
-      .form-inline, #imprimer, .breadcrumb, .btn, header, footer, .sidebar, .navbar {
-        display: none !important;
-      }
-
-      .table, .table th, .table td {
-        border: 1px solid #000 !important;
-        border-collapse: collapse !important;
-        color: #000 !important;
-        font-size: 15px;
-      }
-      .table th {
-        background-color: #ccc !important;
-      }
+      body { visibility: hidden; }
+      .content-wrapper, .content-wrapper * { visibility: visible; }
+      .content-wrapper { width: 100%; margin: 0; padding: 10px; box-shadow: none; }
+      .form-inline, #imprimer, .breadcrumb, .btn, header, footer, .sidebar, .navbar { display: none !important; }
+      .table, .table th, .table td { border: 1px solid #000 !important; border-collapse: collapse !important; color: #000 !important; font-size: 15px; }
+      .table th { background-color: #ccc !important; }
     }
   </style>
 {% endblock %}
@@ -112,11 +72,11 @@
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
-        <div class="col-sm-6"></div>
+        <div class="col-sm-6"><h1>Résultat Annuel par Classe</h1></div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="">Accueil</a></li>
-            <li class="breadcrumb-item active">Tableau de bord</li>
+            <li class="breadcrumb-item"><a href="#">Accueil</a></li>
+            <li class="breadcrumb-item active">Résultat Annuel</li>
           </ol>
         </div>
       </div>
@@ -125,91 +85,72 @@
 
   <section class="content">
     <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} bg-danger">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
 
-          <div class="card">
-            <div class="card-header">
-              {% if messages %}
-                {% for message in messages %}
-                  <div class="alert alert-{{ message.tags }} bg-danger">
-                    {{ message }}
-                  </div>
-                {% endfor %}
-              {% endif %}
+          <form method="get" class="form-inline">
+            <select name="groupe_classe" class="form-control" required>
+              <option value="">-- Groupe / Classe --</option>
+              {% for groupe in groupes_classes %}
+                <option value="{{ groupe.id }}" {% if request.GET.groupe_classe == groupe.id|stringformat:"s" %}selected{% endif %}>{{ groupe.nom }}</option>
+              {% endfor %}
+            </select>
 
-              <form method="get" class="form-inline">
-                <select name="groupe_classe" class="form-control" required>
-                  <option value="">-- Groupe classe --</option>
-                  {% for groupe in groupes_classes %}
-                    <option value="{{ groupe.id }}" {% if request.GET.groupe_classe == groupe.id|stringformat:"s" %}selected{% endif %}>{{ groupe.nom }}</option>
-                  {% endfor %}
-                </select>
+            <select name="annee_scolaire" class="form-control" required>
+              <option value="">-- Année scolaire --</option>
+              {% for annee in annees_scolaires %}
+                <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>{{ annee.nom }}</option>
+              {% endfor %}
+            </select>
 
-                <select name="annee_scolaire" class="form-control" required>
-                  <option value="">-- Année scolaire --</option>
-                  {% for annee in annees_scolaires %}
-                    <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>{{ annee.nom }}</option>
-                  {% endfor %}
-                </select>
-
-                <button type="submit" class="btn btn-primary">Filtrer</button>
-                <button id="imprimer" type="button" class="btn btn-secondary" onclick="window.print()">Imprimer</button>
-              </form>
-            </div>
-
-            {% if sorted_bulletins %}
-              <div id="impression">
-                <center>
-                  <h1>RÉPUBLIQUE DE GUINÉE</h1>
-                  <p><em>Travail - Justice - Solidarité</em></p>
-                  <h2>Groupe Scolaire Privé BNB</h2>
-                  <p><em>Union - Sincérité - Excellence</em></p>
-                  <h4>Résultat annuel de la {{ groupe_obj.nom }}</h4>
-                  <p>Année scolaire : <strong>{{ annee_scolaire_obj.nom }}</strong></p>
-                </center>
-                   <h5 class="text-center text-primary">Classement par ordre de mérite</h5>
-                  <div class="card-body table-responsive">
-
-                    <table id="example" class="table table-bordered table-striped">
-                      <thead>
-                        <tr>
-                          <th>Rang</th>
-                          <th>Nom et Prénom</th>
-                          <th>Moyenne</th>
-                          <th>Observation</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for bulletin in sorted_bulletins %}
-                          <tr>
-                            <td>
-                              {% if bulletin.rang == 1 %}
-                                1er(e)
-                              {% elif bulletin.rang == 2 %}
-                                2ème
-                              {% elif bulletin.rang == 3 %}
-                                3ème
-                              {% else %}
-                                {{ bulletin.rang }}
-                              {% endif %}
-                            </td>
-                            <td>{{ bulletin.bulletin.eleve.nom }} {{ bulletin.bulletin.eleve.prenom }}</td>
-                            <td>{{ bulletin.moyenne_annuelle|floatformat:2 }}</td>
-                            <td>{{ bulletin.observation }}</td>
-                          </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  </div>
-                
-              </div>
-            {% else %}
-              <p class="p-3">Aucun bulletin trouvé pour les critères sélectionnés.</p>
-            {% endif %}
-          </div>
-
+            <button type="submit" class="btn btn-primary">Filtrer</button>
+            <button type="button" id="imprimer" class="btn btn-secondary" onclick="window.print()">Imprimer</button>
+          </form>
         </div>
+
+        {% if sorted_bulletins %}
+          <div id="impression">
+            <center>
+              <h1>RÉPUBLIQUE DE GUINÉE</h1>
+              <p><em>Travail - Justice - Solidarité</em></p>
+              <h2>Groupe Scolaire Privé BNB</h2>
+              <p><em>Union - Sincérité - Excellence</em></p>
+              <h4>Résultat annuel de la classe <strong>{{ groupe_obj.nom }}</strong></h4>
+              <p>Année scolaire : <strong>{{ annee_scolaire_obj.nom }}</strong></p>
+            </center>
+            <h5 class="text-center text-primary">Classement par ordre de mérite</h5>
+
+            <div class="card-body table-responsive">
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Rang</th>
+                    <th>Nom et Prénom</th>
+                    <th>Moyenne</th>
+                    <th>Observation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for bulletin in sorted_bulletins %}
+                    <tr>
+                      <td>{{ bulletin.rang }}</td>
+                      <td>{{ bulletin.bulletin.eleve.nom }} {{ bulletin.bulletin.eleve.prenom }}</td>
+                      <td>{{ bulletin.moyenne|floatformat:2 }}</td>
+                      <td>{{ bulletin.observation }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        {% else %}
+          <p class="p-3">Aucun bulletin trouvé pour les critères sélectionnés.</p>
+        {% endif %}
       </div>
     </div>
   </section>
@@ -219,21 +160,5 @@
 {% block scripte %}
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
-
-<script>
-  $(function () {
-    $('#example2').DataTable({
-      "paging": false,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": false,
-      "info": false,
-      "autoWidth": false,
-      "responsive": true,
-    });
-  });
-</script>
 {% endblock %}

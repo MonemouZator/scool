@@ -9,6 +9,7 @@ from datetime import date
 from datetime import datetime,timezone
 from decimal import Decimal
 from django.contrib import messages
+from personnel.models import Administrateur, Historique
 
 # LISTE TOTALE DES ELEVES.
 def liste_totale_eleve(request):
@@ -140,6 +141,12 @@ def ajout(request):
                 solde=montant_total,
                 est_paye=False
             )
+            # Après création réussie de l'élève
+            Historique.objects.create(
+                user=request.user,
+                action=f"A ajouté l'élève {prenom} {nom} en {niveau_obj.nom} pour l'année {annee_obj.nom}"
+            )
+
 
         messages.success(request, f"L'élève {prenom} {nom} a été ajouté avec succès.")
         return redirect('forme')
@@ -205,16 +212,31 @@ def modifier(request, pk):
             'groupes': groupes,
             'annees_scolaires': annees_scolaires,
         }
-        print(f"Année scolaire de l'élève: {eleve.annee_scolaire}")
-
+        # Ajouter l'action dans l'historique
+        Historique.objects.create(
+            user=request.user,
+            action=f"A modifié les informations de l'élève {eleve.prenom} {eleve.nom} "
+                f"en {eleve.niveau.nom if eleve.niveau else 'N/A'} "
+                f"pour l'année {eleve.annee_scolaire.nom if eleve.annee_scolaire else 'N/A'}"
+        )
         return render(request, 'eleve/modifier_eleve.html', context)
-    
+        
 #FONCTION DE SUPPRESSION DES INFORMATIONS
-def  supprimer(request,pk):
-    eleve=get_object_or_404(Eleve,id=pk)
-    eleve.delete()
+def supprimer(request, pk):
+    eleve = get_object_or_404(Eleve, id=pk)
 
+    # Enregistrer l'action dans l'historique avant suppression
+    Historique.objects.create(
+        user=request.user,
+        action=f"A supprimé l'élève {eleve.prenom} {eleve.nom} "
+               f"en {eleve.niveau.nom if eleve.niveau else 'N/A'} "
+               f"pour l'année {eleve.annee_scolaire.nom if eleve.annee_scolaire else 'N/A'}"
+    )
+
+    eleve.delete()
+    messages.success(request, f"L'élève {eleve.prenom} {eleve.nom} a été supprimé avec succès.")
     return redirect('eleve')
+
 
 #FONCTION DE PAIEMENT ET RECU DE PAIEMENT DES FRAIS SCOLARITES
 
@@ -257,25 +279,22 @@ def eleve_selection(request):
         'groupeclasses': groupeclasses
     })
 
+from decimal import Decimal
+from django.utils import timezone
+
 def effectuer_paiement(request):
     if request.method == 'POST':
-        print(">>> POST data:", request.POST)
-
         eleve_id = request.POST.get('eleve_id')
         montant = request.POST.get('montant')
         tranche = int(request.POST.get('tranche'))
         date_paiement = request.POST.get('date_paiement') or timezone.now().date()
 
-        print(f"eleve_id: {eleve_id}, montant: {montant}, tranche: {tranche}, date: {date_paiement}")
-
         if not eleve_id or not montant or tranche is None:
-            print("Erreur dans les données reçues.")
             messages.error(request, "Les données du formulaire sont manquantes ou incorrectes.")
             return redirect('configuration')
 
         montant = Decimal(montant)
 
-        # ✅ Bloquer si montant = 0
         if montant <= 0:
             messages.error(request, "Le montant du paiement doit être supérieur à 0.")
             return redirect('configuration')
@@ -284,17 +303,22 @@ def effectuer_paiement(request):
             eleve = Eleve.objects.get(id=eleve_id)
             frais = FraisScolarite.objects.get(eleve=eleve)
 
-            # ✅ Bloquer si solde déjà payé
             if frais.montant_total <= (frais.tranche1 + frais.tranche2 + frais.tranche3):
                 messages.warning(request, f"L'élève {eleve.nom} a déjà payé la totalité des frais.")
                 return redirect('configuration')
 
-            # Appeler la méthode pour enregistrer le paiement
             recu = frais.enregistrer_paiement(montant, tranche)
 
             if recu:
-                print(f"Reçu créé: {recu}, ID du reçu: {recu.id}")
-                messages.success(request, f"Paiement de {montant} FCFA enregistré avec succès pour l'élève {eleve.nom}.")
+                # Enregistrer l'action dans l'historique
+                Historique.objects.create(
+                    user=request.user,
+                    action=f"A enregistré un paiement de {montant} GNF "
+                           f"pour l'élève {eleve.prenom} {eleve.nom} "
+                           f"(tranche {tranche}) le {date_paiement}"
+                )
+
+                messages.success(request, f"Paiement de {montant} GNF enregistré avec succès pour l'élève {eleve.nom}.")
                 return redirect('afficher_recu', recu_id=recu.id)
 
         except Eleve.DoesNotExist:

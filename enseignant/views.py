@@ -9,73 +9,162 @@ from personnel.models import Administrateur
 from django.db.models import Sum
 from django.db import models  # Importation de models
 from datetime import datetime
+from matiere.models import EnseignantMatiere
+from django.contrib.auth import authenticate, login,logout
+from django.contrib.auth.decorators import login_required
+from django.db import IntegrityError
 
-##################### LISTE DES ENSEIGNANTS ###################################
-
+# --- LISTE DES ENSEIGNANTS ---
 def maitre(request):
-        
-        enseignants=Enseignant.objects.all()
-        context={
-            'enseignants':enseignants
-        }
-        return render(request, 'base/pages/tables/data.html',context)
+    enseignants = Enseignant.objects.all()
+    niveaux = Niveau.objects.all()
+    groupes = GroupeClasse.objects.all()
+    matieres = Matiere.objects.all()
 
-################## FONCTION D'ENREGISTREMENT DES ENSEIGNANTS ####################
+    context = {
+        'enseignants': enseignants,
+        'niveaux': niveaux,
+        'groupes': groupes,
+        'matieres': matieres,
+    }
+    return render(request, 'base/pages/tables/data.html', context)
 
-def ajout(request):
-    if request.method=="POST": 
-           
-            nom=request.POST.get('nom')
-            prenom=request.POST.get('prenom')
-            tel=request.POST.get('tel')
-            sexe=request.POST.get('sexe')
-            adresse=request.POST.get('adresse')
-            date=request.POST.get('naissance')
-            lieu=request.POST.get('lieu')
-            photo=request.POST.get('photo')
-            specilite=request.POST.get('sp')
-            email=request.POST.get('email')
-            ensi=Enseignant.objects.create(
+
+from personnel.models import Historique, Administrateur
+
+# --- AJOUT D'UN ENSEIGNANT ---
+
+
+# --- AJOUT D'UN ENSEIGNANT ---
+def ajout_enseignant(request):
+    if request.method == "POST":
+        username = request.POST.get("username")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        nom = request.POST.get("nom")
+        prenom = request.POST.get("prenom")
+        telephone = request.POST.get("telephone")
+        genre = request.POST.get("genre")
+        date_naissance = request.POST.get("date_naissance")
+        lieu_naiss = request.POST.get("lieu_naiss")
+        specialite = request.POST.get("specialite")
+        adresse = request.POST.get("adresse")
+        photo = request.FILES.get("photo")
+
+        # ✅ Vérification date
+        try:
+            date_naissance = datetime.strptime(date_naissance, "%Y-%m-%d").date()
+        except Exception:
+            messages.error(request, "Date de naissance invalide.")
+            return redirect("enseignant")
+
+        try:
+            # ✅ Créer l'utilisateur Administrateur
+            user = Administrateur.objects.create(
+                username=username,
+                email=email,
                 nom=nom,
                 prenom=prenom,
-                telephone=tel,
-                Sexe=sexe,
+                telephone=telephone,
+                genre=genre,
+                date_naissance=date_naissance,
+                lieu_naiss=lieu_naiss,
+                fonction='ENSEIGNANT',
+                is_active=True
+            )
+            user.set_password(password)
+            user.save()
+
+            # ✅ Déterminer le sexe
+            sexe_val = "Homme" if genre == "H" else "Femme"
+
+            # ✅ Créer l'objet Enseignant lié
+            Enseignant.objects.create(
+                user=user,
+                nom=nom,
+                prenom=prenom,
+                telephone=telephone,
+                sexe=sexe_val,
                 adresse=adresse,
-                date_naiss=date,
-                lieu_naiss=lieu,
+                date_naiss=date_naissance,
+                lieu_naiss=lieu_naiss,
                 photo=photo,
-                specialite=specilite,
+                specialite=specialite,
                 email=email,
             )
-            ensi.save()
 
-            return redirect('enseignant')
-    else:
-        return redirect('enseignant')
+            # ✅ Enregistrer dans l’historique
+            Historique.objects.create(
+                user=request.user,
+                action=f"A ajouté l'enseignant {prenom} {nom} ({email})"
+            )
+
+            messages.success(request, "Enseignant créé avec succès !")
+
+        except IntegrityError:
+            messages.error(request, "Nom d’utilisateur ou email déjà utilisé.")
+        except Exception as e:
+            messages.error(request, f"Erreur lors de l'ajout : {e}")
+
+        return redirect("enseignant")
+
+    return redirect("enseignant")
+
+
+
   
-####################### FONCTION DE MODIFICATION DES INFORMATIONS DES ENSEIGNANRS ######################
+####################### FONCTION DE MODIFICATION DES INFORMATIONS DES ENSEIGNANTS ######################
 def modifier(request, id):
     enseignant = get_object_or_404(Enseignant, id=id)
     if request.method == 'POST':
+        ancien_nom = enseignant.nom
+        ancien_prenom = enseignant.prenom
+
+        # Mise à jour des champs
         enseignant.nom = request.POST.get('nom')
         enseignant.prenom = request.POST.get('prenom')
-        enseignant.telephone = request.POST.get('tel')
-        enseignant.Sexe  = request.POST.get('sexe')
+        enseignant.telephone = request.POST.get('telephone')
+        enseignant.date_naiss = request.POST.get('date_naiss')
+
+        enseignant.sexe = request.POST.get('sexe')  # <-- correct
         enseignant.adresse = request.POST.get('adresse')
-        enseignant.date_naiss = request.POST.get('naissance')
-        enseignant.lieu_naiss = request.POST.get('lieu')
+        # enseignant.date_naiss = request.POST.get('naissance')
+        enseignant.lieu_naiss = request.POST.get('lieu_naiss')
+
         enseignant.email = request.POST.get('email')
         if request.FILES.get('photo'):
             enseignant.photo = request.FILES.get('photo')
+
         enseignant.save()
-        return redirect('enseignant')  # Rediriger après la mise à jour
+
+        # ✅ Ajouter l'action dans l'historique
+        Historique.objects.create(
+            user=request.user,
+            action=f"A modifié l'enseignant {ancien_prenom} {ancien_nom} → {enseignant.prenom} {enseignant.nom}"
+        )
+
+        messages.success(request, f"L'enseignant {enseignant.prenom} {enseignant.nom} a été modifié avec succès.")
+        return redirect('enseignant')
+
     return render(request, 'enseignant/enseignant.html', {'enseignant': enseignant})
-        
+
 ################## FONCTION DE SUPPRESSION DES INFORMATIONS DES ENSEIGNANTS #####################
 
-def  supprim(request,pk):
-    enseignant=get_object_or_404(Enseignant,id=pk)
+def supprim(request, pk):
+    enseignant = get_object_or_404(Enseignant, id=pk)
+
+    # ✅ Enregistrer l’action dans l’historique avant suppression
+    Historique.objects.create(
+        user=request.user,
+        action=f"A supprimé l'enseignant {enseignant.prenom} {enseignant.nom}"
+    )
+
+    # ✅ Supprimer l’enseignant
     enseignant.delete()
+
+    messages.success(request, f"L'enseignant {enseignant.prenom} {enseignant.nom} a été supprimé avec succès.")
+    return redirect('enseignant')
+
 
     return redirect('enseignant')
 ######################### DETAIL DES ENSEIGNANTS #################################
@@ -131,13 +220,21 @@ def paiement_salaire(request):
                 messages.error(request, "Le solde est insuffisant pour effectuer ce paiement.")
                 return redirect('paiement_salaire')
 
-            PaiementSalaire.objects.create(
+            paiement = PaiementSalaire.objects.create(
                 enseignant=enseignant,
                 montant=montant,
                 date_paiement=date_paiement,
                 statut=statut,
                 annee_scolaire=annee_scolaire,
             )
+
+            # ✅ Historique du paiement enregistré
+            Historique.objects.create(
+                user=request.user,
+                action=f"A payé {montant} GNF à l'enseignant {enseignant.prenom} {enseignant.nom} "
+                       f"({statut}) pour l'année {annee_scolaire.nom}"
+            )
+
             messages.success(request, "Paiement effectué avec succès.")
             return redirect('paiement_salaire')
         else:
@@ -149,15 +246,23 @@ def paiement_salaire(request):
         'annees_scolaires': annees_scolaires,
     })
 
+
 def supprimer_paiement(request):
     paiement_id = request.POST.get('paiement_id')
     paiement = get_object_or_404(PaiementSalaire, id=paiement_id)
-    
+
+    # ✅ Historique avant suppression
+    Historique.objects.create(
+        user=request.user,
+        action=f"Suppression du paiement {paiement.montant} FCFA "
+               f"({paiement.statut}) de {paiement.enseignant.prenom} {paiement.enseignant.nom} "
+               f"pour l'année {paiement.annee_scolaire.nom}"
+    )
+
     paiement.delete()
     messages.success(request, "Le paiement a été supprimé avec succès.")
-    
-    # Redirige vers la page où se trouve la liste des paiements
-    return redirect('paiement_salaire') 
+    return redirect('paiement_salaire')
+ 
  
 ##############FONCTION DE MODIFICATION DES PAIEMENTS#############
 def modifier_paiement(request):
@@ -172,6 +277,13 @@ def modifier_paiement(request):
         paiement.annee_scolaire = AnneeScolaire.objects.get(id=request.POST.get("annee_scolaire"))
         paiement.save()
 
+        Historique.objects.create(
+            user=request.user,
+            action=f"A modifié le paiement de {paiement.montant} GNF "
+                f"pour l'enseignant {paiement.enseignant.prenom} {paiement.enseignant.nom} "
+                f"({paiement.statut}) pour l'année {paiement.annee_scolaire.nom} "
+                f"à la date {paiement.date_paiement}"
+        )
         messages.success(request, "Le paiement a été modifié avec succès.")
     except Exception as e:
         messages.error(request, f"Erreur lors de la modification : {str(e)}")
@@ -208,6 +320,15 @@ def ajouter_depense(request):
                 description=description,
                 annee_scolaire=annee_scolaire,
             )
+
+            Historique.objects.create(
+                user=request.user,
+                action=f"A ajouté une dépense de {montant} GNF "
+                    f"pour l'année {annee_scolaire.nom} "
+                    f"avec la description : {description}"
+            )
+
+
             messages.success(request, "Dépense enregistrée avec succès.")
             return redirect('depense')
         else:
@@ -236,6 +357,11 @@ def modifier_depense(request):
         depense.annee_scolaire_id = annee_id
         depense.save()
 
+        # Ajouter dans l'historique sans année scolaire
+        Historique.objects.create(
+            user=request.user,
+            action=f"A modifié une dépense de {montant} GNF avec la description : {description}"
+        )
         messages.success(request, "Dépense modifiée avec succès.")
         return redirect('depense')  # Remplace par le nom exact de ta vue d'affichage des dépenses
 
@@ -247,12 +373,19 @@ def supprimer_depense(request):
         depense_id = request.POST.get('depense_id')
         depense = get_object_or_404(Depense, id=depense_id)
 
+        # Historique avant suppression
+        Historique.objects.create(
+            user=request.user,
+            action=f"A supprimé une dépense de {depense.montant} GNF avec la description : {depense.description}"
+        )
+
         depense.delete()
         messages.success(request, "Dépense supprimée avec succès.")
-        return redirect('depense')  # Remplace par le nom de ta vue principale
+        return redirect('depense')
 
     messages.error(request, "Échec de la suppression.")
     return redirect('depense')
+
 
 
 ##############################LE BILAN FINANCIER ###################################
@@ -337,3 +470,145 @@ def profi(request):
     return render(request,'enseignant/profil.html',context)
 
 
+############################################################################
+def profil_comptable(request):
+
+    user = request.user  # Utilisateur connecté
+
+    if request.method == "POST":
+        user.nom = request.POST.get("nom", user.nom)
+        user.prenom = request.POST.get("prenom", user.prenom)
+        user.email = request.POST.get("email", user.email)
+        user.genre = request.POST.get("sexe", user.genre)
+        user.telephone = request.POST.get("contact", user.telephone)
+        user.lieu_naiss = request.POST.get("filiation", user.lieu_naiss)
+        user.username = request.POST.get("username", user.username)  # Optionnel
+
+        date_str = request.POST.get("date")
+        if date_str:
+            try:
+                user.date_naissance = datetime.strptime(date_str, "%Y-%m-%d").date()
+            except ValueError:
+                messages.error(request, "Format de date invalide. Utilise AAAA-MM-JJ.")
+
+        # Gestion de la photo
+        if "photo" in request.FILES:
+            user.photo = request.FILES["photo"]
+
+        try:
+            user.save()
+            messages.success(request, "Votre profil a été mis à jour avec succès.")
+        except Exception as e:
+            messages.error(request, f"Erreur lors de la sauvegarde : {e}")
+
+        return redirect("profi")
+    
+    context = {
+        "user": user,
+    }
+    return render(request,'eleve/profil.html',context)
+
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from matiere.models import  EnseignantMatiere
+from matiere.models import Matiere
+from niveau.models import Niveau
+from groupe_classe.models import GroupeClasse
+from enseignant.models import Enseignant
+
+
+
+def ajouter_affectation(request):
+    if request.method == "POST":
+        enseignant_id = request.POST.get('enseignant')
+        niveau_id = request.POST.get('niveau')
+        groupe_classe_id = request.POST.get('classe')
+        matiere_id = request.POST.get('matiere')
+
+        try:
+            enseignant = Enseignant.objects.get(id=enseignant_id)
+            niveau = Niveau.objects.get(id=niveau_id)
+            groupe_classe = GroupeClasse.objects.get(id=groupe_classe_id)
+            matiere = Matiere.objects.get(id=matiere_id)
+        except (Enseignant.DoesNotExist, Niveau.DoesNotExist, GroupeClasse.DoesNotExist, Matiere.DoesNotExist):
+            messages.error(request, "Données invalides.")
+            return redirect(request.META.get('HTTP_REFERER'))
+
+        # Vérifier si l'affectation existe déjà
+        if EnseignantMatiere.objects.filter(
+            enseignant=enseignant,
+            matiere=matiere,
+            niveau=niveau,
+            groupe_classe=groupe_classe
+        ).exists():
+            messages.warning(request, "Cet enseignant est déjà affecté à ce niveau, classe et matière.")
+        else:
+            EnseignantMatiere.objects.create(
+                enseignant=enseignant,
+                matiere=matiere,
+                niveau=niveau,
+                groupe_classe=groupe_classe
+            )
+            messages.success(request, "Affectation réussie !")
+
+        return redirect(request.META.get('HTTP_REFERER'))
+
+
+#SUIVIE DES ENSEIGNANTS
+def suivi(request):
+    suivies=EnseignantMatiere.objects.all()
+    enseignants = Enseignant.objects.all()
+    niveaux = Niveau.objects.all()
+    groupes = GroupeClasse.objects.all()  # ← c'est ça qui alimente ton select
+    matieres = Matiere.objects.all()
+
+    context = {
+        'suivies':suivies,
+        'enseignants': enseignants,
+        'niveaux': niveaux,
+        'groupes': groupes,
+        'matieres': matieres,
+    }
+    return render(request, 'enseignant/suivie.html', context)
+
+
+@login_required
+def change_password(request):
+    if request.method == "POST":
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('cpwd')
+        auto_login = request.POST.get('connect')  # checkbox pour rester connecté
+
+        # Vérifications côté serveur
+        if not password or not confirm_password:
+            messages.error(request, "Veuillez remplir tous les champs.")
+            return redirect('change_password')
+
+        if password != confirm_password:
+            messages.error(request, "Les mots de passe ne sont pas identiques.")
+            return redirect('change_password')
+
+        if len(password) < 6:
+            messages.error(request, "Le mot de passe doit contenir au moins 6 caractères.")
+            return redirect('change_password')
+
+        # Changement du mot de passe
+        user = request.user
+        user.set_password(password)
+        user.save()
+
+        # Option : reconnecter l'utilisateur
+        if auto_login == "on":
+            user = authenticate(username=user.username, password=password)
+            if user is not None:
+                login(request, user)
+            messages.success(request, "Mot de passe changé avec succès, vous êtes reconnecté !")
+            return redirect('change_password')
+        else:
+            logout(request)
+            messages.success(request, "Mot de passe changé, veuillez vous reconnecter.")
+            return redirect('login')
+
+    return render(request, 'enseignant/change_password.html')

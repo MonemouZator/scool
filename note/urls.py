@@ -3,6 +3,7 @@
 from django.urls import path
 from . import views
 
+
 urlpatterns = [
 
     # autres modèles d'URL
@@ -12,7 +13,12 @@ urlpatterns = [
     path('modifie-note/cklghdpçupoidsupouigfdçufjqsojiduiiizyurgzeur',views.modifier,name='modifi-note'),# Chemin de modification  des informations
     path('supprime/<pk>/cklghdpçupoidsupouigfdçufjqsojiduiiizyurgzeur',views.supprimer,name='supprimer-note'),
     path('attribuer/note', views.attribuer_notes, name='attribuer-notes'),
-    path('attributtion/cklghdpçupoidsupouigfdçufjqsojiduiiizyurgzeur', views.attribuer_note_enseignant, name='attribuer_note_enseignant'),
+    path('attribuer-note/', views.attribuer_note_enseignant, name='attribuer_note_enseignant'),
+    path('ajax/groupes/', views.ajax_groupes, name='ajax-groupes'),
+    path('ajax/matieres/', views.ajax_matieres, name='ajax-matieres'),
+
+
+
 
 
 ]

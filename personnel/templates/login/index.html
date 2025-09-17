@@ -10,11 +10,11 @@
 {% block menu_sidebar %}
 <!-- Section Tableau de bord -->
 <li class="nav-item">
-  <a href="{%url 'fondateur.dashbord' %}" class="nav-link {% if request.resolver_match.url_name == 'comptable_dashboard' %}active{% endif %}">
+  <a href="{% url 'dashbaord.directeur' %}" class="nav-link {% if request.resolver_match.url_name == 'comptable_dashboard' %}active{% endif %}">
     <i class="nav-icon fas fa-tachometer-alt"></i>
     <p>Tableau de bord</p>
   </a>
-</li
+</li>
            
 
 <!-- Gestion enseignants -->
@@ -45,20 +45,20 @@
       </a>
     </li>
     <li class="nav-item">
-      <a href="{% url 'eleve' %}" class="nav-link">
+      {% comment %} <a href="{% url 'eleve' %}" class="nav-link">
         <i class="badge badge-danger"><span class="text-white">2</span></i>
         <p>Liste des élèves</p>
-      </a>
+      </a> {% endcomment %}
     </li>
     <li class="nav-item">
       <a href="{% url 'liste_eleves_par_niveau_annee' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">3</span></i>
+        <i class="badge badge-danger"><span class="text-white">2</span></i>
         <p>Élèves par niveau</p>
       </a>
     </li>
     <li class="nav-item">
       <a href="{% url 'liste_eleves_par_groupe' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">4</span></i>
+        <i class="badge badge-danger"><span class="text-white">3</span></i>
         <p>Élèves par option</p>
       </a>
     </li>
@@ -71,34 +71,34 @@
     <p>Gestion bulletins <span class="right badge badge-danger">voir +</span></p>
   </a>
   <ul class="nav nav-treeview">
-    <li class="nav-item">
+    {% comment %} <li class="nav-item">
       <a href="{% url 'attribuer-notes' %}" class="nav-link">
         <i class="badge badge-danger"><span class="text-white">1</span></i>
         <p>Affecter Note</p>
       </a>
-    </li>
+    </li> {% endcomment %}
     
     <li class="nav-item">
       <a href="{% url 'trimestre' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">2</span></i>
+        <i class="badge badge-danger"><span class="text-white">1</span></i>
         <p>Valider bulletin trimestriel</p>
       </a>
     </li>
     <li class="nav-item">
       <a href="{% url 'valider_bulletin' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">3</span></i>
+        <i class="badge badge-danger"><span class="text-white">2</span></i>
         <p>Valider bulletin annuel</p>
       </a>
     </li>
     <li class="nav-item">
       <a href="{% url 'bulletins_trimestriels' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">4</span></i>
+        <i class="badge badge-danger"><span class="text-white">3</span></i>
         <p>Bulletin par niveau</p>
       </a>
     </li>
     <li class="nav-item">
       <a href="{% url 'bulletins_option' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">5</span></i>
+        <i class="badge badge-danger"><span class="text-white">4</span></i>
         <p>Bulletin par classe</p>
       </a>
     </li>
@@ -113,26 +113,30 @@
       <span class="right badge badge-danger">voir +</span>
     </p>
   </a>
+
   <ul class="nav nav-treeview">
-                    <li class="nav-item">
+                    
+      <li class="nav-item">
         <a href="{% url 'resultat_groupe' %}" class="nav-link">
           <i class="badge badge-danger"><span class="text-white">1</span></i>
           <p>Resultat trimestriel classe</p>
         </a>
       </li>
-                      <li class="nav-item">
-        <a href="{% url 'resultat_annuel' %}" class="nav-link">
+
+      <li class="nav-item">
+        <a href="{% url 'resultats_trimestriels' %}" class="nav-link">
           <i class="badge badge-danger"><span class="text-white">2</span></i>
-          <p>Resultat Annuel classe</p>
+          <p>Resultat trimestriel niveau</p>
         </a>
       </li>
 
       <li class="nav-item">
-        <a href="{% url 'resultats_trimestriels' %}" class="nav-link">
+        <a href="{% url 'resultat_annuel' %}" class="nav-link">
           <i class="badge badge-danger"><span class="text-white">3</span></i>
-          <p>Resultat trimestriel niveau</p>
+          <p>Resultat Annuel classe</p>
         </a>
       </li>
+
       <li class="nav-item">
         <a href="{% url 'resultats_annuels' %}" class="nav-link">
           <i class="badge badge-danger"><span class="text-white">4</span></i>
@@ -215,6 +219,13 @@
   </ul>
 </li>
 
+              <li class="nav-item">
+                <a href="{% url 'historique_action' %}" class="nav-link">
+                  
+                  <p>Historique</p>
+                </a>
+              </li>
+
 <li class="nav-item">
   <a href="{% url 'logout' %}" class="nav-link">
     <i class="fas fa-sign-out-alt fa-2x text-warning"></i>
@@ -253,7 +264,7 @@
                <p>Année scolaire en cours : <br>
               {{ annee_selectionnee.nom }}
                </p>
-                            <h1><p>Nombre d'élèves inscrits :{{ nombre_eleves_par_annee }}</h1></p>
+                <h1><p>Nombre d'élèves inscrits :{{ nombre_eleves_par_annee }}</h1></p>
                 <a href="{% url 'eleve' %}" class="btn btn-light btn-block">Voir </a>
               {% else %}
                 <p>Aucune année scolaire en cours définie.</p>

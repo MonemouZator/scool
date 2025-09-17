@@ -1,0 +1,70 @@
+{% extends "login/index.html" %}
+
+{% load static %}
+{% block style_fils %}
+<link rel="stylesheet" href="{% static 'base/css/historique.css' %}">
+  {% endblock style_fils %}
+ 
+
+
+{% block contenu %}
+
+<div class="content-wrapper">
+    <div class="container d-flex justify-content-center mt-4 mb-100">
+        <div class="row">
+            <div class="col-md-12">
+      
+              <div class="card">
+                    <div class="card-body">
+                        
+                        <h1 class="card-subtitle">Les actions effectuées par {{ user.username }}</h1> 
+                    </div>
+
+                    <div class="comment-widgets m-b-20">
+
+                        {% for historique in historiques %}
+                        <!--les notification debut-->
+                        <div class="d-flex flex-row comment-row">
+                            <div class="p-2">
+                                <span class="round">
+                                    {% if historique.user.photo %}
+                                <img src="{{ historique.user.photo.url }}" alt="user" width="50">
+                                {% else %}
+                                <img src="{% static 'base/img/profile.jpg' %}" alt="user" width="50">
+
+                                {% endif %}
+                            </span>
+                        </div>
+                            <div class="comment-text w-100">
+                                <h5>{{ user.username }}</h5>
+                                <div class="comment-footer">
+                                    <span class="date">{{ historique.created_time }}</span>
+                                </div>
+                                <p class="m-b-5 m-t-10">
+                                    {{ historique.action }}
+                                </p>
+                            </div>
+                        </div>
+                        {% empty %}
+                        <p class='text-center'>
+                        Aucune action enregistrée pour le moment!
+                        </p>
+
+                        {% endfor %}
+
+                        <!--fin notification-->
+
+                        
+                        
+
+                       
+                    </div>
+                </div>
+
+            </div>
+        </div>
+      </div>
+
+</div>
+
+{% endblock contenu %}

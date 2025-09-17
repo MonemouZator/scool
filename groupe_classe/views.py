@@ -70,3 +70,5 @@ def  supprimer(request,pk):
     groupe.delete()
 
     return redirect('groupe')
+
+

@@ -189,25 +189,16 @@
                           </tr>
                         </thead>
                         <tbody>
-                          {% for bulletin in bulletins %}
-                            <tr>
-                              <td>
-                                {% if bulletin.rang == 1 %}
-                                  1er(e)
-                                {% elif bulletin.rang == 2 %}
-                                  2ème
-                                {% elif bulletin.rang == 3 %}
-                                  3ème
-                                {% else %}
-                                  {{ bulletin.rang }}
-                                {% endif %}
-                              </td>
-                              <td>{{ bulletin.eleve.nom }} {{ bulletin.eleve.prenom }}</td>
-                              <td>{{ bulletin.moyenne_annuelle|floatformat:2 }}</td>
-                              <td>{{ bulletin.observation }}</td>
-                            </tr>
-                          {% endfor %}
-                        </tbody>
+  {% for b in bulletins %}
+    <tr>
+      <td>{{ b.rang }}</td>
+      <td>{{ b.bulletin.eleve.nom }} {{ b.bulletin.eleve.prenom }}</td>
+      <td>{{ b.moyenne_totale|floatformat:2 }}</td>
+      <td>{{ b.observation }}</td>
+    </tr>
+  {% endfor %}
+</tbody>
+
                       </table>
 
                 </div>

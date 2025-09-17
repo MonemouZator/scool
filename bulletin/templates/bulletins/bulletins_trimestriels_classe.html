@@ -52,7 +52,7 @@
 
 {% block body %}
 <body class="hold-transition sidebar-mini">
-{% endblock body %}
+{% endblock %}
 
 {% block contenu %}
 <div class="content-wrapper">
@@ -80,7 +80,7 @@
             <div class="card-header">
               <form method="get">
                 <div class="form-row">
-                  <div class="form-group col-md-4">
+                  <div class="form-group col-md-6">
                     <label for="groupe_classe">Groupe / Classe :</label>
                     <select name="groupe_classe" id="groupe_classe" class="form-control" required>
                       <option value="">-- Sélectionnez un groupe / classe --</option>
@@ -89,7 +89,7 @@
                       {% endfor %}
                     </select>
                   </div>
-                  <div class="form-group col-md-4">
+                  <div class="form-group col-md-6">
                     <label for="annee_scolaire">Année Scolaire :</label>
                     <select name="annee_scolaire" id="annee_scolaire" class="form-control" required>
                       <option value="">-- Sélectionnez une année scolaire --</option>
@@ -98,18 +98,9 @@
                       {% endfor %}
                     </select>
                   </div>
-                  <div class="form-group col-md-4">
-                    <label for="trimestre">Trimestre :</label>
-                    <select name="trimestre" id="trimestre" class="form-control" required>
-                      <option value="">-- Sélectionnez un trimestre --</option>
-                      <option value="1" {% if request.GET.trimestre == "1" %}selected{% endif %}>Trimestre 1</option>
-                      <option value="2" {% if request.GET.trimestre == "2" %}selected{% endif %}>Trimestre 2</option>
-                      <option value="3" {% if request.GET.trimestre == "3" %}selected{% endif %}>Trimestre 3</option>
-                    </select>
-                  </div>
                 </div>
                 <button type="submit" class="btn btn-primary mt-3">Filtrer</button>
-                <button onclick="imprimer()" class="btn btn-success mt-3">Imprimer</button>
+                <button type="button" onclick="imprimer()" class="btn btn-success mt-3">Imprimer</button>
               </form>
             </div>
 
@@ -118,31 +109,24 @@
                 {% for bulletin in bulletins_trimestriels %}
                   <div class="card mb-4 eleve-section">
                     <div class="card-body">
-
                       <!-- En-tête avec photo et texte -->
                       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
-                        
-                        <!-- Photo élève -->
                         <div>
-                          {% if bulletin.eleve.photo %}
-                            <img src="{{ bulletin.eleve.photo.url }}" alt="Photo élève"
+                          {% if bulletin.bulletin.eleve.photo %}
+                            <img src="{{ bulletin.bulletin.eleve.photo.url }}" alt="Photo élève"
                                  style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #999;">
                           {% else %}
                             <img src="{% static 'images/default-avatar.png' %}" alt="Photo par défaut"
                                  style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc;">
                           {% endif %}
                         </div>
-
-                        <!-- Texte principal -->
                         <div style="text-align: center; flex: 1;">
                           <h1 style="font-size: 36px; font-weight: bold; color: #0056b3;">RÉPUBLIQUE DE GUINÉE</h1>
                           <div style="font-size: 20px; font-style: italic; color: #777;">Travail - Justice - Solidarité</div>
                           <h2 style="font-size: 30px; font-weight: bold; color: #0056b3;">Groupe Scolaire Privé BNB</h2>
                           <div style="font-size: 20px; font-style: italic; color: #777;">Union - Sincérité - Excellence</div>
-                          <h3 style="font-size: 24px; font-weight: normal; color: #333;">Bulletin du {{ trimestre }}ᵉ Trimestre</h3>
+                          <h3 style="font-size: 24px; font-weight: normal; color: #333;">Bulletin du {{ request.GET.trimestre }}ᵉ Trimestre</h3>
                         </div>
-
-                        <!-- Infos à droite -->
                         <div style="text-align: right; font-size: 16px; line-height: 1.5;">
                           <strong>IRE/KANKAN</strong><br>
                           <strong>DPE/KANKAN</strong><br>
@@ -151,14 +135,12 @@
                       </div>
 
                       <table class="table table-bordered">
-                        <thead>
-                          <tr><th>Nom</th><th>Prénom</th><th>Date de naissance</th></tr>
-                        </thead>
+                        <thead><tr><th>Nom</th><th>Prénom</th><th>Date de naissance</th></tr></thead>
                         <tbody>
                           <tr>
-                            <td>{{ bulletin.eleve.nom }}</td>
-                            <td>{{ bulletin.eleve.prenom }}</td>
-                            <td>{{ bulletin.eleve.date_naissance }}</td>
+                            <td>{{ bulletin.bulletin.eleve.nom }}</td>
+                            <td>{{ bulletin.bulletin.eleve.prenom }}</td>
+                            <td>{{ bulletin.bulletin.eleve.date_naissance }}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -166,7 +148,7 @@
                       <table class="table table-bordered table-striped table-hover mt-3">
                         <thead><tr><th>Matière</th><th>Note</th></tr></thead>
                         <tbody>
-                          {% for note in bulletin.notes_par_matiere %}
+                          {% for note in bulletin.notes %}
                             <tr><td>{{ note.matiere__nom }}</td><td>{{ note.moyenne_matiere }}</td></tr>
                           {% endfor %}
                         </tbody>
@@ -179,6 +161,7 @@
                             <td>{{ bulletin.rang_formate }}</td>
                             <td>{{ bulletin.moyenne_totale|default:"Non disponible" }}</td>
                             <td>{{ bulletin.observation }}</td>
+
                           </tr>
                         </tbody>
                       </table>

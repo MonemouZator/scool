@@ -22,10 +22,11 @@ urlpatterns = [
     path('enseignant-dashboard/', views.enseignant_dashboard, name='enseignant_dashboard'),
     # Ajoutez d'autres URL si nécessaire
     path('dashbord/',views.dashbord,name='fondateur.dashbord'),
+     path('dashbord/directeur',views.dashbaord_fondateur,name='dashbaord.directeur'),
     path('aside/',views.bloc_aside,name='bloc_aside'),
     path('profil-utilisateur/',views.profil_user,name='profil'),
     path('bloquer/tous/utilisateurs/',views.bloquer_compte,name='bloquer_compte'),
     path('debloquer/tous/utilisateurs/',views.deloquer_compte,name='deloquer_compte'),
-    
+    path('historique/',views.historique,name='historique_action'),
     
 ]

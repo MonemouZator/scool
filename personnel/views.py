@@ -64,11 +64,20 @@ def login_view(request):
 
             fonction = user.fonction
             if fonction == 'COMPTABLE':
+
                 return redirect('comptable_dashboard')
+            
             elif fonction == 'ENSEIGNANT':
+
                 return redirect('enseignant_dashboard')
-            elif fonction in ['FONDATEUR', 'DG']:
+            
+            elif fonction in 'FONDATEUR':
+
                 return redirect('fondateur.dashbord')
+            
+            elif fonction in 'DG':
+
+                return redirect('dashbaord.directeur')
             else:
                 messages.error(request, "Votre fonction est incorrecte ou manquante.")
                 return redirect('login')
@@ -315,7 +324,7 @@ def enseignant_dashboard(request):
     }
     return render(request, 'login/enseignant_dashboard.html', context)
    
-#TABLEAU DE BORD DU FONDATEUR
+#TABLEAU DE BORD DU DIRECTEUR
 def dashbord(request):
     services = request.session.get('services', [])
 
@@ -350,6 +359,70 @@ def dashbord(request):
         'nombre_utilisateurs': nombre_utilisateurs,
     }
     return render(request, 'login/index.html',context)
+
+
+
+
+# TABLEAUX DE BORD DU FONDATEUR
+@login_required
+def dashbaord_fondateur(request):
+    services = request.session.get('services', [])
+    annee_selectionnee = AnneeScolaire.objects.filter(date_debut__lte=date.today(), date_fin__gte=date.today()).first()
+
+    if annee_selectionnee:
+        nombre_eleves_par_annee = Eleve.objects.filter(annee_scolaire=annee_selectionnee).count()
+    else:
+        nombre_eleves_par_annee = 0
+
+    nombre_enseignants = Enseignant.objects.count()
+    nombre_niveaux = Niveau.objects.count()
+    User = get_user_model()
+    nombre_utilisateurs = User.objects.count()
+
+    #Préparer les données du graphique
+    labels = []
+    data = []
+
+    mois_fr = ["", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
+
+    if annee_selectionnee:
+        # Filtrer les paiements pour l'année sélectionnée
+        paiements_par_mois = (
+            Recu.objects
+            .filter(date_recu__gte=datetime(annee_selectionnee.date_debut.year, 1, 1), 
+                    date_recu__lt=datetime(annee_selectionnee.date_fin.year + 1, 1, 1))
+            .values('date_recu__month')  # Grouper par mois
+            .annotate(total=Sum('montant'))
+            .order_by('date_recu__month')
+        )
+
+        # Créer un dictionnaire avec les mois et le total des paiements
+        mois_dict = {item['date_recu__month']: item['total'] for item in paiements_par_mois}
+
+        # Préparer les labels et les données à afficher
+        for month in range(1, 13):
+            labels.append(mois_fr[month])  # Utiliser le mois en français
+            # Convertir le montant en float pour éviter l'erreur de sérialisation
+            data.append(float(mois_dict.get(month, 0)))  # Ajouter 0 si aucun paiement pour ce mois
+
+        # Affichage pour le débogage
+        print("Labels:", labels)
+        print("Data:", data)
+
+    # Contexte à envoyer au template
+    context = {
+        'services': services,
+        'annee_selectionnee': annee_selectionnee,
+        'nombre_eleves_par_annee': nombre_eleves_par_annee,
+        'nombre_enseignants': nombre_enseignants,
+        'nombre_niveaux': nombre_niveaux,
+        'nombre_utilisateurs': nombre_utilisateurs,
+        'labels': json.dumps(labels),  # Convertir labels en JSON
+        'data': json.dumps(data),  # Convertir data en JSON
+    }
+
+    return render(request, 'login/dashbaord_fondateur.html', context)
+
 
    
 def bloc_aside(request):
@@ -399,26 +472,38 @@ def profil_user(request):
 def change_password(request):
     if request.method == "POST":
         password = request.POST.get('password')
-        connect = request.POST.get('connect')
-        
-        # Sécurité : vérifier que le mot de passe n'est pas vide
-        if not password:
-            return render(request, 'login/recover_password.html', {
-                'errorMessage': "Le mot de passe ne peut pas être vide."
-            })
+        confirm_password = request.POST.get('cpwd')
+        auto_login = request.POST.get('connect')  # checkbox pour rester connecté
 
-        # Mise à jour du mot de passe
-        user = request.user  # tu peux utiliser request.user directement
+        # Vérifications côté serveur
+        if not password or not confirm_password:
+            messages.error(request, "Veuillez remplir tous les champs.")
+            return redirect('password_reset_request')
+
+        if password != confirm_password:
+            messages.error(request, "Les mots de passe ne sont pas identiques.")
+            return redirect('password_reset_request')
+
+        if len(password) < 6:
+            messages.error(request, "Le mot de passe doit contenir au moins 6 caractères.")
+            return redirect('password_reset_request')
+
+        # Changement du mot de passe
+        user = request.user
         user.set_password(password)
         user.save()
 
-        # Redirection selon la case à cocher
-        if connect:
-            return redirect('login')  # Rediriger directement vers la page de connexion
+        # Option : reconnecter l'utilisateur
+        if auto_login == "on":
+            user = authenticate(username=user.username, password=password)
+            if user is not None:
+                login(request, user)
+            messages.success(request, "Mot de passe changé avec succès, vous êtes reconnecté !")
+            return redirect('password_reset_request')
         else:
             logout(request)
-            return redirect('login')  # Rediriger vers la page de login après déconnexion
-
+            messages.success(request, "Mot de passe changé, veuillez vous reconnecter.")
+            return redirect('login')
     return render(request, 'login/recover_password.html')
 
 
@@ -483,3 +568,18 @@ def recover_pwd(request, token):
 
     # GET request : affichage du formulaire
     return render(request, 'login/change_pwd.html')
+
+
+from django.shortcuts import render
+from .models import Historique
+
+def historique(request):
+    
+    if request.user.is_superuser:
+        # Super utilisateur : voir tous les historiques
+        historiques = Historique.objects.all().order_by('-created_time')
+    else:
+        # Utilisateur normal : voir uniquement ses propres actions
+        historiques = Historique.objects.filter(user=request.user).order_by('-created_time')
+
+    return render(request, 'login/historique.html', {'historiques': historiques})
