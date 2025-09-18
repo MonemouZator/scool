@@ -643,3 +643,233 @@ def resultats_annuels_niveau(request):
     }
 
     return render(request, "bulletins/resultats_annuels_niveau.html", context)
+
+from django.db.models import Avg
+
+
+def bulletins_annuels_classe(request):
+    annee_id = request.GET.get("annee")
+    groupe_id = request.GET.get("groupe")
+
+    eleves = Eleve.objects.all()
+    if annee_id:
+        eleves = eleves.filter(annee_scolaire_id=annee_id)
+    if groupe_id:
+        eleves = eleves.filter(groupeclasse_id=groupe_id)
+
+    bulletins_annuels = []
+
+    for eleve in eleves:
+        # Moyennes par trimestre
+        moyennes_trimestrielles = []
+        for trimestre in [1, 2, 3]:
+            moyenne_trim = (
+                Note.objects.filter(
+                    eleve=eleve,
+                    trimestre=trimestre,
+                    annee_scolaire_id=annee_id
+                )
+                .values("matiere__nom")
+                .annotate(moyenne_matiere=Avg("valeur"))
+                .aggregate(m=Avg("moyenne_matiere"))["m"]
+            )
+            moyennes_trimestrielles.append(moyenne_trim if moyenne_trim else 0)
+
+        # Moyenne annuelle = moyenne des 3 trimestres
+        moyenne_annuelle = sum(moyennes_trimestrielles) / 3 if moyennes_trimestrielles else 0
+
+        # Observation
+        observation = "Médiocre"
+        if moyenne_annuelle >= 16:
+            observation = "Excellent"
+        elif moyenne_annuelle >= 14:
+            observation = "Très Bien"
+        elif moyenne_annuelle >= 12:
+            observation = "Bien"
+        elif moyenne_annuelle >= 10:
+            observation = "Passable"
+        else:
+            observation = "Insuffisant"
+
+        bulletins_annuels.append({
+            "eleve": eleve,
+            "moyennes_trimestrielles": moyennes_trimestrielles,
+            "moyenne_annuelle": round(moyenne_annuelle, 2),
+            "observation": observation,
+        })
+
+    # Classement (par moyenne annuelle décroissante)
+    bulletins_annuels.sort(key=lambda x: x["moyenne_annuelle"], reverse=True)
+    for i, b in enumerate(bulletins_annuels, start=1):
+        b["rang"] = i
+
+    context = {
+        "bulletins_annuels": bulletins_annuels,
+        "annee_scolaire": AnneeScolaire.objects.filter(id=annee_id).first(),
+        "groupe": GroupeClasse.objects.filter(id=groupe_id).first(),
+    }
+    return render(request, "bulletins/bulletins_annuel_classe.html", context)
+
+
+from django.db.models import Avg, F
+
+from django.shortcuts import render
+from django.db.models import Avg, F
+from eleve.models import Eleve
+from annee_scolaire.models import AnneeScolaire
+from note.models import Note
+from bulletin.models import BulletinAnnuel
+
+
+from django.shortcuts import render
+from eleve.models import Eleve
+from annee_scolaire.models import AnneeScolaire
+from note.models import Note
+from bulletin.models import BulletinAnnuel
+from niveau.models import Niveau
+from cycle.models import Cycle
+from django.db.models import Avg, F
+
+def bulletins_annuels_niveau(request):
+    # Récupération des filtres
+    cycles = Cycle.objects.all()
+    niveaux = Niveau.objects.all()
+    annees_scolaires = AnneeScolaire.objects.all()
+
+    cycle_id = request.GET.get('cycle')
+    niveau_id = request.GET.get('niveau')
+    annee_id = request.GET.get('annee_scolaire')
+
+    bulletins_list = []
+
+    if niveau_id and annee_id:
+        eleves = Eleve.objects.filter(groupe_classe__niveau_id=niveau_id)
+        if cycle_id:
+            eleves = eleves.filter(groupe_classe__niveau__cycle_id=cycle_id)
+
+        # Génération ou récupération des bulletins
+        for eleve in eleves:
+            bulletin, created = BulletinAnnuel.objects.get_or_create(
+                eleve=eleve,
+                annee_scolaire_id=annee_id
+            )
+
+            # Calcul des moyennes trimestrielles
+            moyennes_trimestrielles = []
+            for t in range(1, 4):
+                moy = Note.objects.filter(
+                    eleve=eleve,
+                    annee_scolaire_id=annee_id,
+                    trimestre=t
+                ).aggregate(moy=Avg(F('note_cours') + F('note_comp')))['moy'] or 0
+                moyennes_trimestrielles.append(round(moy / 2, 2))
+
+            bulletins_list.append({
+                'eleve': eleve,
+                'bulletin': bulletin,
+                'moyennes_trimestrielles': moyennes_trimestrielles,
+                'moyenne_annuelle': bulletin.moyenne_totale_annuelle,
+                'observation': bulletin.observation_finale,
+            })
+
+        # Gestion des rangs avec ex æquo
+        bulletins_list.sort(key=lambda x: x['moyenne_annuelle'], reverse=True)
+        rang = 0
+        previous_moy = None
+        compteur_exoquo = 0
+        for index, b in enumerate(bulletins_list, start=1):
+            if b['moyenne_annuelle'] == previous_moy:
+                b['rang'] = f"{rang} Ex"
+                compteur_exoquo += 1
+            else:
+                rang = index
+                b['rang'] = f"{rang}{'er' if rang == 1 else 'ème'}"
+                compteur_exoquo = 0
+            previous_moy = b['moyenne_annuelle']
+
+    context = {
+        "cycles": cycles,
+        "niveaux": niveaux,
+        "annees_scolaires": annees_scolaires,
+        "bulletins_annuels": bulletins_list,
+        "cycle_id": cycle_id,
+        "niveau_id": niveau_id,
+        "annee_scolaire_id": annee_id,
+        "cycle_obj": Cycle.objects.filter(id=cycle_id).first(),
+        "niveau_obj": Niveau.objects.filter(id=niveau_id).first(),
+        "annee_scolaire_obj": AnneeScolaire.objects.filter(id=annee_id).first(),
+    }
+
+
+    return render(request, "bulletins/bulletins_annuel_niveau.html", context)
+
+
+from django.http import JsonResponse
+
+def get_niveaux_par_cycle(request):
+    cycle_id = request.GET.get('cycle_id')
+    niveaux = Niveau.objects.filter(cycle_id=cycle_id).values('id', 'nom')
+    return JsonResponse(list(niveaux), safe=False)
+
+
+def bulletins_annuels_classe(request):
+    # Récupérer les filtres
+    groupes = GroupeClasse.objects.all()
+    annees_scolaires = AnneeScolaire.objects.all()
+
+    groupe_id = request.GET.get('groupe')
+    annee_id = request.GET.get('annee_scolaire')
+
+    bulletins_list = []
+
+    if groupe_id and annee_id:
+        eleves = Eleve.objects.filter(groupe_classe_id=groupe_id)
+
+        # Génération ou récupération des bulletins pour chaque élève
+        for eleve in eleves:
+            bulletin, created = BulletinAnnuel.objects.get_or_create(
+                eleve=eleve,
+                annee_scolaire_id=annee_id
+            )
+
+            # Calcul des moyennes trimestrielles
+            moyennes_trimestrielles = []
+            for t in range(1, 4):
+                moy = Note.objects.filter(
+                    eleve=eleve,
+                    annee_scolaire_id=annee_id,
+                    trimestre=t
+                ).aggregate(moy=Avg(F('note_cours') + F('note_comp')))['moy'] or 0
+                moyennes_trimestrielles.append(round(moy / 2, 2))
+
+            bulletins_list.append({
+                'eleve': eleve,
+                'bulletin': bulletin,
+                'moyennes_trimestrielles': moyennes_trimestrielles,
+                'moyenne_annuelle': bulletin.moyenne_totale_annuelle,
+                'observation': bulletin.observation_finale,
+            })
+
+        # Calcul des rangs avec gestion des ex-aequo
+        bulletins_list.sort(key=lambda x: x['moyenne_annuelle'], reverse=True)
+        rang = 0
+        previous_moy = None
+        for index, b in enumerate(bulletins_list, start=1):
+            if b['moyenne_annuelle'] == previous_moy:
+                b['rang'] = f"{rang} Ex"
+            else:
+                rang = index
+                b['rang'] = f"{rang}{'er' if rang == 1 else 'ème'}"
+            previous_moy = b['moyenne_annuelle']
+
+    context = {
+        "groupes": groupes,
+        "annees_scolaires": annees_scolaires,
+        "bulletins_annuels": bulletins_list,
+        "groupe_id": groupe_id,
+        "annee_scolaire_id": annee_id,
+        "groupe_obj": GroupeClasse.objects.filter(id=groupe_id).first(),
+        "annee_scolaire_obj": AnneeScolaire.objects.filter(id=annee_id).first(),
+    }
+
+    return render(request, "bulletins/bulletins_annuel_classe.html", context)

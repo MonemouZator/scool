@@ -2,89 +2,217 @@
 {% load static %}
 
 {% block styl_parent %}
-  <title>Bulletins des Élèves</title>
-  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
-  
-  <style>
-    
-  </style>
+<title>Bulletins Annuel | Classe</title>
+<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+
+<style>
+/* Contenu général */
+.content-wrapper {
+    background-color: #fff;
+    padding: 15px;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 14px;
+}
+
+/* Chaque bulletin */
+.bulletin-eleve {
+    margin-bottom: 40px;
+    padding: 20px;
+    border: 2px solid #000;
+}
+
+/* Header : photo à gauche, centre, infos à droite */
+.header-bulletin {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+.header-bulletin .photo {
+    width: 120px;
+    height: 150px;
+    border: 1px solid #000;
+    object-fit: cover;
+}
+.header-bulletin .centre {
+    flex: 1;
+    text-align: center;
+}
+.header-bulletin .centre h1,
+.header-bulletin .centre h2,
+.header-bulletin .centre h3,
+.header-bulletin .centre h4 {
+    margin: 2px 0;
+}
+.header-bulletin .infos {
+    text-align: right;
+    font-size: 12px;
+    line-height: 1.3;
+}
+
+/* Tableaux */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+}
+.table th, .table td {
+    border: 1px solid #000;
+    padding: 6px;
+    text-align: center;
+    background-color: #cce5ff; /* couleur uniforme */
+}
+.table th {
+    background-color: #007bff;
+    color: #fff;
+}
+
+/* Page break pour impression */
+.page-break {
+    page-break-after: always;
+}
+
+/* Impression : masquage et couleurs exactes */
+@media print {
+    .btn, form, .breadcrumb, .alert, header, footer, .sidebar, .navbar, .form-inline {
+        display: none !important;
+    }
+    .table th, .table td {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        background-color: #cce5ff !important;
+        color: #000 !important;
+        border: 1px solid #000 !important;
+    }
+    .header-bulletin .centre h1, 
+    .header-bulletin .centre h2, 
+    .header-bulletin .centre h3,
+    .header-bulletin .centre h4 {
+        color: #000 !important;
+    }
+    .page-break { display: block; page-break-after: always; }
+}
+</style>
 {% endblock %}
 
 {% block contenu %}
-  <div class="content-wrapper">
+<div class="content-wrapper">
     <section class="content">
-      <div class="container-fluid">
-        <div id="contenu-a-imprimer">
-          {% if bulletins_trimestriels %}
-            {% for bulletin in bulletins_trimestriels %}
-              <div class="bulletin-eleve">
-                <center>
-                  <div class="republique">
-                    <h1>RÉPUBLIQUE DE GUINÉE</h1>
-                  </div>
-                  <div class="devise">Travail - Justice - Solidarité</div>
-                  <div class="republique">
-                    <h2>Groupe Scolaire Privé BNB</h2>
-                  </div>
-                  <div class="devise">Union - Sincérité - Excellence</div>
-                  <h3>Bulletin du {{ trimestre }}ᵉ Trimestre</h3>
-                </center>
+        <div class="container-fluid" id="contenu-a-imprimer">
 
-                <table class="table table-bordered">
-                  <tr><th>Nom</th><th>Prénom</th><th>Date de naissance</th></tr>
-                  <tr>
-                    <td>{{ bulletin.eleve.nom }}</td>
-                    <td>{{ bulletin.eleve.prenom }}</td>
-                    <td>{{ bulletin.eleve.date_naissance }}</td>
-                  </tr>
-                </table>
+            <!-- FORMULAIRE DE FILTRE -->
+            <div class="container-fluid mb-3">
+                <form method="get" class="form-inline">
+                    <div class="form-group mr-2">
+                        <label for="annee_scolaire">Année scolaire :</label>
+                        <select name="annee_scolaire" id="annee_scolaire" class="form-control ml-2">
+                            <option value="">--Choisir--</option>
+                            {% for annee in annees_scolaires %}
+                                <option value="{{ annee.id }}" {% if annee.id|stringformat:"s" == request.GET.annee_scolaire %}selected{% endif %}>
+                                    {{ annee.nom }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-                <table class="table table-bordered">
-                  <tr><th>Matière</th><th>Moyenne</th></tr>
-                  {% for note in bulletin.notes_par_matiere %}
-                    <tr>
-                      <td>{{ note.matiere__nom }}</td>
-                      <td>{{ note.moyenne_matiere|default:"N/A" }}</td>
-                    </tr>
-                  {% endfor %}
-                </table>
+                    <div class="form-group mr-2">
+                        <label for="groupe">Classe :</label>
+                        <select name="groupe" id="groupe" class="form-control ml-2">
+                            <option value="">--Choisir--</option>
+                            {% for g in groupes %}
+                                <option value="{{ g.id }}" {% if g.id|stringformat:"s" == request.GET.groupe %}selected{% endif %}>
+                                    {{ g.nom }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
 
-                
-                <table class="table table-bordered">
-                  <tr><th>Rang</th><th>Moyenne </th><th>Observation</th></tr>
-                  <tr>
-                    <td>{{ bulletin.rang|default:"Non classé" }}</td>
-                    <td>{{ bulletin.moyenne_totale|default:"-" }}</td> <!-- Assure-toi que la moyenne annuelle est calculée et envoyée dans la vue -->
-                    <td>{{ bulletin.observation|default:"Aucune observation" }}</td>
-                  </tr>
-                </table>
-                
-              </div>
-              
-              <!-- ✅ Saut de page pour chaque élève -->
-              <div class="page-break"></div>
-            {% endfor %}
-          {% else %}
-            <p>Aucun bulletin disponible pour les critères sélectionnés.</p>
-          {% endif %}
+                    <button type="submit" class="btn btn-primary">Filtrer</button>
+                </form>
+            </div>
+            <hr>
+
+            {% if bulletins_annuels %}
+                {% for b in bulletins_annuels %}
+                    <div class="bulletin-eleve">
+
+                        <!-- Header -->
+                        <div class="header-bulletin">
+                            <div class="photo">
+                                {% if b.eleve.photo %}
+                                    <img src="{{ b.eleve.photo.url }}" alt="Photo" class="photo">
+                                {% endif %}
+                            </div>
+
+                            <div class="centre">
+                                <h1>RÉPUBLIQUE DE GUINÉE</h1>
+                                <h2>Groupe Scolaire Privé BNB</h2>
+                                <h3>Bulletin Annuel – {{ annee_scolaire_obj.nom }}</h3>
+                                <h4>Classe : {{ groupe_obj.nom }}</h4>
+                                <h4>Élève : {{ b.eleve.nom }} {{ b.eleve.prenom }}</h4>
+                            </div>
+
+                            <div class="infos">
+                                <strong>IRE/KANKAN</strong><br>
+                                <strong>DPE/KANKAN</strong><br>
+                                <strong>DSSE/KANKAN</strong>
+                            </div>
+                        </div>
+
+                        <!-- Tableau des infos personnelles -->
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Date de naissance</th>
+           
+                            </tr>
+                            <tr>
+                                <td>{{ b.eleve.nom }}</td>
+                                <td>{{ b.eleve.prenom }}</td>
+                                <td>{{ b.eleve.date_naissance|date:"d/m/Y" }}</td>
+
+                            </tr>
+                        </table>
+
+                        <!-- Moyennes par trimestre -->
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Trimestre 1</th>
+                                <th>Trimestre 2</th>
+                                <th>Trimestre 3</th>
+                                <th>Moyenne Annuelle</th>
+                                <th>Observation</th>
+                                <th>Rang</th>
+                            </tr>
+                            <tr>
+                                {% for m in b.moyennes_trimestrielles %}
+                                    <td>{{ m }}</td>
+                                {% endfor %}
+                                <td>{{ b.moyenne_annuelle }}</td>
+                                <td>{{ b.observation }}</td>
+                                <td>{{ b.rang }}</td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <hr>
+                    <div class="page-break"></div>
+                {% endfor %}
+            {% else %}
+                <p>Aucun bulletin disponible pour les critères sélectionnés.</p>
+            {% endif %}
+
+            <button class="btn btn-primary mt-3" onclick="window.print()">Imprimer</button>
+
         </div>
-
-        <!-- Bouton d'impression -->
-        <button onclick="imprimer()" class="btn btn-primary mt-3">Imprimer</button>
-      </div>
     </section>
-  </div>
+</div>
 {% endblock %}
 
 {% block scripte %}
-  <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
-  <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-  <script src="{% static 'base/js/adminlte.min.js' %}"></script>
-
-  <script>
-    function imprimer() {
-      window.print();
-    }
-  </script>
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
 {% endblock %}

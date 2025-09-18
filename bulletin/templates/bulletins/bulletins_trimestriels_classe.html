@@ -2,52 +2,85 @@
 {% load static %}
 
 {% block styl_parent %}
-  <title>Bulletin | Accueil</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
-  <style>
-    @media print {
-      .form-row, .btn-primary, .btn-success, .breadcrumb, .card-header, .copyright {
-        display: none !important;
-      }
-      .republique, .devise, h1, h2, h3 {
-        text-align: center;
-        font-size: larger;
-        font-weight: bold;
-      }
-      .eleve-section {
-        page-break-after: always;
-      }
-      footer, .copyright {
-        visibility: hidden;
-      }
-      table th, table td {
-        border-right: 1px solid #ddd;
-        color:#000;
-      }
-      table th:last-child, table td:last-child {
-        border-right: none;
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      .table, .table th, .table td {
-        border: 1px solid #000 !important;
-        color: #000 !important;
-        font-size: 18px;
-      }
-      table th {
-        background-color: #f8f9fa;
-        font-weight: bold;
-      }
-      h5 {
-        color: #000;
-        font-size: 18px;
-      }
+<title>Bulletin | Accueil</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+<style>
+  /* Scrollable pour l'affichage web */
+  .content-wrapper {
+    height: calc(100vh - 80px);
+    overflow-y: auto;
+    padding: 15px;
+    background-color: #fefefe;
+  }
+
+  /* Chaque bulletin */
+  .eleve-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    border: 2px solid #000;
+  }
+
+  /* Header flex pour alignement photo / titre / infos */
+  .eleve-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+  }
+
+  .infos-right {
+    text-align: right;
+    font-size: 16px;
+    line-height: 1.5;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  @media print {
+    .form-row, .btn-primary, .btn-success, .breadcrumb, .card-header, footer {
+      display: none !important;
     }
-  </style>
+
+    /* Chaque élève sur une page distincte */
+    .eleve-section {
+      page-break-after: always;
+      break-after: page;
+      margin: 0;
+      padding: 0;
+      border: none;
+    }
+
+    /* Supprimer le saut inutile pour le premier élève */
+    .eleve-section:first-child {
+      page-break-before: auto;
+    }
+
+    table th, table td {
+      border: 1px solid #000 !important;
+      color: #000 !important;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+      background-color: #f8f9fa !important;
+    }
+    table th { background-color: #007bff !important; color: #fff !important; }
+    table { width: 100%; border-collapse: collapse; }
+
+    /* Supprimer le scroll web pour impression */
+    .content-wrapper {
+      height: auto !important;
+      overflow: visible !important;
+    }
+
+    h1, h2, h3, h5 {
+      text-align: center;
+      font-weight: bold;
+      color: #000;
+    }
+  }
+</style>
 {% endblock %}
 
 {% block body %}
@@ -118,7 +151,9 @@
                 {% for bulletin in bulletins_trimestriels %}
                   <div class="card mb-4 eleve-section">
                     <div class="card-body">
-                      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+
+                      <!-- Header flex photo / titre / infos -->
+                      <div class="eleve-header">
                         <div>
                           {% if bulletin.bulletin.eleve.photo %}
                             <img src="{{ bulletin.bulletin.eleve.photo.url }}" alt="Photo élève"
@@ -128,21 +163,24 @@
                                  style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc;">
                           {% endif %}
                         </div>
+
                         <div style="text-align: center; flex: 1;">
-                          <h1 style="font-size: 36px; font-weight: bold; color: #0056b3;">RÉPUBLIQUE DE GUINÉE</h1>
+                          <h1>RÉPUBLIQUE DE GUINÉE</h1>
                           <div style="font-size: 20px; font-style: italic; color: #777;">Travail - Justice - Solidarité</div>
-                          <h2 style="font-size: 30px; font-weight: bold; color: #0056b3;">Groupe Scolaire Privé BNB</h2>
+                          <h2>Groupe Scolaire Privé BNB</h2>
                           <div style="font-size: 20px; font-style: italic; color: #777;">Union - Sincérité - Excellence</div>
-                          <h3 style="font-size: 24px; font-weight: normal; color: #333;">Bulletin du {{ request.GET.trimestre }}ᵉ Trimestre</h3>
+                          <h3>Bulletin du {{ request.GET.trimestre }}ᵉ Trimestre</h3>
                         </div>
-                        <div style="text-align: right; font-size: 16px; line-height: 1.5;">
-                          <strong>IRE/KANKAN</strong><br>
-                          <strong>DPE/KANKAN</strong><br>
+
+                        <div class="infos-right">
+                          <strong>IRE/KANKAN</strong>
+                          <strong>DPE/KANKAN</strong>
                           <strong>DSSE/KANKAN4</strong>
                         </div>
                       </div>
 
-                      <table class="table table-bordered">
+                      <!-- Infos élève -->
+                      <table class="table table-bordered mt-3">
                         <thead><tr><th>Nom</th><th>Prénom</th><th>Date de naissance</th></tr></thead>
                         <tbody>
                           <tr>
@@ -153,6 +191,7 @@
                         </tbody>
                       </table>
 
+                      <!-- Notes -->
                       <table class="table table-bordered table-striped table-hover mt-3">
                         <thead><tr><th>Matière</th><th>Note</th></tr></thead>
                         <tbody>
@@ -162,6 +201,7 @@
                         </tbody>
                       </table>
 
+                      <!-- Rang / Moyenne / Observation -->
                       <table class="table table-bordered mt-3">
                         <thead><tr><th>Rang</th><th>Moyenne</th><th>Observation</th></tr></thead>
                         <tbody>
@@ -173,13 +213,14 @@
                         </tbody>
                       </table>
 
-                      <div>
-                        <br>
-                        <h5 class="text-center">Remarque et suggestion sur l’élève</h5>
+                      <!-- Remarque et signature -->
+                      <div class="mt-4 text-center">
+                        <h5>Remarque et suggestion sur l’élève</h5>
                         <p><hr><br><hr><br><hr><br></p>
                         <h4>Directeur</h4><br><br>
                         <h4>M. Maurice GUILAVOGUI</h4>
                       </div>
+
                     </div>
                   </div>
                 {% endfor %}

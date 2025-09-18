@@ -71,12 +71,7 @@
     <p>Gestion bulletins <span class="right badge badge-danger">voir +</span></p>
   </a>
   <ul class="nav nav-treeview">
-    {% comment %} <li class="nav-item">
-      <a href="{% url 'attribuer-notes' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">1</span></i>
-        <p>Affecter Note</p>
-      </a>
-    </li> {% endcomment %}
+
     
     <li class="nav-item">
       <a href="{% url 'trimestre' %}" class="nav-link">
@@ -102,6 +97,19 @@
         <p>Bulletin par classe</p>
       </a>
     </li>
+    <li class="nav-item">
+      <a href="{% url 'bulletins_annuels_classe' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">5</span></i>
+        <p>Bulletin annuel classe</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'bulletins_annuels' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">6</span></i>
+        <p>Bulletin annuel niveau</p>
+      </a>
+    </li>
+
   </ul>
 </li>
 
