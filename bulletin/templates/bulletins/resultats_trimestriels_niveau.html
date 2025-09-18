@@ -5,9 +5,6 @@
   <title>Résultat Trimestriel par Niveau</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
   <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
 
   <style>
@@ -18,9 +15,12 @@
     .form-control { border-radius: 5px; border: 1px solid #ccc; padding: 10px; }
     .btn { border-radius: 5px; padding: 10px 20px; font-size: 16px; text-transform: uppercase; }
     .btn-primary { background-color: #007bff; border-color: #007bff; }
+    .btn-secondary { background-color: #6c757d; border-color: #6c757d; }
     .table { background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
     .table th { color: #fff; background-color: #007bff; text-align: center; font-size: 16px; padding: 12px; }
     .table td { text-align: center; padding: 12px; }
+    .table th:first-child, .table td:first-child { text-align: left; padding-left: 15px; }
+
     @media print {
       .form-inline, form, #imprimer, header, footer, .sidebar, .navbar { display: none !important; }
       body { visibility: hidden; }
@@ -103,18 +103,72 @@
         <div class="card-body">
           {% if sorted_bulletins %}
           <div id="impression">
+
+            <!-- HEADER AVEC TEXTE À GAUCHE ET LOGO À DROITE -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <div style="text-align: left; font-size: 16px; line-height: 1.5;">
+              <strong>MEAPU</strong><br>
+                <strong>IRE/KANKAN</strong><br>
+                <strong>DPE/KANKAN</strong><br>
+                <strong>DSSE/KANKAN4</strong>
+              </div>
+              <div>
+                 <img src="{% static 'base/img/logo.jpeg' %}" alt="Logo École" style="height:80px; width:auto;">
+              </div>
+            </div>
+
             <center>
               <h1>RÉPUBLIQUE DE GUINÉE</h1>
               <p><em>Travail - Justice - Solidarité</em></p>
               <h2>Groupe Scolaire Privé BNB</h2>
               <p><em>Union - Sincérité - Excellence</em></p>
-              <h3>Résultat du {{ trimestre_label }} Trimestre – {{ annee_scolaire_obj.nom }}</h3>
+              <h3>Résultat du {{ trimestre_label }} – {{ annee_scolaire_obj.nom }}</h3>
               <p>Niveau : <strong>{{ niveau_obj.nom }}</strong></p>
             </center>
-            <h5 class="text-center text-primary">Classement par ordre de mérite</h5>
 
+            <!-- Statistiques -->
+            <h5 class="text-center text-primary mt-4">Statistiques du Trimestre</h5>
             <div class="card-body table-responsive">
-              <table id="example" class="table table-bordered table-hover">
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Total Inscrits</th>
+                    <th>Ayant Composé</th>
+                    <th>Admis</th>
+                    <th>Non Admis</th>
+                    <th>Taux Réussite (%)</th>
+                    <th>Taux Échec (%)</th>
+                    <th>Total Filles</th>
+                    <th>Filles ayant Composé</th>
+                    <th>Filles Admis</th>
+                    <th>Filles Non Admis</th>
+                    <th>Taux Réussite Filles (%)</th>
+                    <th>Taux Échec Filles (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ statistiques.total_inscrits }}</td>
+                    <td>{{ statistiques.ayant_composes }}</td>
+                    <td>{{ statistiques.admis }}</td>
+                    <td>{{ statistiques.non_admis }}</td>
+                    <td>{{ statistiques.taux_reussite }}</td>
+                    <td>{{ statistiques.taux_echec }}</td>
+                    <td>{{ statistiques.filles_total }}</td>
+                    <td>{{ statistiques.filles_composes }}</td>
+                    <td>{{ statistiques.filles_admis }}</td>
+                    <td>{{ statistiques.filles_non_admis }}</td>
+                    <td>{{ statistiques.taux_filles_reussite }}</td>
+                    <td>{{ statistiques.taux_filles_echec }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Classement par ordre de mérite -->
+            <h5 class="text-center text-primary mt-4">Classement par ordre de mérite</h5>
+            <div class="card-body table-responsive">
+              <table class="table table-bordered table-hover">
                 <thead>
                   <tr>
                     <th>Rang</th>
@@ -133,9 +187,9 @@
                     </tr>
                   {% endfor %}
                 </tbody>
-
               </table>
             </div>
+
           </div>
           {% else %}
             <div class="alert alert-info mt-4">Aucun bulletin disponible pour cette sélection.</div>
@@ -150,27 +204,5 @@
 {% block scripte %}
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
-<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
-<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
-<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
-<script>
-  $(function () {
-    $('#example').DataTable({
-      paging: false,
-      searching: false,
-      ordering: false,
-      info: false,
-      responsive: true,
-    });
-  });
-</script>
 {% endblock %}

@@ -21,74 +21,73 @@ def niveau(request):
 
 # FONCTION D'ENREGISTREMENT DES ENSEIGNANTS
 
-def ajout(request):
-
-    if request.method=='POST':
-        cycle=request.POST.get('cy')
-        nom=request.POST.get('nom')
-        frais_scolaires=request.POST.get('frais_scolaires')
-        niveau=Niveau.objects.create(
-
-            cycle=get_object_or_404(Cycle,id=cycle),
-            nom=nom,
-            montant_frais=frais_scolaires,
-
-          
-        )
-        niveau.save()
-
-        return redirect('niveau')
-    else:
-        return redirect('niveau')
-    
-
 from decimal import Decimal
-def modifier(request):
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.db import IntegrityError
+from .models import Niveau
+from cycle.models import Cycle
+
+def ajout(request):
     if request.method == 'POST':
-        # Récupérer les valeurs envoyées par le formulaire
-        cycle = request.POST.get('cy')
+        cycle_id = request.POST.get('cy')
         nom = request.POST.get('nom')
-        pk = request.POST.get('id')  # Identifiant du niveau
         frais_scolaires = request.POST.get('frais_scolaires')
 
-        # Obtenir l'objet 'niveau' en fonction de l'ID
+        # Vérifier si le niveau existe déjà
+        if Niveau.objects.filter(nom=nom).exists():
+            messages.error(request, f"Le niveau '{nom}' existe déjà !")
+            return redirect('niveau')
+
+        try:
+            niveau = Niveau.objects.create(
+                cycle=get_object_or_404(Cycle, id=cycle_id),
+                nom=nom,
+                montant_frais=Decimal(frais_scolaires.replace(',', '.'))
+            )
+            niveau.save()
+            messages.success(request, f"Niveau '{nom}' ajouté avec succès !")
+        except (ValueError, IntegrityError):
+            messages.error(request, "Erreur lors de l'ajout du niveau. Vérifiez les données.")
+        
+        return redirect('niveau')
+    return redirect('niveau')
+
+
+def modifier(request):
+    if request.method == 'POST':
+        pk = request.POST.get('id')
+        cycle_id = request.POST.get('cy')
+        nom = request.POST.get('nom')
+        frais_scolaires = request.POST.get('frais_scolaires')
+
         niveau = get_object_or_404(Niveau, id=pk)
 
-        # Modifier les attributs du niveau
-        if cycle:
-            niveau.cycle = get_object_or_404(Cycle, id=cycle)  # Assurez-vous que le cycle existe
-        niveau.nom = nom
+        # Vérifier si le nom modifié existe déjà pour un autre niveau
+        if Niveau.objects.filter(nom=nom).exclude(id=pk).exists():
+            messages.error(request, f"Le niveau '{nom}' existe déjà !")
+            return redirect('niveau')
 
-        # Traitement de 'frais_scolaires' pour le convertir en Decimal
         try:
-            frais_scolaires = frais_scolaires.replace(',', '.')  # Remplacer la virgule par un point
-            niveau.montant_frais = Decimal(frais_scolaires)
-        except ValueError:
-            # Si la conversion échoue, vous pouvez retourner une erreur ou gérer autrement
-            return redirect('niveau')  # ou afficher un message d'erreur à l'utilisateur
+            if cycle_id:
+                niveau.cycle = get_object_or_404(Cycle, id=cycle_id)
+            niveau.nom = nom
+            niveau.montant_frais = Decimal(frais_scolaires.replace(',', '.'))
+            niveau.save()
+            messages.success(request, f"Niveau '{nom}' modifié avec succès !")
+        except (ValueError, IntegrityError):
+            messages.error(request, "Erreur lors de la modification du niveau. Vérifiez les données.")
 
-        # Sauvegarder les changements
-        niveau.save()
+        return redirect('niveau')
+    return redirect('niveau')
 
-        # Rediriger vers la page de gestion des niveaux (ou une autre page)
-        return redirect('niveau')  # Remplacez 'niveau' par l'URL que vous souhaitez rediriger
-
-    # Si ce n'est pas une méthode POST, rediriger vers une autre page ou afficher un message d'erreur
-    return redirect('niveau')  # ou vous pouvez afficher un message d'erreur ici
-
-    #FONCTION DE SUPPRESSION DES INFORMATIONS
-
-
-
-
-     #FONCTION DE SUPPRESSION DES INFORMATIONS
 
 def supprimer_niveau(request, pk):
-    # Obtenez l'objet Niveau en fonction du pk
     niveau = get_object_or_404(Niveau, pk=pk)
-
-    # Supprimez l'objet Niveau
-    niveau.delete()
-
-    # Redirigez vers la liste des niveaux après la suppression
-    return redirect('niveau')  # Remplacez 'niveau' par le nom de l'URL à laquelle vous voulez rediriger
+    nom = niveau.nom
+    try:
+        niveau.delete()
+        messages.success(request, f"Niveau '{nom}' supprimé avec succès !")
+    except IntegrityError:
+        messages.error(request, f"Impossible de supprimer le niveau '{nom}'. Il est utilisé ailleurs.")
+    return redirect('niveau')

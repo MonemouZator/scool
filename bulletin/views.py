@@ -131,9 +131,6 @@ def bulletins_trimestriels_classe(request):
     return render(request, "bulletins/bulletins_trimestriels_classe.html", context)
 
 
-# ------------------------
-# RESULTATS TRIMESTRIELS PAR CLASSE
-# ------------------------
 def resultat_trimestriel_classe(request):
     groupes_classes = GroupeClasse.objects.all()
     annees_scolaires = AnneeScolaire.objects.all()
@@ -146,6 +143,24 @@ def resultat_trimestriel_classe(request):
     groupe_obj = None
     annee_scolaire_obj = None
     trimestre_label = ""
+
+    # Initialisation pour éviter UnboundLocalError
+    eleves = Eleve.objects.none()
+
+    statistiques = {
+        'total_inscrits': 0,
+        'ayant_composes': 0,
+        'admis': 0,
+        'non_admis': 0,
+        'taux_reussite': 0,
+        'taux_echec': 0,
+        'filles_total': 0,
+        'filles_composes': 0,
+        'filles_admis': 0,
+        'filles_non_admis': 0,
+        'taux_filles_reussite': 0,
+        'taux_filles_echec': 0,
+    }
 
     if groupe_id and annee_id and trimestre:
         try:
@@ -168,14 +183,17 @@ def resultat_trimestriel_classe(request):
 
         # Préparer les bulletins avec moyenne et observation
         temp_list = [
-            {'bulletin': b, 'moyenne': b.moyenne_totale or 0, 'observation': b.observation or "Non disponible"}
+            {
+                'bulletin': b,
+                'moyenne': b.moyenne_totale or 0,
+                'observation': b.observation or "Non disponible"
+            }
             for b in bulletins
         ]
 
-        # Trier par moyenne décroissante
         temp_list.sort(key=lambda x: x['moyenne'], reverse=True)
 
-        # Calcul des rangs avec ex æquo
+        # Calcul des rangs
         rang = 0
         previous_moyenne = None
         for index, b in enumerate(temp_list, start=1):
@@ -188,6 +206,31 @@ def resultat_trimestriel_classe(request):
 
         bulletins_list = temp_list
 
+        # Statistiques
+        eleves = Eleve.objects.filter(groupe_classe_id=groupe_id)
+        statistiques['total_inscrits'] = eleves.count()
+        statistiques['ayant_composes'] = len([b for b in bulletins_list if b['moyenne'] > 0])
+        statistiques['admis'] = len([b for b in bulletins_list if b['moyenne'] >= 10])
+        statistiques['non_admis'] = statistiques['ayant_composes'] - statistiques['admis']
+
+        if statistiques['ayant_composes'] > 0:
+            statistiques['taux_reussite'] = round(statistiques['admis'] / statistiques['ayant_composes'] * 100, 2)
+            statistiques['taux_echec'] = round(statistiques['non_admis'] / statistiques['ayant_composes'] * 100, 2)
+
+    # Statistiques filles
+    filles = eleves.filter(genre__iexact="Femme")
+    statistiques['filles_total'] = filles.count()
+    statistiques['filles_composes'] = len([b for b in bulletins_list if b['bulletin'].eleve.genre.lower() == "femme" and b['moyenne'] > 0])
+    statistiques['filles_admis'] = len([b for b in bulletins_list if b['bulletin'].eleve.genre.lower() == "femme" and b['moyenne'] >= 10])
+    statistiques['filles_non_admis'] = statistiques['filles_composes'] - statistiques['filles_admis']
+
+    if statistiques['filles_composes'] > 0:
+        statistiques['taux_filles_reussite'] = round(statistiques['filles_admis'] / statistiques['filles_composes'] * 100, 2)
+        statistiques['taux_filles_echec'] = round(statistiques['filles_non_admis'] / statistiques['filles_composes'] * 100, 2)
+    else:
+        statistiques['taux_filles_reussite'] = 0
+        statistiques['taux_filles_echec'] = 0
+
     context = {
         'groupes_classes': groupes_classes,
         'annees_scolaires': annees_scolaires,
@@ -198,16 +241,18 @@ def resultat_trimestriel_classe(request):
         'groupe_obj': groupe_obj,
         'annee_scolaire_obj': annee_scolaire_obj,
         'trimestre_label': trimestre_label,
+        'statistiques': statistiques,
     }
 
     return render(request, "bulletins/resultat_trimestriel_classe.html", context)
+
 
 # ------------------------
 # RESULTATS ANNUELS PAR CLASSE
 # ------------------------
 from django.shortcuts import render
 from .models import BulletinAnnuel
-from eleve.models import GroupeClasse
+from eleve.models import Eleve, GroupeClasse
 from annee_scolaire.models import AnneeScolaire
 
 def resultat_annuel_classe(request):
@@ -221,8 +266,27 @@ def resultat_annuel_classe(request):
     groupe_obj = None
     annee_scolaire_obj = None
 
+    # Initialisation vide des statistiques
+    statistiques = {
+        'total_inscrits': 0,
+        'ayant_composes': 0,
+        'admis': 0,
+        'non_admis': 0,
+        'taux_reussite': 0,
+        'taux_echec': 0,
+        'filles_total': 0,
+        'filles_composes': 0,
+        'filles_admis': 0,
+        'filles_non_admis': 0,
+        'taux_filles_reussite': 0,
+        'taux_filles_echec': 0,
+    }
+
+    # Définit eleves vide par défaut pour éviter UnboundLocalError
+    eleves = Eleve.objects.none()
+
     if groupe_id and annee_id:
-        # Récupération des objets pour affichage dans le template
+        # Récupération des objets
         try:
             groupe_obj = GroupeClasse.objects.get(id=groupe_id)
         except GroupeClasse.DoesNotExist:
@@ -233,14 +297,14 @@ def resultat_annuel_classe(request):
         except AnneeScolaire.DoesNotExist:
             annee_scolaire_obj = None
 
-        # Récupération des bulletins
+        # Bulletins
         bulletins = BulletinAnnuel.objects.filter(
             eleve__groupe_classe_id=groupe_id,
             annee_scolaire_id=annee_id
         )
 
-        # Préparer les bulletins avec moyenne et observation
-        temp_list = [
+        # Préparer la liste pour le template
+        bulletins_list = [
             {
                 'bulletin': b,
                 'moyenne': b.moyenne_totale_annuelle or 0,
@@ -250,12 +314,12 @@ def resultat_annuel_classe(request):
         ]
 
         # Trier par moyenne décroissante
-        temp_list.sort(key=lambda x: x['moyenne'], reverse=True)
+        bulletins_list.sort(key=lambda x: x['moyenne'], reverse=True)
 
-        # Calcul des rangs avec gestion des ex æquo
+        # Calcul des rangs
         rang = 0
         previous_moyenne = None
-        for index, b in enumerate(temp_list, start=1):
+        for index, b in enumerate(bulletins_list, start=1):
             if b['moyenne'] == previous_moyenne:
                 b['rang'] = f"{rang}er Ex"
             else:
@@ -263,16 +327,45 @@ def resultat_annuel_classe(request):
                 b['rang'] = f"{rang}{'er' if rang == 1 else 'ème'}"
             previous_moyenne = b['moyenne']
 
-        bulletins_list = temp_list
+        # Liste des élèves pour les statistiques
+        eleves = Eleve.objects.filter(groupe_classe_id=groupe_id)
+
+    # ------------------------
+    # Calcul des statistiques
+    # ------------------------
+    statistiques['total_inscrits'] = eleves.count()
+    bulletins_composes = [b for b in bulletins_list if b['moyenne'] > 0]
+    statistiques['ayant_composes'] = len(bulletins_composes)
+    statistiques['admis'] = len([b for b in bulletins_composes if b['moyenne'] >= 10])
+    statistiques['non_admis'] = statistiques['ayant_composes'] - statistiques['admis']
+
+    if statistiques['ayant_composes']:
+        statistiques['taux_reussite'] = round(statistiques['admis'] / statistiques['ayant_composes'] * 100, 2)
+        statistiques['taux_echec'] = round(statistiques['non_admis'] / statistiques['ayant_composes'] * 100, 2)
+
+    # Statistiques filles
+    filles_total = [e for e in eleves if e.genre.lower() == "femme"]
+    filles_composes = [b for b in bulletins_composes if b['bulletin'].eleve.genre.lower() == "femme"]
+    filles_admis = [b for b in filles_composes if b['moyenne'] >= 10]
+
+    statistiques['filles_total'] = len(filles_total)
+    statistiques['filles_composes'] = len(filles_composes)
+    statistiques['filles_admis'] = len(filles_admis)
+    statistiques['filles_non_admis'] = len(filles_composes) - len(filles_admis)
+
+    if statistiques['filles_composes']:
+        statistiques['taux_filles_reussite'] = round(len(filles_admis) / len(filles_composes) * 100, 2)
+        statistiques['taux_filles_echec'] = round(statistiques['filles_non_admis'] / len(filles_composes) * 100, 2)
 
     context = {
         'groupes_classes': groupes_classes,
         'annees_scolaires': annees_scolaires,
-        'sorted_bulletins': bulletins_list,  # pour correspondre au template
+        'sorted_bulletins': bulletins_list,
         'groupe_id': groupe_id,
         'annee_id': annee_id,
         'groupe_obj': groupe_obj,
         'annee_scolaire_obj': annee_scolaire_obj,
+        'statistiques': statistiques,
     }
 
     return render(request, "bulletins/resultat_annuel_classe.html", context)
@@ -326,6 +419,11 @@ def valider_bulletin_annuel(request):
 # ------------------------
 # RESULTATS TRIMESTRIELS PAR NIVEAU
 # ------------------------
+from django.shortcuts import render
+from eleve.models import Eleve, Niveau
+from annee_scolaire.models import AnneeScolaire
+from .models import BulletinTrimestriel
+
 def resultats_trimestriels_niveau(request):
     niveaux = Niveau.objects.all()
     annees_scolaires = AnneeScolaire.objects.all()
@@ -338,8 +436,23 @@ def resultats_trimestriels_niveau(request):
     niveau_obj = None
     annee_scolaire_obj = None
     trimestre_label = ""
+    statistiques = {
+        'total_inscrits': 0,
+        'ayant_composes': 0,
+        'admis': 0,
+        'non_admis': 0,
+        'taux_reussite': 0,
+        'taux_echec': 0,
+        'filles_total': 0,
+        'filles_composes': 0,
+        'filles_admis': 0,
+        'filles_non_admis': 0,
+        'taux_filles_reussite': 0,
+        'taux_filles_echec': 0,
+    }
 
     if niveau_id and annee_id and trimestre:
+        # Objets pour affichage
         try:
             niveau_obj = Niveau.objects.get(id=niveau_id)
         except Niveau.DoesNotExist:
@@ -352,7 +465,10 @@ def resultats_trimestriels_niveau(request):
 
         trimestre_label = f"Trimestre {trimestre}"
 
+        # Récupération des élèves du niveau
         eleves = Eleve.objects.filter(groupe_classe__niveau_id=niveau_id)
+
+        # Préparer les bulletins
         for eleve in eleves:
             bulletin, _ = BulletinTrimestriel.objects.get_or_create(
                 eleve=eleve,
@@ -379,24 +495,49 @@ def resultats_trimestriels_niveau(request):
                 b['rang'] = f"{rang}{'er' if rang == 1 else 'ème'}"
             previous_moyenne = b['moyenne']
 
+        # ------------------------
+        # Calcul des statistiques globales
+        # ------------------------
+        statistiques['total_inscrits'] = eleves.count()
+        bulletins_composes = [b for b in bulletins_list if b['moyenne'] > 0]
+        statistiques['ayant_composes'] = len(bulletins_composes)
+        statistiques['admis'] = len([b for b in bulletins_composes if b['moyenne'] >= 10])
+        statistiques['non_admis'] = statistiques['ayant_composes'] - statistiques['admis']
+
+        # Taux global
+        if statistiques['ayant_composes'] > 0:
+            statistiques['taux_reussite'] = round(statistiques['admis'] / statistiques['ayant_composes'] * 100, 2)
+            statistiques['taux_echec'] = round(statistiques['non_admis'] / statistiques['ayant_composes'] * 100, 2)
+
+        # Statistiques filles
+        filles = [b for b in bulletins_composes if b['bulletin'].eleve.genre.lower() == "femme"]
+        statistiques['filles_total'] = len([e for e in eleves if e.genre.lower() == "femme"])
+        statistiques['filles_composes'] = len(filles)
+        statistiques['filles_admis'] = len([b for b in filles if b['moyenne'] >= 10])
+        statistiques['filles_non_admis'] = statistiques['filles_composes'] - statistiques['filles_admis']
+
+        # Taux filles
+        if statistiques['filles_composes'] > 0:
+            statistiques['taux_filles_reussite'] = round(statistiques['filles_admis'] / statistiques['filles_composes'] * 100, 2)
+            statistiques['taux_filles_echec'] = round(statistiques['filles_non_admis'] / statistiques['filles_composes'] * 100, 2)
+
     context = {
         'niveaux': niveaux,
         'annees_scolaires': annees_scolaires,
-        'sorted_bulletins': bulletins_list,  # pour le template
+        'sorted_bulletins': bulletins_list,
         'niveau_id': niveau_id,
         'annee_id': annee_id,
         'trimestre': trimestre,
         'niveau_obj': niveau_obj,
         'annee_scolaire_obj': annee_scolaire_obj,
         'trimestre_label': trimestre_label,
+        'statistiques': statistiques,
     }
 
     return render(request, "bulletins/resultats_trimestriels_niveau.html", context)
 
 
-# ------------------------
-# RESULTATS ANNUELS PAR NIVEAU
-# ------------------------
+
 def resultats_annuels_niveau(request):
     niveaux = Niveau.objects.all()
     annees_scolaires = AnneeScolaire.objects.all()
@@ -408,7 +549,23 @@ def resultats_annuels_niveau(request):
     niveau_obj = None
     annee_scolaire_obj = None
 
+    statistiques = {
+        'total_inscrits': 0,
+        'ayant_composes': 0,
+        'admis': 0,
+        'non_admis': 0,
+        'taux_reussite': 0,
+        'taux_echec': 0,
+        'filles_total': 0,
+        'filles_composes': 0,
+        'filles_admis': 0,
+        'filles_non_admis': 0,
+        'taux_filles_reussite': 0,
+        'taux_filles_echec': 0,
+    }
+
     if niveau_id and annee_id:
+        # Récupération des objets
         try:
             niveau_obj = Niveau.objects.get(id=niveau_id)
         except Niveau.DoesNotExist:
@@ -419,7 +576,10 @@ def resultats_annuels_niveau(request):
         except AnneeScolaire.DoesNotExist:
             annee_scolaire_obj = None
 
+        # Récupération des élèves
         eleves = Eleve.objects.filter(groupe_classe__niveau_id=niveau_id)
+
+        # Création ou récupération des bulletins annuels
         for eleve in eleves:
             bulletin, _ = BulletinAnnuel.objects.get_or_create(
                 eleve=eleve,
@@ -434,7 +594,7 @@ def resultats_annuels_niveau(request):
         # Trier par moyenne décroissante
         bulletins_list.sort(key=lambda x: x['moyenne_totale'], reverse=True)
 
-        # Calcul des rangs avec ex æquo
+        # Calcul des rangs avec gestion des ex æquo
         rang = 0
         previous_moyenne = None
         for index, b in enumerate(bulletins_list, start=1):
@@ -445,14 +605,41 @@ def resultats_annuels_niveau(request):
                 b['rang'] = f"{rang}{'er' if rang == 1 else 'ème'}"
             previous_moyenne = b['moyenne_totale']
 
+        # ------------------------
+        # Calcul des statistiques globales
+        # ------------------------
+        statistiques['total_inscrits'] = eleves.count()
+        bulletins_composes = [b for b in bulletins_list if b['moyenne_totale'] > 0]
+        statistiques['ayant_composes'] = len(bulletins_composes)
+        statistiques['admis'] = len([b for b in bulletins_composes if b['moyenne_totale'] >= 10])
+        statistiques['non_admis'] = statistiques['ayant_composes'] - statistiques['admis']
+
+        # Taux global
+        if statistiques['ayant_composes']:
+            statistiques['taux_reussite'] = round(statistiques['admis'] / statistiques['ayant_composes'] * 100, 2)
+            statistiques['taux_echec'] = round(statistiques['non_admis'] / statistiques['ayant_composes'] * 100, 2)
+
+        # Statistiques filles
+        filles = [b for b in bulletins_composes if b['bulletin'].eleve.genre.lower() == "femme"]
+        statistiques['filles_total'] = len([e for e in eleves if e.genre.lower() == "femme"])
+        statistiques['filles_composes'] = len(filles)
+        statistiques['filles_admis'] = len([b for b in filles if b['moyenne_totale'] >= 10])
+        statistiques['filles_non_admis'] = statistiques['filles_composes'] - statistiques['filles_admis']
+
+        # Taux filles
+        if statistiques['filles_composes']:
+            statistiques['taux_filles_reussite'] = round(statistiques['filles_admis'] / statistiques['filles_composes'] * 100, 2)
+            statistiques['taux_filles_echec'] = round(statistiques['filles_non_admis'] / statistiques['filles_composes'] * 100, 2)
+
     context = {
         'niveaux': niveaux,
         'annees_scolaires': annees_scolaires,
-        'bulletins': bulletins_list,  # pour le template
-        'niveau_id': niveau_id,
-        'annee_id': annee_id,
+        'bulletins': bulletins_list,
+        'niveau_selectionne': int(niveau_id) if niveau_id else None,
+        'annee_scolaire_selectionnee': int(annee_id) if annee_id else None,
         'niveau_obj': niveau_obj,
         'annee_scolaire_obj': annee_scolaire_obj,
+        'statistiques': statistiques,
     }
 
     return render(request, "bulletins/resultats_annuels_niveau.html", context)

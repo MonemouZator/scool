@@ -153,6 +153,14 @@ def ajout(request):
 
     return render(request, 'eleve/ajout_eleve.html')
 
+from django.http import JsonResponse
+
+def get_groupes(request):
+    niveau_id = request.GET.get('niveau')
+    groupes = list(GroupeClasse.objects.filter(niveau_id=niveau_id).values('id', 'nom'))
+    return JsonResponse({'groupes': groupes})
+
+
 #FONCTION DE MODIFICATION
 def modifier(request, pk):
     # Récupérer l'élève à modifier
@@ -442,3 +450,56 @@ def liste_eleves_par_groupe(request):
         'annees': annees
     }
     return render(request, 'eleve/liste_eleves_par_groupe.html', context)
+
+
+
+def historique(request):
+    
+    if request.user.is_superuser:
+        # Super utilisateur : voir tous les historiques
+        historiques = Historique.objects.all().order_by('-created_time')
+    else:
+        # Utilisateur normal : voir uniquement ses propres actions
+        historiques = Historique.objects.filter(user=request.user).order_by('-created_time')
+
+    return render(request, 'eleve/historique.html', {'historiques': historiques})
+
+
+def profiles(request):
+
+    user = request.user  # Utilisateur connecté
+
+    if request.method == "POST":
+        user.nom = request.POST.get("nom", user.nom)
+        user.prenom = request.POST.get("prenom", user.prenom)
+        user.email = request.POST.get("email", user.email)
+        user.genre = request.POST.get("sexe", user.genre)
+        user.telephone = request.POST.get("contact", user.telephone)
+        user.lieu_naiss = request.POST.get("filiation", user.lieu_naiss)
+        user.username = request.POST.get("username", user.username)  # Optionnel
+
+        date_str = request.POST.get("date")
+        if date_str:
+            try:
+                user.date_naissance = datetime.strptime(date_str, "%Y-%m-%d").date()
+            except ValueError:
+                messages.error(request, "Format de date invalide. Utilise AAAA-MM-JJ.")
+
+        # Gestion de la photo
+        if "photo" in request.FILES:
+            user.photo = request.FILES["photo"]
+
+        try:
+            user.save()
+            messages.success(request, "Votre profil a été mis à jour avec succès.")
+        except Exception as e:
+            messages.error(request, f"Erreur lors de la sauvegarde : {e}")
+
+        return redirect("profiles")
+    
+    context = {
+        "user": user,
+    }
+    return render(request,'enseignant/profil.html',context)
+
+

@@ -73,11 +73,12 @@ def login_view(request):
             
             elif fonction in 'FONDATEUR':
 
-                return redirect('fondateur.dashbord')
+                return redirect('dashbaord.directeur')
             
             elif fonction in 'DG':
-
-                return redirect('dashbaord.directeur')
+                
+                return redirect('fondateur.dashbord')
+                
             else:
                 messages.error(request, "Votre fonction est incorrecte ou manquante.")
                 return redirect('login')
@@ -583,3 +584,43 @@ def historique(request):
         historiques = Historique.objects.filter(user=request.user).order_by('-created_time')
 
     return render(request, 'login/historique.html', {'historiques': historiques})
+
+
+
+@login_required(login_url='/')
+def change_password_comptable(request):
+    if request.method == "POST":
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('cpwd')
+        auto_login = request.POST.get('connect')  # checkbox pour rester connecté
+
+        # Vérifications côté serveur
+        if not password or not confirm_password:
+            messages.error(request, "Veuillez remplir tous les champs.")
+            return redirect('password_reset_request')
+
+        if password != confirm_password:
+            messages.error(request, "Les mots de passe ne sont pas identiques.")
+            return redirect('password_reset_request')
+
+        if len(password) < 6:
+            messages.error(request, "Le mot de passe doit contenir au moins 6 caractères.")
+            return redirect('password_reset_request')
+
+        # Changement du mot de passe
+        user = request.user
+        user.set_password(password)
+        user.save()
+
+        # Option : reconnecter l'utilisateur
+        if auto_login == "on":
+            user = authenticate(username=user.username, password=password)
+            if user is not None:
+                login(request, user)
+            messages.success(request, "Mot de passe changé avec succès, vous êtes reconnecté !")
+            return redirect('password_reset_request')
+        else:
+            logout(request)
+            messages.success(request, "Mot de passe changé, veuillez vous reconnecter.")
+            return redirect('login')
+    return render(request, 'login/changer_password_comptable.html')

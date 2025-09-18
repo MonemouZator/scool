@@ -2,108 +2,28 @@
 {% load static %}
 
 {% block styl_parent %}
-  <title>Résultat annuel | Classe</title>
+  <title>Résultat trimestriel | Classe</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
   <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
 
   <style>
-    body {
-      background-color: #f4f6f9;
-      font-family: 'Source Sans Pro', sans-serif;
-    }
-
-    .content-wrapper {
-      background-color: #ffffff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    h1, h2, h3 {
-      color: #0056b3;
-      font-weight: bold;
-    }
-
-    .form-inline {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #007bff;
-      padding-bottom: 20px;
-    }
-
-    .btn {
-      border-radius: 5px;
-      padding: 10px 20px;
-      font-size: 16px;
-      text-transform: uppercase;
-    }
-
-    .btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
-    }
-
-    .table th {
-      background-color: #007bff;
-      color: #fff;
-      text-align: center;
-      font-size: 16px;
-    }
-
-    .table td {
-      text-align: none;
-      font-size: 15px;
-    }
+    body { background-color: #f4f6f9; font-family: 'Source Sans Pro', sans-serif; }
+    .content-wrapper { background-color: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    h1, h2, h3 { color: #0056b3; font-weight: bold; }
+    .table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 15px; }
+    .table th, .table td { border: 1px solid #007bff; padding: 10px; text-align: center; }
+    .table th { background-color: #007bff; color: #fff; font-weight: bold; }
+    .table tbody tr:nth-child(even) { background-color: #f2f2f2; }
 
     @media print {
-      body {
-        visibility: hidden;
-      }
-
-      .content-wrapper, .content-wrapper * {
-        visibility: visible;
-      }
-
-      .content-wrapper {
-        width: 100%;
-        margin: 0;
-        padding: 10px;
-        box-shadow: none;
-      }
-
-      .form-inline, form, #imprimer, .breadcrumb, .btn, header, footer, .sidebar, .navbar {
-        display: none !important;
-      }
-
-      .table, .table th, .table td {
-        border: 1px solid #000 !important;
-        border-collapse: collapse !important;
-        color: #000 !important;
-        font-size: 15px;
-      }
-
-      .table th {
-        background-color: #ccc !important;
-      }
-
-      .card {
-        box-shadow: none !important;
-        margin-bottom: 0 !important;
-      }
-
-      .card.mt-4 {
-        page-break-before: always;
-      }
-
-      .card.mt-4:first-child {
-        page-break-before: auto;
-      }
+      body * { visibility: hidden; }
+      .content-wrapper, .content-wrapper * { visibility: visible; }
+      .content-wrapper { width: 100%; margin: 0; padding: 0; box-shadow: none; }
+      .btn, form, .breadcrumb, .alert, header, footer, .sidebar, .navbar { display: none !important; }
+      .table, .table th, .table td { border: 1px solid #000 !important; border-collapse: collapse !important; color: #000 !important; font-size: 14px; padding: 8px; }
+      .table th { background-color: #ccc !important; color: #000 !important; }
+      .table tbody tr:nth-child(even) { background-color: #fff !important; }
     }
   </style>
 {% endblock %}
@@ -126,94 +46,131 @@
 
   <section class="content">
     <div class="container-fluid">
-
       <div class="card">
         <div class="card-header">
           {% if messages %}
             {% for message in messages %}
-              <div class="alert alert-{{ message.tags }} bg-danger">
-                {{ message }}
-              </div>
+              <div class="alert alert-{{ message.tags }} bg-danger">{{ message }}</div>
             {% endfor %}
           {% endif %}
 
-          <form method="get">
-            <div class="form-row">
-              <div class="form-group col-md-4">
-                <select name="groupe_classe" class="form-control" required>
-                  <option value="">-- Classe --</option>
-                  {% for groupe in groupes_classes %}
-                    <option value="{{ groupe.id }}" {% if request.GET.groupe_classe == groupe.id|stringformat:"s" %}selected{% endif %}>{{ groupe.nom }}</option>
-                  {% endfor %}
-                </select>
-              </div>
+          <form method="get" class="form-inline">
+            <select name="groupe_classe" class="form-control mr-2" required>
+              <option value="">-- Classe --</option>
+              {% for groupe in groupes_classes %}
+                <option value="{{ groupe.id }}" {% if request.GET.groupe_classe == groupe.id|stringformat:"s" %}selected{% endif %}>{{ groupe.nom }}</option>
+              {% endfor %}
+            </select>
 
-              <div class="form-group col-md-4">
-                <select name="annee_scolaire" class="form-control" required>
-                  <option value="">-- Année scolaire --</option>
-                  {% for annee in annees_scolaires %}
-                    <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>{{ annee.nom }}</option>
-                  {% endfor %}
-                </select>
-              </div>
+            <select name="annee_scolaire" class="form-control mr-2" required>
+              <option value="">-- Année scolaire --</option>
+              {% for annee in annees_scolaires %}
+                <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>{{ annee.nom }}</option>
+              {% endfor %}
+            </select>
 
-              <div class="form-group col-md-4">
-                <select name="trimestre" class="form-control" required>
-                  <option value="">-- Trimestre --</option>
-                  <option value="1" {% if request.GET.trimestre == "1" %}selected{% endif %}>Trimestre 1</option>
-                  <option value="2" {% if request.GET.trimestre == "2" %}selected{% endif %}>Trimestre 2</option>
-                  <option value="3" {% if request.GET.trimestre == "3" %}selected{% endif %}>Trimestre 3</option>
-                </select>
-              </div>
-            </div>
+            <select name="trimestre" class="form-control mr-2" required>
+              <option value="">-- Trimestre --</option>
+              <option value="1" {% if request.GET.trimestre == "1" %}selected{% endif %}>Trimestre 1</option>
+              <option value="2" {% if request.GET.trimestre == "2" %}selected{% endif %}>Trimestre 2</option>
+              <option value="3" {% if request.GET.trimestre == "3" %}selected{% endif %}>Trimestre 3</option>
+            </select>
 
-            <div class="text-center my-3">
-              <button type="submit" class="btn btn-primary mr-2">Filtrer</button>
-              <button type="button" id="imprimer" class="btn btn-secondary" onclick="window.print();">Imprimer</button>
-            </div>
+            <button type="submit" class="btn btn-primary mr-2">Filtrer</button>
+            <button type="button" class="btn btn-secondary" onclick="window.print()">Imprimer</button>
           </form>
         </div>
 
-        <div class="card-body">
-          {% if sorted_bulletins %}
-            <div class="card mt-4">
-
-              <div class="card-header text-center">
-                <h2>RÉPUBLIQUE DE GUINÉE</h2>
-                <p>Travail - Justice - Solidarité</p>
-                <h3>Groupe Scolaire Privé BNB</h3>
-                <p>Union - Sincérité - Excellence</p>
-                <h4>Résultat du {{ trimestre_label }} Trimestre – <strong>{{ annee_scolaire_obj.nom }}</strong></h4>
-                <p>Classe : <strong>{{ groupe_obj.nom }}</strong></p>
+        {% if sorted_bulletins %}
+          <div class="card mt-4">
+            <!-- Entête avec texte administratif et logo -->
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+              <div style="text-align:left; line-height:1.5;">
+               <strong>MEAPU</strong><br>
+                <strong>IRE/KANKAN</strong><br>
+                <strong>DPE/KANKAN</strong><br>
+                <strong>DSSE/KANKAN4</strong>
               </div>
-                   <h5 class="text-center text-primary">Classement par ordre de mérite</h5>
-              <div class="card-body table-responsive">
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Rang</th>
-                      <th>Nom et Prénom</th>
-                      <th>Moyenne</th>
-                      <th>Observation</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {% for data in sorted_bulletins %}
-                      <tr>
-                        <td>{{ data.rang }}</td>
-                        <td>{{ data.bulletin.eleve.nom }} {{ data.bulletin.eleve.prenom }}</td>
-                        <td>{{ data.moyenne }}</td>
-                        <td>{{ data.observation }}</td>
-                      </tr>
-                    {% endfor %}
-                  </tbody>
-                </table>
+              <div>
+                <img src="{% static 'base/img/logo.jpeg' %}" alt="Logo École" style="height:80px; width:auto;">
               </div>
             </div>
-          {% else %}
-            <div class="alert alert-info mt-4">Aucun résultat trouvé pour les critères sélectionnés.</div>
-          {% endif %}
-        </div>
+
+            <div class="card-header text-center">
+              <h2>RÉPUBLIQUE DE GUINÉE</h2>
+              <p>Travail - Justice - Solidarité</p>
+              <h3>Groupe Scolaire Privé BNB</h3>
+              <p>Union - Sincérité - Excellence</p>
+              <h4>Résultat du {{ trimestre_label }} Trimestre – <strong>{{ annee_scolaire_obj.nom }}</strong></h4>
+              <p>Classe : <strong>{{ groupe_obj.nom }}</strong></p>
+            </div>
+
+            <!-- Tableau statistique -->
+            <h5 class="text-center text-primary">Statistiques de la classe</h5>
+            <div class="card-body table-responsive">
+              <table class="table table-bordered text-center">
+                <thead>
+                  <tr>
+                    <th>Total Inscrits</th>
+                    <th>Ayant Composé</th>
+                    <th>Admis</th>
+                    <th>Non Admis</th>
+                    <th>Taux de Réussite (%)</th>
+                    <th>Taux d’Échec (%)</th>
+                    <th>Total Filles</th>
+                    <th>Filles ayant Composé</th>
+                    <th>Filles Admis</th>
+                    <th>Filles Non Admis</th>
+                    <th>Taux Réussite Filles (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ statistiques.total_inscrits }}</td>
+                    <td>{{ statistiques.ayant_composes }}</td>
+                    <td>{{ statistiques.admis }}</td>
+                    <td>{{ statistiques.non_admis }}</td>
+                    <td>{{ statistiques.taux_reussite }}</td>
+                    <td>{{ statistiques.taux_echec }}</td>
+                    <td>{{ statistiques.filles_total }}</td>
+                    <td>{{ statistiques.filles_composes }}</td>
+                    <td>{{ statistiques.filles_admis }}</td>
+                    <td>{{ statistiques.filles_non_admis }}</td>
+                    <td>{{ statistiques.taux_filles_reussite }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Classement par ordre de mérite -->
+            <h5 class="text-center text-primary mt-4">Classement par ordre de mérite</h5>
+            <div class="card-body table-responsive">
+              <table class="table table-bordered text-center">
+                <thead>
+                  <tr>
+                    <th>Rang</th>
+                    <th>Nom et Prénom</th>
+                    <th>Moyenne</th>
+                    <th>Observation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for data in sorted_bulletins %}
+                    <tr>
+                      <td>{{ data.rang }}</td>
+                      <td>{{ data.bulletin.eleve.nom }} {{ data.bulletin.eleve.prenom }}</td>
+                      <td>{{ data.moyenne|floatformat:2 }}</td>
+                      <td>{{ data.observation }}</td>
+                    </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        {% else %}
+          <div class="alert alert-info mt-4">Aucun résultat trouvé pour les critères sélectionnés.</div>
+        {% endif %}
       </div>
     </div>
   </section>

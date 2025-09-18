@@ -501,7 +501,7 @@ def profil_comptable(request):
         except Exception as e:
             messages.error(request, f"Erreur lors de la sauvegarde : {e}")
 
-        return redirect("profi")
+        return redirect("profil")
     
     context = {
         "user": user,
@@ -517,7 +517,6 @@ from matiere.models import Matiere
 from niveau.models import Niveau
 from groupe_classe.models import GroupeClasse
 from enseignant.models import Enseignant
-
 
 
 def ajouter_affectation(request):
@@ -554,6 +553,17 @@ def ajouter_affectation(request):
             messages.success(request, "Affectation réussie !")
 
         return redirect(request.META.get('HTTP_REFERER'))
+    
+
+from django.http import JsonResponse
+
+
+def get_classes_matiere(request):
+    niveau_id = request.GET.get('niveau')
+    classes = list(GroupeClasse.objects.filter(niveau_id=niveau_id).values('id', 'nom'))
+    matieres = list(Matiere.objects.filter(niveau_id=niveau_id).values('id', 'nom'))
+    return JsonResponse({'classes': classes, 'matieres': matieres})
+
 
 
 #SUIVIE DES ENSEIGNANTS
@@ -572,7 +582,6 @@ def suivi(request):
         'matieres': matieres,
     }
     return render(request, 'enseignant/suivie.html', context)
-
 
 @login_required
 def change_password(request):
@@ -612,3 +621,16 @@ def change_password(request):
             return redirect('login')
 
     return render(request, 'enseignant/change_password.html')
+
+
+
+def historique(request):
+    
+    if request.user.is_superuser:
+        # Super utilisateur : voir tous les historiques
+        historiques = Historique.objects.all().order_by('-created_time')
+    else:
+        # Utilisateur normal : voir uniquement ses propres actions
+        historiques = Historique.objects.filter(user=request.user).order_by('-created_time')
+
+    return render(request, 'enseignant/historique.html', {'historiques': historiques})

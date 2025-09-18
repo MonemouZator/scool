@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block styl_parent %}
-  <title>Résultat | Résultat</title>
+  <title>Résultat Annuel | Niveau</title>
 
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -16,98 +16,23 @@
   <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
 
   <style>
-    body {
-      background-color: #f4f6f9;
-      font-family: 'Source Sans Pro', sans-serif;
-      color: #333;
-    }
-
-    .content-wrapper {
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    h1, h2, h3 {
-      color: #0056b3;
-      font-weight: bold;
-    }
-
-    .form-inline {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: flex-end;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #007bff;
-      padding-bottom: 20px;
-    }
-
-    .form-control {
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      padding: 8px 12px;
-    }
-
-    .btn {
-      border-radius: 5px;
-      padding: 10px 20px;
-      font-size: 14px;
-    }
-
-    .btn-primary {
-      background-color: #007bff;
-      border-color: #007bff;
-    }
-
-    .table {
-      background-color: #f9f9f9;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .table th {
-      background-color: #007bff;
-      color: #fff;
-      text-align: center;
-      font-size: 16px;
-      padding: 12px;
-    }
-
-    .table td {
-      text-align: none;
-      padding: 12px;
-    }
-
+    body { background-color: #f4f6f9; font-family: 'Source Sans Pro', sans-serif; color: #333; }
+    .content-wrapper { background-color: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    h1, h2, h3, h4, h5 { color: #0056b3; font-weight: bold; }
+    .form-inline { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; margin-bottom: 20px; border-bottom: 2px solid #007bff; padding-bottom: 20px; }
+    .form-control { border-radius: 5px; border: 1px solid #ccc; padding: 8px 12px; }
+    .btn { border-radius: 5px; padding: 10px 20px; font-size: 14px; }
+    .btn-primary { background-color: #007bff; border-color: #007bff; }
+    .table { background-color: #f9f9f9; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .table th { background-color: #007bff; color: #fff; text-align: center; font-size: 16px; padding: 12px; }
+    .table td { text-align: center; padding: 12px; }
+    .table th:first-child, .table td:first-child { text-align: left; padding-left: 15px; }
     @media print {
-      body {
-        visibility: hidden;
-      }
-
-      .content-wrapper, .content-wrapper * {
-        visibility: visible;
-      }
-
-      .content-wrapper {
-        width: 100%;
-        margin: 0;
-        padding: 20px;
-        box-shadow: none;
-      }
-
-      .table, .table th, .table td {
-        border: 1px solid #000 !important;
-        border-collapse: collapse !important;
-        color: #000 !important;
-        font-size: 20px;
-      }
-
-    
-
-      .form-inline, form, #imprimer, header, footer, .sidebar, .navbar {
-        display: none !important;
-      }
+      body { visibility: hidden; }
+      .content-wrapper, .content-wrapper * { visibility: visible; }
+      .content-wrapper { width: 100%; margin: 0; padding: 20px; box-shadow: none; }
+      .table, .table th, .table td { border: 1px solid #000 !important; border-collapse: collapse !important; color: #000 !important; font-size: 15px; }
+      .form-inline, form, #imprimer, header, footer, .sidebar, .navbar { display: none !important; }
     }
   </style>
 {% endblock %}
@@ -117,7 +42,7 @@
   <section class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
-        <div class="col-sm-6"></div>
+        <div class="col-sm-6"><h1>Résultat Annuel par Niveau</h1></div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <li class="breadcrumb-item"><a href="#">Accueil</a></li>
@@ -169,6 +94,22 @@
         <div class="card-body">
           {% if bulletins %}
             <div id="impression">
+
+              <!-- HEADER AVEC TEXTE À GAUCHE ET LOGO À DROITE -->
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <!-- Texte administratif -->
+                <div style="text-align: left; font-size: 16px; line-height: 1.5;">
+                 <strong>MEAPU</strong><br>
+                  <strong>IRE/KANKAN</strong><br>
+                  <strong>DPE/KANKAN</strong><br>
+                  <strong>DSSE/KANKAN4</strong>
+                </div>
+                <!-- Logo école -->
+                <div>
+                   <img src="{% static 'base/img/logo.jpeg' %}" alt="Logo École" style="height:80px; width:auto;">
+                </div>
+              </div>
+
               <center>
                 <h1>RÉPUBLIQUE DE GUINÉE</h1>
                 <p><em>Travail - Justice - Solidarité</em></p>
@@ -177,32 +118,65 @@
                 <h4>Résultat annuel de la {{ niveau_obj.nom }}</h4>
                 <p>Année scolaire : <strong>{{ annee_scolaire_obj.nom }}</strong></p>
               </center>
-                 <h5 class="text-center text-primary">Classement par ordre de mérite</h5>
+
+              <!-- Statistiques globales -->
+              <h5 class="text-primary mt-4">Statistiques Globales</h5>
+              <table class="table table-bordered">
+                <tr>
+                  <th>Total Inscrits</th>
+                  <th>Ayant Composé</th>
+                  <th>Admis</th>
+                  <th>Non Admis</th>
+                  <th>Taux Réussite (%)</th>
+                  <th>Taux Échec (%)</th>
+                  <th>Total Filles</th>
+                  <th>Filles ayant Composé</th>
+                  <th>Filles Admis</th>
+                  <th>Filles Non Admis</th>
+                  <th>Taux Réussite Filles (%)</th>
+                  <th>Taux Échec Filles (%)</th>
+                </tr>
+                <tr>
+                  <td>{{ statistiques.total_inscrits }}</td>
+                  <td>{{ statistiques.ayant_composes }}</td>
+                  <td>{{ statistiques.admis }}</td>
+                  <td>{{ statistiques.non_admis }}</td>
+                  <td>{{ statistiques.taux_reussite }}</td>
+                  <td>{{ statistiques.taux_echec }}</td>
+                  <td>{{ statistiques.filles_total }}</td>
+                  <td>{{ statistiques.filles_composes }}</td>
+                  <td>{{ statistiques.filles_admis }}</td>
+                  <td>{{ statistiques.filles_non_admis }}</td>
+                  <td>{{ statistiques.taux_filles_reussite }}</td>
+                  <td>{{ statistiques.taux_filles_echec }}</td>
+                </tr>
+              </table>
+
+              <!-- Classement par ordre de mérite -->
+              <h5 class="text-center text-primary mt-4">Classement par ordre de mérite</h5>
               <div class="card-body table-responsive">
-                      <table id="example2" class="table table-bordered table-hover mt-4">
-                        <thead>
-                          <tr>
-                            <th>Rang</th>
-                            <th>Nom et Prénom</th>
-                            <th>Moyenne Annuelle</th>
-                            <th>Observation</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-  {% for b in bulletins %}
-    <tr>
-      <td>{{ b.rang }}</td>
-      <td>{{ b.bulletin.eleve.nom }} {{ b.bulletin.eleve.prenom }}</td>
-      <td>{{ b.moyenne_totale|floatformat:2 }}</td>
-      <td>{{ b.observation }}</td>
-    </tr>
-  {% endfor %}
-</tbody>
+                <table id="example2" class="table table-bordered table-hover mt-4">
+                  <thead>
+                    <tr>
+                      <th>Rang</th>
+                      <th>Nom et Prénom</th>
+                      <th>Moyenne Annuelle</th>
+                      <th>Observation</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for b in bulletins %}
+                      <tr>
+                        <td>{{ b.rang }}</td>
+                        <td>{{ b.bulletin.eleve.nom }} {{ b.bulletin.eleve.prenom }}</td>
+                        <td>{{ b.moyenne_totale|floatformat:2 }}</td>
+                        <td>{{ b.observation }}</td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
 
-                      </table>
-
-                </div>
-              
             </div>
           {% else %}
             <p>Aucun bulletin disponible pour cette sélection.</p>

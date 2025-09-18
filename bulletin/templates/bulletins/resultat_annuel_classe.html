@@ -19,10 +19,7 @@
       border-radius: 10px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    h1, h2, h3 {
-      color: #0056b3;
-      font-weight: bold;
-    }
+    h1, h2, h3 { color: #0056b3; font-weight: bold; }
     .form-inline {
       display: flex;
       flex-wrap: wrap;
@@ -31,30 +28,12 @@
       border-bottom: 2px solid #007bff;
       padding-bottom: 20px;
     }
-    .form-control {
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      padding: 10px;
-    }
-    .btn {
-      border-radius: 5px;
-      padding: 10px 20px;
-      font-size: 16px;
-      text-transform: uppercase;
-    }
+    .form-control { border-radius: 5px; border: 1px solid #ccc; padding: 10px; }
+    .btn { border-radius: 5px; padding: 10px 20px; font-size: 16px; text-transform: uppercase; }
     .btn-primary { background-color: #007bff; border-color: #007bff; }
-    .table {
-      background-color: #f9f9f9;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-    .table th {
-      background-color: #007bff;
-      color: #fff;
-      text-align: center;
-      font-size: 16px;
-      padding: 12px;
-    }
+    .btn-secondary { background-color: #6c757d; border-color: #6c757d; }
+    .table { background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .table th { background-color: #007bff; color: #fff; text-align: center; font-size: 16px; padding: 12px; }
     .table td { text-align: center; padding: 12px; }
     @media print {
       body { visibility: hidden; }
@@ -115,6 +94,20 @@
 
         {% if sorted_bulletins %}
           <div id="impression">
+
+            <!-- HEADER AVEC TEXTE ADMINISTRATIF À GAUCHE ET LOGO À DROITE -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <div style="text-align: left; font-size: 16px; line-height: 1.5;">
+               <strong>MEAPU</strong><br>
+                <strong>IRE/KANKAN</strong><br>
+                <strong>DPE/KANKAN</strong><br>
+                <strong>DSSE/KANKAN4</strong>
+              </div>
+              <div>
+                 <img src="{% static 'base/img/logo.jpeg' %}" alt="Logo École" style="height:80px; width:auto;">
+              </div>
+            </div>
+
             <center>
               <h1>RÉPUBLIQUE DE GUINÉE</h1>
               <p><em>Travail - Justice - Solidarité</em></p>
@@ -123,8 +116,46 @@
               <h4>Résultat annuel de la classe <strong>{{ groupe_obj.nom }}</strong></h4>
               <p>Année scolaire : <strong>{{ annee_scolaire_obj.nom }}</strong></p>
             </center>
-            <h5 class="text-center text-primary">Classement par ordre de mérite</h5>
 
+            <h5 class="text-center text-primary mt-4">Statistiques de la classe</h5>
+            <div class="card-body table-responsive">
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>Total Inscrits</th>
+                    <th>Ayant Composé</th>
+                    <th>Admis</th>
+                    <th>Non Admis</th>
+                    <th>Taux Réussite (%)</th>
+                    <th>Taux Échec (%)</th>
+                    <th>Total Filles</th>
+                    <th>Filles ayant Composé</th>
+                    <th>Filles Admis</th>
+                    <th>Filles Non Admis</th>
+                    <th>Taux Réussite Filles (%)</th>
+                    <th>Taux Échec Filles (%)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ statistiques.total_inscrits }}</td>
+                    <td>{{ statistiques.ayant_composes }}</td>
+                    <td>{{ statistiques.admis }}</td>
+                    <td>{{ statistiques.non_admis }}</td>
+                    <td>{{ statistiques.taux_reussite }}</td>
+                    <td>{{ statistiques.taux_echec }}</td>
+                    <td>{{ statistiques.filles_total }}</td>
+                    <td>{{ statistiques.filles_composes }}</td>
+                    <td>{{ statistiques.filles_admis }}</td>
+                    <td>{{ statistiques.filles_non_admis }}</td>
+                    <td>{{ statistiques.taux_filles_reussite }}</td>
+                    <td>{{ statistiques.taux_filles_echec }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <h5 class="text-center text-primary mt-4">Classement par ordre de mérite</h5>
             <div class="card-body table-responsive">
               <table class="table table-bordered table-striped">
                 <thead>
@@ -147,6 +178,7 @@
                 </tbody>
               </table>
             </div>
+
           </div>
         {% else %}
           <p class="p-3">Aucun bulletin trouvé pour les critères sélectionnés.</p>

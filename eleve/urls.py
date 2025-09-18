@@ -23,6 +23,10 @@ urlpatterns = [
     path('eleve-par-niveau/',views.liste_eleves_par_niveau_annee, name='liste_eleves_par_niveau_annee'),
     path('liste-eleves-par-groupe/',views.liste_eleves_par_groupe, name='liste_eleves_par_groupe'),
 
+    path('historique/',views.historique,name='historique_action'),
+    path('profiles/comptable',views.profiles,name='profiles'),
+
+    path('ajax/get_groupes/', views.get_groupes, name='get_groupes'),
 
 ]
 

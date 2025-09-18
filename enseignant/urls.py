@@ -30,6 +30,10 @@ urlpatterns = [
     path('suivi/enseignant', views.suivi, name='suivie'),
    
     path('mot/passe', views.change_password, name='change_password'),
+
+    path('historique/',views.historique,name='historique_action'),
+
+    path('ajax/get_classes_matiere/', views.get_classes_matiere, name='get_classes_matiere'),
 ]  
 
 

@@ -209,11 +209,13 @@
 <script src="{% static 'base/js/demo.js' %}"></script>
 <!-- Page specific script -->
 <script>
-  $(function () {
+$(document).ready(function() {
+    // DataTables existants
     $("#example1").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
     $('#example2').DataTable({
       "paging": true,
       "lengthChange": false,
@@ -223,6 +225,29 @@
       "autoWidth": false,
       "responsive": true,
     });
-  });
+
+    // 🔹 Filtre dynamique Niveau → Groupes
+    $("#nive").change(function() {
+        var niveau_id = $(this).val();
+        var group_select = $("#group");
+
+        if(niveau_id){
+            $.ajax({
+                url: "{% url 'get_groupes' %}",
+                data: {'niveau': niveau_id},
+                success: function(data){
+                    group_select.empty();
+                    group_select.append('<option value="">Sélectionner un groupe</option>');
+                    data.groupes.forEach(function(g){
+                        group_select.append('<option value="'+g.id+'">'+g.nom+'</option>');
+                    });
+                }
+            });
+        } else {
+            group_select.empty();
+            group_select.append('<option value="">Sélectionner un groupe</option>');
+        }
+    });
+});
 </script>
 {% endblock %}

@@ -4,15 +4,17 @@ from groupe_classe.models import GroupeClasse
 
 # Matière
 class Matiere(models.Model):
-    nom = models.CharField(max_length=50, unique=True)
+    nom = models.CharField(max_length=50)  # plus de unique=True
     coefficient = models.FloatField()
     niveau = models.ForeignKey(Niveau, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.nom
+        return f"{self.nom} ({self.niveau})"
     
     class Meta:
         ordering = ['-id']
+        unique_together = ('nom', 'niveau')  # nom + niveau doivent être uniques
+
 
 # Relation Enseignant-Matière
 class EnseignantMatiere(models.Model):

@@ -80,7 +80,7 @@
             <div class="card-header">
               <form method="get">
                 <div class="form-row">
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-md-4">
                     <label for="groupe_classe">Groupe / Classe :</label>
                     <select name="groupe_classe" id="groupe_classe" class="form-control" required>
                       <option value="">-- Sélectionnez un groupe / classe --</option>
@@ -89,13 +89,22 @@
                       {% endfor %}
                     </select>
                   </div>
-                  <div class="form-group col-md-6">
+                  <div class="form-group col-md-4">
                     <label for="annee_scolaire">Année Scolaire :</label>
                     <select name="annee_scolaire" id="annee_scolaire" class="form-control" required>
                       <option value="">-- Sélectionnez une année scolaire --</option>
                       {% for annee in annees_scolaires %}
                         <option value="{{ annee.id }}" {% if request.GET.annee_scolaire == annee.id|stringformat:"s" %}selected{% endif %}>{{ annee.nom }}</option>
                       {% endfor %}
+                    </select>
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="trimestre">Trimestre :</label>
+                    <select name="trimestre" id="trimestre" class="form-control" required>
+                      <option value="">-- Sélectionnez un trimestre --</option>
+                      <option value="1" {% if request.GET.trimestre == "1" %}selected{% endif %}>1er Trimestre</option>
+                      <option value="2" {% if request.GET.trimestre == "2" %}selected{% endif %}>2ème Trimestre</option>
+                      <option value="3" {% if request.GET.trimestre == "3" %}selected{% endif %}>3ème Trimestre</option>
                     </select>
                   </div>
                 </div>
@@ -109,7 +118,6 @@
                 {% for bulletin in bulletins_trimestriels %}
                   <div class="card mb-4 eleve-section">
                     <div class="card-body">
-                      <!-- En-tête avec photo et texte -->
                       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
                         <div>
                           {% if bulletin.bulletin.eleve.photo %}
@@ -160,8 +168,7 @@
                           <tr>
                             <td>{{ bulletin.rang_formate }}</td>
                             <td>{{ bulletin.moyenne_totale|default:"Non disponible" }}</td>
-                            <td>{{ bulletin.observation }}</td>
-
+                            <td>{{ bulletin.observation|default:"-" }}</td>
                           </tr>
                         </tbody>
                       </table>
