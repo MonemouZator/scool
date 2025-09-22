@@ -1,0 +1,211 @@
+{% extends "login/index.html" %}
+{% load static %}
+ {% block styl_parent %}
+  <title>profil-etablissement | Accueil</title>
+
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+
+
+
+ {% block body %}
+<body class="hold-transition sidebar-mini">
+ {% endblock body %}
+
+
+
+
+{% block contenu %}
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>PROFIL DE L'ETABLISSEMENT</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
+              <li class="breadcrumb-item active">Profile</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <!-- Formulaire d'ajout d'élève -->
+                <form action="{% url 'enregistrement' %}" method="post" class="row" enctype="multipart/form-data">
+                  {% csrf_token %}
+
+                  <!-- Messages de succès et d'erreur -->
+                  {% if messages %}
+                    <div class="col-12">
+                      <div class="alert alert-info">
+                        {% for message in messages %}
+                          <p>{{ message }}</p>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  {% endif %}
+
+                  
+                  <div class="form-group col-md-6">
+                    <label for="nom">Etablissement :</label>
+                    <input type="text" class="form-control" id="nom" name="nom" required placeholder="Entrer le nom de l'établissement">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="devise">Dévise  :</label>
+                    <input type="text" class="form-control" id="devise" name="devise" required placeholder="Entrer la dévise de l'etablissement">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="date">Date de creation :</label>
+                    <input type="date" class="form-control" id="date" name="date" required>
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="lieu">Pays :</label>
+                    <input type="text" class="form-control" id="pays" name="pays" required placeholder="Entrer le pays où se trouve.......... ">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="devise_pays">Dévise du pays :</label>
+                    <input type="text" class="form-control" id="devise_pays" name="devise_pays"  placeholder="Entrer la de vise de votre pays">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="meapu">MEAPU :</label>
+                    <input type="text" class="form-control" id="meapu" name="meapu" required placeholder="Entrer  MEAPU">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="ire">IRE :</label>
+                    <input type="text" class="form-control" id="ire" name="ire" required placeholder="Entrer l'iré conserner ">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="dpe">DPE :</label>
+                    <input type="text" class="form-control" id="dpe" name="dpe" required placeholder="Entrer dpe conserner">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="dsee">DSEE:</label>
+                    <input type="text" class="form-control" id="dsee" name="dsee" required placeholder="Entrer la dsee conserner">
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="logo">Logo de l'ecole :</label>
+                    <input type="file" class="form-control" id="logo" name="logo">
+                  </div>
+
+                  <div class="form-group col-md-12">
+                    <label for="respo">Responsanle :</label>
+                    <input type="text" class="form-control" id="respo" name="respo" required placeholder="Entrer le responsable de l'école">
+                  </div>
+
+                  <div class="modal-footer col-12">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+
+  
+
+  
+{% block scripte %}
+
+
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+<!-- Page specific script -->
+<script>
+$(document).ready(function() {
+    // DataTables existants
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+    $('#example2').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": false,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+
+    // 🔹 Filtre dynamique Niveau → Groupes
+    $("#nive").change(function() {
+        var niveau_id = $(this).val();
+        var group_select = $("#group");
+
+        if(niveau_id){
+            $.ajax({
+                url: "{% url 'get_groupes' %}",
+                data: {'niveau': niveau_id},
+                success: function(data){
+                    group_select.empty();
+                    group_select.append('<option value="">Sélectionner un groupe</option>');
+                    data.groupes.forEach(function(g){
+                        group_select.append('<option value="'+g.id+'">'+g.nom+'</option>');
+                    });
+                }
+            });
+        } else {
+            group_select.empty();
+            group_select.append('<option value="">Sélectionner un groupe</option>');
+        }
+    });
+});
+</script>
+{% endblock %}

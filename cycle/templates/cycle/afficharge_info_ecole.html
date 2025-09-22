@@ -1,0 +1,220 @@
+{% extends "login/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+<title>Info-établissement | Accueil</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+{% block body %}
+<body class="hold-transition sidebar-mini">
+{% endblock %}
+
+{% block contenu %}
+<div class="content-wrapper">
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1>GESTION DES INFOS DE L'ECOLE</h1>
+        </div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="">Accueil</a></li>
+            <li class="breadcrumb-item active">Tableau de bord</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">                  
+              <a href="{% url 'ajout_ecole' %}" class="btn btn-primary">Insérer les infos de l'école</a>
+            </div>
+
+            {% if messages %}
+              <div class="container mt-3">
+                {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-left-4"
+                       role="alert"
+                       style="font-weight: 500; font-size: 0.95rem;
+                              {% if message.tags == 'error' %}background-color: #f8d7da; color: #842029; border-left: 5px solid #f5c2c7;{% endif %}">
+                    <i class="fas {% if message.tags == 'success' %}fa-check-circle
+                                    {% elif message.tags == 'error' %}fa-times-circle
+                                    {% elif message.tags == 'warning' %}fa-exclamation-triangle
+                                    {% else %}fa-info-circle{% endif %} mr-2"></i>
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Fermer">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="card-body table-responsive">
+              <table id="example" class="table table-bordered table-hover">
+                <thead class="bg-primary">
+                  <tr>
+                    <th>Etablissement</th>
+                    <th>Devise</th>
+                    <th>Date création</th>
+                    <th>Directeur</th>
+                    <th>Logo</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for ecole in etablissements %}
+                  <tr>
+                    <td>{{ ecole.nom_ecole }}</td>
+                    <td>{{ ecole.devise_ecole }}</td>
+                    <td>{{ ecole.date_creation|date:'Y-m-d' }}</td>
+                    <td>{{ ecole.responsable }}</td>
+                    <td>
+                      {% if ecole.logo %}
+                        <img src="{{ ecole.logo.url }}" alt="Logo école" style="width: 60px; height: 60px;">
+                      {% else %}
+                        Aucune
+                      {% endif %}
+                    </td>
+                    <td>
+                      <!-- Modifier -->
+                      <a href="#" data-toggle="modal" data-target="#modifie{{ ecole.id }}" title="Modifier">
+                        <i class="fas fa-edit text-primary" style="font-size: 1.5rem;"></i>
+                      </a>
+
+                      <!-- Modal Modification -->
+                      <div class="modal fade" id="modifie{{ ecole.id }}" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                              <h5 class="modal-title">Modifier les informations</h5>
+                              <button type="button" class="close text-white" data-dismiss="modal">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              <form action="{% url 'modifier_info_ecole' ecole.id %}" method="post" class="row" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="form-group col-md-6">
+                                  <label for="nom">Etablissement :</label>
+                                  <input type="text" class="form-control" id="nom" name="nom" value="{{ ecole.nom_ecole }}" required>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <label for="devise">Devise :</label>
+                                  <input type="text" class="form-control" id="devise" name="devise" value="{{ ecole.devise_ecole }}" required>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <label for="date">Date de création :</label>
+                                  <input type="date" class="form-control" id="date" name="date" value="{{ ecole.date_creation|date:'Y-m-d' }}" required>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <label for="pays">Pays :</label>
+                                  <input type="text" class="form-control" id="pays" name="pays" value="{{ ecole.pays }}" required>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <label for="devise_pays">Devise du pays :</label>
+                                  <input type="text" class="form-control" id="devise_pays" name="devise_pays" value="{{ ecole.devise_pays }}" required>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <label for="meapu">MEAPU :</label>
+                                  <input type="text" class="form-control" id="meapu" name="meapu" value="{{ ecole.meapu }}" required>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <label for="ire">IRE :</label>
+                                  <input type="text" class="form-control" id="ire" name="ire" value="{{ ecole.ire }}" required>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <label for="dpe">DPE :</label>
+                                  <input type="text" class="form-control" id="dpe" name="dpe" value="{{ ecole.dpe }}" required>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <label for="dsee">DSEE :</label>
+                                  <input type="text" class="form-control" id="dsee" name="dsee" value="{{ ecole.dsee }}" required>
+                                </div>
+
+                                <div class="form-group col-md-6">
+                                  <label for="logo">Logo de l'école :</label>
+                                  <input type="file" class="form-control" id="logo" name="logo">
+                                  {% if ecole.logo %}
+                                    <img src="{{ ecole.logo.url }}" alt="Logo école" style="width: 100px; height: 100px; margin-top: 10px;">
+                                  {% else %}
+                                    <p>Aucun logo disponible</p>
+                                  {% endif %}
+                                </div>
+
+                                <div class="form-group col-md-12">
+                                  <label for="respo">Responsable :</label>
+                                  <input type="text" class="form-control" id="respo" name="respo" value="{{ ecole.responsable }}" required>
+                                </div>
+
+                                <div class="modal-footer w-100">
+                                  <button type="submit" class="btn btn-primary">Modifier</button>
+                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripte %}
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<script>
+  $(function () {
+    $("#example").DataTable({
+      "responsive": true,
+      "lengthChange": false,
+      "autoWidth": false,
+      "buttons": []
+    }).buttons().container().appendTo('#example_wrapper .col-md-6:eq(0)');
+  });
+</script>
+{% endblock %}

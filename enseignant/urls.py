@@ -18,8 +18,8 @@ urlpatterns = [
     path('depense/', views.ajouter_depense, name='depense'),  # Ajouter une dépense
     path('bilan-financier/', views.bilan_financier, name='bilan_financier'),  # Bilan financier
       # Bilan financier
-    path('profil/',views.profi,name='profi_enseignant'),
-    path('profil/',views.profil_comptable,name='profil'),
+    path('profil/enseignant',views.profi,name='profi_enseignant'),
+    #path('profil/comptable',views.profil_comptable,name='profil_comptable'),
     path('supprimer-paiement/', views.supprimer_paiement, name='supprimer_paiement'),
     path('modifier-paiement/', views.modifier_paiement, name='modifier_paiement'),
 
@@ -31,9 +31,19 @@ urlpatterns = [
    
     path('mot/passe', views.change_password, name='change_password'),
 
-    path('historique/',views.historique,name='historique_action'),
+    path('historique/',views.historique,name='historique_Comptable'),
 
     path('ajax/get_classes_matiere/', views.get_classes_matiere, name='get_classes_matiere'),
+
+    path('finance/finance/', views.finance, name='finance'),
+    path('depense/fonda/', views.ajouter_depense_fondateur, name='depense_fondateur'),
+
+    path('liste/enseignant/fonda/', views.enseignant_fondateur, name='enseignant_fonda'),
+    path('paiement/fonda/', views.paiement_salaire_fonda, name='paiement_salaire_fonda'),
+
+    path('suivi-matiere/enseigner', views.suivie_ensei, name='suivie_enseignant'),
+    path('fondateur/enseignant/<int:id>/', views.detail_enseignant_fonda, name='detail_enseignant_fonda'),
+
 ]  
 
 

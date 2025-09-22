@@ -29,5 +29,10 @@ urlpatterns = [
     path('debloquer/tous/utilisateurs/',views.deloquer_compte,name='deloquer_compte'),
     path('historique/',views.historique,name='historique_action'),
     path('pwd/comptable',views.change_password_comptable,name='changer_password_comptable'),
-    
+     path('change/mot/passe/', views.changer_password_admin, name='changer_password_admin'),
+
+    path('historique/admin',views.historique_admin,name='historique_admin'),
+
+    path('motprofil/admin/',views.profil_admin,name='profil_admin'),
+
 ]

@@ -104,62 +104,64 @@
           {% if sorted_bulletins %}
           <div id="impression">
 
+                {% for ecole in ecoles %}
+                
+               
             <!-- HEADER AVEC TEXTE À GAUCHE ET LOGO À DROITE -->
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
               <div style="text-align: left; font-size: 16px; line-height: 1.5;">
-              <strong>MEAPU</strong><br>
-                <strong>IRE/KANKAN</strong><br>
-                <strong>DPE/KANKAN</strong><br>
-                <strong>DSSE/KANKAN4</strong>
+              <strong>{{ecole.meapu}}</strong><br>
+                <strong>IRE/{{ecole.ire}}</strong><br>
+                <strong>DPE/{{ecole.dpe}}</strong><br>
+                <strong>DSSE/{{ecole.dsee}}</strong>
               </div>
               <div>
-                 <img src="{% static 'base/img/logo.jpeg' %}" alt="Logo École" style="height:80px; width:auto;">
+                  <img src="{{ ecole.logo.url }}" alt="Logo École" style="height:80px; width:auto;">
               </div>
             </div>
 
             <center>
-              <h1>RÉPUBLIQUE DE GUINÉE</h1>
-              <p><em>Travail - Justice - Solidarité</em></p>
-              <h2>Groupe Scolaire Privé BNB</h2>
-              <p><em>Union - Sincérité - Excellence</em></p>
+              <h1>{{ecole.pays}}</h1>
+              <p><em>{{ecole.devise_pays}}</em></p>
+              <h2>{{ecole.nom_ecole}}</h2>
+              <p><em>{{ecole.devise_ecole}}</em></p>
               <h3>Résultat du {{ trimestre_label }} – {{ annee_scolaire_obj.nom }}</h3>
-              <p>Niveau : <strong>{{ niveau_obj.nom }}</strong></p>
+              <h3>Niveau : <strong>{{ niveau_obj.nom }}</strong></h3>
             </center>
-
+                 {% endfor %}
             <!-- Statistiques -->
-            <h5 class="text-center text-primary mt-4">Statistiques du Trimestre</h5>
+            <h5 class="text-center text-primary mt-4">Statistiques du Trimestre  {{ trimestre_label }}</h5>
             <div class="card-body table-responsive">
-              <table class="table table-bordered table-striped">
+              <table class="table table-bordered text-center">
                 <thead>
                   <tr>
                     <th>Total Inscrits</th>
-                    <th>Ayant Composé</th>
-                    <th>Admis</th>
-                    <th>Non Admis</th>
-                    <th>Taux Réussite (%)</th>
-                    <th>Taux Échec (%)</th>
                     <th>Total Filles</th>
+                    <th>Ayant Composé</th>
                     <th>Filles ayant Composé</th>
+                    <th>Admis</th>
                     <th>Filles Admis</th>
+                    <th>Non Admis</th>
                     <th>Filles Non Admis</th>
-                    <th>Taux Réussite Filles (%)</th>
-                    <th>Taux Échec Filles (%)</th>
+                    <th>Taux de Réussite</th>
+                    <th>Taux Réussite Filles </th>
+                  
+
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>{{ statistiques.total_inscrits }}</td>
-                    <td>{{ statistiques.ayant_composes }}</td>
-                    <td>{{ statistiques.admis }}</td>
-                    <td>{{ statistiques.non_admis }}</td>
-                    <td>{{ statistiques.taux_reussite }}</td>
-                    <td>{{ statistiques.taux_echec }}</td>
                     <td>{{ statistiques.filles_total }}</td>
+                    <td>{{ statistiques.ayant_composes }}</td>
                     <td>{{ statistiques.filles_composes }}</td>
-                    <td>{{ statistiques.filles_admis }}</td>
+                    <td>{{ statistiques.non_admis }}</td>
                     <td>{{ statistiques.filles_non_admis }}</td>
-                    <td>{{ statistiques.taux_filles_reussite }}</td>
-                    <td>{{ statistiques.taux_filles_echec }}</td>
+                    <td>{{ statistiques.admis }}</td>
+                    <td>{{ statistiques.filles_admis }}</td>
+                    <td>{{ statistiques.taux_filles_echec }}%</td>
+                    <td>{{ statistiques.taux_echec }}%</td>
+             
                   </tr>
                 </tbody>
               </table>
@@ -188,7 +190,18 @@
                   {% endfor %}
                 </tbody>
               </table>
+
             </div>
+
+               {% for ecole in ecoles %}
+      
+              <!-- Remarque et signature -->
+                <div class="mt-4 text-center">
+                
+                  <h4>Directeur:</h4><br><br>
+                  <h4>{{ecole.responsable}}</h4>
+                </div>
+                  {% endfor %}
 
           </div>
           {% else %}

@@ -289,7 +289,7 @@ def comptable_dashboard(request):
 
     return render(request, 'login/comptable_dashboard.html', context)
 
-# TABLEAUX DE BORD DES ENSEIGNANTS
+# TABLEAUX DE BORD DE DIRECTEUR
 
 @login_required
 def enseignant_dashboard(request):
@@ -423,7 +423,6 @@ def dashbaord_fondateur(request):
     }
 
     return render(request, 'login/dashbaord_fondateur.html', context)
-
 
    
 def bloc_aside(request):
@@ -624,3 +623,90 @@ def change_password_comptable(request):
             messages.success(request, "Mot de passe changé, veuillez vous reconnecter.")
             return redirect('login')
     return render(request, 'login/changer_password_comptable.html')
+
+
+@login_required(login_url='/')
+def changer_password_admin(request):
+    if request.method == "POST":
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('cpwd')
+        auto_login = request.POST.get('connect')  # checkbox pour rester connecté
+
+        # Vérifications côté serveur
+        if not password or not confirm_password:
+            messages.error(request, "Veuillez remplir tous les champs.")
+            return redirect('changer_password_admin')
+
+        if password != confirm_password:
+            messages.error(request, "Les mots de passe ne sont pas identiques.")
+            return redirect('changer_password_admin')
+
+        if len(password) < 6:
+            messages.error(request, "Le mot de passe doit contenir au moins 6 caractères.")
+            return redirect('changer_password_admin')
+
+        # Changement du mot de passe
+        user = request.user
+        user.set_password(password)
+        user.save()
+
+        # Option : reconnecter l'utilisateur
+        if auto_login == "on":
+            user = authenticate(username=user.username, password=password)
+            if user is not None:
+                login(request, user)
+            messages.success(request, "Mot de passe changé avec succès, vous êtes reconnecté !")
+            return redirect('changer_password_admin')
+        else:
+            logout(request)
+            messages.success(request, "Mot de passe changé, veuillez vous reconnecter.")
+            return redirect('login')
+    return render(request, 'admin/changer_password_admin.html')
+
+def historique_admin(request):
+    
+    if request.user.is_superuser:
+        # Super utilisateur : voir tous les historiques
+        historiques = Historique.objects.all().order_by('-created_time')
+    else:
+        # Utilisateur normal : voir uniquement ses propres actions
+        historiques = Historique.objects.filter(user=request.user).order_by('-created_time')
+
+    return render(request, 'admin/historique.html', {'historiques': historiques})
+
+def profil_admin(request):
+
+    user = request.user  # Utilisateur connecté
+
+    if request.method == "POST":
+        user.nom = request.POST.get("nom", user.nom)
+        user.prenom = request.POST.get("prenom", user.prenom)
+        user.email = request.POST.get("email", user.email)
+        user.genre = request.POST.get("sexe", user.genre)
+        user.telephone = request.POST.get("contact", user.telephone)
+        user.lieu_naiss = request.POST.get("filiation", user.lieu_naiss)
+        user.username = request.POST.get("username", user.username)  # Optionnel
+
+        date_str = request.POST.get("date")
+        if date_str:
+            try:
+                user.date_naissance = datetime.strptime(date_str, "%Y-%m-%d").date()
+            except ValueError:
+                messages.error(request, "Format de date invalide. Utilise AAAA-MM-JJ.")
+
+        # Gestion de la photo
+        if "photo" in request.FILES:
+            user.photo = request.FILES["photo"]
+
+        try:
+            user.save()
+            messages.success(request, "Votre profil a été mis à jour avec succès.")
+        except Exception as e:
+            messages.error(request, f"Erreur lors de la sauvegarde : {e}")
+
+        return redirect("profil_admin")
+    
+    context = {
+        "user": user,
+    }
+    return render(request,'admin/profil_admin.html',context)

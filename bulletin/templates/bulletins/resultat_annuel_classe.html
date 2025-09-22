@@ -95,61 +95,73 @@
         {% if sorted_bulletins %}
           <div id="impression">
 
-            <!-- HEADER AVEC TEXTE ADMINISTRATIF À GAUCHE ET LOGO À DROITE -->
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-              <div style="text-align: left; font-size: 16px; line-height: 1.5;">
-               <strong>MEAPU</strong><br>
-                <strong>IRE/KANKAN</strong><br>
-                <strong>DPE/KANKAN</strong><br>
-                <strong>DSSE/KANKAN4</strong>
-              </div>
-              <div>
-                 <img src="{% static 'base/img/logo.jpeg' %}" alt="Logo École" style="height:80px; width:auto;">
-              </div>
-            </div>
+              {% for ecole in ecoles %}
+              
+              
+                              <!-- HEADER AVEC TEXTE ADMINISTRATIF À GAUCHE ET LOGO À DROITE -->
+                  <!-- HEADER RESPONSIVE AVEC TEXTE ADMINISTRATIF À GAUCHE ET LOGO À DROITE -->
+                  <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
 
-            <center>
-              <h1>RÉPUBLIQUE DE GUINÉE</h1>
-              <p><em>Travail - Justice - Solidarité</em></p>
-              <h2>Groupe Scolaire Privé BNB</h2>
-              <p><em>Union - Sincérité - Excellence</em></p>
-              <h4>Résultat annuel de la classe <strong>{{ groupe_obj.nom }}</strong></h4>
-              <p>Année scolaire : <strong>{{ annee_scolaire_obj.nom }}</strong></p>
-            </center>
+                    <!-- Texte administratif à gauche -->
+                    <div style="flex: 1; min-width: 200px; text-align: left; font-size: 16px; line-height: 1.5;">
+                      <strong>{{ ecole.meapu }}</strong><br>
+                      <strong>IRE/{{ ecole.ire }}</strong><br>
+                      <strong>DPE/{{ ecole.dpe }}</strong><br>
+                      <strong>DSSE/{{ ecole.dsee }}</strong>
+                    </div>
 
+                    <!-- Logo à droite -->
+                    <div style="flex: 1; min-width: 150px; text-align: right;">
+                      {% if ecole.logo %}
+                        <img src="{{ ecole.logo.url }}" alt="Logo École" style="height: 80px; width: auto; max-width: 100%;">
+                      {% endif %}
+                    </div>
+
+                  </div>
+
+                  <!-- TITRE CENTRAL -->
+                  <div style="text-align: center; margin-bottom: 20px;">
+                    <h1 style="margin:0;">{{ ecole.pays }}</h1>
+                    <p style="margin:0;"><em>{{ ecole.devise_pays }}</em></p>
+                    <h2 style="margin:5px 0;">{{ ecole.nom_ecole }}</h2>
+                    <p style="margin:0;"><em>{{ ecole.devise_ecole }}</em></p>
+                    <h3 style="margin-top:10px;">Résultat annuel de la classe <strong>{{ groupe_obj.nom }}</strong></h3>
+                    <p>Année scolaire : <strong>{{ annee_scolaire_obj.nom }}</strong></p>
+                  </div>
+
+                {% endfor %}
             <h5 class="text-center text-primary mt-4">Statistiques de la classe</h5>
             <div class="card-body table-responsive">
-              <table class="table table-bordered table-striped">
+              <table class="table table-bordered text-center">
                 <thead>
                   <tr>
                     <th>Total Inscrits</th>
-                    <th>Ayant Composé</th>
-                    <th>Admis</th>
-                    <th>Non Admis</th>
-                    <th>Taux Réussite (%)</th>
-                    <th>Taux Échec (%)</th>
                     <th>Total Filles</th>
+                    <th>Ayant Composé</th>
                     <th>Filles ayant Composé</th>
+                    <th>Admis</th>
                     <th>Filles Admis</th>
+                    <th>Non Admis</th>
                     <th>Filles Non Admis</th>
-                    <th>Taux Réussite Filles (%)</th>
-                    <th>Taux Échec Filles (%)</th>
+                    <th>Taux de Réussite</th>
+                    <th>Taux Réussite Filles </th>
+                  
+
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>{{ statistiques.total_inscrits }}</td>
-                    <td>{{ statistiques.ayant_composes }}</td>
-                    <td>{{ statistiques.admis }}</td>
-                    <td>{{ statistiques.non_admis }}</td>
-                    <td>{{ statistiques.taux_reussite }}</td>
-                    <td>{{ statistiques.taux_echec }}</td>
                     <td>{{ statistiques.filles_total }}</td>
+                    <td>{{ statistiques.ayant_composes }}</td>
                     <td>{{ statistiques.filles_composes }}</td>
-                    <td>{{ statistiques.filles_admis }}</td>
+                    <td>{{ statistiques.non_admis }}</td>
                     <td>{{ statistiques.filles_non_admis }}</td>
-                    <td>{{ statistiques.taux_filles_reussite }}</td>
-                    <td>{{ statistiques.taux_filles_echec }}</td>
+                    <td>{{ statistiques.admis }}</td>
+                    <td>{{ statistiques.filles_admis }}</td>
+                    <td>{{ statistiques.taux_filles_echec }}%</td>
+                    <td>{{ statistiques.taux_echec }}%</td>
+             
                   </tr>
                 </tbody>
               </table>
@@ -172,11 +184,21 @@
                       <td>{{ bulletin.rang }}</td>
                       <td>{{ bulletin.bulletin.eleve.nom }} {{ bulletin.bulletin.eleve.prenom }}</td>
                       <td>{{ bulletin.moyenne|floatformat:2 }}</td>
-                      <td>{{ bulletin.observation }}</td>
+                      <td>{{ bulletin.observation|default:"-" }}</td>
                     </tr>
                   {% endfor %}
                 </tbody>
-              </table>
+              </table><br><br>
+               {% for ecole in ecoles %}
+                        
+                      
+                      <!-- Remarque et signature -->
+                      <div class="mt-4 text-center">
+                      
+                        <h4>Directeur:</h4><br><br>
+                        <h4>{{ecole.responsable}}</h4>
+                      </div>
+                        {% endfor %}
             </div>
 
           </div>

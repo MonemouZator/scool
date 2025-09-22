@@ -9,54 +9,108 @@
 {% block menu_sidebar %}
 <!--section tableau de bord-->
 <li class="nav-item">
-  <a href="{% url 'comptable_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'comptable_dashboard' %}active{% endif %}">
+  <a href="{% url 'dashbaord.directeur' %}" class="nav-link {% if request.resolver_match.url_name == 'dashbaord.directeur' %}active{% endif %}">
     <i class="nav-icon fas fa-tachometer-alt"></i>
     <p>Tableau de bord</p>
   </a>
 </li>
 <a href="#" class="nav-link">
-  <p>Comptabilité</p>
+  <p class="bg-warning">GESTION ENSEIGNANTS</p>
 </a>
-
 <li class="nav-item">
-  <a href="{% url 'configuration' %}" class="nav-link {% if request.resolver_match.url_name == 'configuration' %}active{% endif %}">
+  <a href="{% url 'enseignant_fonda' %}" class="nav-link {% if request.resolver_match.url_name == 'enseignant_fonda' %}active{% endif %}">
     <i class="badge badge-danger"><span class="text-white">1</span></i>
-    <p>Frais scolarité</p>
+    <p>Liste des enseignants</p>
+  </a>
+</li>
+<li class="nav-item">
+  <a href="{% url 'suivie_enseignant' %}" class="nav-link {% if request.resolver_match.url_name == 'suivie_enseignant' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">2</span></i>
+    <p>Suivi des enseignants</p>
+  </a>
+</li>
+<a href="#" class="nav-link">
+  <p class="bg-warning">GESTION DES ELEVES</p>
+</a>
+<li class="nav-item">
+  <a href="{% url 'liste_eleves_par_niveau_annee_fonda' %}" class="nav-link {% if request.resolver_match.url_name == 'liste_eleves_par_niveau_annee_fonda' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">1</span></i>
+    <p>Eleve par niveau</p>
+  </a>
+</li>
+<li class="nav-item">
+  <a href="{% url 'liste_eleves_par_groupe_fonda' %}" class="nav-link {% if request.resolver_match.url_name == 'liste_eleves_par_groupe_fonda' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">2</span></i>
+    <p>Eleve par classe</p>
   </a>
 </li>
 
+<a href="#" class="nav-link">
+  <p class="bg-warning">GESTION COMPTABILITE</p>
+</a>
 <li class="nav-item">
-  <a href="{% url 'liste_eleves' %}" class="nav-link {% if request.resolver_match.url_name == 'liste_eleves' %}active{% endif %}">
-    <i class="badge badge-danger"><span class="text-white">2</span></i>
+  <a href="{% url 'statut_paiement_eleve_fondateur' %}" class="nav-link {% if request.resolver_match.url_name == 'statut_paiement_eleve_fondateur' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">1</span></i>
     <p>Statut de Paiement</p>
   </a>
 </li>
-
 <li class="nav-item">
-  <a href="{% url 'paiement_salaire' %}" class="nav-link {% if request.resolver_match.url_name == 'paiement_salaire' %}active{% endif %}">
+  <a href="{% url 'paiement_salaire_fonda' %}" class="nav-link {% if request.resolver_match.url_name == 'paiement_salaire_fonda' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">2</span></i>
+    <p> Salaire des Enseignants</p>
+  </a>
+</li>
+<li class="nav-item">
+  <a href="{% url 'depense_fondateur' %}" class="nav-link {% if request.resolver_match.url_name == 'depense_fondateur' %}active{% endif %}">
     <i class="badge badge-danger"><span class="text-white">3</span></i>
-    <p>Paiement de Salaire</p>
+    <p>Liste des Dépense</p>
   </a>
 </li>
 
 <li class="nav-item">
-  <a href="{% url 'depense' %}" class="nav-link {% if request.resolver_match.url_name == 'depense' %}active{% endif %}">
+  <a href="{% url 'finance' %}" class="nav-link {% if request.resolver_match.url_name == 'finance' %}active{% endif %}">
     <i class="badge badge-danger"><span class="text-white">4</span></i>
-    <p>Dépense</p>
-  </a>
-</li>
-
-<li class="nav-item">
-  <a href="{% url 'bilan_financier' %}" class="nav-link {% if request.resolver_match.url_name == 'bilan_financier' %}active{% endif %}">
-    <i class="badge badge-danger"><span class="text-white">5</span></i>
     <p>Finance</p>
   </a>
 </li>
 
+<a href="#" class="nav-link">
+  <p class="bg-warning">GESTION UTILISATEURS</p>
+</a>
+
+    <li class="nav-item">
+        <a href="{% url 'ajouter_administrateur' %}" class="nav-link {% if request.resolver_match.url_name == 'ajouter_administrateur' %}active{% endif %}">
+      
+        <i class="badge badge-danger"><span class="text-white">1</span></i>
+        <p>Ajouter utilisateur</p>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a href="{% url 'liste_administrateurs' %}" class="nav-link {% if request.resolver_match.url_name == 'liste_administrateurs' %}active{% endif %}">
+      
+        <i class="badge badge-danger"><span class="text-white">2</span></i>
+        <p>Liste des utilisateurs</p>
+      </a>
+    </li>
+
 <li class="nav-item">
-  <a href="" class="nav-link {% if request.resolver_match.url_name == '' %}active{% endif %}">
-    <i class="badge badge-danger"><span class="text-white">6</span></i>
-    <p>Profile</p>
+  <a href="{% url 'profil_admin' %}" class="nav-link {% if request.resolver_match.url_name == 'profil_admin' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">3</span></i>
+    <p>Mon Profile</p>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a href="{% url 'changer_password_admin' %}" class="nav-link {% if request.resolver_match.url_name == 'changer_password_admin' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">4</span></i>
+    <p>Changer mot passe</p>
+  </a>
+</li>
+
+<li class="nav-item">
+  <a href="{% url 'historique_admin' %}" class="nav-link {% if request.resolver_match.url_name == 'historique_admin' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">5</span></i>
+    <p>Historique des actions</p>
   </a>
 </li>
 
@@ -77,12 +131,12 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0">Tableau de bord Du Comptable</h1>
+          <h1 class="m-0">Tableau de bord Du Fondateur</h1>
         </div>
         <!-- /.col -->
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="{% url 'comptable_dashboard' %}">acceuil</a></li>
+            <li class="breadcrumb-item"><a href="">acceuil</a></li>
             <li class="breadcrumb-item active">tableau de bord</li>
           </ol>
         </div>

@@ -95,61 +95,69 @@
           {% if bulletins %}
             <div id="impression">
 
+                  {% for ecole in ecoles %}
+                  
+                  
               <!-- HEADER AVEC TEXTE À GAUCHE ET LOGO À DROITE -->
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <!-- Texte administratif -->
                 <div style="text-align: left; font-size: 16px; line-height: 1.5;">
-                 <strong>MEAPU</strong><br>
-                  <strong>IRE/KANKAN</strong><br>
-                  <strong>DPE/KANKAN</strong><br>
-                  <strong>DSSE/KANKAN4</strong>
+                 <strong>{{ecole.meapu}}</strong><br>
+                  <strong>IRE/{{ecole.ire}}</strong><br>
+                  <strong>DPE/{{ecole.dpe}}</strong><br>
+                  <strong>DSSE/{{ecole.dsee}}</strong>
                 </div>
                 <!-- Logo école -->
                 <div>
-                   <img src="{% static 'base/img/logo.jpeg' %}" alt="Logo École" style="height:80px; width:auto;">
+                    <img src="{{ ecole.logo.url }}" alt="Logo École" style="height:80px; width:auto;">
                 </div>
               </div>
 
               <center>
-                <h1>RÉPUBLIQUE DE GUINÉE</h1>
-                <p><em>Travail - Justice - Solidarité</em></p>
-                <h2>Groupe Scolaire Privé BNB</h2>
-                <p><em>Union - Sincérité - Excellence</em></p>
+                <h1>{{ecole.pays}}</h1>
+                <p><em>{{ecole.devise_pays}}</em></p>
+                <h2>{{ecole.nom_ecole}}</h2>
+                <p><em>{{ecole.devise_ecole}}</em></p>
                 <h4>Résultat annuel de la {{ niveau_obj.nom }}</h4>
                 <p>Année scolaire : <strong>{{ annee_scolaire_obj.nom }}</strong></p>
               </center>
 
+                  {% endfor %}
               <!-- Statistiques globales -->
               <h5 class="text-primary mt-4">Statistiques Globales</h5>
-              <table class="table table-bordered">
-                <tr>
-                  <th>Total Inscrits</th>
-                  <th>Ayant Composé</th>
-                  <th>Admis</th>
-                  <th>Non Admis</th>
-                  <th>Taux Réussite (%)</th>
-                  <th>Taux Échec (%)</th>
-                  <th>Total Filles</th>
-                  <th>Filles ayant Composé</th>
-                  <th>Filles Admis</th>
-                  <th>Filles Non Admis</th>
-                  <th>Taux Réussite Filles (%)</th>
-                  <th>Taux Échec Filles (%)</th>
-                </tr>
-                <tr>
-                  <td>{{ statistiques.total_inscrits }}</td>
-                  <td>{{ statistiques.ayant_composes }}</td>
-                  <td>{{ statistiques.admis }}</td>
-                  <td>{{ statistiques.non_admis }}</td>
-                  <td>{{ statistiques.taux_reussite }}</td>
-                  <td>{{ statistiques.taux_echec }}</td>
-                  <td>{{ statistiques.filles_total }}</td>
-                  <td>{{ statistiques.filles_composes }}</td>
-                  <td>{{ statistiques.filles_admis }}</td>
-                  <td>{{ statistiques.filles_non_admis }}</td>
-                  <td>{{ statistiques.taux_filles_reussite }}</td>
-                  <td>{{ statistiques.taux_filles_echec }}</td>
-                </tr>
+              <table class="table table-bordered text-center">
+                <thead>
+                  <tr>
+                    <th>Total Inscrits</th>
+                    <th>Total Filles</th>
+                    <th>Ayant Composé</th>
+                    <th>Filles ayant Composé</th>
+                    <th>Admis</th>
+                    <th>Filles Admis</th>
+                    <th>Non Admis</th>
+                    <th>Filles Non Admis</th>
+                    <th>Taux de Réussite</th>
+                    <th>Taux Réussite Filles </th>
+                  
+
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ statistiques.total_inscrits }}</td>
+                    <td>{{ statistiques.filles_total }}</td>
+                    <td>{{ statistiques.ayant_composes }}</td>
+                    <td>{{ statistiques.filles_composes }}</td>
+                    <td>{{ statistiques.non_admis }}</td>
+                    <td>{{ statistiques.filles_non_admis }}</td>
+                    <td>{{ statistiques.admis }}</td>
+                    <td>{{ statistiques.filles_admis }}</td>
+                    <td>{{ statistiques.taux_echec }}%</td>
+                    <td>{{ statistiques.taux_filles_echec }}%</td>
+                    
+             
+                  </tr>
+                </tbody>
               </table>
 
               <!-- Classement par ordre de mérite -->
@@ -175,6 +183,16 @@
                     {% endfor %}
                   </tbody>
                 </table>
+                
+                 {% for ecole in ecoles %}
+      
+              <!-- Remarque et signature -->
+                <div class="mt-4 text-center">
+                
+                  <h4>Directeur:</h4><br><br>
+                  <h4>{{ecole.responsable}}</h4>
+                </div>
+                  {% endfor %}
               </div>
 
             </div>

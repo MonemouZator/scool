@@ -7,13 +7,14 @@ from annee_scolaire.models import AnneeScolaire
 from note.models import Note
 from .models import BulletinTrimestriel, BulletinAnnuel
 
-from cycle.models import Cycle  # à importer
+from cycle.models import Cycle , Etablissement # à importer
 from groupe_classe.models import GroupeClasse  # déjà importé
 
 # ------------------------
 # BULLETINS TRIMESTRIELS PAR NIVEAU ET CYCLE
 # ------------------------
 def bulletins_trimestriels_niveau(request):
+    ecoles=Etablissement.objects.all()
     cycles = Cycle.objects.all()
     niveaux = Niveau.objects.all()
     annees_scolaires = AnneeScolaire.objects.all()
@@ -52,6 +53,7 @@ def bulletins_trimestriels_niveau(request):
     bulletins_list.sort(key=lambda x: x['moyenne_totale'], reverse=True)
 
     context = {
+        "ecoles":ecoles,
         "cycles": cycles,
         "niveaux": niveaux,
         "annees_scolaires": annees_scolaires,
@@ -72,6 +74,7 @@ def bulletins_trimestriels_niveau(request):
 # BULLETINS TRIMESTRIELS PAR CLASSE
 # ------------------------
 def bulletins_trimestriels_classe(request):
+    ecoles=Etablissement.objects.all()
     groupes_classes = GroupeClasse.objects.all()
     annees_scolaires = AnneeScolaire.objects.all()
 
@@ -92,6 +95,7 @@ def bulletins_trimestriels_classe(request):
                 annee_scolaire_id=annee_id
             )
             bulletins_list.append({
+                
                 'bulletin': bulletin,
                 'notes': bulletin.notes_par_matiere,
                 'moyenne_totale': bulletin.moyenne_totale or 0,
@@ -127,11 +131,13 @@ def bulletins_trimestriels_classe(request):
         'groupe_id': groupe_id,
         'annee_id': annee_id,
         'trimestre': trimestre,
+        "ecoles":ecoles,
     }
     return render(request, "bulletins/bulletins_trimestriels_classe.html", context)
 
 
 def resultat_trimestriel_classe(request):
+    ecoles=Etablissement.objects.all()
     groupes_classes = GroupeClasse.objects.all()
     annees_scolaires = AnneeScolaire.objects.all()
 
@@ -242,6 +248,7 @@ def resultat_trimestriel_classe(request):
         'annee_scolaire_obj': annee_scolaire_obj,
         'trimestre_label': trimestre_label,
         'statistiques': statistiques,
+        "ecoles":ecoles,
     }
 
     return render(request, "bulletins/resultat_trimestriel_classe.html", context)
@@ -250,12 +257,9 @@ def resultat_trimestriel_classe(request):
 # ------------------------
 # RESULTATS ANNUELS PAR CLASSE
 # ------------------------
-from django.shortcuts import render
-from .models import BulletinAnnuel
-from eleve.models import Eleve, GroupeClasse
-from annee_scolaire.models import AnneeScolaire
 
 def resultat_annuel_classe(request):
+    ecoles=Etablissement.objects.all()
     groupes_classes = GroupeClasse.objects.all()
     annees_scolaires = AnneeScolaire.objects.all()
 
@@ -366,6 +370,7 @@ def resultat_annuel_classe(request):
         'groupe_obj': groupe_obj,
         'annee_scolaire_obj': annee_scolaire_obj,
         'statistiques': statistiques,
+        "ecoles":ecoles,
     }
 
     return render(request, "bulletins/resultat_annuel_classe.html", context)
@@ -425,6 +430,7 @@ from annee_scolaire.models import AnneeScolaire
 from .models import BulletinTrimestriel
 
 def resultats_trimestriels_niveau(request):
+    ecoles=Etablissement.objects.all()
     niveaux = Niveau.objects.all()
     annees_scolaires = AnneeScolaire.objects.all()
 
@@ -532,6 +538,7 @@ def resultats_trimestriels_niveau(request):
         'annee_scolaire_obj': annee_scolaire_obj,
         'trimestre_label': trimestre_label,
         'statistiques': statistiques,
+        "ecoles":ecoles,
     }
 
     return render(request, "bulletins/resultats_trimestriels_niveau.html", context)
@@ -539,6 +546,7 @@ def resultats_trimestriels_niveau(request):
 
 
 def resultats_annuels_niveau(request):
+    ecoles=Etablissement.objects.all()
     niveaux = Niveau.objects.all()
     annees_scolaires = AnneeScolaire.objects.all()
 
@@ -640,6 +648,7 @@ def resultats_annuels_niveau(request):
         'niveau_obj': niveau_obj,
         'annee_scolaire_obj': annee_scolaire_obj,
         'statistiques': statistiques,
+        'ecoles':ecoles,
     }
 
     return render(request, "bulletins/resultats_annuels_niveau.html", context)
@@ -648,6 +657,7 @@ from django.db.models import Avg
 
 
 def bulletins_annuels_classe(request):
+    ecoles=Etablissement.objects.all()
     annee_id = request.GET.get("annee")
     groupe_id = request.GET.get("groupe")
 
@@ -707,35 +717,20 @@ def bulletins_annuels_classe(request):
         "bulletins_annuels": bulletins_annuels,
         "annee_scolaire": AnneeScolaire.objects.filter(id=annee_id).first(),
         "groupe": GroupeClasse.objects.filter(id=groupe_id).first(),
+        "ecoles":ecoles,
     }
     return render(request, "bulletins/bulletins_annuel_classe.html", context)
 
 
 from django.db.models import Avg, F
 
-from django.shortcuts import render
-from django.db.models import Avg, F
-from eleve.models import Eleve
-from annee_scolaire.models import AnneeScolaire
-from note.models import Note
-from bulletin.models import BulletinAnnuel
-
-
-from django.shortcuts import render
-from eleve.models import Eleve
-from annee_scolaire.models import AnneeScolaire
-from note.models import Note
-from bulletin.models import BulletinAnnuel
-from niveau.models import Niveau
-from cycle.models import Cycle
-from django.db.models import Avg, F
-
 def bulletins_annuels_niveau(request):
+    
     # Récupération des filtres
     cycles = Cycle.objects.all()
     niveaux = Niveau.objects.all()
     annees_scolaires = AnneeScolaire.objects.all()
-
+    ecoles=Etablissement.objects.all()
     cycle_id = request.GET.get('cycle')
     niveau_id = request.GET.get('niveau')
     annee_id = request.GET.get('annee_scolaire')
@@ -788,6 +783,7 @@ def bulletins_annuels_niveau(request):
             previous_moy = b['moyenne_annuelle']
 
     context = {
+        "ecoles":ecoles,
         "cycles": cycles,
         "niveaux": niveaux,
         "annees_scolaires": annees_scolaires,
@@ -813,6 +809,7 @@ def get_niveaux_par_cycle(request):
 
 
 def bulletins_annuels_classe(request):
+    ecoles=Etablissement.objects.all()
     # Récupérer les filtres
     groupes = GroupeClasse.objects.all()
     annees_scolaires = AnneeScolaire.objects.all()
@@ -863,6 +860,7 @@ def bulletins_annuels_classe(request):
             previous_moy = b['moyenne_annuelle']
 
     context = {
+        "ecoles":ecoles,
         "groupes": groupes,
         "annees_scolaires": annees_scolaires,
         "bulletins_annuels": bulletins_list,
@@ -873,3 +871,9 @@ def bulletins_annuels_classe(request):
     }
 
     return render(request, "bulletins/bulletins_annuel_classe.html", context)
+
+
+###################################################################
+#LES DROIT DU FONDATEUR
+# #################################################################
+

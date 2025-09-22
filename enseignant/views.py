@@ -634,3 +634,115 @@ def historique(request):
         historiques = Historique.objects.filter(user=request.user).order_by('-created_time')
 
     return render(request, 'enseignant/historique.html', {'historiques': historiques})
+
+
+###################################################################
+#LES DROIT DU FONDATEUR
+# #################################################################
+
+##############################LE BILAN FINANCIER ###################################
+def finance(request):
+    annees_scolaires = AnneeScolaire.objects.all().order_by('-id')
+    total_entrées = 0
+    total_sorties = 0
+    solde = 0
+    annee_scolaire = None
+    selected_annee_id = request.GET.get('annee_scolaire')
+
+    if selected_annee_id:
+        try:
+            annee_scolaire = AnneeScolaire.objects.get(id=selected_annee_id)
+
+            total_entrées = FraisScolarite.objects.filter(annee_scolaire=annee_scolaire)\
+                .aggregate(total=Sum('total_paye'))['total'] or 0
+
+            total_sorties_salaire = PaiementSalaire.objects.filter(annee_scolaire=annee_scolaire)\
+                .aggregate(total=Sum('montant'))['total'] or 0
+
+            total_sorties_depense = Depense.objects.filter(annee_scolaire=annee_scolaire)\
+                .aggregate(total=Sum('montant'))['total'] or 0
+
+            total_sorties = total_sorties_salaire + total_sorties_depense
+            solde = total_entrées - total_sorties
+
+            if solde <= 0:
+                messages.warning(request, "Le solde est insuffisant, veuillez alimenter la caisse.")
+
+        except AnneeScolaire.DoesNotExist:
+            messages.error(request, "L'année scolaire sélectionnée n'existe pas.")
+            annee_scolaire = None
+
+    context = {
+        'annees_scolaires': annees_scolaires,
+        'selected_annee_id': selected_annee_id,
+        'total_entrées': total_entrées,
+        'total_sorties': total_sorties,
+        'solde': solde,
+        'annee_scolaire': annee_scolaire,
+    }
+
+    return render(request, 'admin/bilan_financier.html', context)
+
+
+################ FONCTION D'AJOUT DES DEPENSES#############################
+def ajouter_depense_fondateur(request):
+    annees_scolaires = AnneeScolaire.objects.all()
+    depenses = Depense.objects.all()
+
+    return render(request, 'admin/depense.html', {
+        'annees_scolaires': annees_scolaires,
+        'depenses': depenses,
+    })
+
+
+# --- LISTE DES ENSEIGNANTS ---
+def enseignant_fondateur(request):
+    enseignants = Enseignant.objects.all()
+    niveaux = Niveau.objects.all()
+    groupes = GroupeClasse.objects.all()
+    matieres = Matiere.objects.all()
+
+    context = {
+        'enseignants': enseignants,
+        'niveaux': niveaux,
+        'groupes': groupes,
+        'matieres': matieres,
+    }
+    return render(request, 'admin/data.html', context)
+
+
+######################### DETAIL DES ENSEIGNANTS #################################
+def detail_enseignant_fonda(request, id):
+    enseignant = get_object_or_404(Enseignant, id=id)
+    return render(request, 'admin/detail_enseignant.html', {'enseignant': enseignant}) 
+
+
+
+
+def paiement_salaire_fonda(request):
+    enseignants = Enseignant.objects.all()
+    paiements = PaiementSalaire.objects.all()
+    annees_scolaires = AnneeScolaire.objects.all()
+
+    return render(request, 'admin/paiement_salaire.html', {
+        'enseignants': enseignants,
+        'paiements': paiements,
+        'annees_scolaires': annees_scolaires,
+    })
+
+    #SUIVIE DES ENSEIGNANTS
+def suivie_ensei(request):
+    suivies=EnseignantMatiere.objects.all()
+    enseignants = Enseignant.objects.all()
+    niveaux = Niveau.objects.all()
+    groupes = GroupeClasse.objects.all()  # ← c'est ça qui alimente ton select
+    matieres = Matiere.objects.all()
+
+    context = {
+        'suivies':suivies,
+        'enseignants': enseignants,
+        'niveaux': niveaux,
+        'groupes': groupes,
+        'matieres': matieres,
+    }
+    return render(request, 'admin/suivie_enseignant.html', context)

@@ -45,6 +45,27 @@
             </div>
 
             <div class="card-body">
+
+            <!-- Messages -->
+            {% if messages %}
+              <div class="container mt-3">
+                {% for message in messages %}
+                  <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm border-left-4"
+                       role="alert"
+                       style="font-weight: 500; font-size: 0.95rem;
+                              {% if message.tags == 'error' %}background-color: #f8d7da; color: #842029; border-left: 5px solid #f5c2c7;{% endif %}">
+                    <i class="fas {% if message.tags == 'success' %}fa-check-circle
+                                    {% elif message.tags == 'error' %}fa-times-circle
+                                    {% elif message.tags == 'warning' %}fa-exclamation-triangle
+                                    {% else %}fa-info-circle{% endif %} mr-2"></i>
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Fermer">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                {% endfor %}
+              </div>
+            {% endif %}
               <table id="example1" class="table table-bordered table-striped">
                 <thead class="bg-primary text-white">
                   <tr>
@@ -93,21 +114,47 @@
                         <div class="modal-body">
                           <form action="{% url 'modifier' ensei.id %}" method="post" enctype="multipart/form-data" class="row">
                             {% csrf_token %}
+
+                            <div class="row">
+
                             <div class="form-group col-md-6"><label>Nom</label><input type="text" class="form-control" name="nom" value="{{ ensei.nom }}" required></div>
                             <div class="form-group col-md-6"><label>Prénom</label><input type="text" class="form-control" name="prenom" value="{{ ensei.prenom }}" required></div>
-                            <div class="form-group col-md-6"><label>Sexe</label>
+
+                            </div>
+                            <div class="row">
+                              <div class="form-group col-md-6"><label>Sexe</label>
                               <select class="form-control" name="sexe" required>
                                 <option value="H" {% if ensei.sexe == 'H' %}selected{% endif %}>Masculin</option>
                                 <option value="F" {% if ensei.sexe == 'F' %}selected{% endif %}>Féminin</option>
                               </select>
                             </div>
                             <div class="form-group col-md-6"><label>Téléphone</label><input type="text" class="form-control" name="telephone" value="{{ ensei.telephone }}" required></div>
+
+                            </div>
+                            <div class="row">
                             <div class="form-group col-md-6"><label>Adresse</label><input type="text" class="form-control" name="adresse" value="{{ ensei.adresse }}" required></div>
-                            <div class="form-group col-md-6"><label>Date de naissance</label><input type="date" class="form-control" name="date_naissance" value="{{ ensei.date_naissance|date:'Y-m-d' }}" required></div>
-                            <div class="form-group col-md-6"><label>Lieu de naissance</label><input type="text" class="form-control" name="lieu_naiss" value="{{ ensei.lieu_naiss }}" required></div>
+                            <div class="form-group col-md-6"><label>Date de naissance</label><input type="date" class="form-control" name="date_naissance" value="{{ ensei.date_naiss|date:'Y-m-d' }}" required></div>
+                            </div>
+                            
+                            <div class="row">
+                              <div class="form-group col-md-6"><label>Lieu de naissance</label><input type="text" class="form-control" name="lieu_naiss" value="{{ ensei.lieu_naiss }}" required></div>
                             <div class="form-group col-md-6"><label>Spécialité</label><input type="text" class="form-control" name="specialite" value="{{ ensei.specialite }}" required></div>
-                            <div class="form-group col-md-6"><label>Email</label><input type="email" class="form-control" name="email" value="{{ ensei.email }}" required></div>
-                            <div class="form-group col-md-6"><label>Photo</label><input type="file" class="form-control" name="photo"></div>
+                            </div>
+                            <div class="row">
+                              <div class="form-group col-md-6"><label>Email</label><input type="email" class="form-control" name="email" value="{{ ensei.email }}" required></div>
+                            
+                                              <!-- Champ Photo -->
+                              <div class="form-group col-md-6">
+                                <label for="photo">Photo :</label>
+                                <input type="file" class="form-control" id="photo" name="photo">
+                                {% if eleve.photo %}
+                                  <img src="{{ ensei.photo.url }}" alt="photo de l'enseignant" style="width: 100px; height: 100px; margin-top: 10px;">
+                                {% else %}
+                                  <p>Aucune photo disponible</p>
+                                {% endif %}
+                              </div>
+                            </div>
+
                             <div class="modal-footer col-12">
                               <button type="submit" class="btn btn-primary">Modifier</button>
                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -161,6 +208,7 @@
                                 {% endfor %}
                               </select>
                             </div>
+
                             <div class="form-group">
                               <label>Classe :</label>
                               <select name="classe" class="form-control" id="classe{{ ensei.id }}" required>
@@ -179,6 +227,7 @@
                                 {% endfor %}
                               </select>
                             </div>
+
                             <div class="modal-footer">
                               <button type="submit" class="btn btn-success">Affecter</button>
                               <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>

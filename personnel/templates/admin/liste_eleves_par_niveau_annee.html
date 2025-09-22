@@ -1,4 +1,4 @@
-{% extends "login/index.html" %}
+{% extends "login/dashbaord_fondateur.html" %}
 {% load static %}
 
 {% block styl_parent %}
@@ -104,37 +104,9 @@
                                 <a href="{% url 'eleve_detail' pk=eleve.id %}" class="text-info">
                                   <i class="fas fa-eye"></i> Voir
                                 </a>
-                                <a href="{% url 'modifier_eleve' pk=eleve.id %}" class="btn btn-primary">
-                                  <i class="fas fa-edit"></i> 
-                                </a>
-                                <a href="#" data-toggle="modal" data-target="#supprime{{ eleve.id }}" class="text-danger">
-                                  <i class="fas fa-trash"></i> 
-                                </a>
 
-                                <!-- Fenêtre modale de suppression -->
-                                <div class="modal fade" id="supprime{{ eleve.id }}" tabindex="-1">
-                                  <div class="modal-dialog">
-                                    <div class="modal-content">
-                                      <div class="modal-header bg-primary">
-                                        <h5 class="modal-title">SUPPRESSION</h5>
-                                        <button type="button" class="close" data-dismiss="modal">
-                                          <span>&times;</span>
-                                        </button>
-                                      </div>
-                                      <div class="modal-body">
-                                        <p>Voulez-vous vraiment supprimer <strong>{{ eleve.nom }} {{ eleve.prenom }}</strong> ?</p>
-                                      </div>
-                                      <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                                        <form action="{% url 'supprimer-eleve' eleve.id %}" method="post">
-                                          {% csrf_token %}
-                                          <button type="submit" class="btn btn-danger">Supprimer</button>
-                                        </form>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <!-- Fin de la modale -->
+
+                                
                               </td>
                             </tr>
                           {% endfor %}

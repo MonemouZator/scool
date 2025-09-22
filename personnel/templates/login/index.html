@@ -8,9 +8,10 @@
 {% endblock %}
 
 {% block menu_sidebar %}
+
 <!-- Section Tableau de bord -->
 <li class="nav-item">
-  <a href="{% url 'dashbaord.directeur' %}" class="nav-link {% if request.resolver_match.url_name == 'comptable_dashboard' %}active{% endif %}">
+  <a href="{% url 'fondateur.dashbord' %}" class="nav-link {% if request.resolver_match.url_name == 'fondateur.dashbord' %}active{% endif %}">
     <i class="nav-icon fas fa-tachometer-alt"></i>
     <p>Tableau de bord</p>
   </a>
@@ -51,7 +52,7 @@
       </a> {% endcomment %}
     </li>
     <li class="nav-item">
-      <a href="{% url 'liste_eleves_par_niveau_annee' %}" class="nav-link">
+      <a href="{% url 'liste_eleves_par_niveau' %}" class="nav-link">
         <i class="badge badge-danger"><span class="text-white">2</span></i>
         <p>Élèves par niveau</p>
       </a>
@@ -161,36 +162,42 @@
     <p>Paramètres <span class="right badge badge-danger">voir +</span></p>
   </a>
   <ul class="nav nav-treeview">
-    <li class="nav-item">
-      <a href="{% url 'an' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">1</span></i>
-        <p>Années Scolaires</p>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a href="{% url 'cycle' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">2</span></i>
-        <p>Gestion des Cycles</p>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a href="{% url 'niveau' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">3</span></i>
-        <p>Gestion des Niveaux</p>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a href="{% url 'groupe' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">4</span></i>
-        <p>Groupes de classes</p>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a href="{% url 'matiere' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">5</span></i>
-        <p>Gestion des Matières</p>
-      </a>
-    </li>
+      <li class="nav-item">
+        <a href="{% url 'an' %}" class="nav-link">
+          <i class="badge badge-danger"><span class="text-white">1</span></i>
+          <p>Années Scolaires</p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'cycle' %}" class="nav-link">
+          <i class="badge badge-danger"><span class="text-white">2</span></i>
+          <p>Gestion des Cycles</p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'niveau' %}" class="nav-link">
+          <i class="badge badge-danger"><span class="text-white">3</span></i>
+          <p>Gestion des Niveaux</p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'groupe' %}" class="nav-link">
+          <i class="badge badge-danger"><span class="text-white">4</span></i>
+          <p>Groupes de classes</p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{% url 'matiere' %}" class="nav-link">
+          <i class="badge badge-danger"><span class="text-white">5</span></i>
+          <p>Gestion des Matières</p>
+        </a>
+      </li> 
+      <li class="nav-item">
+        <a href="{% url 'afficharge_info_ecole' %}" class="nav-link">
+        <i class="badge badge-danger"><span class="text-white">6</span></i>
+        <p> Etablissement</p>
+        </a>
+      </li>
   </ul>
 </li>
 
@@ -200,18 +207,7 @@
     <p>Gestion utilisateurs <span class="right badge badge-danger">voir +</span></p>
   </a>
   <ul class="nav nav-treeview">
-    <li class="nav-item">
-      <a href="{% url 'ajouter_administrateur' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">1</span></i>
-        <p>Ajouter utilisateur</p>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a href="{% url 'liste_administrateurs' %}" class="nav-link">
-        <i class="badge badge-danger"><span class="text-white">2</span></i>
-        <p>Liste des utilisateurs</p>
-      </a>
-    </li>
+
     <li class="nav-item">
       <a href="{% url 'password_reset_request' %}" class="nav-link">
         <i class="badge badge-danger"><span class="text-white">3</span></i>
@@ -247,7 +243,7 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0">Tableau de bord du Fondateur</h1>
+          <h1 class="m-0">Tableau de bord du Directeur</h1>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">

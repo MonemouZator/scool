@@ -397,6 +397,12 @@ def statut_paiement_eleve(request):
     })
 
 
+def get_groupe(request):
+    niveau_id = request.GET.get('niveau')
+    groupes = list(GroupeClasse.objects.filter(niveau_id=niveau_id).values('id', 'nom'))
+    return JsonResponse({'groupes': groupes})
+
+
 #DETAILS DES INFORMATIONS D'ELEVES
 def detail_eleve(request, pk):
     # Récupérer l'élève avec l'ID passé en paramètre
@@ -500,6 +506,114 @@ def profiles(request):
     context = {
         "user": user,
     }
-    return render(request,'enseignant/profil.html',context)
+    return render(request,'eleve/profil.html',context)
+
+###################################################################
+#LES DROIT DU FONDATEUR
+# #################################################################
 
 
+# STATUT PAIEMENT
+
+def statut_paiement_eleve_fondateur(request):
+    # Récupérer tous les niveaux, groupes et années scolaires pour les filtres
+    niveaux = Niveau.objects.all()
+    groupes = GroupeClasse.objects.all()
+    annees_scolaires = AnneeScolaire.objects.all()
+
+    # Récupérer les paramètres de filtrage depuis la requête GET
+    niveau_id = request.GET.get('niveau')
+    groupe_id = request.GET.get('groupe_classe')
+    annee_id = request.GET.get('annee_scolaire')
+
+    # Filtrer les élèves selon les paramètres de filtrage
+    eleves = Eleve.objects.all()
+
+    if niveau_id:
+        eleves = eleves.filter(niveau__id=niveau_id)  # Utiliser l'ID du niveau
+    if groupe_id:
+        eleves = eleves.filter(groupe_classe__id=groupe_id)  # Utiliser l'ID du groupe
+    if annee_id:
+        eleves = eleves.filter(annee_scolaire__id=annee_id)  # Utiliser l'ID de l'année scolaire
+
+    # Récupérer les informations des frais pour chaque élève
+    eleves_info = []
+    for eleve in eleves:
+        frais_scolarite = FraisScolarite.objects.filter(eleve=eleve).first()
+
+        if frais_scolarite:
+            if frais_scolarite.solde == 0:
+                statut_paiement = 'Paiement complet'
+            elif frais_scolarite.total_paye > 0 and frais_scolarite.total_paye < frais_scolarite.montant_total:
+                statut_paiement = 'Paiement partiel'
+            else:
+                statut_paiement = 'En attente de paiement'
+        else:
+            statut_paiement = 'Aucune donnée de paiement'
+
+        eleves_info.append({
+            'eleve': eleve,
+            'statut_paiement': statut_paiement,
+        })
+
+    # Rendre le résultat dans un template
+    return render(request, 'admin/statut_paiement_eleve.html', {
+        'eleves_info': eleves_info,
+        'niveaux': niveaux,
+        'groupes': groupes,
+        'annees_scolaires': annees_scolaires,
+    })
+
+#DETAILS DES INFORMATIONS D'ELEVES
+def detail_eleves(request, pk):
+    # Récupérer l'élève avec l'ID passé en paramètre
+    eleve = get_object_or_404(Eleve, id=pk)
+    return render(request, 'admin/detail_eleve.html', {'eleve': eleve})
+
+#afficher les eleves par niveau et annee scolaire
+
+def liste_eleves_par_niveau(request):
+    niveau_id = request.GET.get('niveau')
+    annee_id = request.GET.get('annee_scolaire')
+
+    eleves = Eleve.objects.filter(actif=True)
+    niveaux = Niveau.objects.all()
+    annees = AnneeScolaire.objects.all()
+
+    if niveau_id:
+        eleves = eleves.filter(niveau_id=niveau_id)
+    
+    if annee_id:
+        eleves = eleves.filter(annee_scolaire_id=annee_id)
+
+    return render(request, 'admin/liste_eleves_par_niveau_annee.html', {
+        'eleves': eleves,
+        'niveaux': niveaux,
+        'annees': annees,
+    })
+
+
+#AFFICHER LES LES ELEVES PAR GROUPE DE CLASSE OU OPTION ET ANNEE SCOlAIRE
+
+def liste_eleves_par_classe(request):
+    groupes = GroupeClasse.objects.all()
+    annees = AnneeScolaire.objects.all()
+
+    groupe_id = request.GET.get('groupe')
+    annee_id = request.GET.get('annee_scolaire')
+
+    # Filtrer les élèves en fonction des valeurs sélectionnées
+    eleves = Eleve.objects.all()
+
+    if groupe_id:
+        eleves = eleves.filter(groupe_classe__id=groupe_id)  # Correction ici
+
+    if annee_id:
+        eleves = eleves.filter(annee_scolaire__id=annee_id)
+
+    context = {
+        'eleves': eleves,
+        'groupes': groupes,
+        'annees': annees
+    }
+    return render(request, 'admin/liste_eleves_par_groupe.html', context)

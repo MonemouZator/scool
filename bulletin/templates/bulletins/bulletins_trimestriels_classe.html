@@ -58,14 +58,8 @@
       page-break-before: auto;
     }
 
-    table th, table td {
-      border: 1px solid #000 !important;
-      color: #000 !important;
-      -webkit-print-color-adjust: exact;
-      print-color-adjust: exact;
-      background-color: #f8f9fa !important;
-    }
-    table th { background-color: #007bff !important; color: #fff !important; }
+
+    table th { background-color: #ff4d00ff !important; color: #000 !important; }
     table { width: 100%; border-collapse: collapse; }
 
     /* Supprimer le scroll web pour impression */
@@ -154,6 +148,9 @@
 
                       <!-- Header flex photo / titre / infos -->
                       <div class="eleve-header">
+                      {% for ecole in ecoles %}
+                      
+                      
                         <div>
                           {% if bulletin.bulletin.eleve.photo %}
                             <img src="{{ bulletin.bulletin.eleve.photo.url }}" alt="Photo élève"
@@ -165,18 +162,22 @@
                         </div>
 
                         <div style="text-align: center; flex: 1;">
-                          <h1>RÉPUBLIQUE DE GUINÉE</h1>
-                          <div style="font-size: 20px; font-style: italic; color: #777;">Travail - Justice - Solidarité</div>
-                          <h2>Groupe Scolaire Privé BNB</h2>
-                          <div style="font-size: 20px; font-style: italic; color: #777;">Union - Sincérité - Excellence</div>
-                          <h3>Bulletin du {{ request.GET.trimestre }}ᵉ Trimestre</h3>
+                          <h1>{{ecole.pays}}</h1>
+                          <div style="font-size: 20px; font-style: italic; color: #777;">{{ecole.devise_pays}}</div>
+                          <h2>{{ecole.nom_ecole}}</h2>
+                          <div style="font-size: 20px; font-style: italic; color: #777;">{{ecole.devise_ecole}}</div>
+                          <h3>Bulletin du {{ request.GET.trimestre }}ᵉ Trimestre - {{ bulletin.bulletin.eleve.annee_scolaire }}</h3>
+                          <h3>Classe/ {{ bulletin.bulletin.eleve.groupe_classe }}</h3>
                         </div>
 
                         <div class="infos-right">
-                          <strong>IRE/KANKAN</strong>
-                          <strong>DPE/KANKAN</strong>
-                          <strong>DSSE/KANKAN4</strong>
+                          <strong>{{ecole.meapu}}</strong>
+                          <strong>IRE/{{ecole.ire}}</strong>
+                          <strong>DPE/{{ecole.dpe}}</strong>
+                          <strong>DSSE/{{ecole.dsee}}</strong>
                         </div>
+                          {% endfor %}
+
                       </div>
 
                       <!-- Infos élève -->
@@ -212,15 +213,17 @@
                           </tr>
                         </tbody>
                       </table>
-
+                        {% for ecole in ecoles %}
+                        
+                      
                       <!-- Remarque et signature -->
                       <div class="mt-4 text-center">
                         <h5>Remarque et suggestion sur l’élève</h5>
-                        <p><hr><br><hr><br><hr><br></p>
-                        <h4>Directeur</h4><br><br>
-                        <h4>M. Maurice GUILAVOGUI</h4>
+                        <p><hr><br><hr><br></p>
+                        <h4>Directeur:</h4><br><br>
+                        <h4>{{ecole.responsable}}</h4>
                       </div>
-
+                        {% endfor %}
                     </div>
                   </div>
                 {% endfor %}

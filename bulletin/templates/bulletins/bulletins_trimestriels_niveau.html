@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
 
 <style>
-  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9fafc; color: #000; }
+  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9fafc; color: #003366; }
   .content-wrapper { padding: 20px; }
   h1 { font-size: 28px; margin-bottom: 20px; }
   form { background: #fff; padding: 15px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
@@ -16,13 +16,21 @@
   button { padding: 8px 16px; }
   .table { margin-bottom: 10px; font-size: 15px; }
   .student-container { margin-bottom: 15px; }
-  .student-header { background-color: #003366; color: white; padding: 15px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+  .student-header { background-color: #fff; color: none; padding: 15px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
   .student-header img { width: 100px; height: 100px; object-fit: cover; border: 2px solid #fff; border-radius: 8px; }
   .student-header .text-center { flex-grow: 1; text-align: center; }
   .student-header .text-right { font-size: 13px; text-align: right; }
   .section { margin-bottom: 10px; }
   .section table { margin-bottom: 0; }
   .remarque-zone hr { margin: 5px 0; }
+
+
+   /* Chaque bulletin */
+  .eleve-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    border: 4px solid #000;
+  }
 
   @media print {
     body { margin: 0; padding: 10px; }
@@ -31,7 +39,13 @@
     .student-container:first-child { page-break-before: auto; }
     .section-wrapper { margin-top: 10px; }
     .section { margin-bottom: 8px; padding: 8px; }
-    .table, .table th, .table td { border: 1px solid #000 !important; border-collapse: collapse !important; color: #000 !important; font-size: 18px; }
+    .table, .table th, .table td   { border: 1px solid #000 !important; border-collapse: collapse !important; color: #000 !important; font-size: 18px; }
+      /* Chaque bulletin */
+  .eleve-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    border: 2px solid #000;
+  }
   }
 </style>
 {% endblock %}
@@ -78,26 +92,38 @@
         <button type="submit" class="btn btn-primary">Filtrer</button>
         <a href="javascript:void(0);" class="btn btn-secondary" onclick="window.print();">Imprimer</a>
       </form>
-
+ 
       {% if bulletins_trimestriels %}
+
+
         {% for b in bulletins_trimestriels %}
+
+
         <div class="student-container">
+         <div class="card mb-4 eleve-section">
           <div class="student-header">
+
+
+          {% for ecole in ecoles %}
+          
+         
             <div><img src="{{ b.bulletin.eleve.photo.url|default:'https://via.placeholder.com/100' }}" alt="Photo élève"></div>
             <div class="text-center">
-              <h1>RÉPUBLIQUE DE GUINÉE</h1>
-              <div class="devise">Travail - Justice - Solidarité</div>
-              <h2>Groupe Scolaire Privé BNB</h2>
-              <div class="devise">Union - Sincérité - Excellence</div>
+              <h1>{{ecole.pays}}</h1>
+              <div class="devise">{{ecole.devise_pays}}</div>
+              <h2>{{ecole.nom_ecole}}</h2>
+              <div class="devise">{{ecole.devise_ecole}}</div>
               <h3>Bulletin du {{ trimestre }}ᵉ Trimestre - {{ annee_scolaire_obj.nom|default:"—" }}</h3>
               <h4>Cycle : {{ cycle_obj.nom|default:"—" }}</h4>
               <h4>Niveau : {{ niveau_obj.nom|default:"—" }}</h4>
             </div>
             <div class="text-right">
-              <p>IRE/KANKAN</p>
-              <p>DPE/KANKAN</p>
-              <p>DSSE/KANKAN4</p>
+            <p>{{ecole.meapu}}</p>
+              <p>IRE/{{ecole.ire}}</p>
+              <p>DPE/{{ecole.dpe}}</p>
+              <p>DSEE/{{ecole.dsee}}</p>
             </div>
+             {% endfor %}
           </div>
 
           <div class="section-wrapper">
@@ -138,14 +164,18 @@
               </table>
             </div>
 
-            <h4 class="text-center">Remarques et suggestions sur l'élève</h4>
-            <hr><br><hr>
-
-            <div class="remarque-zone">
-              <h4>Directeur</h4><br><br>
-              <h4>M. Maurice GUILAVOGUI</h4>
-            </div>
+                     {% for ecole in ecoles %}
+                        
+                      
+                      <!-- Remarque et signature -->
+                      <div class="mt-4 text-center">
+                     
+                        <h4>Directeur:</h4><br><br>
+                        <h4>{{ecole.responsable}}</h4>
+                      </div>
+                        {% endfor %}
           </div>
+        </div>
         </div>
         {% endfor %}
       {% else %}

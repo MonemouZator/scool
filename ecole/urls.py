@@ -23,6 +23,7 @@ urlpatterns = [
     path('paiement_salaire/', include('enseignant.urls')),
     path('depense/', include('enseignant.urls')),
     path('hlfndgjrieljsgjgfjg^sjôfje^ù^gk^gj/finance/', include('enseignant.urls')),
+    path('suivi/matiere/', include('enseignant.urls')),
 
     # Routes de l'année scolaire
     path('annee-scolaire/', include('annee_scolaire.urls')),
@@ -35,7 +36,7 @@ urlpatterns = [
     path('ajout-cycle/', include('cycle.urls')),
     path('modifie-cycle/', include('cycle.urls')),
     path('supprime-cycle/', include('cycle.urls')),
-
+     path('etablissement/', include('cycle.urls')),
     # Routes des niveaux
     path('niveau/', include('niveau.urls')),
     path('ajout-niveau/', include('niveau.urls')),
@@ -66,7 +67,8 @@ urlpatterns = [
     path('tranche2/', include('eleve.urls')),
     path('payer/', include('eleve.urls')),
     path('eleve/liste/', include('eleve.urls')),
-    
+    path('liste/eleve/groupe/', include('eleve.urls')),
+    path('liste/eleve/niveau', include('eleve.urls')),
     # Routes des notes
     path('note/', include('note.urls')),
     path('ajout-note/', include('note.urls')),
@@ -84,6 +86,9 @@ urlpatterns = [
     path('valider-bulletin/', include('bulletin.urls')),
     path('valider-/', include('bulletin.urls')),
     path('resltat-niveau-annee/', include('bulletin.urls')),
+
+    path('bilans/', include('enseignant.urls')),
+
 ] # Pour servir les fichiers statiques uniquement en développement
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()  # Pour servir les fichiers static (CSS, JS) en dev

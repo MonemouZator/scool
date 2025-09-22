@@ -1,4 +1,4 @@
-{% extends "login/index.html" %}
+{% extends "login/dashbaord_fondateur.html" %}
 {% load static %}
  {% block styl_parent %}
   <title>eleve | Accueil</title>
@@ -68,7 +68,7 @@
                                 </div>
 
                                 <div class="form-group ml-2 col-md-4">
-                                    
+                                    <label for="groupe"> Année scolaire:</label>
                                     <select name="annee_scolaire" id="annee_scolaire" class="form-control">
                                         <option value="">selectionner une année scolaire-----</option>
                                         {% for annee in annees %}
@@ -110,32 +110,7 @@
                             <a href="{% url 'eleve_detail' pk=eleve.id %}">
                                 <i class="fas fa-eye" style="font-size: 1.5rem;"></i> 
                             </a>
-                            <a href="{% url 'modifier_eleve' pk=eleve.id %}" class="btn btn-primary">
-                                <i class="fas fa-edit"></i> 
-                            </a>
-                            <a href="#" data-toggle="modal" data-target="#supprime{{ eleve.id }}" title="Supprimer">
-                                <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
-                            </a>
-                            <!-- Modal suppression -->
-                            <div class="modal fade" id="supprime{{ eleve.id }}" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header bg-primary">
-                                            <h5 class="modal-title">SUPPRESSION</h5>
-                                            <button type="button" class="close" data-dismiss="modal">
-                                                <span>&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <p>Voulez-vous vraiment supprimer {{ eleve.nom }} {{ eleve.prenom }} ?</p>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-primary" data-dismiss="modal">Non</button>
-                                            <a href="{% url 'supprimer-eleve' eleve.id %}" class="btn btn-danger">Oui</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
                         </td>
                     </tr>
                     {% endfor %}

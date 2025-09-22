@@ -1,0 +1,253 @@
+{% extends "login/dashbaord_fondateur.html" %}
+{% load static %}
+
+{% block styl_parent %}
+  <title>Bilan Financier | Gestion des Finances</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+
+  <style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f9f9f9;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    .container {
+        max-width: auto;
+    }
+
+    h2 {
+        color: #343a40;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .form-label {
+        font-weight: bold;
+        color: #2C3E50;
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .form-select {
+        background-color: #ffffff;
+        border: 1px solid #dcdcdc;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 1rem;
+        width: 100%;
+        transition: border-color 0.3s;
+    }
+
+    .form-select:focus {
+        border-color: #16A085;
+        box-shadow: 0 0 8px rgba(22, 160, 133, 0.3);
+    }
+
+    .form-group {
+        margin-bottom: 30px;
+    }
+
+    .btn-primary {
+        width: 100%;
+        padding: 12px;
+        font-size: 1.2rem;
+        font-weight: bold;
+        background-color: #16A085;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+        background-color: #1abc9c;
+    }
+
+    .bilan-container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+        text-align: center;
+        color: #2C3E50;
+        font-size: 2.5rem;
+        margin-bottom: 30px;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    p {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    strong {
+        font-size: 1.3rem;
+        color: #16A085;
+    }
+
+    .total, .result {
+        display: inline-block;
+        padding: 15px;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1.5rem;
+    }
+
+    .total {
+        background-color: #E8F8F5;
+        color: #16A085;
+        border: 1px solid #16A085;
+    }
+
+    .result {
+        background-color: #E74C3C;
+        color: white;
+        border: 1px solid #E74C3C;
+    }
+
+    .bilan-container div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .card {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        padding: 25px;
+        margin-bottom: 20px;
+        width: 100%;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #fff;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-entree {
+        background-color: #2ecc71; /* Green */
+    }
+
+    .card-depense {
+        background-color: #f39c12; /* Yellow */
+    }
+
+    .card-salaire {
+        background-color: #3498db; /* Blue */
+    }
+
+    .card-sortie {
+        background-color: #e74c3c; /* Red */
+    }
+
+    .card-solde {
+        background-color: #9b59b6; /* Purple */
+    }
+
+    @media screen and (max-width: 768px) {
+        .bilan-container {
+            width: 95%;
+        }
+        .card {
+            font-size: 1.2rem;
+        }
+    }
+
+    /* Pour les libellés en blanc */
+    .libelle-blanc {
+        color: white;
+    }
+        h1 {
+        font-size: 2.5rem; /* Large font size */
+        font-weight: 600; /* Slightly bold for emphasis */
+        color: #fff; /* White text for contrast */
+        text-align: center; /* Center the title */
+        background-color: #2C3E50; /* Dark blue background for professionalism */
+        padding: 20px 40px; /* Spacing around the title */
+        border-radius: 10px; /* Rounded corners for a soft look */
+        margin-bottom: 30px; /* Space below the title */
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+        text-transform: uppercase; /* All uppercase letters for a more formal appearance */
+    }
+  </style>
+{% endblock %}
+
+{% block body %}
+<body class="hold-transition sidebar-mini">
+{% endblock %}
+
+{% block contenu %}
+<div class="content-wrapper p-4">
+        <h1>Bilan Financier de l'École</h1>
+
+                <!-- Formulaire de sélection d'année scolaire -->
+                <form method="get" action="{% url 'finance' %}" class="mb-4">
+                    <div class="form-group">
+                        <label for="annee_scolaire" class="form-label">Choisir une Année Scolaire(*)</label>
+                        <select name="annee_scolaire" id="annee_scolaire" class="form-select" required>
+                            {% if annees_scolaires %}
+                            <option value="">Selectionne une année scolaire</option>
+                                {% for annee in annees_scolaires %}
+                                    <option value="{{ annee.id }}" {% if annee.id == selected_annee_id %}selected{% endif %}>
+                                        {{ annee.nom }}
+                                    </option>
+                                {% endfor %}
+                            {% else %}
+                                <option disabled>Aucune année scolaire disponible</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Voir le Bilan</button>
+                </form>
+
+                <!-- Affichage du bilan financier -->
+                {% if annee_scolaire %}
+                    <div class="bilan-container">
+                        <!-- Entrées -->
+                        <div class="card card-entree">
+                            <h2><strong><span class="libelle-blanc">Total des Entrées (Frais Scolaires)</span></strong></h2>
+                            <p><span class="total">{{ total_entrées }} GNF</span></p>
+                        </div>
+
+                        <!-- Sorties -->
+                        <div class="card card-sortie">
+                            <h2><strong><span class="libelle-blanc">Total des Sorties (Salaires et Dépenses)</span></strong></h2>
+                            <p><span class="total">{{ total_sorties }} GNF</span></p>
+                        </div>
+
+                        <!-- Solde -->
+                        <div class="card card-solde">
+                            <h2><strong><span class="libelle-blanc">Solde Net</span></strong></h2>
+                            <p><span class="result">{{ solde }} GNF</span></p>
+                        </div>
+    </div>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block scripte %}
+  <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+  <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'base/js/adminlte.min.js' %}"></script>
+{% endblock %}

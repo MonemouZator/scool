@@ -79,9 +79,9 @@ class BulletinTrimestriel(models.Model):
         cycle_nom = self.eleve.groupe_classe.niveau.cycle.nom.strip().lower()
 
         if cycle_nom == "primaire":
-            if moyenne >= 10:
+            if moyenne == 10:
                 return "Excellent"
-            elif moyenne >= 9:
+            elif moyenne >= 8:
                 return "Très Bien"
             elif moyenne >= 7:
                 return "Bien"
@@ -92,15 +92,15 @@ class BulletinTrimestriel(models.Model):
             else:
                 return "Médiocre"
         else:
-            if moyenne >= 16:
+            if moyenne == 20:
                 return "Excellent"
-            elif moyenne >= 14:
+            elif moyenne >= 16:
                 return "Très Bien"
-            elif moyenne >= 12:
+            elif moyenne >= 14:
                 return "Bien"
-            elif moyenne >= 10:
+            elif moyenne >= 12:
                 return "Assez Bien"
-            elif moyenne >= 8:
+            elif moyenne >= 10:
                 return "Passable"
             else:
                 return "Médiocre"
@@ -178,16 +178,17 @@ class BulletinAnnuel(models.Model):
 
         return rang_dict.get(self.eleve.id)
 
+    
     @property
     def observation_finale(self):
         moyenne = self.moyenne_totale_annuelle
         if moyenne is None:
             return "Aucune note"
 
-        cycle_nom = self.eleve.groupe_classe.niveau.cycle.nom.lower()
+        cycle_nom = self.eleve.groupe_classe.niveau.cycle.nom.strip().lower()
 
         if cycle_nom == "primaire":
-            if moyenne >= 10:
+            if moyenne == 10:
                 return "Excellent"
             elif moyenne >= 8:
                 return "Très Bien"
@@ -200,15 +201,15 @@ class BulletinAnnuel(models.Model):
             else:
                 return "Médiocre"
         else:
-            if moyenne >= 16:
+            if moyenne == 20:
                 return "Excellent"
-            elif moyenne >= 14:
+            elif moyenne >= 16:
                 return "Très Bien"
-            elif moyenne >= 12:
+            elif moyenne >= 14:
                 return "Bien"
-            elif moyenne >= 10:
+            elif moyenne >= 12:
                 return "Assez Bien"
-            elif moyenne >= 8:
+            elif moyenne >= 10:
                 return "Passable"
             else:
                 return "Médiocre"

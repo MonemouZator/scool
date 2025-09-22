@@ -106,7 +106,7 @@
                 <form method="get" class="form-inline">
                     <div class="form-group mr-2">
                         <label for="annee_scolaire">Année scolaire :</label>
-                        <select name="annee_scolaire" id="annee_scolaire" class="form-control ml-2">
+                        <select name="annee_scolaire" id="annee_scolaire" class="form-control ml-2" required>
                             <option value="">--Choisir--</option>
                             {% for annee in annees_scolaires %}
                                 <option value="{{ annee.id }}" {% if annee.id|stringformat:"s" == request.GET.annee_scolaire %}selected{% endif %}>
@@ -118,7 +118,7 @@
 
                     <div class="form-group mr-2">
                         <label for="groupe">Classe :</label>
-                        <select name="groupe" id="groupe" class="form-control ml-2">
+                        <select name="groupe" id="groupe" class="form-control ml-2" required>
                             <option value="">--Choisir--</option>
                             {% for g in groupes %}
                                 <option value="{{ g.id }}" {% if g.id|stringformat:"s" == request.GET.groupe %}selected{% endif %}>
@@ -139,6 +139,9 @@
 
                         <!-- Header -->
                         <div class="header-bulletin">
+                        {% for ecole in ecoles %}
+                        
+                      
                             <div class="photo">
                                 {% if b.eleve.photo %}
                                     <img src="{{ b.eleve.photo.url }}" alt="Photo" class="photo">
@@ -146,18 +149,22 @@
                             </div>
 
                             <div class="centre">
-                                <h1>RÉPUBLIQUE DE GUINÉE</h1>
-                                <h2>Groupe Scolaire Privé BNB</h2>
+                                <h1>{{ecole.pays}}</h1>
+                                <h5>{{ecole.devise_pays}}</h5>
+                                <h2>{{ecole.nom_ecole}}</h2>
+                                 <h5>{{ecole.devise_ecole}}</h5>
                                 <h3>Bulletin Annuel – {{ annee_scolaire_obj.nom }}</h3>
                                 <h4>Classe : {{ groupe_obj.nom }}</h4>
                                 <h4>Élève : {{ b.eleve.nom }} {{ b.eleve.prenom }}</h4>
                             </div>
 
                             <div class="infos">
-                                <strong>IRE/KANKAN</strong><br>
-                                <strong>DPE/KANKAN</strong><br>
-                                <strong>DSSE/KANKAN</strong>
+                                <strong>{{ecole.meapu}}</strong><br>
+                                <strong>IRE/{{ecole.ire}}</strong><br>
+                                <strong>DPE/{{ecole.dpe}}</strong><br>
+                                <strong>DSSE/{{ecole.dsee}}</strong>
                             </div>
+                              {% endfor %}
                         </div>
 
                         <!-- Tableau des infos personnelles -->
@@ -196,8 +203,20 @@
                             </tr>
                         </table>
 
+                         {% for ecole in ecoles %}
+                        
+                      
+                      <!-- Remarque et signature -->
+                      <div class="mt-4 text-center">
+                        <h5>Remarque et suggestion sur l’élève</h5>
+                        <p><hr><br><hr><br></p>
+                        <h4>Directeur:</h4><br><br>
+                        <h4>{{ecole.responsable}}</h4>
+                      </div>
+                        {% endfor %}
+
                     </div>
-                    <hr>
+                    
                     <div class="page-break"></div>
                 {% endfor %}
             {% else %}

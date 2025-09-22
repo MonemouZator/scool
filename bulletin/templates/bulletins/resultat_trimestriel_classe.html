@@ -85,26 +85,29 @@
           <div class="card mt-4">
             <!-- Entête avec texte administratif et logo -->
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                  {% for ecole in ecoles %}
+                  
+                 
               <div style="text-align:left; line-height:1.5;">
-               <strong>MEAPU</strong><br>
-                <strong>IRE/KANKAN</strong><br>
-                <strong>DPE/KANKAN</strong><br>
-                <strong>DSSE/KANKAN4</strong>
+               <strong>{{ecole.meapu}}</strong><br>
+                <strong>IRE/{{ecole.ire}}</strong><br>
+                <strong>DPE/{{ecole.dpe}}</strong><br>
+                <strong>DSSE/{{ecole.dsee}}</strong>
               </div>
               <div>
-                <img src="{% static 'base/img/logo.jpeg' %}" alt="Logo École" style="height:80px; width:auto;">
+                 <img src="{{ ecole.logo.url }}" alt="Logo École" style="height:80px; width:auto;">
               </div>
             </div>
 
             <div class="card-header text-center">
-              <h2>RÉPUBLIQUE DE GUINÉE</h2>
-              <p>Travail - Justice - Solidarité</p>
-              <h3>Groupe Scolaire Privé BNB</h3>
-              <p>Union - Sincérité - Excellence</p>
-              <h4>Résultat du {{ trimestre_label }} Trimestre – <strong>{{ annee_scolaire_obj.nom }}</strong></h4>
-              <p>Classe : <strong>{{ groupe_obj.nom }}</strong></p>
+              <h2>{{ecole.pays}}</h2>
+              <p>{{ecole.devise_pays}}</p>
+              <h3>{{ecole.nom_ecole}}</h3>
+              <p>{{ecole.devise_ecole}}</p>
+              <h4>Résultat du {{ trimestre_label }} Session – <strong>{{ annee_scolaire_obj.nom }}</strong></h4>
+              <h3>Classe : <strong>{{ groupe_obj.nom }}</strong></h3>
             </div>
-
+               {% endfor %}
             <!-- Tableau statistique -->
             <h5 class="text-center text-primary">Statistiques de la classe</h5>
             <div class="card-body table-responsive">
@@ -112,31 +115,32 @@
                 <thead>
                   <tr>
                     <th>Total Inscrits</th>
-                    <th>Ayant Composé</th>
-                    <th>Admis</th>
-                    <th>Non Admis</th>
-                    <th>Taux de Réussite (%)</th>
-                    <th>Taux d’Échec (%)</th>
                     <th>Total Filles</th>
+                    <th>Ayant Composé</th>
                     <th>Filles ayant Composé</th>
+                    <th>Admis</th>
                     <th>Filles Admis</th>
+                    <th>Non Admis</th>
                     <th>Filles Non Admis</th>
-                    <th>Taux Réussite Filles (%)</th>
+                    <th>Taux de Réussite</th>
+                    <th>Taux Réussite Filles </th>
+                  
+
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
                     <td>{{ statistiques.total_inscrits }}</td>
-                    <td>{{ statistiques.ayant_composes }}</td>
-                    <td>{{ statistiques.admis }}</td>
-                    <td>{{ statistiques.non_admis }}</td>
-                    <td>{{ statistiques.taux_reussite }}</td>
-                    <td>{{ statistiques.taux_echec }}</td>
                     <td>{{ statistiques.filles_total }}</td>
+                    <td>{{ statistiques.ayant_composes }}</td>
                     <td>{{ statistiques.filles_composes }}</td>
-                    <td>{{ statistiques.filles_admis }}</td>
+                    <td>{{ statistiques.non_admis }}</td>
                     <td>{{ statistiques.filles_non_admis }}</td>
-                    <td>{{ statistiques.taux_filles_reussite }}</td>
+                    <td>{{ statistiques.admis }}</td>
+                    <td>{{ statistiques.filles_admis }}</td>
+                    <td>{{ statistiques.taux_filles_echec }}%</td>
+                    <td>{{ statistiques.taux_echec }}%</td>
+             
                   </tr>
                 </tbody>
               </table>
@@ -164,7 +168,17 @@
                     </tr>
                   {% endfor %}
                 </tbody>
-              </table>
+              </table><br><br><br><br>
+        
+                {% for ecole in ecoles %}
+      
+              <!-- Remarque et signature -->
+                <div class="mt-4 text-center">
+                
+                  <h4>Directeur:</h4><br><br>
+                  <h4>{{ecole.responsable}}</h4>
+                </div>
+                  {% endfor %}
             </div>
 
           </div>
