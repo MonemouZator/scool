@@ -29,10 +29,10 @@ urlpatterns = [
     path('ajax/get_groupes/', views.get_groupes, name='get_groupes'),
 
     path('liste/statut/paiement', views.statut_paiement_eleve_fondateur, name='statut_paiement_eleve_fondateur'),
-    path('eleve/par/niveau/',views.liste_eleves_par_niveau, name='liste_eleves_par_niveau_annee_fonda'),
+    path('eleve/niveau/',views.liste_eleves_niveau, name='liste_eleves_par_niveau_annee_fonda'),
     path('liste/eleves/classe/',views.liste_eleves_par_classe, name='liste_eleves_par_groupe_fonda'),
      path('eleve/fonda<int:pk>/', views.detail_eleves, name='eleve_detail_fonda'),
-
+     path('ajax/get_groupe/', views.get_groupe, name='get_groupe'),
 
 ]
 

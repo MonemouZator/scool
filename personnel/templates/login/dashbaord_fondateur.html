@@ -1,5 +1,6 @@
 {% extends "base/index.html" %}
 {% load static %}
+
 {% block chat %}
 <a class="nav-link" href="">
   <i class="far fa-comments"></i>
@@ -14,6 +15,7 @@
     <p>Tableau de bord</p>
   </a>
 </li>
+
 <a href="#" class="nav-link">
   <p class="bg-warning">GESTION ENSEIGNANTS</p>
 </a>
@@ -29,18 +31,19 @@
     <p>Suivi des enseignants</p>
   </a>
 </li>
+
 <a href="#" class="nav-link">
   <p class="bg-warning">GESTION DES ELEVES</p>
 </a>
-<li class="nav-item">
+{% comment %} <li class="nav-item">
   <a href="{% url 'liste_eleves_par_niveau_annee_fonda' %}" class="nav-link {% if request.resolver_match.url_name == 'liste_eleves_par_niveau_annee_fonda' %}active{% endif %}">
     <i class="badge badge-danger"><span class="text-white">1</span></i>
     <p>Eleve par niveau</p>
   </a>
-</li>
+</li> {% endcomment %}
 <li class="nav-item">
   <a href="{% url 'liste_eleves_par_groupe_fonda' %}" class="nav-link {% if request.resolver_match.url_name == 'liste_eleves_par_groupe_fonda' %}active{% endif %}">
-    <i class="badge badge-danger"><span class="text-white">2</span></i>
+    <i class="badge badge-danger"><span class="text-white">1</span></i>
     <p>Eleve par classe</p>
   </a>
 </li>
@@ -48,28 +51,22 @@
 <a href="#" class="nav-link">
   <p class="bg-warning">GESTION COMPTABILITE</p>
 </a>
-<li class="nav-item">
-  <a href="{% url 'statut_paiement_eleve_fondateur' %}" class="nav-link {% if request.resolver_match.url_name == 'statut_paiement_eleve_fondateur' %}active{% endif %}">
-    <i class="badge badge-danger"><span class="text-white">1</span></i>
-    <p>Statut de Paiement</p>
-  </a>
-</li>
+
 <li class="nav-item">
   <a href="{% url 'paiement_salaire_fonda' %}" class="nav-link {% if request.resolver_match.url_name == 'paiement_salaire_fonda' %}active{% endif %}">
-    <i class="badge badge-danger"><span class="text-white">2</span></i>
-    <p> Salaire des Enseignants</p>
+    <i class="badge badge-danger"><span class="text-white">1</span></i>
+    <p>Salaire des Enseignants</p>
   </a>
 </li>
 <li class="nav-item">
   <a href="{% url 'depense_fondateur' %}" class="nav-link {% if request.resolver_match.url_name == 'depense_fondateur' %}active{% endif %}">
-    <i class="badge badge-danger"><span class="text-white">3</span></i>
+    <i class="badge badge-danger"><span class="text-white">2</span></i>
     <p>Liste des Dépense</p>
   </a>
 </li>
-
 <li class="nav-item">
   <a href="{% url 'finance' %}" class="nav-link {% if request.resolver_match.url_name == 'finance' %}active{% endif %}">
-    <i class="badge badge-danger"><span class="text-white">4</span></i>
+    <i class="badge badge-danger"><span class="text-white">3</span></i>
     <p>Finance</p>
   </a>
 </li>
@@ -77,22 +74,18 @@
 <a href="#" class="nav-link">
   <p class="bg-warning">GESTION UTILISATEURS</p>
 </a>
-
-    <li class="nav-item">
-        <a href="{% url 'ajouter_administrateur' %}" class="nav-link {% if request.resolver_match.url_name == 'ajouter_administrateur' %}active{% endif %}">
-      
-        <i class="badge badge-danger"><span class="text-white">1</span></i>
-        <p>Ajouter utilisateur</p>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a href="{% url 'liste_administrateurs' %}" class="nav-link {% if request.resolver_match.url_name == 'liste_administrateurs' %}active{% endif %}">
-      
-        <i class="badge badge-danger"><span class="text-white">2</span></i>
-        <p>Liste des utilisateurs</p>
-      </a>
-    </li>
-
+<li class="nav-item">
+  <a href="{% url 'ajouter_administrateur' %}" class="nav-link {% if request.resolver_match.url_name == 'ajouter_administrateur' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">1</span></i>
+    <p>Ajouter utilisateur</p>
+  </a>
+</li>
+<li class="nav-item">
+  <a href="{% url 'liste_administrateurs' %}" class="nav-link {% if request.resolver_match.url_name == 'liste_administrateurs' %}active{% endif %}">
+    <i class="badge badge-danger"><span class="text-white">2</span></i>
+    <p>Liste des utilisateurs</p>
+  </a>
+</li>
 <li class="nav-item">
   <a href="{% url 'profil_admin' %}" class="nav-link {% if request.resolver_match.url_name == 'profil_admin' %}active{% endif %}">
     <i class="badge badge-danger"><span class="text-white">3</span></i>
@@ -100,19 +93,6 @@
   </a>
 </li>
 
-<li class="nav-item">
-  <a href="{% url 'changer_password_admin' %}" class="nav-link {% if request.resolver_match.url_name == 'changer_password_admin' %}active{% endif %}">
-    <i class="badge badge-danger"><span class="text-white">4</span></i>
-    <p>Changer mot passe</p>
-  </a>
-</li>
-
-<li class="nav-item">
-  <a href="{% url 'historique_admin' %}" class="nav-link {% if request.resolver_match.url_name == 'historique_admin' %}active{% endif %}">
-    <i class="badge badge-danger"><span class="text-white">5</span></i>
-    <p>Historique des actions</p>
-  </a>
-</li>
 
 <li class="nav-item">
   <a href="{% url 'logout' %}" class="nav-link">
@@ -122,36 +102,28 @@
 </li>
 {% endblock %}
 
-<!-- Content Wrapper. Contains page content -->
 {% block contenu %}
-<div class="content-wrapper">
-  {% block content_wrapper %}
-  <!-- Content Header (Page header) -->
+<div class="content-wrapper p-4" style="max-height: calc(100vh - 150px); overflow-y: auto;">
+  <!-- Content Header -->
   <div class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
           <h1 class="m-0">Tableau de bord Du Fondateur</h1>
         </div>
-        <!-- /.col -->
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="">acceuil</a></li>
-            <li class="breadcrumb-item active">tableau de bord</li>
+            <li class="breadcrumb-item"><a href="">Accueil</a></li>
+            <li class="breadcrumb-item active">Tableau de bord</li>
           </ol>
         </div>
-        <!-- /.col -->
       </div>
-      <!-- /.row -->
     </div>
-    <!-- /.container-fluid -->
   </div>
-  <!-- /.content-header -->
 
-  <!-- Main content -->
+  <!-- Stat boxes -->
   <section class="content">
     <div class="container-fluid">
-      <!-- Small boxes (Stat box) -->
       <div class="row">
         <div class="col-lg-3 col-6">
           <div class="small-box bg-info">
@@ -159,14 +131,11 @@
               {% if annee_selectionnee %}
                 <p>Année scolaire en cours : <br> {{ annee_selectionnee.nom }}</p>
                 <h5>Elèves inscrits : {{ nombre_eleves_par_annee }}</h5>
-              
               {% else %}
                 <p>Aucune année scolaire en cours définie.</p>
               {% endif %}
             </div>
-            <div class="icon">
-              <i class="ion ion-bag"></i>
-            </div>
+            <div class="icon"><i class="ion ion-bag"></i></div>
           </div>
         </div>
 
@@ -176,12 +145,7 @@
               <h3>{{ nombre_enseignants }}</h3>
               <p>Enseignants</p>
             </div>
-            <div class="icon">
-              <i class="ion ion-stats-bars"></i>
-            </div>
-            <a href="javascript:void(0)" class="small-box-footer">
-              <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            <div class="icon"><i class="ion ion-stats-bars"></i></div>
           </div>
         </div>
 
@@ -191,12 +155,7 @@
               <h3>{{ nombre_utilisateurs }}</h3>
               <p>Utilisateurs</p>
             </div>
-            <div class="icon">
-              <i class="ion ion-person-add"></i>
-            </div>
-            <a href="javascript:void(0)" class="small-box-footer">
-              <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            <div class="icon"><i class="ion ion-person-add"></i></div>
           </div>
         </div>
 
@@ -206,95 +165,139 @@
               <h3>{{ nombre_niveaux }}</h3>
               <p>Niveaux</p>
             </div>
-            <div class="icon">
-              <i class="ion ion-pie-graph"></i>
-            </div>
-            <a href="javascript:void(0)" class="small-box-footer">
-              <i class="fas fa-arrow-circle-right"></i>
-            </a>
+            <div class="icon"><i class="ion ion-pie-graph"></i></div>
           </div>
         </div>
       </div>
 
-      <!-- Main row -->
+      <!-- Montants financiers -->
       <div class="row">
-        <!-- Left col -->
-        <section class="col-12 connectedSortable">
-          <!-- Custom tabs (Charts with tabs)-->
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">
-                <i class="fas fa-chart-pie mr-1"></i>
-                Paiements des élèves
-              </h3>
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-info">
+            <div class="inner">
+              <h3>{{ total_entree }}</h3>
+              <p>Somme Totale Entrée</p>
             </div>
-            <div class="card-body">
-              <div class="tab-content p-0">
-                <!-- Chart -->
-                <div class="chart tab-pane active" id="revenue-chart" style="position: relative; height: 300px; width: 100%;">
-                  <canvas id="revenue-chart-canvas" height="300" style="height: 300px; width: 100%;"></canvas>
-                </div>
-              </div>
-            </div><!-- /.card-body -->
+            <div class="icon"><i class="ion ion-bag"></i></div>
           </div>
-        </section>
+        </div>
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-success">
+            <div class="inner">
+              <h3>{{ total_sortie }}</h3>
+              <p>Somme Total Sortie</p>
+            </div>
+            <div class="icon"><i class="ion ion-stats-bars"></i></div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-warning">
+            <div class="inner">
+              <h3>{{ solde_net }}</h3>
+              <p>Solde Net</p>
+            </div>
+            <div class="icon"><i class="ion ion-person-add"></i></div>
+          </div>
+        </div>
+        <div class="col-lg-3 col-6">
+          <div class="small-box bg-primary">
+            <div class="inner">
+              <h3>{{ total_impaye }}</h3>
+              <p>Somme Total Frais non payé/p>
+            </div>
+            <div class="icon"><i class="ion ion-pie-graph"></i></div>
+          </div>
+        </div>
       </div>
-    </div><!-- /.container-fluid -->
+
+      <!-- Graphiques -->
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header"><h3 class="card-title">Entré</h3></div>
+            <div class="card-body"><canvas id="chartValeurs" style="height:200px;"></canvas></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header"><h3 class="card-title">Sortie</h3></div>
+            <div class="card-body"><canvas id="chartCredits" style="height:200px;"></canvas></div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header"><h3 class="card-title">Solde Net</h3></div>
+            <div class="card-body"><canvas id="chartDebits" style="height:200px;"></canvas></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header"><h3 class="card-title">Impayé</h3></div>
+            <div class="card-body"><canvas id="chartTickets" style="height:200px;"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paiements des élèves -->
+     
+
+    </div>
   </section>
 
   <!-- Inclure Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <script>
-  const labels = {{ labels|safe }};
-  const data = {{ data|safe }};
-  
-  const ctx = document.getElementById('revenue-chart-canvas').getContext('2d');
-  const revenueChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Paiements par mois (FGN)',
-        data: data,
-        backgroundColor: 'rgba(0, 123, 255, 0.7)',
-        borderColor: 'rgba(0, 123, 255, 1)',
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            callback: function(value) {
-              return value.toLocaleString() + ' FGN';
-            }
-          }
-        }
-      },
-      plugins: {
-        legend: {
-          position: 'top'
+<script>
+const labels = {{ labels|safe }};
+const data = {{ data|safe }};
+
+// Fonction pour créer un graphique
+function createChart(ctxId, label, bgColor) {
+    const ctx = document.getElementById(ctxId).getContext('2d');
+    return new Chart(ctx, {
+        type: 'bar', // tu peux changer 'bar' en 'line' si tu veux un graphique linéaire
+        data: {
+            labels: labels,
+            datasets: [{
+                label: label,
+                data: data,
+                backgroundColor: bgColor,
+                borderColor: bgColor,
+                borderWidth: 1
+            }]
         },
-        title: {
-          display: true,
-          text: 'Évolution des paiements des élèves par mois'
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString() + ' FGN';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: { position: 'top' },
+                title: { display: true, text: label }
+            }
         }
-      }
-    }
-  });
+    });
+}
+
+// Créer chaque graphique
+createChart('chartValeurs', 'Entrées', 'rgba(0, 123, 255, 0.7)');
+createChart('chartCredits', 'Sorties', 'rgba(220, 53, 69, 0.7)');
+createChart('chartDebits', 'Solde Net', 'rgba(255, 193, 7, 0.7)');
+createChart('chartTickets', 'Impayé', 'rgba(40, 167, 69, 0.7)');
 </script>
 
-
-  {% endblock %}
-</div>
-<!-- /.content-wrapper -->
-{% endblock contenu %}
+{% endblock %}
 
 {% block script_fils %}
-{% comment %} <script src="{% static 'administration/js/dashboard.js' %}"></script> {% endcomment %}
 <script></script>
-{% endblock script_fils %}
+{% endblock %}

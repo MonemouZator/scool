@@ -309,7 +309,9 @@
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
 
 <script>
+
 $(document).ready(function() {
+  // DataTable
   $("#example1").DataTable({
     "responsive": true,
     "lengthChange": false,
@@ -326,21 +328,13 @@ $(document).ready(function() {
       if(niveau_id){
           $.ajax({
               url: "{% url 'get_classes_matiere' %}",
-              data: {
-                  'niveau': niveau_id
-              },
+              data: {'niveau': niveau_id},
               success: function(data){
-                  classe_select.empty();
-                  classe_select.append('<option value="">-- Sélectionnez une classe --</option>');
-                  data.classes.forEach(function(c){
-                      classe_select.append('<option value="'+c.id+'">'+c.nom+'</option>');
-                  });
+                  classe_select.empty().append('<option value="">-- Sélectionnez une classe --</option>');
+                  data.classes.forEach(function(c){ classe_select.append('<option value="'+c.id+'">'+c.nom+'</option>'); });
 
-                  matiere_select.empty();
-                  matiere_select.append('<option value="">-- Sélectionnez une matière --</option>');
-                  data.matieres.forEach(function(m){
-                      matiere_select.append('<option value="'+m.id+'">'+m.nom+'</option>');
-                  });
+                  matiere_select.empty().append('<option value="">-- Sélectionnez une matière --</option>');
+                  data.matieres.forEach(function(m){ matiere_select.append('<option value="'+m.id+'">'+m.nom+'</option>'); });
               }
           });
       } else {
@@ -348,8 +342,42 @@ $(document).ready(function() {
           matiere_select.empty().append('<option value="">-- Sélectionnez une matière --</option>');
       }
   });
+
+  // Intercepter le submit du formulaire Affecter
+  $("#affecte{{ ensei.id }} form").submit(function(e){
+      e.preventDefault(); // reste sur la page, modale ouverte
+      var form = $(this);
+
+      $.ajax({
+          type: form.attr('method'),
+          url: form.attr('action'),
+          data: form.serialize(),
+          success: function(response){
+              // Afficher le message dans la modale
+              var msgDiv = $("#affecte{{ ensei.id }} .modal-body .message");
+              if(msgDiv.length === 0){
+                  $("#affecte{{ ensei.id }} .modal-body").prepend('<div class="message mt-2"></div>');
+                  msgDiv = $("#affecte{{ ensei.id }} .modal-body .message");
+              }
+
+              msgDiv.html('<div class="alert alert-' 
+                  + (response.status === 'success' ? 'success' : response.status === 'warning' ? 'warning' : 'danger') 
+                  + ' alert-dismissible fade show" role="alert">'
+                  + response.message
+                  + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+              // Réinitialiser le formulaire si besoin, mais laisser la modale ouverte
+              if(response.status === 'success'){
+                  form[0].reset();
+              }
+          },
+          error: function(){
+              alert("Une erreur est survenue, veuillez réessayer.");
+          }
+      });
+  });
   {% endfor %}
 });
-
 </script>
+
 {% endblock %}

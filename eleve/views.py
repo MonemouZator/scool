@@ -248,7 +248,6 @@ def supprimer(request, pk):
 
 #FONCTION DE PAIEMENT ET RECU DE PAIEMENT DES FRAIS SCOLARITES
 
-#SELECTIONNER L'ELEVE ANVANT D'EFFETUER SON PAIEMENT
 def eleve_selection(request):
     # Récupérer les élèves en fonction de l'année scolaire et du niveau sélectionnés
     annees_scolaires = AnneeScolaire.objects.all()
@@ -256,25 +255,25 @@ def eleve_selection(request):
     groupeclasses = GroupeClasse.objects.all()
 
     eleves = Eleve.objects.all()
-    # Filtrage des élèves par année scolaire, niveau et groupe classe, si ces paramètres sont envoyés via POST
+
     if request.method == "POST":
-        annee_scolaire_nom = request.POST.get("annee_scolaire")
-        niveau_nom = request.POST.get("niveau")
-        groupeclasse_nom = request.POST.get("groupeclasse")
+        annee_scolaire_id = request.POST.get("annee_scolaire")
+        niveau_id = request.POST.get("niveau")
+        groupeclasse_id = request.POST.get("groupeclasse")
 
-        if annee_scolaire_nom:
-            eleves = eleves.filter(annee_scolaire__nom=annee_scolaire_nom)
+        if annee_scolaire_id:
+            eleves = eleves.filter(annee_scolaire_id=annee_scolaire_id)
 
-        if niveau_nom:
-            eleves = eleves.filter(niveau__nom=niveau_nom)
+        if niveau_id:
+            eleves = eleves.filter(niveau_id=niveau_id)
 
-        if groupeclasse_nom:
-            eleves = eleves.filter(groupe_classe__nom=groupeclasse_nom)
+        if groupeclasse_id:
+            eleves = eleves.filter(groupe_classe_id=groupeclasse_id)
 
-    # Pour chaque élève, récupérer les frais scolaires de l'année scolaire et du niveau
+    # Pour chaque élève, récupérer les frais scolaires de l'année scolaire
     eleves_frais = []
     for eleve in eleves:
-        frais = FraisScolarite.objects.filter(eleve=eleve, annee_scolaire=eleve.annee_scolaire).first()  # On récupère le premier frais scolaire
+        frais = FraisScolarite.objects.filter(eleve=eleve, annee_scolaire=eleve.annee_scolaire).first()
         eleves_frais.append({
             'eleve': eleve,
             'frais': frais
@@ -284,7 +283,10 @@ def eleve_selection(request):
         'eleves_frais': eleves_frais,
         'annees_scolaires': annees_scolaires,
         'niveaux': niveaux,
-        'groupeclasses': groupeclasses
+        'groupeclasses': groupeclasses,
+        'selected_annee_id': annee_scolaire_id if request.method=="POST" else None,
+        'selected_niveau_id': niveau_id if request.method=="POST" else None,
+        'selected_groupe_id': groupeclasse_id if request.method=="POST" else None,
     })
 
 from decimal import Decimal
@@ -345,56 +347,76 @@ def afficher_recu(request, recu_id):
         recu = get_object_or_404(Recu, id=recu_id)
         return render(request, 'eleve/recu_paiement.html', {'recu': recu})
 
-# STATUT PAIEMENT
-
+from cycle.models import Etablissement
 def statut_paiement_eleve(request):
     # Récupérer tous les niveaux, groupes et années scolaires pour les filtres
     niveaux = Niveau.objects.all()
     groupes = GroupeClasse.objects.all()
     annees_scolaires = AnneeScolaire.objects.all()
+    ecoles = Etablissement.objects.all()
 
     # Récupérer les paramètres de filtrage depuis la requête GET
     niveau_id = request.GET.get('niveau')
     groupe_id = request.GET.get('groupe_classe')
     annee_id = request.GET.get('annee_scolaire')
+    action = request.GET.get('action')  # Pour savoir si on veut les impayés
 
-    # Filtrer les élèves selon les paramètres de filtrage
+    # Filtrer les élèves selon les paramètres
     eleves = Eleve.objects.all()
-
     if niveau_id:
-        eleves = eleves.filter(niveau__id=niveau_id)  # Utiliser l'ID du niveau
+        eleves = eleves.filter(niveau__id=niveau_id)
     if groupe_id:
-        eleves = eleves.filter(groupe_classe__id=groupe_id)  # Utiliser l'ID du groupe
+        eleves = eleves.filter(groupe_classe__id=groupe_id)
     if annee_id:
-        eleves = eleves.filter(annee_scolaire__id=annee_id)  # Utiliser l'ID de l'année scolaire
+        eleves = eleves.filter(annee_scolaire__id=annee_id)
 
-    # Récupérer les informations des frais pour chaque élève
     eleves_info = []
-    for eleve in eleves:
-        frais_scolarite = FraisScolarite.objects.filter(eleve=eleve).first()
 
-        if frais_scolarite:
-            if frais_scolarite.solde == 0:
+    for eleve in eleves:
+        frais = FraisScolarite.objects.filter(eleve=eleve).first()
+        montant_restant = 0
+        statut_paiement = "Aucune donnée de paiement"
+
+        if frais:
+            montant_restant = frais.montant_total - frais.total_paye
+            if montant_restant == 0:
                 statut_paiement = 'Paiement complet'
-            elif frais_scolarite.total_paye > 0 and frais_scolarite.total_paye < frais_scolarite.montant_total:
+            elif frais.total_paye > 0 and montant_restant > 0:
                 statut_paiement = 'Paiement partiel'
             else:
                 statut_paiement = 'En attente de paiement'
-        else:
-            statut_paiement = 'Aucune donnée de paiement'
+
+        # Si action = impaye, ne garder que ceux qui n'ont pas payé complètement
+        if action == 'impaye' and montant_restant == 0:
+            continue  # passer ceux qui ont tout payé
 
         eleves_info.append({
             'eleve': eleve,
             'statut_paiement': statut_paiement,
+            'montant_restant': montant_restant,
         })
+    # Calculer la somme totale des impayés
+    total_restant = sum(info['montant_restant'] for info in eleves_info if info['montant_restant'] > 0)
 
-    # Rendre le résultat dans un template
-    return render(request, 'eleve/statut_paiement_eleve.html', {
+    # Récupérer les objets niveau et année si filtrés pour l'affichage
+    niveau_obj = Niveau.objects.filter(id=niveau_id).first() if niveau_id else None
+    annee_scolaire_obj = AnneeScolaire.objects.filter(id=annee_id).first() if annee_id else None
+
+    contexte = {
         'eleves_info': eleves_info,
         'niveaux': niveaux,
         'groupes': groupes,
         'annees_scolaires': annees_scolaires,
-    })
+        'ecoles': ecoles,
+        'total_restant': total_restant,
+        'niveau_obj': niveau_obj,
+        'annee_scolaire_obj': annee_scolaire_obj,
+    }
+
+
+
+    return render(request, 'eleve/statut_paiement_eleve.html', contexte)
+
 
 
 def get_groupe(request):
@@ -572,7 +594,7 @@ def detail_eleves(request, pk):
 
 #afficher les eleves par niveau et annee scolaire
 
-def liste_eleves_par_niveau(request):
+def liste_eleves_niveau(request):
     niveau_id = request.GET.get('niveau')
     annee_id = request.GET.get('annee_scolaire')
 
@@ -617,3 +639,28 @@ def liste_eleves_par_classe(request):
         'annees': annees
     }
     return render(request, 'admin/liste_eleves_par_groupe.html', context)
+
+
+from django.http import JsonResponse
+from .models import GroupeClasse, Niveau  # adapte selon tes imports
+
+def get_groupe(request):
+    """
+    Retourne les groupes liés à un niveau sous forme JSON.
+    """
+    niveau_id = request.GET.get('niveau_id')
+    groupes_data = []
+
+    if niveau_id:
+        try:
+            # Récupère les groupes liés au niveau sélectionné
+            groupes = GroupeClasse.objects.filter(niveau_id=niveau_id).order_by('nom')
+            for groupe in groupes:
+                groupes_data.append({
+                    'id': groupe.id,
+                    'nom': groupe.nom
+                })
+        except Niveau.DoesNotExist:
+            groupes_data = []
+
+    return JsonResponse({'groupes': groupes_data})

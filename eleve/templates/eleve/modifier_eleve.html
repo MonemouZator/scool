@@ -23,7 +23,7 @@
 
 {% block contenu %}
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper p-4" style="max-height: calc(100vh - 150px); overflow-y: auto;">
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <div class="container-fluid">
@@ -62,9 +62,7 @@
                       </div>
                     </div>
                   {% endif %}
-
-
-                
+       
                   <div class="form-group col-md-6">
                     <label for="annee_scolaire">Année scolaire :</label>
                     <select name="annee_scolaire" class="form-control" id="annee_scolaire" required>
@@ -77,12 +75,6 @@
                     </select>
                 </div>
                 
-                
-                
-                
-                
-                  
-                  
                   <div class="form-group col-md-6">
                     <label for="niveau">Niveau:</label>
                     <select name="niveau" class="form-control" id="niveau" required>

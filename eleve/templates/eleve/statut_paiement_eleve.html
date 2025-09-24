@@ -1,337 +1,167 @@
 {% extends "login/comptable_dashboard.html" %}
 {% load static %}
- {% block styl_parent %}
-  <title>Statut-paiement | Accueil</title>
 
+{% block styl_parent %}
+<title>Statut Paiement | Accueil</title>
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-  <!-- DataTables -->
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
-  <style>
-    body {
-      background-color: #f8f9fc;
-      font-family: 'Source Sans Pro', sans-serif;
-    }
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
 
-    .content-wrapper {
-      background-color: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
-      margin-top: 20px;
-    }
+<style>
+body { background-color: #f8f9fc; font-family: 'Source Sans Pro', sans-serif; }
+.content-wrapper { background-color: #fff; border-radius: 10px; padding: 2rem; margin-top: 20px; }
+h1.mb-4 { font-size: 2.3rem; font-weight: 600; color: #2C3E50; text-align: center; background-color: #16A085; padding: 20px 40px; border-radius: 10px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-transform: uppercase; }
+.form-row { display: flex; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.form-row .col-md-4 { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.form-select, .btn { padding: 1rem; font-size: 1rem; border-radius: 8px; border: 1px solid #dcdfe3; background-color: #f5f5f5; transition: all 0.3s ease; }
+.form-select:focus { background-color: #fff; border-color: #80bdff; box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25); outline: none; }
+.btn-primary { background: linear-gradient(135deg, #007bff, #0056b3); border: none; color: #fff; font-weight: bold; }
+.btn-success { background: #28a745; border: none; color: #fff; }
+.btn-danger { background: #dc3545; border: none; color: #fff; }
+.table-container { background-color: #fff; border-radius: 12px; padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.05); overflow-x: auto; }
+.table th { background-color: #007bff; color: white; padding: 1rem; text-align: center; font-weight: bold; }
+.table td { padding: 1rem; text-align: center; border-top: 1px solid #ddd; }
+.table tbody tr:nth-child(even) { background-color: #f9f9f9; }
+.table tbody tr:hover { background-color: #e6f2ff; transition: background-color 0.3s ease; }
 
-    h1 {
-      font-size: 1.75rem;
-      color: #333;
-      font-weight: bold;
-      margin-bottom: 1.5rem;
-    }
+.centre { text-align: center; margin-bottom: 20px; }
+.infos { text-align: left; font-size: 14px; margin-bottom: 20px; }
 
-    .form-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
+@media print {
+    form, .btn, .dataTables_length, .dataTables_filter, .dataTables_paginate, .dataTables_info {
+        display: none !important;
     }
-
-    .form-row .col-md-4 {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .form-select, .btn {
-      padding: 1rem;
-      font-size: 1rem;
-      border-radius: 8px;
-      border: 1px solid #dcdfe3;
-      background-color: #f5f5f5;
-      transition: all 0.3s ease;
-    }
-
-    .form-select:focus {
-      background-color: #fff;
-      border-color: #80bdff;
-      box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
-      outline: none;
-    }
-
-    .form-label {
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      font-size: 1.1rem;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #007bff, #0056b3);
-      border: none;
-      box-shadow: 0 4px 8px rgba(0,123,255,0.2);
-      text-transform: uppercase;
-      font-weight: bold;
-      letter-spacing: 0.5px;
-      color: #fff;
-      transition: all 0.3s ease;
-    }
-
-    .btn-primary:hover {
-      background: linear-gradient(135deg, #0056b3, #003d80);
-      box-shadow: 0 6px 12px rgba(0,123,255,0.3);
-    }
-
-    .table-container {
-      background-color: #fff;
-      border-radius: 12px;
-      padding: 1.5rem;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      overflow-x: auto;
-    }
-
-    .table {
-      width: 100%;
-      margin-top: 2rem;
-      border-collapse: collapse;
-    }
-
-    .table th {
-      background-color: #007bff;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-      font-size: 1.1rem;
-      font-weight: bold;
-    }
-
-    .table td {
-      padding: 1rem;
-      text-align: center;
-      font-size: 1rem;
-      border-top: 1px solid #ddd;
-    }
-
-    .table tbody tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-
-    .table tbody tr:hover {
-      background-color: #e6f2ff;
-      transition: background-color 0.3s ease;
-    }
-
-    .table tbody tr {
-      animation: fadeIn 0.5s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .badge {
-      padding: 0.6rem 1.2rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      border-radius: 20px;
-      text-transform: capitalize;
-    }
-
-    .badge.bg-success {
-      background-color: #28a745;
-      color: white;
-    }
-
-    .badge.bg-warning {
-      background-color: #ffc107;
-      color: white;
-    }
-
-    .badge.bg-danger {
-      background-color: #dc3545;
-      color: white;
-    }
-
-    .badge.bg-secondary {
-      background-color: #6c757d;
-      color: white;
-    }
-
-    .mb-3 {
-      margin-bottom: 1.5rem;
-    }
-
-    @media (max-width: 768px) {
-      .form-row {
-        flex-direction: column;
-        gap: 1rem;
-      }
-    }
-    h1.mb-4 {
-        font-size: 2.3rem; /* Moderate large size for the title */
-        font-weight: 600; /* Bold for emphasis */
-        color: #2C3E50; /* Dark text color for readability */
-        text-align: center; /* Center the title */
-        background-color: #16A085; /* Soft teal background to make it pop */
-        padding: 20px 40px; /* Padding around the title for space */
-        border-radius: 10px; /* Rounded corners for smooth appearance */
-        margin-bottom: 30px; /* Space below the title */
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-        text-transform: uppercase; /* Uppercase for a formal appearance */
-    }
-  </style>
+    body { background-color: #fff !important; }
+    .content-wrapper { padding: 0 !important; margin: 0 !important; box-shadow: none !important; }
+    table { width: 100% !important; border-collapse: collapse !important; }
+    table th, table td { border: 1px solid #000 !important; padding: 0.5rem !important; font-size: 12pt !important; }
+}
+</style>
 {% endblock %}
 
-
- {% block body %}
+{% block body %}
 <body class="hold-transition sidebar-mini">
- {% endblock body %}
-
-
-
+{% endblock body %}
 
 {% block contenu %}
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
-    <!-- Content Header (Page header) -->
+<div class="content-wrapper p-4" style="max-height: calc(100vh - 150px); overflow-y: auto;">
     <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>STATUT DE PAIEMENT DES ELEVES</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="">accueil</a></li>
-              <li class="breadcrumb-item active">Tableau de bord</li>
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
-
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-           
-
-            <div class="card">
-              <div class="card-header">
-
-                <form method="get">
-                    <div class="form-row">
-                      <div class="col-md-4 mb-3">
-                        <label for="niveau" class="form-label">Niveau</label>
-                        <select name="niveau" id="niveau" class="form-select">
-                          <option value="">Sélectionner un niveau</option>
-                          {% for niveau in niveaux %}
-                            <option value="{{ niveau.id }}" {% if niveau.id|stringformat:"s" == request.GET.niveau %}selected{% endif %}>
-                              {{ niveau.nom }}
-                            </option>
-                          {% endfor %}
-                        </select>
-                      </div>
-
-                      <div class="col-md-4 mb-3">
-                        <label for="groupe_classe" class="form-label"> Classe</label>
-                        <select name="groupe_classe" id="groupe_classe" class="form-select">
-                          <option value="">Sélectionner une classe</option>
-                          {% for groupe in groupes %}
-                            <option value="{{ groupe.id }}" {% if groupe.id|stringformat:"s" == request.GET.groupe_classe %}selected{% endif %}>
-                              {{ groupe.nom }}
-                            </option>
-                          {% endfor %}
-                        </select>
-                      </div>
-
-                      <div class="col-md-4 mb-3">
-                        <label for="annee_scolaire" class="form-label">Année scolaire</label>
-                        <select name="annee_scolaire" id="annee_scolaire" class="form-select">
-                          <option value="">Sélectionner une année scolaire</option>
-                          {% for annee in annees_scolaires %}
-                            <option value="{{ annee.id }}" {% if annee.id|stringformat:"s" == request.GET.annee_scolaire %}selected{% endif %}>
-                              {{ annee.nom }}
-                            </option>
-                          {% endfor %}
-                        </select>
-                      </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Filtrer</button>
-                    <hr style="border: 1px solid #16A085; margin: 20px 0;">
-                  </form> 
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                <table id="example2" class="table table-bordered">
-                      <thead class="bg-primary">
-                        <tr>
-                          <th>Nom</th>
-                          <th>Groupe</th>
-                          <th>Année scolaire</th>
-                          <th>Statut de paiement</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for info in eleves_info %}
-                          <tr>
-                            <td>{{ info.eleve.nom }} {{ info.eleve.prenom }}</td>
-                            <td>{{ info.eleve.groupe_classe.nom }}</td>
-                            <td>{{ info.eleve.annee_scolaire.nom }}</td>
-                            <td>
-                              {% if info.statut_paiement == 'Paiement complet' %}
-                                <span class="badge bg-success">{{ info.statut_paiement }}</span>
-                              {% elif info.statut_paiement == 'Paiement partiel' %}
-                                <span class="badge bg-warning">{{ info.statut_paiement }}</span>
-                              {% elif info.statut_paiement == 'En attente de paiement' %}
-                                <span class="badge bg-danger">{{ info.statut_paiement }}</span>
-                              {% else %}
-                                <span class="badge bg-secondary">{{ info.statut_paiement }}</span>
-                              {% endif %}
-                            </td>
-                          </tr>
-                        {% empty %}
-                          <tr>
-                            <td colspan="4" class="text-center">Aucun élève trouvé.</td>
-                          </tr>
-                        {% endfor %}
-                      </tbody>
-                  </table>
-              </div>
-              <!-- /.card-body -->
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6"><h1>STATUT DE PAIEMENT DES ELEVES</h1></div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="">Accueil</a></li>
+                        <li class="breadcrumb-item active">Tableau de bord</li>
+                    </ol>
+                </div>
             </div>
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
         </div>
-        <!-- /.row -->
-      </div>
-      <!-- /.container-fluid -->
     </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <form method="get">
+                                <div class="form-row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="niveau">Niveau</label>
+                                        <select name="niveau" id="niveau" class="form-select">
+                                            <option value="">Sélectionner un niveau</option>
+                                            {% for niveau in niveaux %}
+                                                <option value="{{ niveau.id }}" {% if niveau.id|stringformat:"s" == request.GET.niveau %}selected{% endif %}>
+                                                    {{ niveau.nom }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="groupe_classe">Classe</label>
+                                        <select name="groupe_classe" id="groupe_classe" class="form-select">
+                                            <option value="">Sélectionner une classe</option>
+                                            {% for groupe in groupes %}
+                                                <option value="{{ groupe.id }}" {% if groupe.id|stringformat:"s" == request.GET.groupe_classe %}selected{% endif %}>
+                                                    {{ groupe.nom }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="annee_scolaire">Année scolaire</label>
+                                        <select name="annee_scolaire" id="annee_scolaire" class="form-select">
+                                            <option value="">Sélectionner une année</option>
+                                            {% for annee in annees_scolaires %}
+                                                <option value="{{ annee.id }}" {% if annee.id|stringformat:"s" == request.GET.annee_scolaire %}selected{% endif %}>
+                                                    {{ annee.nom }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <button type="submit" name="action" value="impaye" class="btn btn-danger">Élèves impayés</button>
+                                <button type="button" onclick="window.print();" class="btn btn-primary mb-3">Imprimer la liste</button>
+                                <hr style="border: 1px solid #16A085; margin: 20px 0;">
+                            </form>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="centre">
+                                {% for ecole in ecoles %}
+                                    <h1>{{ ecole.pays }}</h1>
+                                    <h5>{{ ecole.devise_pays }}</h5>
+                                    <h2>{{ ecole.nom_ecole }}</h2>
+                                    <h5>{{ ecole.devise_ecole }}</h5>
+                                    <h3>Statut Paiement – {% if annee_scolaire_obj %}{{ annee_scolaire_obj.nom }}{% else %}Toutes{% endif %}</h3>
+                                    <h4>Niveau : {% if niveau_obj %}{{ niveau_obj.nom }}{% else %}Tous{% endif %}</h4>
+                                    <h4>Total impayés : {{ total_restant }} GNF</h4>
+                                {% endfor %}
+                            </div>
+
+
+                            <div class="table-container">
+                                <table id="statut_table" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Nom</th>
+                                            <th>Montant restant</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for info in eleves_info %}
+                                        {% if info.montant_restant > 0 %}
+                                        <tr>
+                                            <td>{{ info.eleve.nom }} {{ info.eleve.prenom }}</td>
+                                            <td>{{ info.montant_restant }} GNF</td>
+                                        </tr>
+                                        {% endif %}
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="2" class="text-center">Aucun élève trouvé.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
 {% endblock %}
 
-  
-
-  
 {% block scripte %}
-
-
-<!-- jQuery -->
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
-<!-- Bootstrap 4 -->
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- DataTables  & Plugins -->
 <script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
 <script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
@@ -344,26 +174,19 @@
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
-<!-- AdminLTE App -->
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{% static 'base/js/demo.js' %}"></script>
-<!-- Page specific script -->
+
 <script>
-  $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": false,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": false,
-      "info": false,
-      "autoWidth": false,
-      "responsive": true,
+$(function () {
+    $("#statut_table").DataTable({
+        "paging": true,
+        "lengthChange": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
     });
-  });
+});
 </script>
 {% endblock %}

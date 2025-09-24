@@ -519,7 +519,12 @@ from groupe_classe.models import GroupeClasse
 from enseignant.models import Enseignant
 
 
-def ajouter_affectation(request):
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+@login_required
+@csrf_exempt  # si nécessaire pour AJAX (sinon configure le token CSRF dans JS)
+def ajouter_affectation_ajax(request):
     if request.method == "POST":
         enseignant_id = request.POST.get('enseignant')
         niveau_id = request.POST.get('niveau')
@@ -532,8 +537,7 @@ def ajouter_affectation(request):
             groupe_classe = GroupeClasse.objects.get(id=groupe_classe_id)
             matiere = Matiere.objects.get(id=matiere_id)
         except (Enseignant.DoesNotExist, Niveau.DoesNotExist, GroupeClasse.DoesNotExist, Matiere.DoesNotExist):
-            messages.error(request, "Données invalides.")
-            return redirect(request.META.get('HTTP_REFERER'))
+            return JsonResponse({'status': 'error', 'message': 'Données invalides.'})
 
         # Vérifier si l'affectation existe déjà
         if EnseignantMatiere.objects.filter(
@@ -542,7 +546,7 @@ def ajouter_affectation(request):
             niveau=niveau,
             groupe_classe=groupe_classe
         ).exists():
-            messages.warning(request, "Cet enseignant est déjà affecté à ce niveau, classe et matière.")
+            return JsonResponse({'status': 'warning', 'message': 'Cet enseignant est déjà affecté à ce niveau, classe et matière.'})
         else:
             EnseignantMatiere.objects.create(
                 enseignant=enseignant,
@@ -550,9 +554,10 @@ def ajouter_affectation(request):
                 niveau=niveau,
                 groupe_classe=groupe_classe
             )
-            messages.success(request, "Affectation réussie !")
+            return JsonResponse({'status': 'success', 'message': 'Affectation réussie !'})
+    
+    return JsonResponse({'status': 'error', 'message': 'Méthode non autorisée.'})
 
-        return redirect(request.META.get('HTTP_REFERER'))
     
 
 from django.http import JsonResponse

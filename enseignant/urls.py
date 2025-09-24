@@ -25,7 +25,7 @@ urlpatterns = [
 
     path('modifier-depense/', views.modifier_depense, name='modifier_depense'),
     path('supprimer-depense/', views.supprimer_depense, name='supprimer_depense'),
-    path('ajouter-affectation/', views.ajouter_affectation, name='ajouter-affectation'),
+    path('ajouter-affectation/', views.ajouter_affectation_ajax, name='ajouter-affectation'),
 
     path('suivi/enseignant', views.suivi, name='suivie'),
    

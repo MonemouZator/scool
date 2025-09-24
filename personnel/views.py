@@ -365,52 +365,105 @@ def dashbord(request):
 
 
 # TABLEAUX DE BORD DU FONDATEUR
+from django.db.models import Sum
+from eleve.models import FraisScolarite
+from enseignant.models import Depense, PaiementSalaire
+from datetime import datetime
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.db.models import Sum
+from django.contrib.auth import get_user_model
+from datetime import date, datetime
+from eleve.models import Eleve, FraisScolarite, Recu
+from enseignant.models import Enseignant, PaiementSalaire, Depense
+from annee_scolaire.models import AnneeScolaire
+from niveau.models import Niveau
+import json
+
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
+from django.db.models import Sum, F
+from datetime import date, datetime
+import json
+
+from eleve.models import Eleve, FraisScolarite, Recu
+from enseignant.models import Enseignant, PaiementSalaire, Depense
+from annee_scolaire.models import AnneeScolaire
+from niveau.models import Niveau
+
 @login_required
 def dashbaord_fondateur(request):
     services = request.session.get('services', [])
-    annee_selectionnee = AnneeScolaire.objects.filter(date_debut__lte=date.today(), date_fin__gte=date.today()).first()
 
-    if annee_selectionnee:
-        nombre_eleves_par_annee = Eleve.objects.filter(annee_scolaire=annee_selectionnee).count()
-    else:
-        nombre_eleves_par_annee = 0
+    # Déterminer l'année scolaire sélectionnée ou en cours
+    annee_selectionnee = AnneeScolaire.objects.filter(
+        date_debut__lte=date.today(),
+        date_fin__gte=date.today()
+    ).first()
 
+    # Nombre d'élèves
+    nombre_eleves_par_annee = (
+        Eleve.objects.filter(annee_scolaire=annee_selectionnee).count()
+        if annee_selectionnee else 0
+    )
+
+    # Statistiques générales
     nombre_enseignants = Enseignant.objects.count()
     nombre_niveaux = Niveau.objects.count()
     User = get_user_model()
     nombre_utilisateurs = User.objects.count()
 
-    #Préparer les données du graphique
-    labels = []
-    data = []
-
-    mois_fr = ["", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
+    # Initialiser les totaux financiers
+    total_entree = total_sortie = solde_net = total_impaye = 0
 
     if annee_selectionnee:
-        # Filtrer les paiements pour l'année sélectionnée
+        # Total des paiements effectués par les élèves
+        total_entree = FraisScolarite.objects.filter(
+            annee_scolaire=annee_selectionnee
+        ).aggregate(total=Sum('total_paye'))['total'] or 0
+
+        # Total des salaires versés
+        total_sorties_salaire = PaiementSalaire.objects.filter(
+            annee_scolaire=annee_selectionnee
+        ).aggregate(total=Sum('montant'))['total'] or 0
+
+        # Total des autres dépenses
+        total_sorties_depense = Depense.objects.filter(
+            annee_scolaire=annee_selectionnee
+        ).aggregate(total=Sum('montant'))['total'] or 0
+
+        total_sortie = total_sorties_salaire + total_sorties_depense
+        solde_net = total_entree - total_sortie
+
+        # Total impayé réel
+        total_impaye = FraisScolarite.objects.filter(
+            annee_scolaire=annee_selectionnee
+        ).aggregate(total=Sum(F('montant_total') - F('total_paye')))['total'] or 0
+
+    # Préparer les données du graphique mensuel
+    labels = []
+    data = []
+    mois_fr = ["", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
+               "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
+
+    if annee_selectionnee:
         paiements_par_mois = (
             Recu.objects
-            .filter(date_recu__gte=datetime(annee_selectionnee.date_debut.year, 1, 1), 
-                    date_recu__lt=datetime(annee_selectionnee.date_fin.year + 1, 1, 1))
-            .values('date_recu__month')  # Grouper par mois
+            .filter(
+                date_recu__gte=datetime(annee_selectionnee.date_debut.year, 1, 1),
+                date_recu__lt=datetime(annee_selectionnee.date_fin.year + 1, 1, 1)
+            )
+            .values('date_recu__month')
             .annotate(total=Sum('montant'))
             .order_by('date_recu__month')
         )
-
-        # Créer un dictionnaire avec les mois et le total des paiements
         mois_dict = {item['date_recu__month']: item['total'] for item in paiements_par_mois}
-
-        # Préparer les labels et les données à afficher
         for month in range(1, 13):
-            labels.append(mois_fr[month])  # Utiliser le mois en français
-            # Convertir le montant en float pour éviter l'erreur de sérialisation
-            data.append(float(mois_dict.get(month, 0)))  # Ajouter 0 si aucun paiement pour ce mois
+            labels.append(mois_fr[month])
+            data.append(float(mois_dict.get(month, 0)))
 
-        # Affichage pour le débogage
-        print("Labels:", labels)
-        print("Data:", data)
-
-    # Contexte à envoyer au template
     context = {
         'services': services,
         'annee_selectionnee': annee_selectionnee,
@@ -418,11 +471,16 @@ def dashbaord_fondateur(request):
         'nombre_enseignants': nombre_enseignants,
         'nombre_niveaux': nombre_niveaux,
         'nombre_utilisateurs': nombre_utilisateurs,
-        'labels': json.dumps(labels),  # Convertir labels en JSON
-        'data': json.dumps(data),  # Convertir data en JSON
+        'labels': json.dumps(labels),
+        'data': json.dumps(data),
+        'total_entree': total_entree,
+        'total_sortie': total_sortie,
+        'solde_net': solde_net,
+        'total_impaye': total_impaye,
     }
 
     return render(request, 'login/dashbaord_fondateur.html', context)
+
 
    
 def bloc_aside(request):
@@ -663,16 +721,7 @@ def changer_password_admin(request):
             return redirect('login')
     return render(request, 'admin/changer_password_admin.html')
 
-def historique_admin(request):
-    
-    if request.user.is_superuser:
-        # Super utilisateur : voir tous les historiques
-        historiques = Historique.objects.all().order_by('-created_time')
-    else:
-        # Utilisateur normal : voir uniquement ses propres actions
-        historiques = Historique.objects.filter(user=request.user).order_by('-created_time')
 
-    return render(request, 'admin/historique.html', {'historiques': historiques})
 
 def profil_admin(request):
 
