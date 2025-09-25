@@ -143,5 +143,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = config('EMAIL_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
-
-
+EMAIL_USER='monemouzator97@gmail.com'
+EMAIL_PASSWORD='rfbz ebcy qwku aoye'
