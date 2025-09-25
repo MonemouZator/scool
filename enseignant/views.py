@@ -389,11 +389,13 @@ def supprimer_depense(request):
 
 
 ##############################LE BILAN FINANCIER ###################################
+from django.db.models import Sum, F
 def bilan_financier(request):
     annees_scolaires = AnneeScolaire.objects.all().order_by('-id')
     total_entrées = 0
     total_sorties = 0
     solde = 0
+    total_impayes=0
     annee_scolaire = None
     selected_annee_id = request.GET.get('annee_scolaire')
 
@@ -413,6 +415,11 @@ def bilan_financier(request):
             total_sorties = total_sorties_salaire + total_sorties_depense
             solde = total_entrées - total_sorties
 
+                        # Total impayé réel
+            total_impayes = FraisScolarite.objects.filter(annee_scolaire=annee_scolaire)\
+                .aggregate(total=Sum(F('montant_total') - F('total_paye')))['total'] or 0
+
+
             if solde <= 0:
                 messages.warning(request, "Le solde est insuffisant, veuillez alimenter la caisse.")
 
@@ -421,6 +428,7 @@ def bilan_financier(request):
             annee_scolaire = None
 
     context = {
+        'total_impayes':total_impayes,
         'annees_scolaires': annees_scolaires,
         'selected_annee_id': selected_annee_id,
         'total_entrées': total_entrées,
@@ -629,7 +637,7 @@ def change_password(request):
 
 
 
-def historique(request):
+def historique_comptable(request):
     
     if request.user.is_superuser:
         # Super utilisateur : voir tous les historiques

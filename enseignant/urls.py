@@ -31,7 +31,7 @@ urlpatterns = [
    
     path('mot/passe', views.change_password, name='change_password'),
 
-    path('historique/',views.historique,name='historique_Comptable'),
+    path('historique/',views.historique_comptable,name='historique_Comptable'),
 
     path('ajax/get_classes_matiere/', views.get_classes_matiere, name='get_classes_matiere'),
 

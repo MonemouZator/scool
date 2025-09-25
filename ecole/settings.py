@@ -20,7 +20,7 @@ SECRET_KEY = config('SECRET_KEY') #'django-insecure-52yfq))jd9r0uo*uq5p!j!4zccvr
 
 DEBUG =False
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ecole-44p6.onrender.com']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ecole-bnb.onrender.com']
 
 # Application definition
 
@@ -82,9 +82,9 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ecole.wsgi.application'
 
 
-# DATABASES={
-#     'default':dj_database_url.parse(config('DATABASE_URL'))
-# }
+DATABASES={
+    'default':dj_database_url.parse(config('DATABASE_URL'))
+}
 
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
@@ -172,9 +172,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'personnel.Administrateur'
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  # Nom et chemin de la base SQLite
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  # Nom et chemin de la base SQLite
+#     }
+# }

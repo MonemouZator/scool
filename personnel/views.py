@@ -365,33 +365,12 @@ def dashbord(request):
 
 
 # TABLEAUX DE BORD DU FONDATEUR
-from django.db.models import Sum
+from django.db.models import Sum,F
 from eleve.models import FraisScolarite
 from enseignant.models import Depense, PaiementSalaire
 from datetime import datetime
 
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.db.models import Sum
-from django.contrib.auth import get_user_model
-from datetime import date, datetime
-from eleve.models import Eleve, FraisScolarite, Recu
-from enseignant.models import Enseignant, PaiementSalaire, Depense
-from annee_scolaire.models import AnneeScolaire
-from niveau.models import Niveau
-import json
 
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
-from django.db.models import Sum, F
-from datetime import date, datetime
-import json
-
-from eleve.models import Eleve, FraisScolarite, Recu
-from enseignant.models import Enseignant, PaiementSalaire, Depense
-from annee_scolaire.models import AnneeScolaire
-from niveau.models import Niveau
 
 @login_required
 def dashbaord_fondateur(request):
