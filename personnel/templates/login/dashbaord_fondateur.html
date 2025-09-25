@@ -8,7 +8,7 @@
 {% endblock %}
 
 {% block menu_sidebar %}
-<!--section tableau de bord-->
+<!-- Tableau de bord -->
 <li class="nav-item">
   <a href="{% url 'dashbaord.directeur' %}" class="nav-link {% if request.resolver_match.url_name == 'dashbaord.directeur' %}active{% endif %}">
     <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -16,6 +16,7 @@
   </a>
 </li>
 
+<!-- Gestion enseignants -->
 <a href="#" class="nav-link">
   <p class="bg-warning">GESTION ENSEIGNANTS</p>
 </a>
@@ -32,15 +33,10 @@
   </a>
 </li>
 
+<!-- Gestion élèves -->
 <a href="#" class="nav-link">
   <p class="bg-warning">GESTION DES ELEVES</p>
 </a>
-{% comment %} <li class="nav-item">
-  <a href="{% url 'liste_eleves_par_niveau_annee_fonda' %}" class="nav-link {% if request.resolver_match.url_name == 'liste_eleves_par_niveau_annee_fonda' %}active{% endif %}">
-    <i class="badge badge-danger"><span class="text-white">1</span></i>
-    <p>Eleve par niveau</p>
-  </a>
-</li> {% endcomment %}
 <li class="nav-item">
   <a href="{% url 'liste_eleves_par_groupe_fonda' %}" class="nav-link {% if request.resolver_match.url_name == 'liste_eleves_par_groupe_fonda' %}active{% endif %}">
     <i class="badge badge-danger"><span class="text-white">1</span></i>
@@ -48,10 +44,10 @@
   </a>
 </li>
 
+<!-- Gestion comptabilité -->
 <a href="#" class="nav-link">
   <p class="bg-warning">GESTION COMPTABILITE</p>
 </a>
-
 <li class="nav-item">
   <a href="{% url 'paiement_salaire_fonda' %}" class="nav-link {% if request.resolver_match.url_name == 'paiement_salaire_fonda' %}active{% endif %}">
     <i class="badge badge-danger"><span class="text-white">1</span></i>
@@ -71,6 +67,7 @@
   </a>
 </li>
 
+<!-- Gestion utilisateurs -->
 <a href="#" class="nav-link">
   <p class="bg-warning">GESTION UTILISATEURS</p>
 </a>
@@ -93,7 +90,6 @@
   </a>
 </li>
 
-
 <li class="nav-item">
   <a href="{% url 'logout' %}" class="nav-link">
     <i class="fas fa-sign-out-alt fa-2x text-warning"></i>
@@ -104,7 +100,7 @@
 
 {% block contenu %}
 <div class="content-wrapper p-4" style="max-height: calc(100vh - 150px); overflow-y: auto;">
-  <!-- Content Header -->
+  <!-- Header -->
   <div class="content-header">
     <div class="container-fluid">
       <div class="row mb-2">
@@ -113,7 +109,7 @@
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item"><a href="">Accueil</a></li>
+            <li class="breadcrumb-item"><a href="#">Accueil</a></li>
             <li class="breadcrumb-item active">Tableau de bord</li>
           </ol>
         </div>
@@ -125,6 +121,7 @@
   <section class="content">
     <div class="container-fluid">
       <div class="row">
+        <!-- Année scolaire -->
         <div class="col-lg-3 col-6">
           <div class="small-box bg-info">
             <div class="inner">
@@ -139,6 +136,7 @@
           </div>
         </div>
 
+        <!-- Enseignants -->
         <div class="col-lg-3 col-6">
           <div class="small-box bg-success">
             <div class="inner">
@@ -149,6 +147,7 @@
           </div>
         </div>
 
+        <!-- Utilisateurs -->
         <div class="col-lg-3 col-6">
           <div class="small-box bg-warning">
             <div class="inner">
@@ -159,6 +158,7 @@
           </div>
         </div>
 
+        <!-- Niveaux -->
         <div class="col-lg-3 col-6">
           <div class="small-box bg-danger">
             <div class="inner">
@@ -214,13 +214,11 @@
       <div class="row">
         <div class="col-md-6">
           <div class="card">
-            <div class="card-header"><h3 class="card-title"></h3></div>
             <div class="card-body"><canvas id="chartValeurs" style="height:200px;"></canvas></div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="card">
-            <div class="card-header"><h3 class="card-title"></h3></div>
             <div class="card-body"><canvas id="chartCredits" style="height:200px;"></canvas></div>
           </div>
         </div>
@@ -228,36 +226,33 @@
       <div class="row">
         <div class="col-md-6">
           <div class="card">
-            <div class="card-header"><h3 class="card-title"></h3></div>
             <div class="card-body"><canvas id="chartDebits" style="height:200px;"></canvas></div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="card">
-            <div class="card-header"><h3 class="card-title"></h3></div>
             <div class="card-body"><canvas id="chartTickets" style="height:200px;"></canvas></div>
           </div>
         </div>
       </div>
 
-      <!-- Paiements des élèves -->
-     
-
     </div>
   </section>
+</div>
 
-  <!-- Inclure Chart.js -->
+<!-- JS -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 const labels = {{ labels|safe }};
 const data = {{ data|safe }};
 
-// Fonction pour créer un graphique
 function createChart(ctxId, label, bgColor) {
     const ctx = document.getElementById(ctxId).getContext('2d');
     return new Chart(ctx, {
-        type: 'bar', // tu peux changer 'bar' en 'line' si tu veux un graphique linéaire
+        type: 'bar',
         data: {
             labels: labels,
             datasets: [{
@@ -289,15 +284,9 @@ function createChart(ctxId, label, bgColor) {
     });
 }
 
-// Créer chaque graphique
 createChart('chartValeurs', 'Entrées', 'rgba(0, 123, 255, 0.7)');
 createChart('chartCredits', 'Sorties', 'rgba(220, 53, 69, 0.7)');
 createChart('chartDebits', 'Solde Net', 'rgba(255, 193, 7, 0.7)');
 createChart('chartTickets', 'Impayé', 'rgba(40, 167, 69, 0.7)');
 </script>
-
-{% endblock %}
-
-{% block script_fils %}
-<script></script>
 {% endblock %}
