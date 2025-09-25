@@ -139,19 +139,20 @@ USE_TZ = True
 
 
 # Static files (CSS, JS, Images)
-# GESTION LOCALE DES FICHIERS MEDIA
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-
-# Stockage local des fichiers
-
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
+# Stockage compressé et versionné pour production
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
-WHITENOISE_SKIP_COMPRESS = True
+# Ignore les fichiers manquants comme .map
+WHITENOISE_KEEP_ONLY_HASHED_FILES = True
+
+# Ne pas mettre WHITENOISE_SKIP_COMPRESS = True
 
 
 # Default primary key field type
