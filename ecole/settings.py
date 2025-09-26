@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'storages',
     'cloudinary',
     'cloudinary_storage',
-    'sslserver',
     'eleve',
     'enseignant',
     'note',
