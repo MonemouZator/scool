@@ -2,20 +2,28 @@ from pathlib import Path
 import os
 from decouple import config
 import dj_database_url
-import cloudinary
 
-# ----------------------------
-# Paramètres de base
-# ----------------------------
+# settings.py
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'monemouzator97@gmail.com'
+EMAIL_HOST_PASSWORD = 'rfbz ebcy qwku aoye'
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config('SECRET_KEY')
-DEBUG = False
+# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = config('SECRET_KEY') #'django-insecure-52yfq))jd9r0uo*uq5p!j!4zccvrd13&hbd@3zq70$o^)+==%j'
+
+DEBUG =False
+
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ecole-bnb.onrender.com']
 
-# ----------------------------
-# Applications installées
-# ----------------------------
+# Application definition
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -36,14 +44,12 @@ INSTALLED_APPS = [
     'matiere',
     'niveau',
     'personnel',
+
 ]
 
-# ----------------------------
-# Middleware
-# ----------------------------
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # <-- Sert les fichiers statiques en prod
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # <--- AJOUTER ICI
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -52,15 +58,15 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
 ROOT_URLCONF = 'ecole.urls'
 
-# ----------------------------
-# Templates
-# ----------------------------
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [
+             BASE_DIR/'templates'
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -75,73 +81,100 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecole.wsgi.application'
 
-# ----------------------------
-# Base de données
-# ----------------------------
-DATABASES = {
-    'default': dj_database_url.parse(config('DATABASE_URL'))
+
+DATABASES={
+    'default':dj_database_url.parse(config('DATABASE_URL'))
 }
 
-# ----------------------------
-# Cloudinary pour les médias
-# ----------------------------
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': config('CLOUDINARY_API_KEY'),
-    'API_SECRET': config('CLOUDINARY_API_SECRET'),
+    'API_SECRET': config('CLOUDINARY_API_SECRET')
 }
 
+import cloudinary
 cloudinary.config(
     cloud_name=config('CLOUDINARY_CLOUD_NAME'),
     api_key=config('CLOUDINARY_API_KEY'),
     api_secret=config('CLOUDINARY_API_SECRET')
 )
 
+
+
+# Password validation
+# https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
+
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
+
+
+# Internationalization
+# https://docs.djangoproject.com/en/4.2/topics/i18n/
+
+LANGUAGE_CODE = 'FR-fr'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_TZ = True
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.2/howto/static-files/
+
+
+# Static files (CSS, JS, Images)
+# GESTION LOCALE DES FICHIERS MEDIA
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# ----------------------------
-# Fichiers statiques
-# ----------------------------
+# Stockage local des fichiers
+
+
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
 
-WHITENOISE_KEEP_ONLY_HASHED_FILES = True
+WHITENOISE_SKIP_COMPRESS = True
 
-# ----------------------------
-# Internationalisation
-# ----------------------------
-LANGUAGE_CODE = 'fr-FR'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_TZ = True
 
-# ----------------------------
-# Authentification
-# ----------------------------
-AUTH_USER_MODEL = 'personnel.Administrateur'
+# Default primary key field type
+# https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
+
+
+# settings.py
+
+# Autres configurations...
+
+# Paramètres relatifs aux cookies en mode développement
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
+# C'est la fin du fichier
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = 'personnel.Administrateur'
 
-# ----------------------------
-# Sécurité cookies
-# ----------------------------
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
 
-# ----------------------------
-# Email (optionnel)
-# ----------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = config('EMAIL_USER')
-EMAIL_HOST_PASSWORD = config('EMAIL_PASSWORD')
-EMAIL_USER='monemouzator97@gmail.com'
-EMAIL_PASSWORD='rfbz ebcy qwku aoye'
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  # Nom et chemin de la base SQLite
+#     }
+# }
