@@ -96,35 +96,21 @@ def logout_view(request):
 
 #FONCTION D'ENREGISTREMENT DES UTILISATEURS
 User = get_user_model()
+
 @login_required(login_url='/')
 def ajout_administrateur(request):
     if request.method == "POST":
-        # Récupération des champs
-        username = request.POST.get("username", "").strip()
-        email = request.POST.get("email", "").strip()
-        password = request.POST.get("password", "").strip()
-        nom = request.POST.get("nom", "").strip()
-        prenom = request.POST.get("prenom", "").strip()
-        telephone = request.POST.get("telephone", "").strip()
-        genre = request.POST.get("genre", "").strip()
-        date_naissance_str = request.POST.get("date_naissance", "").strip()
-        lieu_naiss = request.POST.get("lieu_naiss", "").strip()
-        fonction = request.POST.get("fonction", "").strip()
+        username=request.POST.get("username")
+        email = request.POST.get("email")
+        password = request.POST.get("password")
+        nom = request.POST.get("nom")
+        prenom = request.POST.get("prenom")
+        telephone = request.POST.get("telephone")
+        genre = request.POST.get("genre")
+        date_naissance = request.POST.get("date_naissance")
+        lieu_naiss = request.POST.get("lieu_naiss")
+        fonction = request.POST.get("fonction")
         photo = request.FILES.get("photo")
-
-        # Validation simple
-        if not all([username, email, password, nom, prenom, telephone, genre, date_naissance_str, lieu_naiss, fonction]):
-            messages.error(request, "Tous les champs obligatoires doivent être remplis.")
-            return redirect("ajouter_administrateur")
-
-        # Conversion date
-        try:
-            date_naissance = datetime.strptime(date_naissance_str, "%Y-%m-%d").date()
-        except ValueError:
-            messages.error(request, "La date de naissance est invalide.")
-            return redirect("ajouter_administrateur")
-
-        # Vérifications existantes
         if Administrateur.objects.filter(email=email).exists():
             messages.error(request, "Cet email est déjà utilisé.")
             return redirect("ajouter_administrateur")
@@ -134,12 +120,12 @@ def ajout_administrateur(request):
             return redirect("ajouter_administrateur")
         
         if Administrateur.objects.filter(telephone=telephone).exists():
-            messages.error(request, "Ce numéro de téléphone est déjà utilisé.")
+            messages.error(request, "Cet numero de téléphone est déjà utiliser .")
             return redirect("ajouter_administrateur")
-
-        # Création de l'utilisateur
+    
         try:
-            administrateur = Administrateur(
+            administrateur = Administrateur.objects.create(
+
                 username=username,
                 email=email,
                 nom=nom,
@@ -149,23 +135,18 @@ def ajout_administrateur(request):
                 date_naissance=date_naissance,
                 lieu_naiss=lieu_naiss,
                 fonction=fonction,
-                photo=photo
+                photo=photo,
             )
             administrateur.set_password(password)
             administrateur.save()
 
-            messages.success(request, "Compte créé avec succès !")
+            messages.success(request, "Compte creé avec succès !")
             return redirect("liste_administrateurs")
-
         except Exception as e:
-            # Log simple pour debug
-            print("Erreur lors de la création d'administrateur :", e)
-            messages.error(request, f"Erreur lors de l'ajout : {e}")
-            return redirect("ajouter_administrateur")
+            print("Erreur :", e)
+            messages.error(request, f"Erreur lors de l'ajout : {e}")        
 
-    # GET : affichage du formulaire
     return render(request, 'login/ajouter_administrateur.html')
-
 
 #LISTE DES UTILISATEURS EXISTANTS
 def liste_administrateurs(request):
