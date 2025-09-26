@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = config('SECRET_KEY') #'django-insecure-52yfq))jd9r0uo*uq5p!j!4zccvrd13&hbd@3zq70$o^)+==%j'
 
-DEBUG =False
+DEBUG =True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ecole-bnb.onrender.com']
 
@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'storages',
     'cloudinary',
     'cloudinary_storage',
+    'sslserver',
     'eleve',
     'enseignant',
     'note',
@@ -148,10 +149,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'personnel.Administrateur'
 
 # Security (only in production)
-if not DEBUG:
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True
+if DEBUG:
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
+    SECURE_SSL_REDIRECT = False
 
 
 
