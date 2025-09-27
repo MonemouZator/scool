@@ -1,263 +1,164 @@
-{% extends "login/comptable_dashboard.html" %}
+{% extends "login/enseignant_dashboard.html" %}
 {% load static %}
 
 {% block styl_parent %}
+
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
 <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
 <style>
-    body {
-        font-family: "Source Sans Pro", sans-serif;
-        background: #f4f6f9;
-    }
-
-    .content-wrapper {
-        background: #fff;
-        padding: 40px 60px;
-        border-radius: 12px;
-        max-width: 950px;
-        margin: auto;
-        box-shadow: 0px 6px 25px rgba(0,0,0,0.2);
-    }
-
-    /* --- En-tête --- */
     .header-section {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .header-section h1 {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0;
+    }
+    .header-section h2 {
+        font-size: 18px;
+        font-weight: normal;
+        margin: 0;
+    }
+    .info-section {
+        margin-bottom: 30px;
+        font-size: 16px;
+    }
+    .info-section .info-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        border-bottom: 3px double #000;
-        padding-bottom: 15px;
-        margin-bottom: 25px;
+        padding: 10px 0;
+        border-bottom: 1px solid #ddd;
     }
-
-    .header-left {
-        text-align: left;
-        font-size: 14px;
-        line-height: 1.5;
-    }
-
-    .header-left strong {
-        display: block;
-        text-transform: uppercase;
-    }
-
-    .header-right img {
-        height: 90px;
-        width: auto;
-    }
-
-    /* --- Titres --- */
-    h1, h2, h3 {
-        text-align: center;
+    .info-section .info-row strong {
         font-weight: bold;
-        margin: 10px 0;
     }
-
-    h1 { font-size: 22px; text-transform: uppercase; }
-    h2 { font-size: 20px; }
-    h3 { font-size: 22px; margin-top: 20px; text-decoration: underline; color: #007bff; }
-
-    .devise-section {
-        text-align: center;
-        font-style: italic;
-        margin-bottom: 15px;
-        font-size: 15px;
-        color: #555;
-    }
-
-    /* --- Infos Élève --- */
-    .info-section {
-        margin: 25px 0;
-    }
-
-    .info-table {
+    .details-table {
+        margin-top: 20px;
         width: 100%;
         border-collapse: collapse;
-        background: #fafafa;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        overflow: hidden;
     }
-
-    .info-table td {
-        padding: 10px 15px;
-        border: 1px solid #ddd;
-        font-size: 15px;
+    .details-table th, .details-table td {
+        text-align: center;
+        vertical-align: middle;
+        padding: 8px;
     }
-
-    .info-table td:first-child {
+    .details-table th {
+        background-color: #f4f4f4;
+    }
+    .details-table td {
+        border: 1px solid #ddd;
+    }
+    .republic-section,
+    .devise-section {
+        text-align: center;
         font-weight: bold;
-        background: #f1f1f1;
-        width: 40%;
+        margin-bottom: 10px;
     }
-
-    /* --- Tableau Paiement --- */
-    .table th {
-        background: #007bff;
-        color: #fff;
-        font-size: 15px;
-        text-transform: uppercase;
-    }
-
-    .table td {
-        font-size: 15px;
-    }
-
-    .table tbody tr:nth-child(even) {
-        background: #f9f9f9;
-    }
-
-    .text-success { color: green !important; }
-    .text-danger { color: red !important; }
-
-    /* --- Signature --- */
-    .signature-section {
-        margin-top: 50px;
-        display: flex;
-        justify-content: space-between;
-        font-size: 15px;
-    }
-
-    .signature {
-        text-align: center;
-        width: 45%;
-    }
-
-    .signature-line {
-        margin-top: 70px;
-        border-top: 1px solid #000;
-        width: 80%;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    /* --- Pied de page --- */
-    .footer-section {
-        margin-top: 40px;
-        text-align: center;
-        font-size: 13px;
-        color: #666;
-        border-top: 1px solid #ddd;
-        padding-top: 10px;
-    }
-
-    /* --- Bouton Impression --- */
     .print-button {
         text-align: center;
-        margin-top: 35px;
+        margin-top: 20px;
     }
-
-    .print-button .btn {
-        font-size: 16px;
-        padding: 10px 25px;
-        border-radius: 6px;
-    }
-
-    /* --- Mode Impression --- */
-
-        @media print {
-    .main-footer {
-      display: none !important;
-    }
-
-        body {
-            background: #fff !important;
+    @media print {
+        .print-button {
+            display: none;
         }
-        .print-button { display: none; }
+        .footer {
+            display: none;
+        }
         .content-wrapper {
-            box-shadow: none;
-            border: none;
             margin: 0;
-            padding: 20px;
+            padding: 0;
         }
+        .republic-section, .devise-section {
+            visibility: visible;
+        }
+        .details-table th, .details-table td {
+            border: 1px solid #ddd;
+            padding: 6px;
+        }
+        button, .btn, form {
+            display: none;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+        /* Cacher tout contenu indésirable (ex: about:blank) */
+        .about-blank {
+            display: none;
+        }
+
     }
 </style>
 {% endblock %}
 
-{% block body %}
-<body class="hold-transition sidebar-mini">
-{% endblock body %}
-
 {% block contenu %}
-
-  <!-- Content Wrapper. Contains page content -->
- <div class="content-wrapper p-4" id="impression" style="max-height: calc(100vh - 150px); overflow-y: auto;">
-    
-    <!-- En-tête administratif -->
-    {% for ecole in ecoles %}
-    
-    
-    <div class="header-section">
-        <div class="header-left">
-            <strong>{{ ecole.pays }}</strong>
-            <em>{{ ecole.devise_pays }}</em><br><br>
-            <strong>{{ ecole.nom_ecole }}</strong>
-            <em>{{ ecole.devise_ecole }}</em>
-        </div>
-
-        <div class="header-right">
-            <img src="{{ ecole.logo.url }}" alt="Logo École">
-        </div>
-        
+<div class="content-wrapper container">
+    <!-- Header Section -->
+    <div class="republic-section">
+        <h1>RÉPUBLIQUE DE GUINÉE</h1>
     </div>
-{% endfor %}
-    <!-- Titre -->
-    <h3>Reçu de Paiement</h3>
+    <div class="devise-section">
+        <p>Travail - Justice - Solidarité</p>
+    </div>
+    <div class="republic-section">
+        <h2>Groupe Scolaire Privé BNB</h2>
+    </div>
+    <div class="devise-section">
+        <p>Union - Sincérité - Réussite</p>
+    </div>
 
-    <!-- Infos Élève -->
+    <h3 class="text-center">Reçu de Paiement</h3>
+
+    <!-- Informations Générales -->
     <div class="info-section">
-        <table class="info-table">
-            <tr><td>Année Scolaire :</td><td>{{ recu.frais_scolarite.annee_scolaire }}</td></tr>
-            <tr><td>Niveau :</td><td>{{ recu.frais_scolarite.eleve.niveau }}</td></tr>
-            <tr><td>Élève :</td><td>{{ recu.frais_scolarite.eleve.nom }} {{ recu.frais_scolarite.eleve.prenom }}</td></tr>
-            <tr><td>Parent :</td><td>{{ recu.frais_scolarite.eleve.pere }}</td></tr>
-            <tr><td>Profession parent :</td><td>{{ recu.frais_scolarite.eleve.profession_pere }}</td></tr>
-            <tr><td>Contact Parent :</td><td>{{ recu.frais_scolarite.eleve.contact_parent }}</td></tr>
-        </table>
+        <div class="info-row">
+            <strong>Année Scolaire:</strong> <span>{{ recu.frais_scolarite.annee_scolaire }}</span>
+        </div><br>
+        <div class="info-row">
+            <strong>Niveau:</strong> <span>{{ recu.frais_scolarite.eleve.niveau }}</span>
+        </div><br>
+        <div class="info-row">
+            <strong>Élève:</strong> <span>{{ recu.frais_scolarite.eleve.nom }} {{ recu.frais_scolarite.eleve.prenom }}</span>
+        </div><br>
+        <div class="info-row">
+            <strong>Père:</strong> <span>{{ recu.frais_scolarite.eleve.pere }}</span>
+        </div><br>
+        <div class="info-row">
+            <strong>Profession Père:</strong> <span>{{ recu.frais_scolarite.eleve.profession_pere }}</span>
+        </div><br>
+        <div class="info-row">
+            <strong>Contact Parent:</strong> <span>{{ recu.frais_scolarite.eleve.contact_parent }}</span>
+        </div>
     </div>
 
-    <!-- Détails -->
     <center>
-        <p><strong>Détails :</strong> {{ recu.details }}</p>
+        <p><strong>Détails:</strong> {{ recu.details }}</p>
     </center>
 
-    <!-- Paiement -->
+    <!-- Détails des Paiements -->
+   
     <div class="table-responsive">
-        <table class="table table-bordered" style="width: 100%; margin: auto;">
-            <thead>
+        <table class="table table-bordered details-table">
+            <thead class="bg-second">
                 <tr>
                     <th>Date</th>
-                    <th>Montant total</th>
-                    <th>Montant payé</th>
-                    <th>Reste à payer</th>
+                    <th>Montant Payé</th>
+                    <th>Reste</th>
+                    <th>Montant Total</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ recu.date_recu|date:"d/m/Y H:i" }}</td>
+                    <td>{{ recu.date_recu|date:"d/m/Y" }}</td>
+                    <td>{{ recu.montant }} GNF</td>
+                    <td>{{ recu.frais_scolarite.solde }} GNF</td>
                     <td>{{ recu.frais_scolarite.montant_total }} GNF</td>
-                    <td class="text-success font-weight-bold">{{ recu.montant }} GNF</td>
-                    <td class="text-danger font-weight-bold">{{ recu.frais_scolarite.solde }} GNF</td>
                 </tr>
             </tbody>
         </table>
-    </div>
-
-    <!-- Signature -->
-    <div class="signature-section">
-        <div class="signature">
-            <p><strong>Signature du Parent</strong></p>
-            <div class="signature-line"></div>
-        </div>
-        <div class="signature">
-            <p><strong>Signature du Comptable</strong></p>
-            <div class="signature-line"></div>
-        </div>
-    </div>
-
-    <!-- Pied de page -->
-    <div class="footer-section">
-        <p>Adresse : Kankan - Madina - Batè Loisi | Tél : +224 624 33 98 88 / 622 76 53 50 | Email : Lucbilivogui@gmail.com</p>
     </div>
 
     <!-- Bouton Imprimer -->
@@ -275,8 +176,42 @@
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
 
 <script>
-  function imprimer() {
-    window.print();
-  }
+    function imprimer() {
+        var content = document.querySelector('.content-wrapper').innerHTML;
+        var printWindow = window.open('', '', 'height=800,width=600');
+
+        // Clear out unwanted content and ensure proper title
+        printWindow.document.write('<html><head><title>Reçu de Paiement</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write(`
+            @media print {
+                body { font-family: Arial, sans-serif; font-size: 12pt; margin: 0; padding: 20px; }
+                h1, h2, h3, .republic-section, .devise-section { text-align: center; }
+                .table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+                .table th, .table td { padding: 8px; border: 1px solid #ddd; text-align: left; }
+                .table th { background-color: #f4f4f4; font-weight: bold; }
+                button, .btn, form { display: none; }
+                .republic-section, .devise-section { visibility: visible; }
+                .page-break { page-break-before: always; }
+            }
+        `);
+        printWindow.document.write('</style></head><body>');
+        
+        // Write only the content of the receipt into the print window
+        printWindow.document.write(content);
+        
+        // Close the document to finalize the writing process
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        
+        // Focus on the print window and trigger printing
+        printWindow.focus();
+        
+        // Delay the print command slightly to ensure everything is loaded
+        setTimeout(function() {
+            printWindow.print();
+        }, 500);
+    }
 </script>
+
 {% endblock %}

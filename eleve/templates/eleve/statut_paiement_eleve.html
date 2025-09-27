@@ -82,7 +82,7 @@ h1.mb-4 { font-size: 2.3rem; font-weight: 600; color: #2C3E50; text-align: cente
                                             {% endfor %}
                                         </select>
                                     </div>
-                                    <div class="col-md-4 mb-3">
+                                    {% comment %} <div class="col-md-4 mb-3">
                                         <label for="groupe_classe">Classe</label>
                                         <select name="groupe_classe" id="groupe_classe" class="form-select">
                                             <option value="">Sélectionner une classe</option>
@@ -92,7 +92,7 @@ h1.mb-4 { font-size: 2.3rem; font-weight: 600; color: #2C3E50; text-align: cente
                                                 </option>
                                             {% endfor %}
                                         </select>
-                                    </div>
+                                    </div> {% endcomment %}
                                     <div class="col-md-4 mb-3">
                                         <label for="annee_scolaire">Année scolaire</label>
                                         <select name="annee_scolaire" id="annee_scolaire" class="form-select">
@@ -105,8 +105,8 @@ h1.mb-4 { font-size: 2.3rem; font-weight: 600; color: #2C3E50; text-align: cente
                                         </select>
                                     </div>
                                 </div>
-                                <button type="submit" name="action" value="impaye" class="btn btn-danger">Élèves impayés</button>
-                                <button type="button" onclick="window.print();" class="btn btn-primary mb-3">Imprimer la liste</button>
+                                <button type="submit" name="action" value="impaye" class="btn btn-danger">Filtrer</button>
+                                <button type="button" onclick="window.print();" class="btn btn-primary mb-3">Imprimer</button>
                                 <hr style="border: 1px solid #16A085; margin: 20px 0;">
                             </form>
                         </div>
