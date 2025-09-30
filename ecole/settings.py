@@ -17,7 +17,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = config('SECRET_KEY') #'django-insecure-52yfq))jd9r0uo*uq5p!j!4zccvrd13&hbd@3zq70$o^)+==%j'
 
-DEBUG =False
+DEBUG =True
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ecole-bnb.onrender.com']
 
