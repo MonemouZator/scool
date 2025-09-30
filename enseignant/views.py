@@ -36,6 +36,12 @@ from personnel.models import Historique, Administrateur
 
 
 # --- AJOUT D'UN ENSEIGNANT ---
+from django.db import IntegrityError
+from datetime import datetime
+from django.contrib import messages
+from django.shortcuts import redirect
+
+# --- AJOUT D'UN ENSEIGNANT ---
 def ajout_enseignant(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -44,22 +50,31 @@ def ajout_enseignant(request):
         nom = request.POST.get("nom")
         prenom = request.POST.get("prenom")
         telephone = request.POST.get("telephone")
-        genre = request.POST.get("genre")
+        genre = request.POST.get("sexe")
         date_naissance = request.POST.get("date_naissance")
         lieu_naiss = request.POST.get("lieu_naiss")
         specialite = request.POST.get("specialite")
         adresse = request.POST.get("adresse")
         photo = request.FILES.get("photo")
 
-        # ✅ Vérification date
+        # Vérification date
         try:
             date_naissance = datetime.strptime(date_naissance, "%Y-%m-%d").date()
-        except Exception:
+        except ValueError:
             messages.error(request, "Date de naissance invalide.")
             return redirect("enseignant")
 
+        # Vérification si username ou email existe déjà
+        if Administrateur.objects.filter(username=username).exists():
+            messages.error(request, "Nom d’utilisateur déjà utilisé.")
+            return redirect("enseignant")
+
+        if Administrateur.objects.filter(email=email).exists():
+            messages.error(request, "Email déjà utilisé.")
+            return redirect("enseignant")
+
         try:
-            # ✅ Créer l'utilisateur Administrateur
+            # Créer l'utilisateur Administrateur
             user = Administrateur.objects.create(
                 username=username,
                 email=email,
@@ -75,10 +90,10 @@ def ajout_enseignant(request):
             user.set_password(password)
             user.save()
 
-            # ✅ Déterminer le sexe
+            # Déterminer le sexe
             sexe_val = "Homme" if genre == "H" else "Femme"
 
-            # ✅ Créer l'objet Enseignant lié
+            # Créer l'objet Enseignant lié
             Enseignant.objects.create(
                 user=user,
                 nom=nom,
@@ -93,7 +108,7 @@ def ajout_enseignant(request):
                 email=email,
             )
 
-            # ✅ Enregistrer dans l’historique
+            # Enregistrer dans l’historique
             Historique.objects.create(
                 user=request.user,
                 action=f"A ajouté l'enseignant {prenom} {nom} ({email})"
@@ -101,14 +116,13 @@ def ajout_enseignant(request):
 
             messages.success(request, "Enseignant créé avec succès !")
 
-        except IntegrityError:
-            messages.error(request, "Nom d’utilisateur ou email déjà utilisé.")
         except Exception as e:
             messages.error(request, f"Erreur lors de l'ajout : {e}")
 
         return redirect("enseignant")
 
     return redirect("enseignant")
+
 
 
 

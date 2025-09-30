@@ -345,10 +345,12 @@ def effectuer_paiement(request):
 #RECU DE PAIEMENT DE LA DEUXIEME TRANCHE
 from cycle.models import Etablissement
 def afficher_recu(request, recu_id):
-        ecoles=Etablissement.objects.all()
-        
-        recu = get_object_or_404(Recu, id=recu_id)
-        return render(request, 'eleve/recu_paiement.html', {'recu': recu},{'ecoles':ecoles})
+    ecoles = Etablissement.objects.all()
+    recu = get_object_or_404(Recu, id=recu_id)
+    return render(request, 'eleve/recu_paiement.html', {
+        'recu': recu,
+        'ecoles': ecoles
+    })
 
 from cycle.models import Etablissement
 def statut_paiement_eleve(request):
