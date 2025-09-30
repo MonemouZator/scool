@@ -69,7 +69,7 @@
               <table id="example1" class="table table-bordered table-striped">
                 <thead class="bg-primary text-white">
                   <tr>
-                    <th>N°</th>
+                   
                     <th>Nom</th>
                     <th>Prénom</th>
                     <th>Sexe</th>
@@ -81,7 +81,7 @@
                 <tbody>
                  {% for ensei in enseignants %}
                   <tr>
-                    <td>{{ forloop.counter }}</td>
+                   
                     <td>{{ ensei.nom }}</td>
                     <td>{{ ensei.prenom }}</td>
                     <td>{{ ensei.get_sexe_display }}</td>
