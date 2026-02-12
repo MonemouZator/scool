@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.urls import reverse
 from matiere.models import Matiere
-from eleve.models import Eleve
+from eleve.models import Eleve,EleveInscrit
 from annee_scolaire.models import AnneeScolaire
 from note.models import Note
 from groupe_classe.models import GroupeClasse
@@ -309,7 +309,7 @@ def attribuer_note_enseignant(request):
         except:
             return JsonResponse({'error': "Données invalides."}, status=400)
 
-        # Recalculer les matières autorisées pour le niveau et groupe de l'élève
+        # Vérifier si la matière est autorisée
         matieres_autorisees_post = Matiere.objects.filter(
             enseignantmatiere__enseignant=enseignant,
             enseignantmatiere__niveau=eleve.niveau,
@@ -328,15 +328,28 @@ def attribuer_note_enseignant(request):
         ).exists():
             return JsonResponse({'error': "Cet élève est déjà noté pour cette matière et ce trimestre."}, status=400)
 
+        # --- LIAISON AVEC REINSCRIPTION ---
+        inscription, created = EleveInscrit.objects.get_or_create(
+            eleve=eleve,
+            annee_scolaire=annee,
+            defaults={
+                'niveau': eleve.niveau,
+                'groupe_classe': eleve.groupe_classe,
+                'actif': True
+            }
+        )
+
         # Créer la note
         Note.objects.create(
             eleve=eleve,
+            inscription=inscription,  # <-- Lien avec EleveInscrit
             annee_scolaire=annee,
             matiere=matiere,
             trimestre=trimestre,
             note_cours=note_cours,
             note_comp=note_compo
         )
+
         return JsonResponse({'success': "Note ajoutée avec succès."})
 
     # --- RENDER ---
@@ -350,7 +363,6 @@ def attribuer_note_enseignant(request):
         'groupe_id': groupe_id,
         'annee_id': annee_id,
     })
-
 
 
 

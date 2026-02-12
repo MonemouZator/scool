@@ -80,7 +80,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ecole.wsgi.application'
 
-
 DATABASES={
     'default':dj_database_url.parse(config('DATABASE_URL'))
 }
@@ -156,5 +155,16 @@ if DEBUG:
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',
 #         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  # Nom et chemin de la base SQLite
+#     }
+# }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'ecole',   # nom exact de ta base MySQL
+#         'USER': 'root',             # ton utilisateur MySQL
+#         'PASSWORD': '',  # mets ton vrai mot de passe
+#         'HOST': '127.0.0.1',        # localhost ou 127.0.0.1
+#         'PORT': '3306',             # port MySQL (par défaut 3306)
 #     }
 # }

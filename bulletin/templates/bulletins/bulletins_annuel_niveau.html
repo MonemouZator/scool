@@ -197,9 +197,10 @@
                         <!-- Informations élève -->
                         <table class="table">
                             <tr>
-                                <th>Nom</th><th>Prénom</th><th>Date de naissance</th>
+                                <th>Matricule</th><th>Nom</th><th>Prénom</th><th>Date de naissance</th>
                             </tr>
                             <tr>
+                                <td>{{ b.eleve.matricule }}</td>
                                 <td>{{ b.eleve.nom }}</td>
                                 <td>{{ b.eleve.prenom }}</td>
                                 <td>{{ b.eleve.date_naissance|date:"d/m/Y" }}</td>

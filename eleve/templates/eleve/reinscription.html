@@ -1,0 +1,246 @@
+{% extends "login/index.html" %}
+{% load static %}
+ {% block styl_parent %}
+  <title>eleve | Accueil</title>
+
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+
+
+
+ {% block body %}
+<body class="hold-transition sidebar-mini">
+ {% endblock body %}
+
+
+
+
+{% block contenu %}
+<div class="content-wrapper p-4" style="max-height: calc(100vh - 150px); overflow-y: auto;">
+  <!-- Header -->
+  <section class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6"><h1>RÉINSCRIPTION DES ÉLÈVES</h1></div>
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
+            <li class="breadcrumb-item active">Réinscription</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Formulaire -->
+  <section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <form action="{% url 'reinscrire_eleve' %}" method="post" class="row" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% if messages %}
+      <div class="col-12">
+        {% for message in messages %}
+          <div class="alert alert-success">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <!-- Matricule -->
+    <div class="form-group col-md-6">
+      <label for="matricule">Matricule :</label>
+      <input type="text" class="form-control" id="matricule" name="matricule" placeholder="Entrer le matricule" required>
+    </div>
+
+    <!-- Année scolaire -->
+    <div class="form-group col-md-6">
+      <label for="anne">Année scolaire :</label>
+      <select name="annee" class="form-control" id="anne" required>
+        <option value="">Sélectionner une année scolaire</option>
+        {% for anne in annees %}
+            <option value="{{ anne.id }}">{{ anne.nom }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Niveau -->
+    <div class="form-group col-md-6">
+      <label for="nive">Niveau :</label>
+      <select name="niveau" class="form-control" id="nive" required>
+        <option value="">Sélectionner un niveau</option>
+        {% for nive in niveaux %}
+            <option value="{{ nive.id }}">{{ nive.nom }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Classe / Groupe -->
+    <div class="form-group col-md-6">
+      <label for="group">Classe :</label>
+      <select name="groupe" class="form-control" id="group" required>
+        <option value="">Sélectionner un groupe</option>
+        {% for group in groupes %}
+          <option value="{{ group.id }}">{{ group }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Infos élève -->
+    <div class="form-group col-md-6">
+      <label for="nom">Nom :</label>
+      <input type="text" class="form-control" id="nom" name="nom" required>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="prenom">Prénom :</label>
+      <input type="text" class="form-control" id="prenom" name="prenom" required>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="date">Date de naissance :</label>
+      <input type="date" class="form-control" id="date" name="date" required>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="lieu">Lieu de naissance :</label>
+      <input type="text" class="form-control" id="lieu" name="lieu" required>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="sexe">Sexe :</label>
+      <select class="form-control" id="sexe" name="sexe" required>
+        <option value="">Sélectionner</option>
+        <option value="Homme">Masculin</option>
+        <option value="Femme">Féminin</option>
+      </select>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="contact">Contact :</label>
+      <input type="tel" class="form-control" id="contact" name="contact">
+    </div>
+
+    <!-- Photo -->
+    <div class="form-group col-md-6">
+        <label for="photo_preview">Photo :</label><br>
+        <img id="photo_preview" src="" alt="Photo de l'élève"
+            style="width:150px; height:150px; object-fit:cover; border:1px solid #ccc;">
+    </div>
+    <div class="form-group col-md-6">
+        <label for="photo">Changer la photo :</label>
+        <input type="file" class="form-control" id="photo" name="photo">
+    </div>
+
+    <!-- Parents -->
+    <div class="form-group col-md-6">
+      <label for="pere">Nom et prénom du père :</label>
+      <input type="text" class="form-control" id="pere" name="pere" required>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="fp">Fonction du père :</label>
+      <input type="text" class="form-control" id="fp" name="fp" required>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="cp">Contact du père :</label>
+      <input type="tel" class="form-control" id="cp" name="cp" required>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="mere">Nom et prénom de la mère :</label>
+      <input type="text" class="form-control" id="mere" name="mere" required>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="fm">Fonction de la mère :</label>
+      <input type="text" class="form-control" id="fm" name="fm" required>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="cm">Contact de la mère :</label>
+      <input type="tel" class="form-control" id="cm" name="cm" required>
+    </div>
+
+    <div class="modal-footer col-12">
+      <button type="submit" class="btn btn-primary">Réinscrire</button>
+    </div>
+</form>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripte %}
+
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+<!-- Page specific script -->
+<script>
+document.getElementById('matricule').addEventListener('blur', function() {
+    var matricule = this.value;
+    if(matricule){
+        fetch("{% url 'get_eleve_info' %}?matricule=" + matricule)
+        .then(response => response.json())
+        .then(data => {
+            if(!data.error){
+                document.getElementById('nom').value = data.nom;
+                document.getElementById('prenom').value = data.prenom;
+                document.getElementById('date').value = data.date_naissance;
+                document.getElementById('lieu').value = data.lieu_naissance;
+                document.getElementById('sexe').value = data.sexe;
+                document.getElementById('contact').value = data.contact;
+                document.getElementById('pere').value = data.pere;
+                document.getElementById('fp').value = data.fp;
+                document.getElementById('cp').value = data.cp;
+                document.getElementById('mere').value = data.mere;
+                document.getElementById('fm').value = data.fm;
+                document.getElementById('cm').value = data.cm;
+                // 🔹 Sélection automatique de l'année, niveau et groupe
+                document.getElementById('anne').value = data.annee_id;
+                document.getElementById('nive').value = data.niveau_id;
+                document.getElementById('group').value = data.groupe_id;
+                // 🔹 Mettre à jour la photo
+                var photo_preview = document.getElementById('photo_preview');
+                if(data.photo_url){
+                    photo_preview.src = data.photo_url;
+                } else {
+                    photo_preview.src = ""; // ou image par défaut
+                }
+            } else {
+                alert(data.error);
+            }
+        });
+    }
+});
+
+
+</script>
+{% endblock %}

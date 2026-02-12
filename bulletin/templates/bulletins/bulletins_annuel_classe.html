@@ -129,7 +129,10 @@
                     </div>
 
                     <button type="submit" class="btn btn-primary">Filtrer</button>
+
+                    <button class="btn btn-primary " onclick="window.print()">Imprimer</button>
                 </form>
+                
             </div>
             <hr>
 
@@ -170,12 +173,14 @@
                         <!-- Tableau des infos personnelles -->
                         <table class="table table-bordered">
                             <tr>
+                                <th>Matricule</th>
                                 <th>Nom</th>
                                 <th>Prénom</th>
                                 <th>Date de naissance</th>
            
                             </tr>
                             <tr>
+                                <td>{{ b.eleve.matricule }}</td>
                                 <td>{{ b.eleve.nom }}</td>
                                 <td>{{ b.eleve.prenom }}</td>
                                 <td>{{ b.eleve.date_naissance|date:"d/m/Y" }}</td>
@@ -222,7 +227,6 @@
                 <p>Aucun bulletin disponible pour les critères sélectionnés.</p>
             {% endif %}
 
-            <button class="btn btn-primary mt-3" onclick="window.print()">Imprimer</button>
 
         </div>
     </section>

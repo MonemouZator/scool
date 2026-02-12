@@ -13,16 +13,20 @@ from .models import Administrateur
 from django.db.models import Sum
 from eleve.models import Recu
 from datetime import date, datetime
+from django.db.models import Sum,F
+from eleve.models import FraisScolarite
+from enseignant.models import Depense, PaiementSalaire
 import json
 import secrets
-
 from .models import Administrateur, Token
 from django.core.mail import EmailMessage
 from django.conf import settings
 from smtplib import SMTPException
+from django.shortcuts import render
+from .models import Historique
 
-#AFFICHARGE  DE LA PAGE D'ACCUEIL
 
+#################################################################
 # Tableau de bord principal après connexion
 
 @login_required
@@ -46,6 +50,8 @@ def home(request):
         'annee_selectionnee': annee
     })
 
+#################################################################
+#FONCTION DE REDIRECTION VERS LES PAGES D'ACCUEILS DES UTILISATEURS 
 
 def login_view(request):
     if request.method == 'POST':
@@ -88,14 +94,15 @@ def login_view(request):
 
     return render(request, 'login/login.html')
 
+#################################################################
 
 #DECONNEXION LORSQU'UN UTILISATEUR EST CONNECTER
 def logout_view(request):
     logout(request)
     return redirect('login')  # Redirige vers la page de connexion après la déconnexion
 
+#################################################################
 #FONCTION D'ENREGISTREMENT DES UTILISATEURS
-User = get_user_model()
 
 @login_required(login_url='/')
 def ajout_administrateur(request):
@@ -103,6 +110,7 @@ def ajout_administrateur(request):
         username=request.POST.get("username")
         email = request.POST.get("email")
         password = request.POST.get("password")
+        confirm_password = request.POST.get('cpwd')
         nom = request.POST.get("nom")
         prenom = request.POST.get("prenom")
         telephone = request.POST.get("telephone")
@@ -111,9 +119,32 @@ def ajout_administrateur(request):
         lieu_naiss = request.POST.get("lieu_naiss")
         fonction = request.POST.get("fonction")
         photo = request.FILES.get("photo")
+
         if Administrateur.objects.filter(email=email).exists():
             messages.error(request, "Cet email est déjà utilisé.")
             return redirect("ajouter_administrateur")
+        
+        if Administrateur.objects.filter(telephone=telephone).exists():
+            messages.error(request, "Ce numéro de téléphone est déjà utilisé par un autre utilisateur.")
+            return redirect("ajouter_administrateur")
+
+        
+        if password != confirm_password:
+            messages.error(request, "Les mots de passe ne sont pas identiques.")
+            return redirect('ajouter_administrateur')
+
+        if len(password) < 8:
+            messages.error(request, "Le mot de passe doit contenir au moins 8 caractères.")
+            return redirect('ajouter_administrateur')
+        
+        if not any(char.isdigit() for char in password):
+            messages.error(request, "Le mot de passe doit contenir au moins un chiffre.")
+            return redirect('ajouter_administrateur')
+        
+        if not any(char.isalpha() for char in password):
+            messages.error(request, "Le mot de passe doit contenir au moins une lettre.")
+            return redirect('ajouter_administrateur')
+
         
         if Administrateur.objects.filter(username=username).exists():
             messages.error(request, "Cet identifiant existe déjà dans la base.")
@@ -122,7 +153,7 @@ def ajout_administrateur(request):
         if Administrateur.objects.filter(telephone=telephone).exists():
             messages.error(request, "Cet numero de téléphone est déjà utiliser .")
             return redirect("ajouter_administrateur")
-    
+        
         try:
             administrateur = Administrateur.objects.create(
 
@@ -148,6 +179,8 @@ def ajout_administrateur(request):
 
     return render(request, 'login/ajouter_administrateur.html')
 
+#################################################################
+
 #LISTE DES UTILISATEURS EXISTANTS
 def liste_administrateurs(request):
     try:
@@ -161,7 +194,8 @@ def liste_administrateurs(request):
         # Gérer les erreurs et afficher un message si une exception se produit
         messages.error(request, f"Erreur lors du chargement des administrateurs : {e}")
         return render(request, 'login/liste_administrateurs.html', {'administrateurs': []})
-
+    
+#################################################################
 ##LA SUPPRESION DU COMPTE D'UN UTILISATEUR
 def supprimer_administrateur(request, administrateur_id):
     administrateur = get_object_or_404(Administrateur, id=administrateur_id)
@@ -169,6 +203,7 @@ def supprimer_administrateur(request, administrateur_id):
     messages.success(request, "Administrateur supprimé avec succès.")
     return redirect('liste_administrateurs')
 
+#################################################################
 #FONCTION POUR BLOGUER UN SEUL UTILISATEUR
 @login_required(login_url='/')
 def bloquer_utilisateur(request, utilisateur_id):  
@@ -184,6 +219,8 @@ def bloquer_utilisateur(request, utilisateur_id):
 
             return redirect(reverse('user-settings', args=[utilisateur_id]))
      return redirect('liste_administrateurs')
+
+#################################################################
 
 # #DEBLOQUER UN UTILISATEUR
 @login_required(login_url='/')
@@ -203,6 +240,7 @@ def debloquer_utilisateur(request, utilisateur_id):
             return redirect(reverse('user-settings', args=[utilisateur_id]))
      return redirect('liste_administrateurs')
 
+#################################################################
 # bloquage de tous les comptes utilisateurs
 @login_required(login_url='/')
 def bloquer_compte(request):
@@ -214,7 +252,8 @@ def bloquer_compte(request):
         return redirect('liste_administrateurs')
     return redirect('logout')
 
-# debloquer de tous les comptes utilsateurs
+#################################################################
+# debloquer tous les comptes utilsateurs
 @login_required(login_url='/')
 def deloquer_compte(request):
     if request.user.is_authenticated and request.user.is_superuser:
@@ -225,7 +264,7 @@ def deloquer_compte(request):
         return redirect('liste_administrateurs')
     return redirect('logout')
 
-
+#################################################################
 
 #LES TABLEAUX DE BORD DES DIFFERENTS UTILISATEURS CONCERNES
 
@@ -289,88 +328,102 @@ def comptable_dashboard(request):
 
     return render(request, 'login/comptable_dashboard.html', context)
 
+#############################################
 # TABLEAUX DE BORD DE DIRECTEUR
+#############################################
 
 @login_required
 def enseignant_dashboard(request):
-
     services = request.session.get('services', [])
-
     try:
-        annee = AnneeScolaire.objects.get(date_debut__lte=now().date(), date_fin__gte=now().date())
+        annee = AnneeScolaire.objects.get(
+            date_debut__lte=now().date(),
+            date_fin__gte=now().date()
+        )
     except AnneeScolaire.DoesNotExist:
         annee = None
-
+    # Nombre total d'élèves
     if annee:
-        nombre_eleves_par_annee = Eleve.objects.filter(annee_scolaire=annee, actif=True).count()
-
+        nombre_eleves_par_annee = Eleve.objects.filter(
+            annee_scolaire=annee, actif=True
+        ).count()
     else:
         nombre_eleves_par_annee = 0
-        labels = []
-        data = []
-
+    # ✅ Tous les niveaux avec nombre d'élèves
+    niveaux_avec_effectifs = (
+        Niveau.objects
+        .annotate(
+            nombre_eleves=Count(
+                'eleve',
+                filter=Q(eleve__annee_scolaire=annee, eleve__actif=True)
+            )
+        )
+        .order_by('nom')
+    )
     # Autres compteurs
     nombre_enseignants = Enseignant.objects.count()
     nombre_niveaux = Niveau.objects.count()
     User = get_user_model()
     nombre_utilisateurs = User.objects.count()
-
-    context={
+    context = {
         'services': services,
         'annee_selectionnee': annee,
         'nombre_eleves_par_annee': nombre_eleves_par_annee,
         'nombre_enseignants': nombre_enseignants,
         'nombre_niveaux': nombre_niveaux,
         'nombre_utilisateurs': nombre_utilisateurs,
+        'niveaux_avec_effectifs': niveaux_avec_effectifs,  # ✅ clé pour cartes
     }
     return render(request, 'login/enseignant_dashboard.html', context)
-   
+
+##############################################################   
 #TABLEAU DE BORD DU DIRECTEUR
+##############################################################
+from django.db.models import Count, Q
+# TABLEAU DE BORD DU DIRECTEUR
+@login_required
 def dashbord(request):
     services = request.session.get('services', [])
-
-    # Trouver automatiquement l'année scolaire en fonction de la date actuelle
     annee = AnneeScolaire.objects.filter(
         date_debut__lte=now().date(),
         date_fin__gte=now().date()
-    ).order_by('-date_debut').first()  # Récupérer la plus récente année scolaire
-
-    # Compter les élèves si une année scolaire est trouvée
+    ).order_by('-date_debut').first()
+    # Nombre total d'élèves
     if annee:
-        nombre_eleves_par_annee = Eleve.objects.filter(annee_scolaire=annee, actif=True).count()
+        nombre_eleves_par_annee = Eleve.objects.filter(
+            annee_scolaire=annee, actif=True
+        ).count()
     else:
-        nombre_eleves_par_annee = 0  # Si aucune année n'est en cours, afficher 0
-
-    # Nombre total d'enseignants
+        nombre_eleves_par_annee = 0
+    # ✅ TOUS LES NIVEAUX + COMPTE DES ÉLÈVES
+    niveaux_avec_effectifs = (
+        Niveau.objects
+        .annotate(
+            nombre_eleves=Count(
+                'eleve',
+                filter=Q(eleve__annee_scolaire=annee, eleve__actif=True)
+            )
+        )
+        .order_by('nom')
+    )
     nombre_enseignants = Enseignant.objects.count()
-
-    # Nombre total de niveaux
     nombre_niveaux = Niveau.objects.count()
-
-    # Nombre total d'utilisateurs
     User = get_user_model()
     nombre_utilisateurs = User.objects.count()
-
-    context={
+    context = {
         'services': services,
-        'nombre_eleves_par_annee': nombre_eleves_par_annee,
         'annee_selectionnee': annee,
+        'nombre_eleves_par_annee': nombre_eleves_par_annee,
+        'niveaux_avec_effectifs': niveaux_avec_effectifs,  # ✅ clé
         'nombre_enseignants': nombre_enseignants,
         'nombre_niveaux': nombre_niveaux,
         'nombre_utilisateurs': nombre_utilisateurs,
     }
-    return render(request, 'login/index.html',context)
+    return render(request, 'login/index.html', context)
 
-
-
-
+######################################################
 # TABLEAUX DE BORD DU FONDATEUR
-from django.db.models import Sum,F
-from eleve.models import FraisScolarite
-from enseignant.models import Depense, PaiementSalaire
-from datetime import datetime
-
-
+######################################################
 
 @login_required
 def dashbaord_fondateur(request):
@@ -460,14 +513,15 @@ def dashbaord_fondateur(request):
 
     return render(request, 'login/dashbaord_fondateur.html', context)
 
-
+#################################################################
    
 def bloc_aside(request):
 
     return render(request,'base/base.html')
 
-
+#################################################################
 #PROFIL ET CHANGEMENTS DES INFORMATION DE L'UTILISATEUR CONNECTER
+#################################################################
 
 @login_required
 def profil_user(request):
@@ -503,8 +557,10 @@ def profil_user(request):
 
     return render(request, "login/profil.html", {"user": user})
 
-
+#################################################################
 #FONCTION DE CHANGEMENT DE MOT DE PASSE DE L'UTILISATEUR COURANT
+#################################################################
+
 @login_required(login_url='/')
 def change_password(request):
     if request.method == "POST":
@@ -521,8 +577,16 @@ def change_password(request):
             messages.error(request, "Les mots de passe ne sont pas identiques.")
             return redirect('password_reset_request')
 
-        if len(password) < 6:
-            messages.error(request, "Le mot de passe doit contenir au moins 6 caractères.")
+        if len(password) < 8:
+            messages.error(request, "Le mot de passe doit contenir au moins 8 caractères.")
+            return redirect('password_reset_request')
+        
+        if not any(char.isdigit() for char in password):
+            messages.error(request, "Le mot de passe doit contenir au moins un chiffre.")
+            return redirect('password_reset_request')
+        
+        if not any(char.isalpha() for char in password):
+            messages.error(request, "Le mot de passe doit contenir au moins une lettre.")
             return redirect('password_reset_request')
 
         # Changement du mot de passe
@@ -543,9 +607,11 @@ def change_password(request):
             return redirect('login')
     return render(request, 'login/recover_password.html')
 
+#################################################################
+#FONCTION DE CHANGEMENT DE MOT DE PASSE PAR MAIL
+#################################################################
 
 User = get_user_model()
-
 def forgot_pwd(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -577,7 +643,7 @@ def forgot_pwd(request):
 
     return render(request, 'login/forgot_pwd.html')
 
-
+#################################################################
 def recover_pwd(request, token):
     token_obj = Token.objects.filter(token=token).first()
     if not token_obj:
@@ -606,10 +672,9 @@ def recover_pwd(request, token):
     # GET request : affichage du formulaire
     return render(request, 'login/change_pwd.html')
 
+#################################################################
 
-from django.shortcuts import render
-from .models import Historique
-
+@login_required(login_url='/')
 def historique(request):
     
     if request.user.is_superuser:
@@ -621,7 +686,7 @@ def historique(request):
 
     return render(request, 'login/historique.html', {'historiques': historiques})
 
-
+#################################################################
 
 @login_required(login_url='/')
 def change_password_comptable(request):
@@ -639,8 +704,16 @@ def change_password_comptable(request):
             messages.error(request, "Les mots de passe ne sont pas identiques.")
             return redirect('password_reset_request')
 
-        if len(password) < 6:
-            messages.error(request, "Le mot de passe doit contenir au moins 6 caractères.")
+        if len(password) < 8:
+            messages.error(request, "Le mot de passe doit contenir au moins 8 caractères.")
+            return redirect('password_reset_request')
+        
+        if not any(char.isdigit() for char in password):
+            messages.error(request, "Le mot de passe doit contenir au moins un chiffre.")
+            return redirect('password_reset_request')
+        
+        if not any(char.isalpha() for char in password):
+            messages.error(request, "Le mot de passe doit contenir au moins une lettre.")
             return redirect('password_reset_request')
 
         # Changement du mot de passe
@@ -661,6 +734,7 @@ def change_password_comptable(request):
             return redirect('login')
     return render(request, 'login/changer_password_comptable.html')
 
+#################################################################
 
 @login_required(login_url='/')
 def changer_password_admin(request):
@@ -678,8 +752,16 @@ def changer_password_admin(request):
             messages.error(request, "Les mots de passe ne sont pas identiques.")
             return redirect('changer_password_admin')
 
-        if len(password) < 6:
-            messages.error(request, "Le mot de passe doit contenir au moins 6 caractères.")
+        if len(password) < 8:
+            messages.error(request, "Le mot de passe doit contenir au moins 8 caractères.")
+            return redirect('changer_password_admin')
+        
+        if not any(char.isdigit() for char in password):
+            messages.error(request, "Le mot de passe doit contenir au moins un chiffre.")
+            return redirect('changer_password_admin')
+        
+        if not any(char.isalpha() for char in password):
+            messages.error(request, "Le mot de passe doit contenir au moins une lettre.")
             return redirect('changer_password_admin')
 
         # Changement du mot de passe
@@ -700,8 +782,9 @@ def changer_password_admin(request):
             return redirect('login')
     return render(request, 'admin/changer_password_admin.html')
 
+#################################################################
 
-
+@login_required(login_url='')
 def profil_admin(request):
 
     user = request.user  # Utilisateur connecté
@@ -738,3 +821,5 @@ def profil_admin(request):
         "user": user,
     }
     return render(request,'admin/profil_admin.html',context)
+
+#################################################################

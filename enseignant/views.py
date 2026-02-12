@@ -6,13 +6,16 @@ from django.contrib import messages
 from eleve .models import Eleve , FraisScolarite
 from annee_scolaire.models import AnneeScolaire
 from personnel.models import Administrateur
-from django.db.models import Sum
+from django.db.models import Sum,Avg
 from django.db import models  # Importation de models
 from datetime import datetime
 from matiere.models import EnseignantMatiere
 from django.contrib.auth import authenticate, login,logout
 from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
+from personnel.models import Historique, Administrateur
+from note.models import Note
+
 
 # --- LISTE DES ENSEIGNANTS ---
 def maitre(request):
@@ -28,18 +31,6 @@ def maitre(request):
         'matieres': matieres,
     }
     return render(request, 'base/pages/tables/data.html', context)
-
-
-from personnel.models import Historique, Administrateur
-
-# --- AJOUT D'UN ENSEIGNANT ---
-
-
-# --- AJOUT D'UN ENSEIGNANT ---
-from django.db import IntegrityError
-from datetime import datetime
-from django.contrib import messages
-from django.shortcuts import redirect
 
 # --- AJOUT D'UN ENSEIGNANT ---
 def ajout_enseignant(request):
@@ -66,12 +57,28 @@ def ajout_enseignant(request):
 
         # Vérification si username ou email existe déjà
         if Administrateur.objects.filter(username=username).exists():
-            messages.error(request, "Nom d’utilisateur déjà utilisé.")
+            messages.error(request, " Ce nom d’utilisateur est déjà utilisé.")
+            return redirect("enseignant")
+        
+        if Administrateur.objects.filter(telephone=telephone).exists():
+            messages.error(request, "Ce numéro de téléphone est déjà utilisé par un autre utilisateur.")
             return redirect("enseignant")
 
         if Administrateur.objects.filter(email=email).exists():
             messages.error(request, "Email déjà utilisé.")
             return redirect("enseignant")
+        
+        if len(password) < 8:
+            messages.error(request, "Le mot de passe doit contenir au moins 8 caractères.")
+            return redirect('enseignant')
+        
+        if not any(char.isdigit() for char in password):
+            messages.error(request, "Le mot de passe doit contenir au moins un chiffre.")
+            return redirect('enseignant')
+        
+        if not any(char.isalpha() for char in password):
+            messages.error(request, "Le mot de passe doit contenir au moins une lettre.")
+            return redirect('enseignant')
 
         try:
             # Créer l'utilisateur Administrateur
@@ -122,10 +129,6 @@ def ajout_enseignant(request):
         return redirect("enseignant")
 
     return redirect("enseignant")
-
-
-
-
   
 ####################### FONCTION DE MODIFICATION DES INFORMATIONS DES ENSEIGNANTS ######################
 def modifier(request, id):
@@ -626,9 +629,18 @@ def change_password(request):
             messages.error(request, "Les mots de passe ne sont pas identiques.")
             return redirect('change_password')
 
-        if len(password) < 6:
-            messages.error(request, "Le mot de passe doit contenir au moins 6 caractères.")
+        if len(password) < 8:
+            messages.error(request, "Le mot de passe doit contenir au moins 8 caractères.")
             return redirect('change_password')
+        
+        if not any(char.isdigit() for char in password):
+            messages.error(request, "Le mot de passe doit contenir au moins un chiffre.")
+            return redirect('change_password')
+        
+        if not any(char.isalpha() for char in password):
+            messages.error(request, "Le mot de passe doit contenir au moins une lettre.")
+            return redirect('change_password')
+
 
         # Changement du mot de passe
         user = request.user
@@ -773,3 +785,192 @@ def suivie_ensei(request):
         'matieres': matieres,
     }
     return render(request, 'admin/suivie_enseignant.html', context)
+
+
+from django.shortcuts import render
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from eleve.models import Eleve
+from groupe_classe.models import GroupeClasse
+from annee_scolaire.models import AnneeScolaire
+from bulletin.models import BulletinTrimestriel
+from cycle.models import Etablissement
+
+# from enseignant.models import EnseignantMatiere
+
+# 🔐 Groupes autorisés pour l’enseignant
+def groupes_autorises_enseignant(enseignant):
+    return GroupeClasse.objects.filter(
+        id__in=EnseignantMatiere.objects.filter(
+            enseignant=enseignant
+        ).values_list('groupe_classe_id', flat=True)
+    ).distinct()
+@login_required
+def resultat_trimestriel_classe(request):
+    # --------------------
+    # Vérifier enseignant
+    # --------------------
+    enseignant = getattr(request.user, 'enseignant_profile', None)
+    if not enseignant:
+        messages.error(request, "Accès réservé aux enseignants.")
+        return redirect('login')
+    ecoles = Etablissement.objects.all()
+    annees_scolaires = AnneeScolaire.objects.all()
+    # 🔐 Groupes autorisés uniquement
+    groupes_classes = groupes_autorises_enseignant(enseignant)
+    groupe_id = request.GET.get('groupe_classe')
+    annee_id = request.GET.get('annee_scolaire')
+    trimestre = request.GET.get('trimestre')
+    bulletins_list = []
+    groupe_obj = None
+    annee_scolaire_obj = None
+    trimestre_label = ""
+    statistiques = {
+        'total_inscrits': 0,
+        'ayant_composes': 0,
+        'admis': 0,
+        'non_admis': 0,
+        'filles_total': 0,
+        'filles_composes': 0,
+        'filles_admis': 0,
+        'filles_non_admis': 0,
+        'taux_reussite': 0,
+        'taux_filles_reussite': 0,
+    }
+    # --------------------
+    # FILTRAGE
+    # --------------------
+    if groupe_id and annee_id and trimestre:
+        try:
+            groupe_obj = groupes_classes.get(id=groupe_id)
+            annee_scolaire_obj = AnneeScolaire.objects.get(id=annee_id)
+            trimestre = int(trimestre)
+            trimestre_label = f"Trimestre {trimestre}"
+        except:
+            messages.error(request, "Classe non autorisée.")
+            return render(request, "enseignant/resultat_trimestriel_classe.html", {
+                'groupes_classes': groupes_classes,
+                'annees_scolaires': annees_scolaires,
+            })
+        bulletins = BulletinTrimestriel.objects.filter(
+            eleve__groupe_classe=groupe_obj,
+            annee_scolaire=annee_scolaire_obj,
+            trimestre=trimestre
+        )
+        # Seuil selon cycle
+        seuil = 5 if groupe_obj.niveau.cycle.nom.lower() == "primaire" else 10
+        # --------------------
+        # Préparer classement
+        # --------------------
+        for b in bulletins:
+            bulletins_list.append({
+                'bulletin': b,
+                'moyenne': b.moyenne_totale or 0,
+                'observation': b.observation,
+            })
+        bulletins_list.sort(key=lambda x: x['moyenne'], reverse=True)
+        rang = 0
+        previous = None
+        for index, b in enumerate(bulletins_list, start=1):
+            if b['moyenne'] == previous:
+                b['rang'] = f"{rang} Ex"
+            else:
+                rang = index
+                b['rang'] = f"{rang}{'er' if rang == 1 else 'ème'}"
+            previous = b['moyenne']
+        # --------------------
+        # STATISTIQUES
+        # --------------------
+        eleves = Eleve.objects.filter(groupe_classe=groupe_obj)
+        statistiques['total_inscrits'] = eleves.count()
+        statistiques['ayant_composes'] = len([b for b in bulletins_list if b['moyenne'] > 0])
+        statistiques['admis'] = len([b for b in bulletins_list if b['moyenne'] >= seuil])
+        statistiques['non_admis'] = statistiques['ayant_composes'] - statistiques['admis']
+        if statistiques['ayant_composes'] > 0:
+            statistiques['taux_reussite'] = round(
+                statistiques['admis'] / statistiques['ayant_composes'] * 100, 2
+            )
+        filles = eleves.filter(genre__iexact="femme")
+        statistiques['filles_total'] = filles.count()
+        statistiques['filles_composes'] = len([
+            b for b in bulletins_list
+            if b['bulletin'].eleve.genre.lower() == "femme" and b['moyenne'] > 0
+        ])
+        statistiques['filles_admis'] = len([
+            b for b in bulletins_list
+            if b['bulletin'].eleve.genre.lower() == "femme" and b['moyenne'] >= seuil
+        ])
+        statistiques['filles_non_admis'] = statistiques['filles_composes'] - statistiques['filles_admis']
+        if statistiques['filles_composes'] > 0:
+            statistiques['taux_filles_reussite'] = round(
+                statistiques['filles_admis'] / statistiques['filles_composes'] * 100, 2
+            )
+    # --------------------
+    # RENDER
+    # --------------------
+    return render(request, "enseignant/resultat_trimestriel_classe.html", {
+        'groupes_classes': groupes_classes,
+        'annees_scolaires': annees_scolaires,
+        'sorted_bulletins': bulletins_list,
+        'groupe_obj': groupe_obj,
+        'annee_scolaire_obj': annee_scolaire_obj,
+        'trimestre_label': trimestre_label,
+        'statistiques': statistiques,
+        'ecoles': ecoles,
+    })
+
+
+@login_required
+def bulletin_trimestriel_enseignant(request):
+    enseignant = getattr(request.user, 'enseignant_profile', None)
+    if not enseignant:
+        messages.error(request, "Accès refusé.")
+        return redirect('home')
+    # 🔐 Classes autorisées
+    groupes_classes = groupes_autorises_enseignant(enseignant)
+    annees_scolaires = AnneeScolaire.objects.all()
+    ecoles = Etablissement.objects.all()
+    bulletins_trimestriels = []
+    groupe_id = request.GET.get('groupe_classe')
+    annee_id = request.GET.get('annee_scolaire')
+    trimestre = request.GET.get('trimestre')
+    # 🔒 Sécurité : interdire toute autre classe
+    if groupe_id and not groupes_classes.filter(id=groupe_id).exists():
+        messages.error(request, "Vous n'êtes pas autorisé à accéder à cette classe.")
+        return redirect(request.path)
+    if groupe_id and annee_id and trimestre:
+        eleves = Eleve.objects.filter(
+            groupe_classe_id=groupe_id,
+            annee_scolaire_id=annee_id
+        )
+        for eleve in eleves:
+            notes = Note.objects.filter(
+                eleve=eleve,
+                trimestre=trimestre,
+                annee_scolaire_id=annee_id
+            ).values(
+                'matiere__nom'
+            ).annotate(
+                moyenne_matiere=Avg('note_finale')
+            )
+            moyenne_totale = notes.aggregate(
+                m=Avg('moyenne_matiere')
+            )['m']
+            bulletin = BulletinTrimestriel.objects.filter(
+                eleve=eleve,
+                trimestre=trimestre,
+                annee_scolaire_id=annee_id
+            ).first()
+            bulletins_trimestriels.append({
+                'bulletin': bulletin,
+                'notes': notes,
+                'moyenne_totale': bulletin.moyenne_totale if bulletin else None,
+                'rang_formate': bulletin.get_rang() if bulletin else '-',
+                'observation': bulletin.observation if bulletin else '-',
+            })
+    return render(request, 'enseignant/bulletin_trimestriel_classe.html', {
+        'groupes_classes': groupes_classes,
+        'annees_scolaires': annees_scolaires,
+        'bulletins_trimestriels': bulletins_trimestriels,
+        'ecoles': ecoles,
+    })

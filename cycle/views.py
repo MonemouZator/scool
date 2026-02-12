@@ -44,10 +44,12 @@ def ajout(request):
 def modifier(request):
     if request.method == 'POST':
         pk = request.POST.get('id')
+
         cycle = get_object_or_404(Cycle, id=pk)
         nom = request.POST.get('nom').strip()
         description = request.POST.get('des').strip()
 
+        # Vérifier doublon
         if Cycle.objects.filter(nom__iexact=nom).exclude(id=pk).exists():
             messages.error(request, f"Le cycle '{nom}' existe déjà.")
             return redirect('cycle')
@@ -55,9 +57,12 @@ def modifier(request):
         cycle.nom = nom
         cycle.description = description
         cycle.save()
+
         messages.success(request, f"Cycle '{nom}' modifié avec succès.")
         return redirect('cycle')
+
     return redirect('cycle')
+
 
 
 def supprimer(request, pk):
@@ -128,7 +133,7 @@ def afficharge_info_ecole(request):
     return render(request,'cycle/afficharge_info_ecole.html',context)
 
 
-def modifier(request, pk):
+def modifier_info_ecole(request, pk):
     ecolle = get_object_or_404(Etablissement, pk=pk)
 
     if request.method == 'POST':
@@ -142,9 +147,8 @@ def modifier(request, pk):
         ecolle.dpe = request.POST.get('dpe')
         ecolle.dsee = request.POST.get('dsee')
         ecolle.responsable = request.POST.get('respo')
-
-        # ✅ Correction ici
         logo = request.FILES.get('logo')
+
         if logo:
             ecolle.logo = logo
 

@@ -52,7 +52,7 @@
                     <th>Sexe</th>
                     <th>Contact</th>
                     <th>Adresse</th>
-                    <th>Actions</th>
+                   
                   </tr>
                 </thead>
                 <tbody>
@@ -64,12 +64,7 @@
                     <td>{{ ensei.get_sexe_display }}</td>
                     <td>{{ ensei.telephone }}</td>
                     <td>{{ ensei.adresse }}</td>
-                    <td>
-                      <a href="{% url 'detail_enseignant_fonda' ensei.id %}" class="btn btn-info" title="Voir Détails">
-                        <i class="fas fa-eye"></i>
-                      </a>
-                    
-                    </td>
+                  
                   </tr>
 
                  {% endfor %}

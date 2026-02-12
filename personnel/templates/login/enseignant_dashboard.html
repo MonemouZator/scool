@@ -22,15 +22,36 @@
               </li>
 
               <li class="nav-item">
-                <a href="{% url 'profi_enseignant' %}" class="nav-link {% if request.resolver_match.url_name == 'profi_enseignant' %}active{% endif %}">
+                <a href="{% url 'bulletin_trimestriel_classe' %}" class="nav-link {% if request.resolver_match.url_name == 'bulletin_trimestriel_classe' %}active{% endif %}">
                   <i class="badge badge-danger"><span class="text-white">2</span></i>
+                  <p>Bulletins de note</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="{% url 'resultat_trimestriel_classe' %}" class="nav-link {% if request.resolver_match.url_name == 'resultat_trimestriel_classe' %}active{% endif %}">
+                  <i class="badge badge-danger"><span class="text-white">3</span></i>
+                  <p>Resultat trimestriel</p>
+                </a>
+              </li>
+
+              {% comment %} <li class="nav-item">
+                <a href="{% url 'resultat_trimestriel_classe' %}" class="nav-link {% if request.resolver_match.url_name == '' %}active{% endif %}">
+                  <i class="badge badge-danger"><span class="text-white">4</span></i>
+                  <p>Resultat Annuel</p>
+                </a>
+              </li> {% endcomment %}
+
+              <li class="nav-item">
+                <a href="{% url 'profi_enseignant' %}" class="nav-link {% if request.resolver_match.url_name == 'profi_enseignant' %}active{% endif %}">
+                  <i class="badge badge-danger"><span class="text-white">4</span></i>
                   <p>profil</p>
                 </a>
               </li>
 
               <li class="nav-item">
                 <a href="{% url 'change_password' %}" class="nav-link {% if request.resolver_match.url_name == 'change_password' %}active{% endif %}">
-                  <i class="badge badge-danger"><span class="text-white">3</span></i>
+                  <i class="badge badge-danger"><span class="text-white">5</span></i>
                   <p>Modifier votre mot passe</p>
                 </a>
               </li>
@@ -86,56 +107,126 @@
                     <div class="inner">
                         {% if annee_selectionnee %}
                             <p>Année scolaire en cours : {{ annee_selectionnee.nom }}</p>
-                            <h1><p>Nombre d'élèves inscrits :{{ nombre_eleves_par_annee }}</h1></p>
+                            <h1><p>Elèves inscrits : {{ nombre_eleves_par_annee }}</h1></p>
                         {% else %}
                             <p>Aucune année scolaire en cours n'est définie.</p>
                         {% endif %}
                     </div>
-                    <div class="icon">
-                        <i class="ion ion-bag"></i>
-                    </div>
-                    <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
+         
+                    
                 </div>
             </div>
 
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3>{{ nombre_enseignants }}</h3>
                         <p>Enseignants</p>
+                        <h3>{{ nombre_enseignants }}</h3>
+                        
                     </div>
-                    <div class="icon">
-                        <i class="ion ion-stats-bars"></i>
-                    </div>
-                    <a href="#" class="small-box-footer"><i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
 
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3>{{ nombre_utilisateurs }}</h3>
                         <p>Utilisateurs</p>
+                        <h3>{{ nombre_utilisateurs }}</h3>
+                        
                     </div>
-                    <div class="icon">
-                        <i class="ion ion-person-add"></i>
-                    </div>
-                    <a href="#" class="small-box-footer"><i class="fas fa-arrow-circle-right"></i></a>
+
                 </div>
             </div>
 
             <div class="col-lg-3 col-6">
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3>{{ nombre_niveaux }}</h3>
                         <p>Niveaux</p>
+                        <h3>{{ nombre_niveaux }}</h3>
+                        
                     </div>
-                    <div class="icon">
-                        <i class="ion ion-pie-graph"></i>
-                    </div>
-                    <a href="#" class="small-box-footer"> <i class="fas fa-arrow-circle-right"></i></a>
+
                 </div>
             </div>
+
+            <!-- ============ ÉLÈVES PAR NIVEAU (Cartes rondes, couleur unique) ============ -->
+<style>
+  .niveau-row {
+      display: flex;
+      flex-wrap: wrap; /* retour automatique à la ligne si manque de place */
+      gap: 12px;       /* espace entre les cartes */
+      margin-top: 20px;
+      justify-content: flex-start; /* alignement à gauche */
+  }
+  .niveau-col {
+      flex: 1 1 200px; /* minimum 200px, grandit pour remplir l'espace */
+      max-width: 250px; /* limite largeur maxi */
+  }
+  .niveau-col .small-box {
+      width: 100%;
+      border-radius: 20px;      /* arrondi de la carte */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      min-height: 150px;        /* hauteur uniforme */
+      color: white;
+      background-color: #267b3d; /* couleur unique, bleu AdminLTE par défaut */
+      position: relative;
+      transition: transform 0.2s;
+  }
+  .niveau-col .small-box:hover {
+      transform: translateY(-5px);
+  }
+  .niveau-col .small-box .icon {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 2rem;
+      opacity: 0.3;
+  }
+  .niveau-col .small-box-footer {
+      color: white;
+      display: block;
+      margin-top: 10px;
+      text-align: center;
+      font-weight: bold;
+      text-decoration: none;
+  }
+  /* Tablette */
+  @media (max-width: 992px) {
+      .niveau-col {
+          flex: 0 0 33.33%; /* 3 par ligne tablette */
+          max-width: 33.33%;
+      }
+  }
+  /* Mobile */
+  @media (max-width: 576px) {
+      .niveau-col {
+          flex: 0 0 100%; /* 1 par ligne mobile */
+          max-width: 100%;
+      }
+  }
+</style>
+<div class="niveau-row">
+  {% for niveau in niveaux_avec_effectifs %}
+  <div class="niveau-col">
+    <div class="small-box">
+      <div class="inner text-center">
+      <p>Niveau: {{ niveau.nom }}</p>
+        <h6>Effectif: {{ niveau.nombre_eleves }}</h6>
+        
+      </div>
+      <div class="icon">
+        <i class="fas fa-users"></i>
+      </div>
+
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
         </div>
 
         <!-- Main row -->

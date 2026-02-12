@@ -1,0 +1,184 @@
+{% extends "login/enseignant_dashboard.html" %}
+{% load static %}
+{% block styl_parent %}
+<title>Bulletins Trimestriels | Enseignant</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700&display=fallback">
+<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+<style>
+  .content-wrapper {
+    padding: 15px;
+    background-color: #fefefe;
+  }
+  .eleve-section {
+    margin-bottom: 40px;
+    padding: 20px;
+    border: 2px solid #000;
+  }
+  .eleve-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .infos-right {
+    text-align: right;
+    font-size: 15px;
+  }
+  @media print {
+    .no-print, .breadcrumb, footer {
+      display: none !important;
+    }
+    .eleve-section {
+      page-break-after: always;
+      border: none;
+    }
+  }
+</style>
+{% endblock %}
+{% block body %}
+<body class="hold-transition sidebar-mini">
+{% endblock %}
+{% block contenu %}
+<div class="content-wrapper">
+  <!-- TITRE -->
+  <section class="content-header">
+    <h1>Bulletins Trimestriels </h1>
+  </section>
+  <!-- FILTRE -->
+  <section class="content no-print">
+    <div class="card">
+      <div class="card-header">
+        <form method="get">
+          <div class="row">
+            <div class="col-md-4">
+              <label>Classe</label>
+              <select name="groupe_classe" class="form-control" required>
+                <option value="">-- Sélectionner --</option>
+                {% for g in groupes_classes %}
+                  <option value="{{ g.id }}" {% if request.GET.groupe_classe == g.id|stringformat:"s" %}selected{% endif %}>
+                    {{ g.nom }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label>Année scolaire</label>
+              <select name="annee_scolaire" class="form-control" required>
+                <option value="">-- Sélectionner --</option>
+                {% for a in annees_scolaires %}
+                  <option value="{{ a.id }}" {% if request.GET.annee_scolaire == a.id|stringformat:"s" %}selected{% endif %}>
+                    {{ a.nom }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label>Trimestre</label>
+              <select name="trimestre" class="form-control" required>
+                <option value="">-- Sélectionner --</option>
+                <option value="1" {% if request.GET.trimestre == "1" %}selected{% endif %}>1er</option>
+                <option value="2" {% if request.GET.trimestre == "2" %}selected{% endif %}>2ème</option>
+                <option value="3" {% if request.GET.trimestre == "3" %}selected{% endif %}>3ème</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn btn-primary mt-3">
+            <i class="fas fa-search"></i> Afficher
+          </button>
+          {% comment %} <button type="button" onclick="window.print()" class="btn btn-success mt-3">
+            <i class="fas fa-print"></i> Imprimer
+          </button> {% endcomment %}
+        </form>
+      </div>
+    </div>
+  </section>
+  <!-- BULLETINS -->
+  <section class="content">
+    {% if bulletins_trimestriels %}
+      {% for bulletin in bulletins_trimestriels %}
+      <div class="eleve-section">
+        <!-- EN-TÊTE -->
+        <div class="eleve-header">
+          <div>
+            {% if bulletin.bulletin.eleve.photo %}
+              <img src="{{ bulletin.bulletin.eleve.photo.url }}" width="90">
+            {% endif %}
+          </div>
+          <div style="text-align:center; flex:1;">
+            {% for ecole in ecoles %}
+                    <h4>{{ ecole.pays }}</h4>
+      <p>{{ ecole.devise_pays }}</p>
+        <h4>{{ ecole.nom_ecole }}</h4>
+        <p>{{ ecole.devise_ecole }}</p>
+              <strong>Bulletin du {{ request.GET.trimestre }}ᵉ Trimestre</strong><br>
+              Classe : {{ bulletin.bulletin.eleve.groupe_classe }}
+            {% endfor %}
+          </div>
+          {% comment %} <div class="infos-right">
+            {% for ecole in ecoles %}
+              <strong>IRE : {{ ecole.ire }}</strong><br>
+              <strong>DPE : {{ ecole.dpe }}</strong>
+            {% endfor %}
+          </div> {% endcomment %}
+        </div>
+        <!-- INFOS ELEVE -->
+        <table class="table table-bordered mt-3">
+          <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Date de naissance</th>
+          </tr>
+          <tr>
+            <td>{{ bulletin.bulletin.eleve.nom }}</td>
+            <td>{{ bulletin.bulletin.eleve.prenom }}</td>
+            <td>{{ bulletin.bulletin.eleve.date_naissance }}</td>
+          </tr>
+        </table>
+        <!-- NOTES -->
+        <table class="table table-bordered table-striped">
+          <tr>
+            <th>Matière</th>
+            <th>Moyenne</th>
+          </tr>
+          {% for n in bulletin.notes %}
+          <tr>
+            <td>{{ n.matiere__nom }}</td>
+            <td>{{ n.moyenne_matiere }}</td>
+          </tr>
+          {% endfor %}
+        </table>
+        <!-- RESULTAT -->
+        <table class="table table-bordered">
+          <tr>
+            <th>Rang</th>
+            <th>Moyenne Générale</th>
+            <th>Observation</th>
+          </tr>
+          <tr>
+            <td>{{ bulletin.rang_formate }}</td>
+            <td>{{ bulletin.moyenne_totale }}</td>
+            <td>{{ bulletin.observation }}</td>
+          </tr>
+        </table>
+        <!-- SIGNATURE -->
+        <div class="text-center mt-4">
+          {% for ecole in ecoles %}
+            <strong>Le Directeur</strong><br><br>
+            <strong>{{ ecole.responsable }}</strong>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <p class="alert alert-warning text-center">
+        Aucun bulletin disponible pour cette classe.
+      </p>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
+{% block scripte %}
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+{% endblock %}

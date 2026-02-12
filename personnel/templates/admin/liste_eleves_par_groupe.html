@@ -90,28 +90,23 @@
             <table id="example" class="table table-bordered table-striped">
                 <thead class="bg-primary">
                     <tr>
-                        <th>N°</th>
+                        <th>Matricule</th>
                         <th>Nom</th>
                         <th>Prénom</th>
                         <th>Sexe</th>
                         <th>Adresse</th>
-                        <th>Action</th>
+                 
                     </tr>
                 </thead>
                 <tbody>
                     {% for eleve in eleves %}
                     <tr>
-                        <td>{{ eleve.id }}</td>
+                        <td>{{ eleve.matricule }}</td>
                         <td>{{ eleve.nom }}</td>
                         <td>{{ eleve.prenom }}</td>
                         <td>{{ eleve.genre }}</td>
                         <td>{{ eleve.lieu_naissance }}</td>
-                        <td>
-                            <a href="{% url 'eleve_detail' pk=eleve.id %}">
-                                <i class="fas fa-eye" style="font-size: 1.5rem;"></i> 
-                            </a>
-                            
-                        </td>
+
                     </tr>
                     {% endfor %}
                 </tbody>

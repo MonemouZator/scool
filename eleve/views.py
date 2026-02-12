@@ -147,9 +147,12 @@ def ajout(request):
                 action=f"A ajouté l'élève {prenom} {nom} en {niveau_obj.nom} pour l'année {annee_obj.nom}"
             )
 
+            eleve=Eleve.objects.get(id=5)
+            print(eleve.matricule)
 
         messages.success(request, f"L'élève {prenom} {nom} a été ajouté avec succès.")
         return redirect('forme')
+    
 
     return render(request, 'eleve/ajout_eleve.html')
 
@@ -436,27 +439,60 @@ def detail_eleve(request, pk):
     eleve = get_object_or_404(Eleve, id=pk)
     return render(request, 'eleve/detail_eleve.html', {'eleve': eleve})
 
-#afficher les eleves par niveau et annee scolaire
+# afficher les élèves par niveau et année scolaire
+from cycle.models import Etablissement
+
+
+from django.db.models import Q
 
 def liste_eleves_par_niveau_annee(request):
     niveau_id = request.GET.get('niveau')
     annee_id = request.GET.get('annee_scolaire')
 
+    # Tous les élèves actifs
     eleves = Eleve.objects.filter(actif=True)
-    niveaux = Niveau.objects.all()
-    annees = AnneeScolaire.objects.all()
-
+    
+    # Filtrage exact par niveau et année
     if niveau_id:
         eleves = eleves.filter(niveau_id=niveau_id)
-    
     if annee_id:
         eleves = eleves.filter(annee_scolaire_id=annee_id)
 
-    return render(request, 'eleve/liste_eleves_par_niveau_annee.html', {
-        'eleves': eleves,
-        'niveaux': niveaux,
-        'annees': annees,
+    # On récupère toutes les inscriptions correspondantes
+    inscriptions = EleveInscrit.objects.all()
+    if niveau_id:
+        inscriptions = inscriptions.filter(niveau_id=niveau_id)
+    if annee_id:
+        inscriptions = inscriptions.filter(annee_scolaire_id=annee_id)
+
+    # Construire la liste finale pour le template
+    liste_eleves = []
+    for eleve in eleves:
+        # chercher l'inscription si elle existe
+        inscription = inscriptions.filter(eleve=eleve).first()
+        statut = "Réinscrit" if inscription else "Inscrit"
+        liste_eleves.append({
+            "eleve": eleve,
+            "inscription": inscription,
+            "statut": statut
+        })
+
+    niveaux = Niveau.objects.all()
+    annees = AnneeScolaire.objects.all()
+
+    return render(request, "eleve/liste_eleves_par_niveau_annee.html", {
+        "liste_eleves": liste_eleves,
+        "niveaux": niveaux,
+        "annees": annees,
+        "niveau_id": niveau_id,
+        "annee_id": annee_id
     })
+
+
+
+
+
+
 
 
 #AFFICHER LES LES ELEVES PAR GROUPE DE CLASSE OU OPTION ET ANNEE SCOlAIRE
@@ -597,6 +633,9 @@ def detail_eleves(request, pk):
     eleve = get_object_or_404(Eleve, id=pk)
     return render(request, 'admin/detail_eleve.html', {'eleve': eleve})
 
+from django.utils.timezone import now
+
+
 #afficher les eleves par niveau et annee scolaire
 
 def liste_eleves_niveau(request):
@@ -613,11 +652,12 @@ def liste_eleves_niveau(request):
     if annee_id:
         eleves = eleves.filter(annee_scolaire_id=annee_id)
 
-    return render(request, 'admin/liste_eleves_par_niveau_annee.html', {
+    return render(request, 'eleve/liste_eleves_par_niveau_annee.html', {
         'eleves': eleves,
         'niveaux': niveaux,
         'annees': annees,
     })
+
 
 
 #AFFICHER LES LES ELEVES PAR GROUPE DE CLASSE OU OPTION ET ANNEE SCOlAIRE
@@ -669,3 +709,153 @@ def get_groupe(request):
             groupes_data = []
 
     return JsonResponse({'groupes': groupes_data})
+
+
+# def liste_badges(request):
+#     niveau_id = request.GET.get('niveau')
+#     classe_id = request.GET.get('classe')
+#     annee_id = request.GET.get('annee')
+
+#     niveaux = Niveau.objects.all()
+#     classes = GroupeClasse.objects.all()
+#     annees = AnneeScolaire.objects.all()
+
+#     eleves = Eleve.objects.all()
+
+#     if niveau_id:
+#         eleves = eleves.filter(niveau_id=niveau_id)
+#     if classe_id:
+#         eleves = eleves.filter(groupe_classe_id=classe_id)
+#     if annee_id:
+#         eleves = eleves.filter(annee_id=annee_id)
+
+#     context = {
+#         'eleves': eleves,
+#         'niveaux': niveaux,
+#         'classes': classes,
+#         'annees': annees,
+#     }
+#     return render(request, 'eleve/liste_badges.html', context)
+
+from .models import EleveInscrit
+
+
+# -----------------------------
+# Vue principale réinscription
+# -----------------------------
+
+def reinscription_eleve(request):
+    eleves = Eleve.objects.filter(actif=True)  # uniquement élèves actifs
+    niveaux = Niveau.objects.all()
+    groupes = GroupeClasse.objects.all()
+    annees = AnneeScolaire.objects.all()
+
+    if request.method == "POST":
+        matricule = request.POST.get("matricule")
+        niveau_id = request.POST.get("niveau")
+        groupe_id = request.POST.get("groupe")
+        annee_id = request.POST.get("annee")
+
+        # Validation simple
+        if not matricule or not niveau_id or not groupe_id or not annee_id:
+            messages.error(request, "Tous les champs sont obligatoires.")
+            return redirect("reinscrire_eleve")
+
+        # Filtrer au lieu de get() pour éviter MultipleObjectsReturned
+        eleves_qs = Eleve.objects.filter(matricule=matricule)
+        if not eleves_qs.exists():
+            messages.error(request, "Aucun élève trouvé avec ce matricule.")
+            return redirect("reinscrire_eleve")
+
+        eleve = eleves_qs.first()
+        niveau = get_object_or_404(Niveau, id=niveau_id)
+        groupe = get_object_or_404(GroupeClasse, id=groupe_id)
+        annee = get_object_or_404(AnneeScolaire, id=annee_id)
+
+        # Création ou mise à jour de l'inscription
+        inscription, created = EleveInscrit.objects.get_or_create(
+            eleve=eleve,
+            annee_scolaire=annee,
+            defaults={
+                "niveau": niveau,
+                "groupe_classe": groupe
+            }
+        )
+
+        if not created:
+            # Si l'inscription existe déjà, on met à jour le niveau et le groupe
+            inscription.niveau = niveau
+            inscription.groupe_classe = groupe
+            inscription.save()
+            messages.success(request, f"{eleve.nom} {eleve.prenom} réinscrit avec succès pour {annee.nom} (mise à jour).")
+        else:
+            messages.success(request, f"{eleve.nom} {eleve.prenom} réinscrit avec succès pour {annee.nom}.")
+
+        # Création automatique des frais si non existants
+        FraisScolarite.objects.get_or_create(
+            eleve=eleve,
+            annee_scolaire=annee,
+            defaults={
+                "montant_total": niveau.montant_frais or 0,
+                "solde": niveau.montant_frais or 0
+            }
+        )
+
+        return redirect("reinscrire_eleve")
+
+    return render(request, "eleve/reinscription.html", {
+        "eleves": eleves,
+        "niveaux": niveaux,
+        "groupes": groupes,
+        "annees": annees
+    })
+
+
+# ---------------------------------------
+# AJAX pour autoremplissage par matricule
+# ---------------------------------------
+from django.http import JsonResponse
+from eleve.models import Eleve
+
+def get_eleve_info(request):
+    matricule = request.GET.get('matricule')
+    if not matricule:
+        return JsonResponse({'error': 'Matricule manquant'})
+    try:
+        e = Eleve.objects.get(matricule=matricule)
+        data = {
+            'nom': e.nom,
+            'prenom': e.prenom,
+            'date_naissance': e.date_naissance.strftime('%Y-%m-%d') if e.date_naissance else '',
+            'lieu_naissance': e.lieu_naissance,
+            'sexe': e.genre,
+            'contact': e.telephone or '',
+            'pere': e.pere,
+            'fp': e.profession_pere,
+            'cp': e.contact_parent or '',
+            'mere': e.mere,
+            'fm': e.profession_mere,
+            'cm': e.contact_mere or '',
+            'photo_url': e.photo.url if e.photo else '',
+            # 🔹 Ajouter les IDs pour sélectionner automatiquement
+            'niveau_id': e.niveau.id if e.niveau else '',
+            'annee_id': e.annee_scolaire.id if e.annee_scolaire else '',
+            'groupe_id': e.groupe_classe.id if e.groupe_classe else '',
+        }
+        return JsonResponse(data)
+    except Eleve.DoesNotExist:
+        return JsonResponse({'error': 'Élève introuvable'})
+
+
+
+# ---------------------------------------
+# AJAX pour filtrer les groupes par niveau
+# ---------------------------------------
+def get_groupes(request):
+    niveau_id = request.GET.get('niveau')
+    data = {'groupes': []}
+    if niveau_id:
+        groupes = GroupeClasse.objects.filter(niveau_id=niveau_id)
+        for g in groupes:
+            data['groupes'].append({'id': g.id, 'nom': g.nom})
+    return JsonResponse(data)

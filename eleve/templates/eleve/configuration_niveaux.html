@@ -83,6 +83,7 @@
         <table id="elevesTable" class="table table-bordered table-striped">
           <thead class="bg-info text-white text-center">
             <tr>
+            <th>Matricule</th>
               <th>Nom</th>
               <th>Prénom</th>
               <th>Montant dû</th>
@@ -92,6 +93,7 @@
           <tbody>
             {% for item in eleves_frais %}
               <tr>
+              <td>{{ item.eleve.matricule }}</td>
                 <td>{{ item.eleve.nom }}</td>
                 <td>{{ item.eleve.prenom }}</td>
                 <td>

@@ -123,12 +123,16 @@ h1.mb-4 { font-size: 2.3rem; font-weight: 600; color: #2C3E50; text-align: cente
                                     <h4>Total impayés : {{ total_restant }} GNF</h4>
                                 {% endfor %}
                             </div>
-
+                                      <!-- Champ de recherche -->
+                            <div class="form-group">
+                                <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par matricule , Nom et Prénom...">
+                            </div>
 
                             <div class="table-container">
                                 <table id="statut_table" class="table table-bordered table-striped">
                                     <thead>
                                         <tr>
+                                            <th>Matricule</th>
                                             <th>Nom</th>
                                             <th>Montant restant</th>
                                         </tr>
@@ -137,6 +141,7 @@ h1.mb-4 { font-size: 2.3rem; font-weight: 600; color: #2C3E50; text-align: cente
                                         {% for info in eleves_info %}
                                         {% if info.montant_restant > 0 %}
                                         <tr>
+                                            <td>{{ info.eleve.matricule }} </td>
                                             <td>{{ info.eleve.nom }} {{ info.eleve.prenom }}</td>
                                             <td>{{ info.montant_restant }} GNF</td>
                                         </tr>
@@ -178,7 +183,7 @@ h1.mb-4 { font-size: 2.3rem; font-weight: 600; color: #2C3E50; text-align: cente
 
 <script>
 $(function () {
-    $("#statut_table").DataTable({
+    {% comment %} $("#statut_table").DataTable({
         "paging": true,
         "lengthChange": true,
         "searching": true,
@@ -186,7 +191,7 @@ $(function () {
         "info": true,
         "autoWidth": false,
         "responsive": true,
-    });
+    }); {% endcomment %}
 });
 </script>
 {% endblock %}

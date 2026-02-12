@@ -1,0 +1,186 @@
+{% extends "login/enseignant_dashboard.html" %}
+{% load static %}
+ {% block styl_parent %}
+  <title>enseignant | Accueil</title>
+
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+{% endblock %}
+
+
+ {% block body %}
+<body class="hold-transition sidebar-mini">
+ {% endblock body %}
+
+
+
+
+{% block contenu %}
+<div class="content-wrapper p-4">
+  <!-- TITRE -->
+  <section class="content-header">
+    <h2 class="text-primary font-weight-bold">
+      Résultats trimestriels
+    </h2>
+  </section>
+  <!-- FILTRE -->
+  <section class="content">
+    <div class="card">
+      <div class="card-header">
+        <form method="get" class="form-inline">
+          <select name="groupe_classe" class="form-control mr-2" required>
+            <option value="">-- Classe --</option>
+            {% for groupe in groupes_classes %}
+              <option value="{{ groupe.id }}"
+                {% if groupe_id == groupe.id|stringformat:"s" %}selected{% endif %}>
+                {{ groupe.nom }}
+              </option>
+            {% endfor %}
+          </select>
+          <select name="annee_scolaire" class="form-control mr-2" required>
+            <option value="">-- Année scolaire --</option>
+            {% for annee in annees_scolaires %}
+              <option value="{{ annee.id }}"
+                {% if annee_id == annee.id|stringformat:"s" %}selected{% endif %}>
+                {{ annee.nom }}
+              </option>
+            {% endfor %}
+          </select>
+          <select name="trimestre" class="form-control mr-2" required>
+            <option value="">-- Trimestre --</option>
+            <option value="1" {% if trimestre == "1" %}selected{% endif %}>Trimestre 1</option>
+            <option value="2" {% if trimestre == "2" %}selected{% endif %}>Trimestre 2</option>
+            <option value="3" {% if trimestre == "3" %}selected{% endif %}>Trimestre 3</option>
+          </select>
+          <button class="btn btn-primary">
+            <i class="fas fa-search"></i> Afficher
+          </button>
+          {% if sorted_bulletins %}
+          {% comment %} <button type="button" onclick="window.print()" class="btn btn-secondary ml-2">
+            <i class="fas fa-print"></i> Imprimer
+          </button> {% endcomment %}
+          {% endif %}
+        </form>
+      </div>
+    </div>
+    {% if sorted_bulletins %}
+    <!-- ENTÊTE -->
+    <div class="card mt-3 p-3 text-center">
+      {% for ecole in ecoles %}
+      <h4>{{ ecole.pays }}</h4>
+      <p>{{ ecole.devise_pays }}</p>
+        <h4>{{ ecole.nom_ecole }}</h4>
+        <p>{{ ecole.devise_ecole }}</p>
+      {% endfor %}
+      <h5>
+        Résultat du {{ trimestre_label }} –
+        <strong>{{ annee_scolaire_obj.nom }}</strong>
+      </h5>
+      <h6>Classe : <strong>{{ groupe_obj.nom }}</strong></h6>
+    </div>
+    <!-- STATISTIQUES -->
+    <div class="card mt-3">
+      <div class="card-header bg-primary text-white">
+        Statistiques du trimestre
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Total</th>
+              <th>Filles</th>
+              <th>Composés</th>
+              <th>Admis</th>
+              <th>Non admis</th>
+              <th>Taux réussite</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ statistiques.total_inscrits }}</td>
+              <td>{{ statistiques.filles_total }}</td>
+              <td>{{ statistiques.ayant_composes }}</td>
+              <td>{{ statistiques.admis }}</td>
+              <td>{{ statistiques.non_admis }}</td>
+              <td>{{ statistiques.taux_reussite }}%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- CLASSEMENT -->
+    <div class="card mt-3">
+      <div class="card-header bg-success text-white">
+        Classement par ordre de mérite
+      </div>
+      <div class="card-body table-responsive">
+        <table class="table table-striped table-bordered">
+          <thead>
+            <tr>
+              <th>Rang</th>
+              <th>Nom & Prénom</th>
+              <th>Moyenne</th>
+              <th>Observation</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for data in sorted_bulletins %}
+            <tr>
+              <td>{{ data.rang }}</td>
+              <td>{{ data.bulletin.eleve.nom }} {{ data.bulletin.eleve.prenom }}</td>
+              <td>{{ data.moyenne|floatformat:2 }}</td>
+              <td>{{ data.observation }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% else %}
+      <div class="alert alert-info mt-4">
+        Sélectionnez une classe, une année et un trimestre.
+      </div>
+    {% endif %}
+  </section>
+</div>
+{% endblock %}
+
+  
+
+  
+{% block scripte %}
+
+
+<!-- jQuery -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- DataTables  & Plugins -->
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'base/js/demo.js' %}"></script>
+<!-- Page specific script -->
+
+{% endblock %}

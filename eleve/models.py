@@ -9,7 +9,7 @@ from annee_scolaire.models import AnneeScolaire
 from django.utils import timezone
 
 from cloudinary.models import CloudinaryField
-
+import random
 from django.db import models
 from niveau.models import Niveau
 from groupe_classe.models import GroupeClasse
@@ -39,10 +39,35 @@ class Eleve(models.Model):
 
     def __str__(self):
         return f"{self.prenom} {self.nom}"
+    
 
+# ✅ Nouveau champ matricule
+    matricule = models.CharField(max_length=20, unique=True, blank=True, null=True)
+    def __str__(self):
+        return f"{self.prenom} {self.nom}"
+    # 🔹 Méthode pour générer un matricule unique
+    def generate_matricule(self):
+        nom_part = (self.nom[:2] if len(self.nom) >= 2 else self.nom).upper()
+        prenom_part = (self.prenom[:2] if len(self.prenom) >= 2 else self.prenom).upper()
+       
+        # Vérifier que date_naissance existe
+        annee = self.date_naissance.year if self.date_naissance else '0000'
+        matricule_base = f"{nom_part}{prenom_part}{annee}"
+       
+        # Ajouter un suffixe aléatoire pour garantir l'unicité
+        suffixe = ''.join([str(random.randint(0,9)) for _ in range(2)])
+        matricule = f"{matricule_base}{suffixe}"
+        # Vérifier unicité
+        while Eleve.objects.filter(matricule=matricule).exists():
+            suffixe = ''.join([str(random.randint(0,9)) for _ in range(2)])
+            matricule = f"{matricule_base}{suffixe}"
+        return matricule
+    # 🔹 Sauvegarde avec matricule automatique
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-
+        if not self.matricule:
+            self.matricule=self.generate_matricule()
+            super().save(*args, **kwargs)
+  
         if self.niveau and self.annee_scolaire:
             montant_total = self.niveau.montant_frais or 0
             frais_existe = FraisScolarite.objects.filter(eleve=self, annee_scolaire=self.annee_scolaire).exists()
@@ -120,3 +145,15 @@ class Recu(models.Model):
 
     def __str__(self):
         return f"Reçu {self.id} - {self.frais_scolarite.eleve.nom} {self.frais_scolarite.eleve.prenom}"
+
+class EleveInscrit(models.Model):
+    eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE, related_name="inscriptions")
+    annee_scolaire = models.ForeignKey(AnneeScolaire, on_delete=models.CASCADE)
+    groupe_classe = models.ForeignKey(GroupeClasse, on_delete=models.CASCADE)
+    niveau = models.ForeignKey(Niveau, on_delete=models.SET_NULL, null=True, blank=True)
+    actif = models.BooleanField(default=True)  # Pour savoir si l'élève est actuellement inscrit
+    date_inscription = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        unique_together = ('eleve', 'annee_scolaire')  # un élève ne peut être inscrit qu'une fois par année
+    def __str__(self):
+        return f"{self.eleve.prenom} {self.eleve.nom} - {self.annee_scolaire.nom}"   

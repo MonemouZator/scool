@@ -1,0 +1,157 @@
+{% extends "login/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+<title>Badges élèves</title>
+<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+<style>
+/* Conteneur principal pour badges */
+.badges-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* Badge individuel */
+.badge-card {
+  width: 85.6mm;        /* largeur carte standard */
+  height: 55mm;         /* hauteur carte standard */
+  border: 2px solid #007bff;
+  border-radius: 8px;
+  padding: 4px 6px;
+  box-sizing: border-box;
+  background-color: #f8f9fa;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  position: relative;
+  font-family: Arial, sans-serif;
+}
+
+/* En-tête de l’école */
+.badge-header {
+  text-align: center;
+  font-size: 10pt;
+  font-weight: bold;
+  line-height: 1.1;
+  margin-bottom: 2px;
+}
+
+/* Logo école */
+.badge-logo {
+  width: 18mm;
+  height: 18mm;
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  border-radius: 3px;
+  object-fit: contain;
+}
+
+/* Titre "CARTE SCOLAIRE" */
+.badge-title {
+  font-size: 9pt;
+  font-weight: bold;
+  color: #007bff;
+  margin: 2px 0 4px 0;
+}
+
+/* Photo élève */
+.badge-photo {
+  width: 25mm;
+  height: 25mm;
+  border-radius: 50%;
+  border: 2px solid #007bff;
+  object-fit: cover;
+  margin: 2px 0;
+}
+
+/* Infos élèves */
+.badge-info {
+  font-size: 9pt;
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Impression */
+@media print {
+  body { margin: 0; padding: 0; }
+  .no-print { display: none !important; }
+  .badges-container { gap: 8px; }
+  .badge-card { page-break-inside: avoid; }
+}
+</style>
+{% endblock %}
+
+{% block body %}
+<body class="hold-transition sidebar-mini">
+{% endblock body %}
+
+{% block contenu %}
+<div class="content-wrapper p-3">
+  <section class="content">
+    <div class="container-fluid">
+
+      <!-- Bouton imprimer -->
+      <div class="mb-3 d-flex justify-content-center gap-3 no-print">
+        {% if eleves %}
+          <button type="button" onclick="window.print()" class="btn btn-success">
+            🖨️ Imprimer
+          </button>
+        {% endif %}
+      </div>
+
+      <!-- Conteneur des badges -->
+      <div class="badges-container">
+        {% for eleve in eleves %}
+          <div class="badge-card">
+
+            <!-- Logo école (optionnel) -->
+            {% if ecoles and ecoles.0.logo %}
+              <img src="{{ ecoles.0.logo.url }}" class="badge-logo" alt="Logo école">
+            {% endif %}
+
+            <!-- En-tête école -->
+            {% if ecoles %}
+              <div class="badge-header">
+                {{ ecoles.0.nom_ecole }}<br>
+                <em>{{ ecoles.0.devise_ecole }}</em>
+              </div>
+            {% endif %}
+
+            <!-- Titre CARTE SCOLAIRE -->
+            <div class="badge-title">CARTE SCOLAIRE</div>
+
+            <!-- Photo élève -->
+            {% if eleve.photo %}
+              <img src="{{ eleve.photo.url }}" alt="Photo élève" class="badge-photo">
+            {% else %}
+              <img src="{% static 'base/img/default_user.png' %}" alt="Photo par défaut" class="badge-photo">
+            {% endif %}
+
+            <!-- Infos élèves -->
+            <div class="badge-info">
+              <strong>{{ eleve.nom }} {{ eleve.prenom }}</strong><br>
+              Matricule: {{ eleve.matricule }}<br>
+              Niveau: {{ eleve.niveau.nom|default:"N/A" }}<br>
+              Année: {{ eleve.annee_scolaire.nom|default:"N/A" }}
+            </div>
+
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripte %}
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+{% endblock %}

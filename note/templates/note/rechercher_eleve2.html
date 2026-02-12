@@ -58,14 +58,20 @@
         </select>
       </div>
     </div>
-    <button type="submit" class="btn btn-primary mt-3">Rechercher</button>
-  </form>
+    <button type="submit" class="btn btn-primary mt-3">Filtrer</button>
+  </form><br>
+
+  <!-- Champ de recherche -->
+  <div class="form-group">
+    <input type="text" id="searchInput" class="form-control" placeholder="Rechercher par Nom ou Prénom...">
+  </div>
 
   <!-- Tableau des élèves -->
   <div class="table-responsive mt-4">
     <table id="elevesTable" class="table table-bordered table-striped">
       <thead class="bg-primary text-white">
         <tr>
+        <th>Matricule</th>
           <th>Nom</th>
           <th>Prénom</th>
           <th>Action</th>
@@ -74,6 +80,7 @@
       <tbody>
         {% for eleve in eleves %}
         <tr>
+          <td>{{ eleve.matricule }}</td>
           <td>{{ eleve.nom }}</td>
           <td>{{ eleve.prenom }}</td>
           <td>
@@ -121,12 +128,12 @@
 
                       <div class="form-group">
                         <label>Note Cours :</label>
-                        <input type="number" name="nc" class="form-control note-input" required min="0" max="20" step="0.5">
+                        <input type="number" name="nc" class="form-control note-input" required min="0" max="20" step="0.01">
                       </div>
 
                       <div class="form-group">
                         <label>Note Composition :</label>
-                        <input type="number" name="nco" class="form-control note-input" required min="0" max="20" step="0.5">
+                        <input type="number" name="nco" class="form-control note-input" required min="0" max="20" step="0.01">
                       </div>
 
                       <p>Moyenne pondérée : <span class="moyenne">0</span></p>
@@ -249,11 +256,21 @@ $(document).ready(function () {
         var nc = parseFloat(form.find('input[name="nc"]').val()) || 0;
         var nco = parseFloat(form.find('input[name="nco"]').val()) || 0;
         var coef = parseFloat(form.find('select[name="mat"] option:selected').data('coef')) || 1;
-        var moyenne = ((nc + nco)/2 * coef).toFixed(2); // moyenne pondérée simple
+        var moyenne = ((nc + nco)/2).toFixed(2); // moyenne pondérée simple
         form.find('.moyenne').text(moyenne);
+    });
+
+    // Filtrage instantané du tableau par Nom ou Prénom
+    $('#searchInput').on('keyup', function() {
+        var value = $(this).val().toLowerCase();
+        $('#elevesTable tbody tr').filter(function() {
+            $(this).toggle(
+                $(this).find('td:nth-child(1)').text().toLowerCase().indexOf(value) > -1 ||
+                $(this).find('td:nth-child(2)').text().toLowerCase().indexOf(value) > -1
+            );
+        });
     });
 
 });
 </script>
-
 {% endblock %}

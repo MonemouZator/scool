@@ -22,8 +22,6 @@
  {% endblock body %}
 
 
-
-
 {% block contenu %}
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper p-4" style="max-height: calc(100vh - 150px); overflow-y: auto;">
@@ -99,9 +97,6 @@
                       <!-- DEBUT DE LA FENETRE MODALE DE MODIFICATION ELEVE -->
 
                                         
-                                        
-                 
-
                       <a href="{% url 'modifier_eleve' pk=eleve.id %}" class="btn btn-primary">
                           <i class="fas fa-edit"></i>  
                       </a>
@@ -124,7 +119,7 @@
                                             <form action="{% url 'supprimer-eleve' eleve.id %}" method="post" class="row">
                                                 {% csrf_token %}
                                                 <p>
-                                                    Voulez-vous vraiment supprimer les informations de :
+                                                    Voulez-vous vraiment supprimer cette ligne? :
                                                     <span class="text-primary">{{ eleve.nom }} {{ eleve.prenom }}</span> ?
                                                 </p>
                                         </div>

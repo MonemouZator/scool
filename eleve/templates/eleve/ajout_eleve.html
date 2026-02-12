@@ -69,16 +69,6 @@
                   {% endif %}
 
                   <div class="form-group col-md-6">
-                    <label for="nive">Niveau :</label>
-                    <select name="nive" class="form-control" id="nive" required>
-                      <option value="">Sélectionner un niveau</option>
-                      {% for nive in niveaus %}
-                        <option value="{{ nive.id }}">{{ nive }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
-
-                  <div class="form-group col-md-6">
                     <label for="anne">Année scolaire :</label>
                     <select name="anne" class="form-control" id="anne" required>
                       <option value="">Sélectionner une année scolaire</option>
@@ -89,7 +79,17 @@
                   </div>
 
                   <div class="form-group col-md-6">
-                    <label for="group">Groupe pédagogique (option) :</label>
+                    <label for="nive">Niveau :</label>
+                    <select name="nive" class="form-control" id="nive" required>
+                      <option value="">Sélectionner un niveau</option>
+                      {% for nive in niveaus %}
+                        <option value="{{ nive.id }}">{{ nive }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+
+                  <div class="form-group col-md-6">
+                    <label for="group">Classe :</label>
                     <select name="group" class="form-control" id="group" required>
                       <option value="">Sélectionner un groupe</option>
                       {% for group in groupes %}

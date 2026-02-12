@@ -85,7 +85,7 @@
                       <table id="example" class="table table-bordered table-striped">
                         <thead class="bg-primary text-white">
                           <tr>
-                          
+                          <th>Matricule</th>
                             <th>Nom</th>
                             <th>Prénom</th>
                             <th>Sexe</th>                    
@@ -96,7 +96,7 @@
                         <tbody>
                           {% for eleve in eleves %}
                             <tr>
-                              
+                               <td>{{ eleve.matricule }}</td>
                               <td>{{ eleve.nom }}</td>
                               <td>{{ eleve.prenom }}</td>
                               <td>{{ eleve.genre }}</td>

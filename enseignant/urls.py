@@ -44,6 +44,9 @@ urlpatterns = [
     path('suivi-matiere/enseigner', views.suivie_ensei, name='suivie_enseignant'),
     path('fondateur/enseignant/<int:id>/', views.detail_enseignant_fonda, name='detail_enseignant_fonda'),
 
+   path('resultat-trimestriel/classe/enseigner', views.resultat_trimestriel_classe, name='resultat_trimestriel_classe'),
+    path('bulletin-trimestriel/classe/enseigner', views.bulletin_trimestriel_enseignant, name='bulletin_trimestriel_classe'),
+
 ]  
 
 

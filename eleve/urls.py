@@ -34,5 +34,11 @@ urlpatterns = [
      path('eleve/fonda<int:pk>/', views.detail_eleves, name='eleve_detail_fonda'),
      path('ajax/get_groupe/', views.get_groupe, name='get_groupe'),
 
+    # Formulaire de réinscription
+    path('reinscription/', views.reinscription_eleve, name='reinscrire_eleve'),
+    # AJAX pour remplir automatiquement les infos d'un élève par matricule
+    path('ajax/get-eleve/', views.get_eleve_info, name='get_eleve_info'),
+    # (optionnel) AJAX pour filtrer les groupes selon le niveau sélectionné
+    path('ajax/get-groupes/', views.get_groupes, name='get_groupes'),
 ]
 

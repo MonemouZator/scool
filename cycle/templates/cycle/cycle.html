@@ -45,6 +45,7 @@
         <div class="col-12">
           <div class="card">
             <div class="card-header">
+
               <!-- Bouton Ajouter -->
               <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                 Ajouter un nouveau cycle
@@ -80,7 +81,7 @@
                   </div>
                 </div>
               </div>
-              <!-- Fin Modal Ajout -->
+
             </div>
 
             <!-- Messages -->
@@ -116,16 +117,19 @@
                   </tr>
                 </thead>
                 <tbody>
+
                   {% for cycle in cycles %}
                   <tr>
                     <td>{{ cycle.id }}</td>
                     <td>{{ cycle.nom }}</td>
                     <td>{{ cycle.description }}</td>
                     <td>
+
                       <!-- Modifier -->
                       <a href="#" data-toggle="modal" data-target="#modifie{{ cycle.id }}" title="Modifier">
                         <i class="fas fa-edit text-primary" style="font-size: 1.5rem;"></i>
                       </a>
+
                       <div class="modal fade" id="modifie{{ cycle.id }}" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
                           <div class="modal-content">
@@ -135,22 +139,28 @@
                                 <span aria-hidden="true">&times;</span>
                               </button>
                             </div>
+
                             <div class="modal-body">
-                              <form action="{% url 'modifi-cycle' %}" method="post" class="row">
+                              <form action="{% url 'modifier-cycle' %}" method="post" class="row">
                                 {% csrf_token %}
+
                                 <div class="form-group col-md-12">
                                   <label for="nom">Cycle :</label>
-                                  <input type="text" class="form-control" id="nom" name="nom" value="{{ cycle.nom }}" required>
+                                  <input type="text" class="form-control" name="nom" value="{{ cycle.nom }}" required>
                                 </div>
+
                                 <div class="form-group col-md-12">
                                   <label for="des">Description :</label>
-                                  <input type="text" class="form-control" id="des" name="des" value="{{ cycle.description }}" required>
+                                  <input type="text" class="form-control" name="des" value="{{ cycle.description }}" required>
                                 </div>
+
                                 <input type="hidden" name="id" value="{{ cycle.id }}">
+
                                 <div class="modal-footer w-100">
                                   <button type="submit" class="btn btn-primary">Modifier</button>
                                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                                 </div>
+
                               </form>
                             </div>
                           </div>
@@ -161,6 +171,7 @@
                       <a href="#" data-toggle="modal" data-target="#supprime{{ cycle.id }}" title="Supprimer">
                         <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
                       </a>
+
                       <div class="modal fade" id="supprime{{ cycle.id }}" tabindex="-1" role="dialog" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                           <div class="modal-content">
@@ -170,22 +181,26 @@
                                 <span aria-hidden="true">&times;</span>
                               </button>
                             </div>
+
                             <div class="modal-body">
                               <form action="{% url 'supprimer-cycle' cycle.id %}" method="post">
                                 {% csrf_token %}
-                                <p>Voulez-vous vraiment supprimer les informations de : <span class="text-primary">{{ cycle.nom }}</span> ?</p>
+                                <p>Voulez-vous vraiment supprimer <span class="text-primary">{{ cycle.nom }}</span> ?</p>
                                 <div class="modal-footer w-100">
                                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Non</button>
                                   <button type="submit" class="btn btn-danger">Oui</button>
                                 </div>
                               </form>
                             </div>
+
                           </div>
                         </div>
                       </div>
+
                     </td>
                   </tr>
                   {% endfor %}
+
                 </tbody>
               </table>
             </div>
@@ -218,6 +233,7 @@
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
 <!-- AdminLTE App -->
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
 <script>
   $(function () {
     $("#example").DataTable({
@@ -225,7 +241,8 @@
       "lengthChange": false,
       "autoWidth": false,
       "buttons": []
-    }).buttons().container().appendTo('#example_wrapper .col-md-6:eq(0)');
+    });
   });
 </script>
+
 {% endblock %}

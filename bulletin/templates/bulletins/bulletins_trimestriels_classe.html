@@ -160,9 +160,9 @@
                                  style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; border: 1px solid #ccc;">
                           {% endif %}
                         </div>
-
+                         
                         <div style="text-align: center; flex: 1;">
-                          <h1>{{ecole.pays}}</h1>
+                           <h1>{{ecole.pays}}</h1>
                           <div style="font-size: 20px; font-style: italic; color: #777;">{{ecole.devise_pays}}</div>
                           <h2>{{ecole.nom_ecole}}</h2>
                           <div style="font-size: 20px; font-style: italic; color: #777;">{{ecole.devise_ecole}}</div>
@@ -171,6 +171,7 @@
                         </div>
 
                         <div class="infos-right">
+                       
                           <strong>{{ecole.meapu}}</strong>
                           <strong>IRE/{{ecole.ire}}</strong>
                           <strong>DPE/{{ecole.dpe}}</strong>
@@ -182,9 +183,10 @@
 
                       <!-- Infos élève -->
                       <table class="table table-bordered mt-3">
-                        <thead><tr><th>Nom</th><th>Prénom</th><th>Date de naissance</th></tr></thead>
+                        <thead><tr><th>Matricule</th><th>Nom</th><th>Prénom</th><th>Date de naissance</th></tr></thead>
                         <tbody>
                           <tr>
+                            <td>{{ bulletin.bulletin.eleve.matricule }}</td>
                             <td>{{ bulletin.bulletin.eleve.nom }}</td>
                             <td>{{ bulletin.bulletin.eleve.prenom }}</td>
                             <td>{{ bulletin.bulletin.eleve.date_naissance }}</td>

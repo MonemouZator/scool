@@ -130,8 +130,9 @@
             <div class="section">
               <h6 class="text-center">Informations de l'Élève</h6>
               <table class="table table-bordered">
-                <tr><th>Nom</th><th>Prénom</th><th>Date de naissance</th></tr>
+                <tr><th>Matricule</th><th>Nom</th><th>Prénom</th><th>Date de naissance</th></tr>
                 <tr>
+                  <td>{{ b.bulletin.eleve.matricule }}</td>
                   <td>{{ b.bulletin.eleve.nom }}</td>
                   <td>{{ b.bulletin.eleve.prenom }}</td>
                   <td>{{ b.bulletin.eleve.date_naissance }}</td>
