@@ -46,18 +46,15 @@
       </a>
     </li>
 
-    {% comment %} <li class="nav-item">
-      <a href="{% url 'reinscrire_eleve' %}" class="nav-link {% if request.resolver_match.url_name == 'reinscrire_eleve' %}active{% endif %}">
-        <i class="badge badge-danger"><span class="text-white">2</span></i>
-        <p>ReInscription</p>
-      </a>
+    <li class="nav-item">
+
     </li>
     <li class="nav-item">
       {% comment %} <a href="{% url 'eleve' %}" class="nav-link">
         <i class="badge badge-danger"><span class="text-white">2</span></i>
         <p>Liste des élèves</p>
       </a> {% endcomment %}
-    </li> {% endcomment %}
+    </li>
     <li class="nav-item">
       <a href="{% url 'liste_eleves_par_niveau' %}" class="nav-link">
         <i class="badge badge-danger"><span class="text-white">3</span></i>
