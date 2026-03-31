@@ -449,43 +449,20 @@ def liste_eleves_par_niveau_annee(request):
     niveau_id = request.GET.get('niveau')
     annee_id = request.GET.get('annee_scolaire')
 
-    # Tous les élèves actifs
     eleves = Eleve.objects.filter(actif=True)
-    
-    # Filtrage exact par niveau et année
-    if niveau_id:
-        eleves = eleves.filter(niveau_id=niveau_id)
-    if annee_id:
-        eleves = eleves.filter(annee_scolaire_id=annee_id)
-
-    # On récupère toutes les inscriptions correspondantes
-    inscriptions = EleveInscrit.objects.all()
-    if niveau_id:
-        inscriptions = inscriptions.filter(niveau_id=niveau_id)
-    if annee_id:
-        inscriptions = inscriptions.filter(annee_scolaire_id=annee_id)
-
-    # Construire la liste finale pour le template
-    liste_eleves = []
-    for eleve in eleves:
-        # chercher l'inscription si elle existe
-        inscription = inscriptions.filter(eleve=eleve).first()
-        statut = "Réinscrit" if inscription else "Inscrit"
-        liste_eleves.append({
-            "eleve": eleve,
-            "inscription": inscription,
-            "statut": statut
-        })
-
     niveaux = Niveau.objects.all()
     annees = AnneeScolaire.objects.all()
 
-    return render(request, "eleve/liste_eleves_par_niveau_annee.html", {
-        "liste_eleves": liste_eleves,
-        "niveaux": niveaux,
-        "annees": annees,
-        "niveau_id": niveau_id,
-        "annee_id": annee_id
+    if niveau_id:
+        eleves = eleves.filter(niveau_id=niveau_id)
+    
+    if annee_id:
+        eleves = eleves.filter(annee_scolaire_id=annee_id)
+
+    return render(request, 'eleve/liste_eleves_par_niveau_annee.html', {
+        'eleves': eleves,
+        'niveaux': niveaux,
+        'annees': annees,
     })
 
 

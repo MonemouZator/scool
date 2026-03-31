@@ -90,7 +90,7 @@ class BulletinTrimestriel(models.Model):
             elif moyenne >= 5:
                 return "Passable"
             else:
-                return "Médiocre"
+                return "Faible"
         else:
             if moyenne == 20:
                 return "Excellent"
@@ -103,7 +103,7 @@ class BulletinTrimestriel(models.Model):
             elif moyenne >= 10:
                 return "Passable"
             else:
-                return "Médiocre"
+                return "Faible"
 
     def __str__(self):
         return f"Bulletin Trimestriel - {self.eleve.nom} - Trimestre {self.trimestre}"
@@ -199,7 +199,7 @@ class BulletinAnnuel(models.Model):
             elif moyenne >= 5:
                 return "Passable"
             else:
-                return "Médiocre"
+                return "Faible"
         else:
             if moyenne == 20:
                 return "Excellent"
@@ -212,7 +212,7 @@ class BulletinAnnuel(models.Model):
             elif moyenne >= 10:
                 return "Passable"
             else:
-                return "Médiocre"
+                return "Faible"
 
     def __str__(self):
         return f"Bulletin Annuel - {self.eleve.nom} - {self.annee_scolaire.nom}"

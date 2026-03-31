@@ -103,7 +103,6 @@ def bulletins_trimestriels_classe(request):
 
         # Tri décroissant par moyenne pour calculer les rangs
         bulletins_list.sort(key=lambda x: x['moyenne_totale'], reverse=True)
-
         rang = 0
         previous_moyenne = None
         ex_aequo_count = 0
@@ -113,7 +112,7 @@ def bulletins_trimestriels_classe(request):
 
             if moyenne == previous_moyenne:
                 # même moyenne → ex æquo
-                b['rang_formate'] = f"{rang}er Ex"
+                b['rang_formate'] = f"{rang}e Ex"
                 ex_aequo_count += 1
             else:
                 rang = index
@@ -214,7 +213,7 @@ def resultat_trimestriel_classe(request):
         previous_moyenne = None
         for index, b in enumerate(temp_list, start=1):
             if b['moyenne'] == previous_moyenne:
-                b['rang'] = f"{rang}er Ex"
+                b['rang'] = f"{rang}e Ex"
             else:
                 rang = index
                 b['rang'] = f"{rang}{'er' if rang == 1 else 'ème'}"
@@ -335,7 +334,7 @@ def resultat_annuel_classe(request):
         previous_moyenne = None
         for index, b in enumerate(bulletins_list, start=1):
             if b['moyenne'] == previous_moyenne:
-                b['rang'] = f"{rang}er Ex"
+                b['rang'] = f"{rang}e Ex"
             else:
                 rang = index
                 b['rang'] = f"{rang}{'er' if rang == 1 else 'ème'}"
@@ -505,7 +504,7 @@ def resultats_trimestriels_niveau(request):
         previous_moyenne = None
         for index, b in enumerate(bulletins_list, start=1):
             if b['moyenne'] == previous_moyenne:
-                b['rang'] = f"{rang}er Ex"
+                b['rang'] = f"{rang}e Ex"
             else:
                 rang = index
                 b['rang'] = f"{rang}{'er' if rang == 1 else 'ème'}"
@@ -651,7 +650,7 @@ def resultats_annuels_niveau(request):
         previous_moyenne = None
         for index, b in enumerate(bulletins_list, start=1):
             if b['moyenne_totale'] == previous_moyenne:
-                b['rang'] = f"{rang}er Ex"
+                b['rang'] = f"{rang}e Ex"
             else:
                 rang = index
                 b['rang'] = f"{rang}{'er' if rang == 1 else 'ème'}"
@@ -741,7 +740,7 @@ def bulletins_annuels_classe(request):
         elif moyenne_annuelle >= 10:
             observation = "Passable"
         else:
-            observation = "Insuffisant"
+            observation = "Faible"
 
         bulletins_annuels.append({
             "eleve": eleve,
@@ -816,7 +815,7 @@ def bulletins_annuels_niveau(request):
         compteur_exoquo = 0
         for index, b in enumerate(bulletins_list, start=1):
             if b['moyenne_annuelle'] == previous_moy:
-                b['rang'] = f"{rang} Ex"
+                b['rang'] = f"{rang}e Ex"
                 compteur_exoquo += 1
             else:
                 rang = index

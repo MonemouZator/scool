@@ -919,14 +919,16 @@ def resultat_trimestriel_classe(request):
         'ecoles': ecoles,
     })
 
-
 @login_required
+
 def bulletin_trimestriel_enseignant(request):
     enseignant = getattr(request.user, 'enseignant_profile', None)
     if not enseignant:
         messages.error(request, "Accès refusé.")
         return redirect('home')
+    
     # 🔐 Classes autorisées
+
     groupes_classes = groupes_autorises_enseignant(enseignant)
     annees_scolaires = AnneeScolaire.objects.all()
     ecoles = Etablissement.objects.all()
@@ -934,7 +936,9 @@ def bulletin_trimestriel_enseignant(request):
     groupe_id = request.GET.get('groupe_classe')
     annee_id = request.GET.get('annee_scolaire')
     trimestre = request.GET.get('trimestre')
+
     # 🔒 Sécurité : interdire toute autre classe
+
     if groupe_id and not groupes_classes.filter(id=groupe_id).exists():
         messages.error(request, "Vous n'êtes pas autorisé à accéder à cette classe.")
         return redirect(request.path)
@@ -968,6 +972,9 @@ def bulletin_trimestriel_enseignant(request):
                 'rang_formate': bulletin.get_rang() if bulletin else '-',
                 'observation': bulletin.observation if bulletin else '-',
             })
+
+    # Tri décroissant par moyenne pour calculer les rangs
+     #   bulletins_trimestriels.sort(key=lambda x: x['moyenne_totale'], reverse=True)
     return render(request, 'enseignant/bulletin_trimestriel_classe.html', {
         'groupes_classes': groupes_classes,
         'annees_scolaires': annees_scolaires,
