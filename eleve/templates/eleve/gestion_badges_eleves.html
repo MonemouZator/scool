@@ -1,0 +1,1283 @@
+
+{% extends "login/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+
+<title>Badges des élèves</title>
+
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/css/adminlte.min.css' %}">
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+/* =====================================================
+   LAYOUT ADMINLTE
+   ===================================================== */
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.wrapper {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.content-wrapper {
+    min-height: 0 !important;
+    height: calc(100vh - 57px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+}
+
+/* =====================================================
+   PAGE
+   ===================================================== */
+
+.badge-page {
+    padding: 15px;
+    padding-bottom: 30px;
+}
+
+/* =====================================================
+   EN-TÊTE
+   ===================================================== */
+
+.school-header {
+    background: linear-gradient(
+        135deg,
+        #007bff,
+        #0056b3
+    );
+
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+}
+
+.school-header-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.school-logo {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    background: white;
+    border-radius: 10px;
+    padding: 5px;
+    flex-shrink: 0;
+}
+
+.school-header h2 {
+    margin: 0;
+    font-size: 25px;
+    font-weight: 600;
+}
+
+.school-header p {
+    margin: 5px 0 0;
+    font-size: 15px;
+    opacity: 0.9;
+}
+
+/* =====================================================
+   FILTRES
+   ===================================================== */
+
+.filter-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.filter-title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.filter-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 12px;
+    align-items: end;
+}
+
+.form-group {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.form-control {
+    border-radius: 6px;
+}
+
+/* =====================================================
+   TABLEAU
+   ===================================================== */
+
+.students-card {
+    background: white;
+    border-radius: 10px;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.students-header {
+    padding: 15px 20px;
+
+    border-bottom: 1px solid #eee;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.students-header h3 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 600;
+}
+
+.students-count {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: visible;
+}
+
+.students-table {
+    width: 100%;
+    min-width: 950px;
+    margin-bottom: 0;
+}
+
+.students-table th {
+    white-space: nowrap;
+    background: #f8f9fa;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+.students-table td {
+    vertical-align: middle;
+    font-size: 14px;
+}
+
+/* =====================================================
+   CHECKBOX
+   ===================================================== */
+
+.select-column {
+    width: 45px;
+    text-align: center;
+}
+
+.student-checkbox,
+#selectAll {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* =====================================================
+   PHOTO
+   ===================================================== */
+
+.student-photo {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+}
+
+.no-photo {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+
+    background: #e9ecef;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #6c757d;
+    font-size: 18px;
+}
+
+/* =====================================================
+   MATRICULE
+   ===================================================== */
+
+.matricule {
+    font-weight: 600;
+    color: #007bff;
+}
+
+/* =====================================================
+   BADGES
+   ===================================================== */
+
+.info-badge {
+    display: inline-block;
+
+    padding: 4px 8px;
+
+    border-radius: 5px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    background: #e9ecef;
+}
+
+/* =====================================================
+   ACTIONS
+   ===================================================== */
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+    white-space: nowrap;
+}
+
+.action-buttons .btn {
+    white-space: nowrap;
+}
+
+/* =====================================================
+   BARRE SÉLECTION
+   ===================================================== */
+
+.selection-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 12px 20px;
+
+    background: #f8f9fa;
+
+    border-bottom: 1px solid #eee;
+}
+
+.selection-info {
+    font-size: 14px;
+    color: #495057;
+    font-weight: 600;
+}
+
+/* =====================================================
+   ÉTAT VIDE
+   ===================================================== */
+
+.empty-state {
+    padding: 50px 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.empty-state i {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+/* =====================================================
+   RESPONSIVE
+   ===================================================== */
+
+@media (max-width: 1199px) {
+
+    .filter-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .search-field {
+        grid-column: 1 / -1;
+    }
+
+    .filter-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 767px) {
+
+    .badge-page {
+        padding: 10px;
+        padding-bottom: 25px;
+    }
+
+    .school-header {
+        padding: 15px;
+    }
+
+    .school-header-content {
+        gap: 12px;
+    }
+
+    .school-logo {
+        width: 60px;
+        height: 60px;
+    }
+
+    .school-header h2 {
+        font-size: 18px;
+    }
+
+    .school-header p {
+        font-size: 13px;
+    }
+
+    .filter-row {
+        grid-template-columns: 1fr;
+    }
+
+    .search-field {
+        grid-column: auto;
+    }
+
+    .students-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .selection-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .selection-bar form {
+        width: 100%;
+    }
+
+    #printSelectedBtn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 400px) {
+
+    .school-header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .school-header h2 {
+        font-size: 17px;
+    }
+
+    .filter-card {
+        padding: 15px;
+    }
+}
+
+/* =====================================================
+   PETIT CORRECTIF POUR LE CONTENU ADMINLTE
+   ===================================================== */
+
+@media screen {
+
+    .content-wrapper > .content {
+        padding-bottom: 20px;
+    }
+
+    .content-wrapper .container-fluid {
+        padding-bottom: 10px;
+    }
+}
+
+</style>
+
+{% endblock styl_parent %}
+
+
+{% block body %}
+
+<body class="hold-transition sidebar-mini">
+
+{% endblock body %}
+
+
+{% block contenu %}
+
+<div class="content-wrapper">
+
+    <!-- =================================================
+         EN-TÊTE DE PAGE
+         ================================================== -->
+
+    <section class="content-header">
+
+        <div class="container-fluid">
+
+            <div class="row mb-2">
+
+                <div class="col-sm-6">
+
+                    <h1>
+                        <i class="fas fa-id-card mr-2"></i>
+                        GESTION DES BADGES
+                    </h1>
+
+                </div>
+
+                <div class="col-sm-6">
+
+                    <ol class="breadcrumb float-sm-right">
+
+                        <li class="breadcrumb-item">
+                            <a href="">
+                                Accueil
+                            </a>
+                        </li>
+
+                        <li class="breadcrumb-item active">
+                            Badges des élèves
+                        </li>
+
+                    </ol>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =================================================
+         CONTENU
+         ================================================== -->
+
+    <section class="content">
+
+        <div class="container-fluid">
+
+            <div class="badge-page">
+
+
+                <!-- =================================================
+                     ÉTABLISSEMENT
+                     ================================================== -->
+
+                <div class="school-header">
+
+                    <div class="school-header-content">
+
+                        {% if etablissement and etablissement.logo %}
+
+                            <img
+                                src="{{ etablissement.logo.url }}"
+                                alt="Logo de l'établissement"
+                                class="school-logo"
+                            >
+
+                        {% else %}
+
+                            <div class="school-logo d-flex align-items-center justify-content-center">
+
+                                <i class="fas fa-school text-primary fa-2x"></i>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <div>
+
+                            <h2>
+
+                                {% if etablissement %}
+
+                                    {{ etablissement.nom_ecole }}
+
+                                {% else %}
+
+                                    Établissement scolaire
+
+                                {% endif %}
+
+                            </h2>
+
+
+                            {% if etablissement %}
+
+                                <p>
+                                    {{ etablissement.devise_ecole }}
+                                </p>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     FILTRES
+                     ================================================== -->
+
+                <div class="filter-card">
+
+                    <div class="filter-title">
+
+                        <i class="fas fa-filter mr-2"></i>
+
+                        Rechercher un élève
+
+                    </div>
+
+
+                    <form method="GET" action="">
+
+                        <div class="filter-row">
+
+
+                            <!-- RECHERCHE -->
+
+                            <div class="form-group search-field">
+
+                                <label for="recherche">
+                                    Recherche
+                                </label>
+
+                                <input
+                                    type="text"
+                                    name="recherche"
+                                    id="recherche"
+                                    class="form-control"
+                                    placeholder="Nom, prénom ou matricule..."
+                                    value="{{ recherche }}"
+                                    autocomplete="off"
+                                >
+
+                            </div>
+
+
+                            <!-- ANNÉE -->
+
+                            <div class="form-group">
+
+                                <label for="annee">
+                                    Année scolaire
+                                </label>
+
+                                <select
+                                    name="annee"
+                                    id="annee"
+                                    class="form-control"
+                                >
+
+                                    <option value="">
+                                        Toutes les années
+                                    </option>
+
+                                    {% for annee in annees %}
+
+                                        <option
+                                            value="{{ annee.annee_scolaire_id }}"
+                                            {% if annee_selectionnee == annee.annee_scolaire_id|stringformat:"s" %}
+                                                selected
+                                            {% endif %}
+                                        >
+
+                                            {{ annee.annee_scolaire__nom }}
+
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- NIVEAU -->
+
+                            <div class="form-group">
+
+                                <label for="niveau">
+                                    Niveau
+                                </label>
+
+                                <select
+                                    name="niveau"
+                                    id="niveau"
+                                    class="form-control"
+                                >
+
+                                    <option value="">
+                                        Tous les niveaux
+                                    </option>
+
+                                    {% for niveau in niveaux %}
+
+                                        <option
+                                            value="{{ niveau.niveau_id }}"
+                                            {% if niveau_selectionne == niveau.niveau_id|stringformat:"s" %}
+                                                selected
+                                            {% endif %}
+                                        >
+
+                                            {{ niveau.niveau__nom }}
+
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- CLASSE -->
+
+                            <div class="form-group">
+
+                                <label for="groupe">
+                                    Classe
+                                </label>
+
+                                <select
+                                    name="groupe"
+                                    id="groupe"
+                                    class="form-control"
+                                >
+
+                                    <option value="">
+                                        Toutes les classes
+                                    </option>
+
+                                    {% for groupe in groupes %}
+
+                                        <option
+                                            value="{{ groupe.groupe_classe_id }}"
+                                            {% if groupe_selectionne == groupe.groupe_classe_id|stringformat:"s" %}
+                                                selected
+                                            {% endif %}
+                                        >
+
+                                            {{ groupe.groupe_classe__nom }}
+
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+
+                            <!-- BOUTON -->
+
+                            <div class="form-group filter-button">
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary btn-block"
+                                >
+
+                                    <i class="fas fa-search mr-1"></i>
+
+                                    Rechercher
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- =================================================
+                     LISTE DES ÉLÈVES
+                     ================================================== -->
+
+                <div class="students-card">
+
+
+                    <!-- EN-TÊTE -->
+
+                    <div class="students-header">
+
+                        <h3>
+
+                            <i class="fas fa-id-card mr-2"></i>
+
+                            Badges des élèves
+
+                        </h3>
+
+
+                        <div class="students-count">
+
+                            {% if eleves %}
+
+                                {{ eleves|length }} élève(s)
+
+                            {% else %}
+
+                                Aucun élève
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         BARRE DE SÉLECTION
+                         ================================================== -->
+
+                    {% if eleves %}
+
+                        <div class="selection-bar">
+
+                            <div class="selection-info">
+
+                                <label class="mb-0">
+
+                                    <input
+                                        type="checkbox"
+                                        id="selectAll"
+                                        class="mr-2"
+                                    >
+
+                                    Sélectionner tous les élèves
+
+                                </label>
+
+
+                                <span
+                                    id="selectedCount"
+                                    class="ml-3"
+                                >
+                                    0 sélectionné(s)
+                                </span>
+
+                            </div>
+
+
+                            <form
+                                method="POST"
+                                action="{% url 'badges_eleves_impression' %}"
+                                id="badgeForm"
+                            >
+
+                                {% csrf_token %}
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-success"
+                                    id="printSelectedBtn"
+                                    disabled
+                                >
+
+                                    <i class="fas fa-print mr-1"></i>
+
+                                    Générer les badges sélectionnés
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- =================================================
+                         TABLEAU
+                         ================================================== -->
+
+                    <div class="table-container">
+
+                        <table class="table table-hover students-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th class="select-column">
+                                        <i class="fas fa-check"></i>
+                                    </th>
+
+                                    <th>
+                                        Photo
+                                    </th>
+
+                                    <th>
+                                        Matricule
+                                    </th>
+
+                                    <th>
+                                        Nom & prénom
+                                    </th>
+
+                                    <th>
+                                        Niveau
+                                    </th>
+
+                                    <th>
+                                        Classe
+                                    </th>
+
+                                    <th>
+                                        Année scolaire
+                                    </th>
+
+                                   
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for eleve in eleves %}
+
+                                    <tr>
+
+
+                                        <!-- =================================================
+                                             SÉLECTION
+                                             ================================================== -->
+
+                                        <td class="select-column">
+
+                                            <input
+                                                type="checkbox"
+                                                name="eleves"
+                                                value="{{ eleve.id }}"
+                                                class="student-checkbox"
+                                                form="badgeForm"
+                                            >
+
+                                        </td>
+
+
+                                        <!-- =================================================
+                                             PHOTO
+                                             ================================================== -->
+
+                                        <td>
+
+                                            {% if eleve.eleve.photo %}
+
+                                                <img
+                                                    src="{{ eleve.eleve.photo.url }}"
+                                                    alt="{{ eleve.eleve.nom }} {{ eleve.eleve.prenom }}"
+                                                    class="student-photo"
+                                                >
+
+                                            {% else %}
+
+                                                <div class="no-photo">
+
+                                                    <i class="fas fa-user"></i>
+
+                                                </div>
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <!-- =================================================
+                                             MATRICULE
+                                             ================================================== -->
+
+                                        <td>
+
+                                            <span class="matricule">
+
+                                                {% if eleve.eleve.matricule %}
+
+                                                    {{ eleve.eleve.matricule }}
+
+                                                {% else %}
+
+                                                    —
+
+                                                {% endif %}
+
+                                            </span>
+
+                                        </td>
+
+
+                                        <!-- =================================================
+                                             NOM & PRÉNOM
+                                             ================================================== -->
+
+                                        <td>
+
+                                            <strong>
+                                                {{ eleve.eleve.nom|upper }}
+                                            </strong>
+
+                                            {{ eleve.eleve.prenom }}
+
+                                        </td>
+
+
+                                        <!-- =================================================
+                                             NIVEAU
+                                             ================================================== -->
+
+                                        <td>
+
+                                            {% if eleve.niveau %}
+
+                                                <span class="info-badge">
+
+                                                    {{ eleve.niveau }}
+
+                                                </span>
+
+                                            {% else %}
+
+                                                —
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <!-- =================================================
+                                             CLASSE
+                                             ================================================== -->
+
+                                        <td>
+
+                                            {% if eleve.groupe_classe %}
+
+                                                <span class="info-badge">
+
+                                                    {{ eleve.groupe_classe }}
+
+                                                </span>
+
+                                            {% else %}
+
+                                                —
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                        <!-- =================================================
+                                             ANNÉE
+                                             ================================================== -->
+
+                                        <td>
+
+                                            {% if eleve.annee_scolaire %}
+
+                                                {{ eleve.annee_scolaire }}
+
+                                            {% else %}
+
+                                                —
+
+                                            {% endif %}
+
+                                        </td>
+
+
+                                    </tr>
+
+
+                                {% empty %}
+
+                                    <tr>
+
+                                        <td colspan="8">
+
+                                            <div class="empty-state">
+
+                                                <i class="fas fa-user-graduate"></i>
+
+                                                <h5>
+                                                    Aucun élève trouvé
+                                                </h5>
+
+                                                <p>
+                                                    Utilisez la recherche ou sélectionnez
+                                                    une année scolaire, un niveau ou une
+                                                    classe pour afficher les élèves concernés.
+                                                </p>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock contenu %}
+
+
+{% block scripte %}
+
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+
+<script>
+
+$(document).ready(function () {
+
+
+    // =====================================================
+    // ÉLÉMENTS
+    // =====================================================
+
+    const selectAll = $('#selectAll');
+
+    const checkboxes = $('.student-checkbox');
+
+    const selectedCount = $('#selectedCount');
+
+    const printButton = $('#printSelectedBtn');
+
+
+    // =====================================================
+    // MISE À JOUR DE LA SÉLECTION
+    // =====================================================
+
+    function updateSelection() {
+
+        const total = checkboxes.length;
+
+        const selected = checkboxes.filter(':checked').length;
+
+
+        // -----------------------------------------------
+        // NOMBRE SÉLECTIONNÉ
+        // -----------------------------------------------
+
+        selectedCount.text(
+            selected + ' sélectionné(s)'
+        );
+
+
+        // -----------------------------------------------
+        // BOUTON IMPRESSION
+        // -----------------------------------------------
+
+        printButton.prop(
+            'disabled',
+            selected === 0
+        );
+
+
+        // -----------------------------------------------
+        // CHECKBOX TOUS
+        // -----------------------------------------------
+
+        if (total > 0 && selected === total) {
+
+            selectAll.prop(
+                'checked',
+                true
+            );
+
+            selectAll.prop(
+                'indeterminate',
+                false
+            );
+
+        }
+
+        else if (selected > 0) {
+
+            selectAll.prop(
+                'checked',
+                false
+            );
+
+            selectAll.prop(
+                'indeterminate',
+                true
+            );
+
+        }
+
+        else {
+
+            selectAll.prop(
+                'checked',
+                false
+            );
+
+            selectAll.prop(
+                'indeterminate',
+                false
+            );
+
+        }
+
+    }
+
+
+    // =====================================================
+    // SÉLECTIONNER TOUS
+    // =====================================================
+
+    selectAll.on(
+        'change',
+        function () {
+
+            checkboxes.prop(
+                'checked',
+                $(this).prop('checked')
+            );
+
+            updateSelection();
+
+        }
+    );
+
+
+    // =====================================================
+    // SÉLECTION INDIVIDUELLE
+    // =====================================================
+
+    checkboxes.on(
+        'change',
+        function () {
+
+            updateSelection();
+
+        }
+    );
+
+
+    // =====================================================
+    // INITIALISATION
+    // =====================================================
+
+    updateSelection();
+
+
+    // =====================================================
+    // CONFIRMATION AVANT GÉNÉRATION
+    // =====================================================
+
+    $('#badgeForm').on(
+        'submit',
+        function (event) {
+
+            const selected =
+                checkboxes.filter(':checked').length;
+
+
+            if (selected === 0) {
+
+                event.preventDefault();
+
+                alert(
+                    'Veuillez sélectionner au moins un élève.'
+                );
+
+                return false;
+
+            }
+
+
+            const confirmation = confirm(
+
+                'Voulez-vous générer les badges pour '
+                + selected
+                + ' élève(s) ?'
+
+            );
+
+
+            if (!confirmation) {
+
+                event.preventDefault();
+
+                return false;
+
+            }
+
+        }
+    );
+
+});
+
+</script>
+
+{% endblock scripte %}
+

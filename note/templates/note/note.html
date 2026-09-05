@@ -1,246 +1,969 @@
-{% extends "login/index.html" %}
+
+{% extends "login/enseignant_dashboard.html" %}
 {% load static %}
- {% block styl_parent %}
-  <title>enseignant | Accueil</title>
 
+{% block styl_parent %}
+<title>Attribution des notes</title>
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-  <!-- DataTables -->
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/css/adminlte.min.css' %}">
 {% endblock %}
 
 
- {% block body %}
+{% block body %}
 <body class="hold-transition sidebar-mini">
- {% endblock body %}
-
-
+{% endblock %}
 
 
 {% block contenu %}
-  <!-- Content Wrapper. Contains page content -->
-<div class="content-wrapper p-4" style="max-height: calc(100vh - 150px); overflow-y: auto;">
-    <!-- Content Header (Page header) -->
-    <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>GESTION DES ELEVES</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="">accueil</a></li>
-              <li class="breadcrumb-item active">Tableau de bord</li>
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-              <div class="card-header">
-                  <li class="button">
-                    <a class="btn btn-primary mt-3" href="{% url 'attribuer-notes' %}">Attribuer des notes</a>
-                  </li>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-             
-                  <input type="text" class="form-control" placeholder="rechercher les informations a modifier">
-                
-                
-               <div class="card-body table-responsive">
-                <table id="example" class="table table-bordered table-hover">
-                  <thead class="bg-primary">
-                  <tr>
-                    
-                    <th>Eleve</th>
-                    <th>Année</th>
-                    <th>Matière</th>
-                    <th>Note1</th>
-                    <th>Note2</th>
-                    <th>Trimestre</th>
-                    <th>Actions</th>
-                  </tr>
-                  </thead>
-                  <tbody id="tbody-attribut-note">
-                  {% for note in notes %}
-                  <tr>
-                    
-                    <td>{{ note.eleve }}</td>
-                    <td>{{ note.annee_scolaire }}</td>
-                    <td>{{ note.matiere }}</td>
-                    <td>{{ note.note_cours }}</td>
-                    <td>{{ note.note_comp }}</td>
-                    <td>trimestre{{ note.trimestre }}</td>
-                    <td>
-                      <!-- Edit button -->
-                      <a href="#" data-toggle="modal" data-target="#modifie{{ note.id }}" title="Modifier">
-                        <i class="fas fa-edit text-primary" style="font-size: 1.5rem;"></i>
-                      </a>
-                      <!-- Edit Modal -->
-                      <div class="modal fade" id="modifie{{ note.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header bg-primary text-white">
-                              <h5 class="modal-title" id="exampleModalLabel">Modifier les informations</h5>
-                              <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                                  <span aria-hidden="true">&times;</span>
-                              </button>
-                            </div>
-                            <div class="modal-body">
-                              <form action="{% url 'modifi-note' %}" method="post" class="row">
-                                {% csrf_token %}
+<div class="content-wrapper p-4"
+     style="max-height: calc(100vh - 150px); overflow-y: auto;">
 
-                                <!-- Eleve selection -->
-                                <div class="form-group col-md-6">
-                                  <label for="eleve">Élève concerné:</label>
-                                  <select name="eleve" class="form-control" id="eleve">
-                                    {% for eleve in eleves %}
-                                      <option value="{{ eleve.id }}" {% if note.eleve.id == eleve.id %} selected {% endif %}>{{ eleve }}</option>
-                                    {% endfor %}
-                                  </select>
-                                </div>      
+    <!-- ====================================================== -->
+    <!-- TITRE -->
+    <!-- ====================================================== -->
 
-                                <!-- Annee selection -->
-                                <div class="form-group col-md-6">
-                                  <label for="anne">Année scolaire:</label>
-                                  <select name="anne" class="form-control" id="anne">
-                                    {% for anne in annes %}
-                                      <option value="{{ anne.id }}" {% if note.annee_scolaire.id == anne.id %} selected {% endif %}>{{ anne }}</option>
-                                    {% endfor %}
-                                  </select>
-                                </div>
+    <h2 class="my-4 bg-primary text-center p-2 text-white">
+        ATTRIBUTION DES NOTES AUX ELEVES
+    </h2>
 
-                                <!-- Matiere selection -->
-                                <div class="form-group col-md-6">
-                                  <label for="mat">Matière:</label>
-                                  <select name="mat" class="form-control" id="mat">
-                                    {% for mat in matires %}
-                                      <option value="{{ mat.id }}" {% if note.matiere.id == mat.id %} selected {% endif %}>{{ mat }}</option>
-                                    {% endfor %}
-                                  </select>
-                                </div>
 
-                                <!-- Trimestre -->
-                                <div class="form-group col-md-6">
-                                  <label for="trimestre">Trimestre:</label>
-                                  <input type="text" class="form-control" id="trimestre" name="trimestre" required value="{{ note.trimestre }}">
-                                </div>
+    <!-- ====================================================== -->
+    <!-- MESSAGES -->
+    <!-- ====================================================== -->
 
-                                <!-- Note Cours -->
-                                <div class="form-group col-md-6">
-                                  <label for="nc">Note Cours:</label>
-                                  <input type="number" class="form-control" id="nc" name="nc" step="0.02" required value="{{ note.note_cours }}">
-                                </div>
-
-                                <!-- Note Composition -->
-                                <div class="form-group col-md-6">
-                                  <label for="nco">Note Composition:</label>
-                                  <input type="number" class="form-control" id="nco" name="nco" step="0.02" required value="{{ note.note_comp }}">
-                                </div>
-
-                                <input type="hidden" name="id" value="{{ note.id }}">
-
-                                <div class="modal-footer">
-                                  <button type="submit" class="btn btn-primary">Modifier</button>
-                                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                                </div>
-                              </form>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <!-- Delete button -->
-                      <a href="#" data-toggle="modal" data-target="#supprime{{ note.id }}" title="Supprimer">
-                        <i class="fas fa-trash text-danger" style="font-size: 1.5rem;"></i>
-                      </a>
-                      
-                      <!-- Delete Modal -->
-                      <div class="modal fade" id="supprime{{ note.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header bg-primary">
-                              <h5 class="modal-title" id="exampleModalLabel">Suppression des informations</h5>
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
-                            </div>
-                            <div class="modal-body">
-                              <form action="{% url 'supprimer-note' note.id %}" method="post">
-                                {% csrf_token %}
-                                <p>Voulez-vous vraiment supprimer les informations de : <span class="text-primary">{{ note.eleve }}</span> ?</p>
-                            </div>
-                            <div class="modal-footer">
-                              <button type="button" class="btn btn-primary" data-dismiss="modal">Non</button>
-                              <button type="submit" class="btn btn-danger">Oui</button>
-                            </div>
-                              </form>
-                          </div>
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  {% endfor %}
-                  </tbody>
-                </table>
-               </div>
-              </div>
-              <!-- /.card-body -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-info">
+                {{ message }}
             </div>
-            <!-- /.card -->
-          </div>
-          <!-- /.col -->
+        {% endfor %}
+    {% endif %}
+
+
+    <!-- ====================================================== -->
+    <!-- FILTRES -->
+    <!-- ====================================================== -->
+
+    <div class="card">
+
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">
+                <i class="fas fa-filter"></i>
+                Rechercher les élèves
+            </h5>
         </div>
-        <!-- /.row -->
-      </div>
-      <!-- /.container-fluid -->
-    </section>
-    <!-- /.content -->
-  </div>
-  <!-- /.content-wrapper -->
+
+        <div class="card-body">
+
+            <form method="get"
+                  action="{% url 'attribuer_note_enseignant' %}">
+
+                <div class="row">
+
+                    <!-- NIVEAU -->
+                    <div class="form-group col-md-4">
+
+                        <label for="niveau-select">
+                            Niveau :
+                        </label>
+
+                        <select name="niveau"
+                                id="niveau-select"
+                                class="form-control"
+                                required>
+
+                            <option value="">
+                                -- Sélectionnez un niveau --
+                            </option>
+
+                            {% for niveau in niveaux %}
+
+                                <option value="{{ niveau.id }}"
+                                    {% if niveau_id|stringformat:"s" == niveau.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}>
+
+                                    {{ niveau.nom }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- GROUPE -->
+                    <div class="form-group col-md-4">
+
+                        <label for="groupe-select">
+                            Groupe Classe :
+                        </label>
+
+                        <select name="groupe_classe"
+                                id="groupe-select"
+                                class="form-control"
+                                required>
+
+                            <option value="">
+                                -- Sélectionnez un groupe-classe --
+                            </option>
+
+                            {% for groupe in groupes %}
+
+                                <option value="{{ groupe.id }}"
+                                    {% if groupe_id|stringformat:"s" == groupe.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}>
+
+                                    {{ groupe.nom }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- ANNEE -->
+                    <div class="form-group col-md-4">
+
+                        <label for="annee-select">
+                            Année scolaire :
+                        </label>
+
+                        <select name="annee_scolaire"
+                                id="annee-select"
+                                class="form-control"
+                                required>
+
+                            <option value="">
+                                -- Sélectionnez une année scolaire --
+                            </option>
+
+                            {% for annee in annees_scolaires %}
+
+                                <option value="{{ annee.id }}"
+                                    {% if annee_id|stringformat:"s" == annee.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}>
+
+                                    {{ annee.nom }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <button type="submit"
+                        class="btn btn-primary mt-2">
+
+                    <i class="fas fa-search"></i>
+                    Rechercher
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ====================================================== -->
+    <!-- RECHERCHE DANS LE TABLEAU -->
+    <!-- ====================================================== -->
+
+    {% if eleves %}
+
+        <div class="form-group mt-4">
+
+            <label for="searchInput">
+                Rechercher un élève :
+            </label>
+
+            <input type="text"
+                   id="searchInput"
+                   class="form-control"
+                   placeholder="Nom, prénom ou matricule...">
+
+        </div>
+
+
+        <!-- ================================================== -->
+        <!-- TABLEAU -->
+        <!-- ================================================== -->
+
+        <div class="card">
+
+            <div class="card-header bg-primary text-white">
+
+                <h5 class="mb-0">
+                    <i class="fas fa-users"></i>
+                    Liste des élèves
+                </h5>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table id="elevesTable"
+                           class="table table-bordered table-striped table-hover">
+
+                        <thead class="bg-primary text-white">
+
+                            <tr>
+
+                                <th>Matricule</th>
+
+                                <th>Nom</th>
+
+                                <th>Prénom</th>
+
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for inscription in eleves %}
+
+                            <tr>
+
+                                <!-- ================================= -->
+                                <!-- MATRICULE -->
+                                <!-- ================================= -->
+
+                                <td>
+                                    {{ inscription.eleve.matricule }}
+                                </td>
+
+
+                                <!-- ================================= -->
+                                <!-- NOM -->
+                                <!-- ================================= -->
+
+                                <td>
+                                    {{ inscription.eleve.nom }}
+                                </td>
+
+
+                                <!-- ================================= -->
+                                <!-- PRENOM -->
+                                <!-- ================================= -->
+
+                                <td>
+                                    {{ inscription.eleve.prenom }}
+                                </td>
+
+
+                                <!-- ================================= -->
+                                <!-- ACTION -->
+                                <!-- ================================= -->
+
+                                <td>
+
+                                    <button type="button"
+                                            class="btn btn-primary btn-sm"
+                                            data-toggle="modal"
+                                            data-target="#noteModal{{ inscription.id }}">
+
+                                        <i class="fas fa-edit"></i>
+                                        Noter
+
+                                    </button>
+
+
+                                    <!-- ================================= -->
+                                    <!-- MODAL -->
+                                    <!-- ================================= -->
+
+                                    <div class="modal fade"
+                                         id="noteModal{{ inscription.id }}"
+                                         tabindex="-1"
+                                         role="dialog"
+                                         aria-hidden="true">
+
+                                        <div class="modal-dialog modal-dialog-centered"
+                                             role="document">
+
+                                            <div class="modal-content">
+
+
+                                                <!-- HEADER -->
+                                                <div class="modal-header bg-primary text-white">
+
+                                                    <h5 class="modal-title">
+
+                                                        Attribuer une note à
+
+                                                        {{ inscription.eleve.nom }}
+                                                        {{ inscription.eleve.prenom }}
+
+                                                    </h5>
+
+                                                    <button type="button"
+                                                            class="close text-white"
+                                                            data-dismiss="modal">
+
+                                                        <span>&times;</span>
+
+                                                    </button>
+
+                                                </div>
+
+
+                                                <!-- BODY -->
+                                                <div class="modal-body">
+
+
+                                                    <form method="post"
+                                                          action="{% url 'attribuer_note_enseignant' %}"
+                                                          class="frm-attribu-note">
+
+                                                        {% csrf_token %}
+
+
+                                                        <!-- INSCRIPTION -->
+
+                                                        <input type="hidden"
+                                                               name="eleve"
+                                                               value="{{ inscription.id }}">
+
+
+                                                        <!-- ANNEE SCOLAIRE -->
+
+                                                        <div class="form-group">
+
+                                                            <label>
+                                                                Année scolaire :
+                                                            </label>
+
+                                                            <select name="anne"
+                                                                    class="form-control"
+                                                                    required>
+
+                                                                <option value="">
+                                                                    -- Sélectionnez une année --
+                                                                </option>
+
+                                                                {% for annee in annees_scolaires %}
+
+                                                                    <option value="{{ annee.id }}"
+                                                                        {% if annee_id|stringformat:"s" == annee.id|stringformat:"s" %}
+                                                                            selected
+                                                                        {% endif %}>
+
+                                                                        {{ annee.nom }}
+
+                                                                    </option>
+
+                                                                {% endfor %}
+
+                                                            </select>
+
+                                                        </div>
+
+
+                                                        <!-- MATIERE -->
+
+                                                        <div class="form-group">
+
+                                                            <label>
+                                                                Matière :
+                                                            </label>
+
+                                                            <select name="mat"
+                                                                    class="form-control mat-select"
+                                                                    required>
+
+                                                                <option value="">
+                                                                    -- Sélectionnez une matière --
+                                                                </option>
+
+                                                                {% for matiere in matieres_autorisees %}
+
+                                                                    <option value="{{ matiere.id }}"
+                                                                            data-coef="{{ matiere.coefficient }}">
+
+                                                                        {{ matiere.nom }}
+
+                                                                        (Coef:
+                                                                        {{ matiere.coefficient }})
+
+                                                                    </option>
+
+                                                                {% endfor %}
+
+                                                            </select>
+
+                                                        </div>
+
+
+                                                        <!-- TRIMESTRE -->
+
+                                                        <div class="form-group">
+
+                                                            <label>
+                                                                Trimestre :
+                                                            </label>
+
+                                                            <select name="trimestre"
+                                                                    class="form-control"
+                                                                    required>
+
+                                                                <option value="">
+                                                                    -- Sélectionnez le trimestre --
+                                                                </option>
+
+                                                                <option value="1">
+                                                                    Trimestre 1
+                                                                </option>
+
+                                                                <option value="2">
+                                                                    Trimestre 2
+                                                                </option>
+
+                                                                <option value="3">
+                                                                    Trimestre 3
+                                                                </option>
+
+                                                            </select>
+
+                                                        </div>
+
+
+                                                        <!-- NOTE COURS -->
+
+                                                        <div class="form-group">
+
+                                                            <label>
+                                                                Note Cours :
+                                                            </label>
+
+                                                            <input type="number"
+                                                                   name="nc"
+                                                                   class="form-control note-input"
+                                                                   min="0"
+                                                                   max="20"
+                                                                   step="0.01"
+                                                                   required>
+
+                                                        </div>
+
+
+                                                        <!-- NOTE COMPOSITION -->
+
+                                                        <div class="form-group">
+
+                                                            <label>
+                                                                Note Composition :
+                                                            </label>
+
+                                                            <input type="number"
+                                                                   name="nco"
+                                                                   class="form-control note-input"
+                                                                   min="0"
+                                                                   max="20"
+                                                                   step="0.01"
+                                                                   required>
+
+                                                        </div>
+
+
+                                                        <!-- MOYENNE -->
+
+                                                        <div class="alert alert-secondary">
+
+                                                            <strong>
+                                                                Moyenne :
+                                                            </strong>
+
+                                                            <span class="moyenne">
+                                                                0.00
+                                                            </span>
+
+                                                        </div>
+
+
+                                                        <!-- BOUTON -->
+
+                                                        <button type="submit"
+                                                                class="btn btn-success">
+
+                                                            <i class="fas fa-save"></i>
+                                                            Enregistrer
+
+                                                        </button>
+
+
+                                                        <button type="button"
+                                                                class="btn btn-secondary"
+                                                                data-dismiss="modal">
+
+                                                            Annuler
+
+                                                        </button>
+
+
+                                                        <!-- MESSAGE AJAX -->
+
+                                                        <div class="message-box mt-3"></div>
+
+                                                    </form>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td colspan="4"
+                                    class="text-center">
+
+                                    Aucun élève trouvé.
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <!-- ================================================== -->
+        <!-- AUCUN ELEVE -->
+        <!-- ================================================== -->
+
+        <div class="alert alert-info mt-4">
+
+            <i class="fas fa-info-circle"></i>
+
+            Sélectionnez un niveau, un groupe-classe et une année
+            scolaire, puis cliquez sur
+            <strong>Rechercher</strong>.
+
+        </div>
+
+    {% endif %}
+
+</div>
+
 {% endblock %}
 
-  
 
-  
 {% block scripte %}
 
-
-<!-- jQuery -->
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
-<!-- Bootstrap 4 -->
+
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- DataTables  & Plugins -->
+
 <script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
-<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
-<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
-<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
-<!-- AdminLTE App -->
+
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{% static 'base/js/demo.js' %}"></script>
-<!-- Page specific script -->
+
+
 <script>
 
+$(document).ready(function () {
+
+
+    // ==========================================================
+    // DATATABLE
+    // ==========================================================
+
+    $('#elevesTable').DataTable({
+
+        responsive: true,
+
+        lengthChange: false,
+
+        autoWidth: false,
+
+        pageLength: 10,
+
+        language: {
+
+            search: "Rechercher :",
+
+            emptyTable: "Aucun élève trouvé",
+
+            zeroRecords: "Aucun élève correspondant",
+
+            info: "Élèves _START_ à _END_ sur _TOTAL_",
+
+            infoEmpty: "Aucun élève",
+
+            paginate: {
+
+                first: "Premier",
+
+                last: "Dernier",
+
+                next: "Suivant",
+
+                previous: "Précédent"
+
+            }
+
+        }
+
+    });
+
+
+    // ==========================================================
+    // CHARGEMENT DES GROUPES
+    // ==========================================================
+
+    $('#niveau-select').on('change', function () {
+
+        let niveauId = $(this).val();
+
+        let groupeSelect = $('#groupe-select');
+
+
+        groupeSelect.html(
+            '<option value="">Chargement...</option>'
+        );
+
+
+        if (!niveauId) {
+
+            groupeSelect.html(
+                '<option value="">-- Sélectionnez un groupe-classe --</option>'
+            );
+
+            return;
+
+        }
+
+
+        $.ajax({
+
+            url: "{% url 'ajax-groupes' %}",
+
+            type: "GET",
+
+            data: {
+
+                niveau: niveauId
+
+            },
+
+            success: function (data) {
+
+                groupeSelect.html(
+                    '<option value="">-- Sélectionnez un groupe-classe --</option>'
+                );
+
+
+                $.each(data, function (index, groupe) {
+
+                    groupeSelect.append(
+
+                        '<option value="' +
+                        groupe.id +
+                        '">' +
+                        groupe.nom +
+                        '</option>'
+
+                    );
+
+                });
+
+            },
+
+            error: function () {
+
+                groupeSelect.html(
+                    '<option value="">Erreur de chargement</option>'
+                );
+
+            }
+
+        });
+
+    });
+
+
+    // ==========================================================
+    // CALCUL MOYENNE
+    // ==========================================================
+
+    $(document).on(
+        'input change',
+        '.note-input',
+        function () {
+
+            let form = $(this).closest('form');
+
+            let nc = parseFloat(
+                form.find('input[name="nc"]').val()
+            ) || 0;
+
+
+            let nco = parseFloat(
+                form.find('input[name="nco"]').val()
+            ) || 0;
+
+
+            let moyenne = (
+                (nc + nco) / 2
+            ).toFixed(2);
+
+
+            form.find('.moyenne').text(
+                moyenne
+            );
+
+        }
+    );
+
+
+    // ==========================================================
+    // ENREGISTREMENT AJAX
+    // ==========================================================
+
+    $(document).on(
+        'submit',
+        '.frm-attribu-note',
+        function (e) {
+
+            e.preventDefault();
+
+
+            let form = $(this);
+
+            let messageBox =
+                form.find('.message-box');
+
+            let submitButton =
+                form.find('button[type="submit"]');
+
+
+            messageBox.html('');
+
+            submitButton.prop(
+                'disabled',
+                true
+            );
+
+
+            $.ajax({
+
+                url: form.attr('action'),
+
+                type: 'POST',
+
+                data: form.serialize(),
+
+                headers: {
+
+                    'X-Requested-With':
+                    'XMLHttpRequest'
+
+                },
+
+
+                success: function (response) {
+
+
+                    if (response.success) {
+
+                        messageBox.html(
+
+                            '<div class="alert alert-success">' +
+
+                            '<i class="fas fa-check-circle"></i> ' +
+
+                            response.success +
+
+                            '</div>'
+
+                        );
+
+
+                        /*
+                         * On ne ferme pas immédiatement
+                         * la fenêtre afin que l'enseignant
+                         * voie le message.
+                         */
+
+
+                        form.find(
+                            'input[name="nc"], input[name="nco"]'
+                        ).val('');
+
+
+                        form.find(
+                            'select[name="mat"]'
+                        ).val('');
+
+
+                        form.find(
+                            'select[name="trimestre"]'
+                        ).val('');
+
+
+                        form.find('.moyenne').text(
+                            '0.00'
+                        );
+
+                    }
+
+                    else if (response.error) {
+
+                        messageBox.html(
+
+                            '<div class="alert alert-danger">' +
+
+                            '<i class="fas fa-exclamation-triangle"></i> ' +
+
+                            response.error +
+
+                            '</div>'
+
+                        );
+
+                    }
+
+                },
+
+
+                error: function (xhr) {
+
+                    let message =
+                        'Une erreur est survenue.';
+
+
+                    if (
+                        xhr.responseJSON &&
+                        xhr.responseJSON.error
+                    ) {
+
+                        message =
+                            xhr.responseJSON.error;
+
+                    }
+
+
+                    messageBox.html(
+
+                        '<div class="alert alert-danger">' +
+
+                        '<i class="fas fa-exclamation-triangle"></i> ' +
+
+                        message +
+
+                        '</div>'
+
+                    );
+
+                },
+
+
+                complete: function () {
+
+                    submitButton.prop(
+                        'disabled',
+                        false
+                    );
+
+                }
+
+            });
+
+        }
+    );
+
+
+    // ==========================================================
+    // RECHERCHE RAPIDE
+    // ==========================================================
+
+    $('#searchInput').on(
+        'keyup',
+        function () {
+
+            let valeur =
+                $(this).val().toLowerCase();
+
+
+            $('#elevesTable tbody tr').each(
+                function () {
+
+                    let texte =
+                        $(this).text().toLowerCase();
+
+
+                    $(this).toggle(
+                        texte.indexOf(valeur) !== -1
+                    );
+
+                }
+            );
+
+        }
+    );
+
+});
+
+</script>
+
 {% endblock %}
+

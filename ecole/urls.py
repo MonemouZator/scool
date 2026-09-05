@@ -68,7 +68,7 @@ urlpatterns = [
     path('payer/', include('eleve.urls')),
     path('eleve/liste/', include('eleve.urls')),
     path('liste/eleve/groupe/', include('eleve.urls')),
-    path('liste/eleve/niveau', include('eleve.urls')),
+    path('liste/eleve/niveau/', include('eleve.urls')),
     # Routes des notes
     path('note/', include('note.urls')),
     path('ajout-note/', include('note.urls')),

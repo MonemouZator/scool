@@ -40,5 +40,29 @@ urlpatterns = [
     path('ajax/get-eleve/', views.get_eleve_info, name='get_eleve_info'),
     # (optionnel) AJAX pour filtrer les groupes selon le niveau sélectionné
     path('ajax/get-groupes/', views.get_groupes, name='get_groupes'),
+
+   # ==============================
+# GESTION DES BADGES ÉLÈVES
+# ==============================
+
+path(
+    'badges-eleves/',
+    views.gestion_badges_eleves,
+    name='gestion_badges_eleves'
+),
+
+path(
+    'badge-eleve/<int:eleve_id>/',
+    views.badge_eleve,
+    name='badge_eleve'
+),
+
+path(
+    'badges-eleves/impression/',
+    views.badges_eleves_impression,
+    name='badges_eleves_impression'
+),
+
+    
 ]
 

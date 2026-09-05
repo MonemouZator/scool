@@ -1,0 +1,1256 @@
+{% extends "login/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+
+<title>Impression des badges enseignants</title>
+
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/css/adminlte.min.css' %}">
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+    /* =========================================================
+       STRUCTURE ADMINLTE
+    ========================================================= */
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .wrapper {
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .content-wrapper {
+        min-height: 0 !important;
+        height: calc(100vh - 57px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    /* =========================================================
+       PAGE
+    ========================================================= */
+
+    .badges-page {
+        padding: 15px;
+        padding-bottom: 30px;
+    }
+
+    /* =========================================================
+       EN-TÊTE
+    ========================================================= */
+
+    .page-header {
+        background: #ffffff;
+        border-radius: 10px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+
+        box-shadow:
+            0 2px 8px rgba(0, 0, 0, 0.08);
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .page-header h3 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 700;
+        color: #222;
+    }
+
+    .page-header p {
+        margin: 5px 0 0;
+        color: #777;
+        font-size: 14px;
+    }
+
+    /* =========================================================
+       BOUTON IMPRIMER
+    ========================================================= */
+
+    .btn-print {
+        border: none;
+        background: #007bff;
+        color: #ffffff;
+        padding: 10px 18px;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+    }
+
+    .btn-print:hover {
+        background: #0069d9;
+        color: #ffffff;
+    }
+
+    /* =========================================================
+       APERÇU A4
+    ========================================================= */
+
+    .a4-preview {
+        background: #e9ecef;
+        padding: 25px;
+        border-radius: 10px;
+        overflow-x: auto;
+    }
+
+    .a4-page {
+        width: 210mm;
+        min-height: 297mm;
+
+        background: #ffffff;
+
+        margin: 0 auto;
+
+        padding: 10mm;
+
+        box-sizing: border-box;
+
+        display: grid;
+
+        grid-template-columns: 86mm 86mm;
+
+        column-gap: 18mm;
+
+        row-gap: 8mm;
+
+        align-content: start;
+    }
+
+    /* =========================================================
+       BADGE ENSEIGNANT
+    ========================================================= */
+
+    .badge-enseignant {
+        width: 86mm;
+        height: 54mm;
+
+        box-sizing: border-box;
+
+        border: 0.35mm solid #1f2937;
+
+        border-radius: 2mm;
+
+        overflow: hidden;
+
+        background: #ffffff;
+
+        position: relative;
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        page-break-inside: avoid;
+        break-inside: avoid;
+    }
+
+    /* =========================================================
+       EN-TÊTE DU BADGE
+    ========================================================= */
+
+    .badge-header {
+        height: 16mm;
+
+        box-sizing: border-box;
+
+        background: #f4f6f8;
+
+        border-bottom: 0.35mm solid #1f2937;
+
+        display: flex;
+
+        align-items: center;
+
+        padding: 2mm 3mm;
+    }
+
+    /* =========================================================
+       LOGO
+    ========================================================= */
+
+    .badge-logo {
+        width: 12mm;
+        height: 12mm;
+
+        object-fit: contain;
+
+        flex-shrink: 0;
+
+        margin-right: 2.5mm;
+    }
+
+    /* =========================================================
+       INFORMATIONS ÉTABLISSEMENT
+    ========================================================= */
+
+    .etablissement-info {
+        flex: 1;
+
+        min-width: 0;
+
+        text-align: center;
+    }
+
+    .etablissement-nom {
+        font-size: 3.8mm;
+
+        font-weight: 800;
+
+        text-transform: uppercase;
+
+        line-height: 1.15;
+
+        color: #111827;
+
+        margin-bottom: 1mm;
+
+        word-break: break-word;
+    }
+
+    .etablissement-motto {
+        font-size: 2.5mm;
+
+        color: #4b5563;
+
+        font-style: italic;
+
+        line-height: 1.1;
+
+        word-break: break-word;
+    }
+
+    /* =========================================================
+       TYPE DE BADGE
+    ========================================================= */
+
+    .badge-type {
+        width: 15mm;
+
+        text-align: center;
+
+        flex-shrink: 0;
+    }
+
+    .badge-type-title {
+        font-size: 2.6mm;
+
+        font-weight: 800;
+
+        color: #111827;
+
+        line-height: 1.1;
+    }
+
+    .badge-type-subtitle {
+        font-size: 2.1mm;
+
+        color: #6b7280;
+
+        margin-top: 1mm;
+    }
+
+    /* =========================================================
+       CORPS DU BADGE
+    ========================================================= */
+
+    .badge-body {
+        height: 34mm;
+
+        box-sizing: border-box;
+
+        padding: 2mm 3mm;
+
+        display: flex;
+
+        align-items: center;
+    }
+
+    /* =========================================================
+       PHOTO
+    ========================================================= */
+
+    .badge-photo-container {
+        width: 25mm;
+
+        height: 30mm;
+
+        flex-shrink: 0;
+
+        margin-right: 3mm;
+
+        border: 0.3mm solid #9ca3af;
+
+        border-radius: 1.2mm;
+
+        overflow: hidden;
+
+        background: #f3f4f6;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+    }
+
+    .badge-photo {
+        width: 100%;
+
+        height: 100%;
+
+        object-fit: cover;
+    }
+
+    .photo-placeholder {
+        font-size: 8mm;
+
+        color: #9ca3af;
+    }
+
+    /* =========================================================
+       INFORMATIONS ENSEIGNANT
+    ========================================================= */
+
+    .badge-infos {
+        flex: 1;
+
+        min-width: 0;
+    }
+
+    .badge-role {
+        display: inline-block;
+
+        font-size: 2.3mm;
+
+        font-weight: 800;
+
+        color: #374151;
+
+        border-bottom: 0.3mm solid #6b7280;
+
+        padding-bottom: 0.6mm;
+
+        margin-bottom: 1.2mm;
+    }
+
+    .enseignant-nom {
+        font-size: 4.1mm;
+
+        font-weight: 900;
+
+        text-transform: uppercase;
+
+        line-height: 1.1;
+
+        color: #111111;
+
+        margin-bottom: 1.5mm;
+
+        word-break: break-word;
+    }
+
+    .info-line {
+        font-size: 2.7mm;
+
+        color: #222222;
+
+        line-height: 1.3;
+
+        margin-bottom: 0.7mm;
+
+        word-break: break-word;
+    }
+
+    .info-label {
+        font-weight: 800;
+    }
+
+    /* =========================================================
+       PIED DU BADGE
+    ========================================================= */
+
+    .badge-footer {
+        position: absolute;
+
+        left: 0;
+        right: 0;
+        bottom: 0;
+
+        height: 4mm;
+
+        background: #f4f6f8;
+
+        border-top: 0.3mm solid #9ca3af;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        box-sizing: border-box;
+    }
+
+    .badge-footer span {
+        font-size: 2.1mm;
+
+        font-weight: 700;
+
+        color: #374151;
+
+        letter-spacing: 0.15mm;
+
+        text-transform: uppercase;
+    }
+
+    /* =========================================================
+       ACTIONS ÉCRAN
+    ========================================================= */
+
+    .screen-actions {
+        margin-top: 20px;
+
+        display: flex;
+
+        justify-content: center;
+
+        gap: 10px;
+    }
+
+    .btn-back {
+        border: none;
+
+        background: #6c757d;
+
+        color: #ffffff;
+
+        padding: 10px 18px;
+
+        border-radius: 6px;
+
+        font-weight: 600;
+
+        text-decoration: none;
+    }
+
+    .btn-back:hover {
+        background: #5a6268;
+
+        color: #ffffff;
+
+        text-decoration: none;
+    }
+
+    /* =========================================================
+       IMPRESSION
+    ========================================================= */
+
+    @media print {
+
+        @page {
+            size: A4 portrait;
+            margin: 0;
+        }
+
+        /* -----------------------------------------------------
+           SUPPRESSION DES SCROLLBARS
+        ----------------------------------------------------- */
+
+        html,
+        body,
+        *,
+        *::before,
+        *::after {
+            scrollbar-width: none !important;
+        }
+
+        html::-webkit-scrollbar,
+        body::-webkit-scrollbar,
+        *::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        /* -----------------------------------------------------
+           DOCUMENT
+        ----------------------------------------------------- */
+
+        html {
+            width: 100% !important;
+            height: auto !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+
+            overflow: visible !important;
+
+            background: #ffffff !important;
+        }
+
+        body {
+            width: 100% !important;
+            min-width: 0 !important;
+
+            height: auto !important;
+            min-height: 0 !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+
+            overflow: visible !important;
+
+            background: #ffffff !important;
+        }
+
+        /* -----------------------------------------------------
+           ADMINLTE
+        ----------------------------------------------------- */
+
+        .wrapper {
+            width: 100% !important;
+
+            height: auto !important;
+            min-height: 0 !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+
+            overflow: visible !important;
+
+            background: #ffffff !important;
+        }
+
+        .content-wrapper {
+            width: 100% !important;
+
+            height: auto !important;
+            min-height: 0 !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+
+            overflow: visible !important;
+
+            background: #ffffff !important;
+
+            box-shadow: none !important;
+        }
+
+        /* -----------------------------------------------------
+           ÉLÉMENTS À MASQUER
+        ----------------------------------------------------- */
+
+        .main-header,
+        .main-sidebar,
+        .main-footer,
+
+        .content-header,
+
+        .navbar,
+        .navbar-expand,
+        .navbar-expand-sm,
+        .navbar-expand-md,
+        .navbar-expand-lg,
+        .navbar-expand-xl,
+
+        .control-sidebar,
+        .control-sidebar-bg,
+        .sidebar-overlay,
+        .main-sidebar-overlay,
+
+        .page-header,
+        .screen-actions,
+
+        .btn-print,
+        .btn-back,
+
+        .no-print {
+            display: none !important;
+        }
+
+        /* -----------------------------------------------------
+           CONTENU
+        ----------------------------------------------------- */
+
+        section.content {
+            width: 100% !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+
+            overflow: visible !important;
+
+            background: #ffffff !important;
+        }
+
+        section.content > .container-fluid {
+            width: 100% !important;
+
+            max-width: none !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+
+            overflow: visible !important;
+        }
+
+        .container-fluid {
+            width: 100% !important;
+
+            max-width: none !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+
+            overflow: visible !important;
+        }
+
+        /* -----------------------------------------------------
+           PAGE
+        ----------------------------------------------------- */
+
+        .badges-page {
+            width: 100% !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+
+            overflow: visible !important;
+
+            background: #ffffff !important;
+        }
+
+        /* -----------------------------------------------------
+           APERÇU A4
+        ----------------------------------------------------- */
+
+        .a4-preview {
+            width: 210mm !important;
+
+            min-width: 210mm !important;
+            max-width: 210mm !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+
+            background: #ffffff !important;
+
+            border: none !important;
+            border-radius: 0 !important;
+
+            box-shadow: none !important;
+
+            overflow: visible !important;
+        }
+
+        /* -----------------------------------------------------
+           FEUILLE A4
+        ----------------------------------------------------- */
+
+        .a4-page {
+            width: 210mm !important;
+
+            height: 297mm !important;
+
+            min-width: 210mm !important;
+            max-width: 210mm !important;
+
+            min-height: 297mm !important;
+            max-height: 297mm !important;
+
+            margin: 0 !important;
+
+            padding: 10mm !important;
+
+            background: #ffffff !important;
+
+            border: none !important;
+
+            box-shadow: none !important;
+
+            display: grid !important;
+
+            grid-template-columns: 86mm 86mm !important;
+
+            column-gap: 18mm !important;
+
+            row-gap: 8mm !important;
+
+            align-content: start !important;
+
+            overflow: visible !important;
+
+            box-sizing: border-box !important;
+        }
+
+        /* -----------------------------------------------------
+           BADGE
+        ----------------------------------------------------- */
+
+        .badge-enseignant {
+            width: 86mm !important;
+
+            height: 54mm !important;
+
+            min-width: 86mm !important;
+            max-width: 86mm !important;
+
+            min-height: 54mm !important;
+            max-height: 54mm !important;
+
+            margin: 0 !important;
+            padding: 0 !important;
+
+            overflow: hidden !important;
+
+            background: #ffffff !important;
+
+            border: 0.35mm solid #1f2937 !important;
+
+            border-radius: 2mm !important;
+
+            box-shadow: none !important;
+
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        /* -----------------------------------------------------
+           CONSERVATION DES COULEURS
+        ----------------------------------------------------- */
+
+        .badge-header,
+        .badge-footer,
+        .badge-photo-container {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+        }
+
+        .badge-header {
+            background: #f4f6f8 !important;
+        }
+
+        .badge-footer {
+            background: #f4f6f8 !important;
+        }
+
+        /* -----------------------------------------------------
+           ÉVITER LES COUPURES
+        ----------------------------------------------------- */
+
+        .badge-header,
+        .badge-body,
+        .badge-footer,
+        .badge-photo-container,
+        .badge-infos {
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+        }
+
+        /* -----------------------------------------------------
+           SUPPRESSION DES OMBRES
+        ----------------------------------------------------- */
+
+        .a4-preview,
+        .a4-page,
+        .badge-enseignant,
+        .page-header,
+        .screen-actions {
+            box-shadow: none !important;
+        }
+
+        /* -----------------------------------------------------
+           PAS DE MARGES BOOTSTRAP
+        ----------------------------------------------------- */
+
+        .row,
+        .col,
+        [class*="col-"] {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+
+        /* -----------------------------------------------------
+           PAS DE TRANSFORMATION
+        ----------------------------------------------------- */
+
+        .a4-page,
+        .a4-preview {
+            transform: none !important;
+        }
+
+    }
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================= */
+
+    @media screen and (max-width: 900px) {
+
+        .page-header {
+            flex-direction: column;
+
+            align-items: flex-start;
+
+            gap: 12px;
+        }
+
+        .a4-preview {
+            padding: 15px;
+        }
+
+    }
+
+</style>
+
+{% endblock styl_parent %}
+
+{% block body %}
+
+<body class="hold-transition sidebar-mini">
+
+{% endblock body %}
+
+{% block contenu %}
+
+<div class="content-wrapper">
+
+<!-- =====================================================
+     EN-TÊTE ADMINLTE
+====================================================== -->
+
+<section class="content-header">
+
+    <div class="container-fluid">
+
+        <div class="row mb-2">
+
+            <div class="col-sm-6">
+
+                <h1>
+
+                    <i class="fas fa-id-card mr-2"></i>
+
+                    IMPRESSION DES BADGES
+
+                </h1>
+
+            </div>
+
+            <div class="col-sm-6">
+
+                <ol class="breadcrumb float-sm-right">
+
+                    <li class="breadcrumb-item">
+
+                        <a href="{% url 'gestion_badges_enseignants' %}">
+                            Accueil
+                        </a>
+
+                    </li>
+
+                    <li class="breadcrumb-item active">
+
+                        Impression des badges enseignants
+
+                    </li>
+
+                </ol>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =====================================================
+     CONTENU
+====================================================== -->
+
+<section class="content">
+
+    <div class="container-fluid">
+
+        <div class="badges-page">
+
+
+            <!-- =====================================================
+                 EN-TÊTE DE LA PAGE
+            ====================================================== -->
+
+            <div class="page-header">
+
+                <div>
+
+                    <h3>
+
+                        <i class="fas fa-id-card mr-2"></i>
+
+                        Impression des badges enseignants
+
+                    </h3>
+
+                    <p>
+
+                        {{ nombre_enseignants }}
+
+                        badge{{ nombre_enseignants|pluralize }}
+
+                        sélectionné{{ nombre_enseignants|pluralize }}
+
+                    </p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-print"
+                    onclick="window.print();"
+                >
+
+                    <i class="fas fa-print mr-2"></i>
+
+                    Imprimer les badges
+
+                </button>
+
+            </div>
+
+
+            <!-- =====================================================
+                 APERÇU A4
+            ====================================================== -->
+
+            <div class="a4-preview">
+
+                <div class="a4-page">
+
+
+                    {% for enseignant in enseignants %}
+
+
+                        <!-- =================================================
+                             BADGE ENSEIGNANT
+                        ================================================== -->
+
+                        <div class="badge-enseignant">
+
+
+                            <!-- =============================================
+                                 EN-TÊTE DU BADGE
+                            ============================================== -->
+
+                            <div class="badge-header">
+
+
+                                <!-- LOGO -->
+
+                                {% if etablissement and etablissement.logo %}
+
+                                    <img
+                                        src="{{ etablissement.logo.url }}"
+                                        alt="Logo de l'établissement"
+                                        class="badge-logo"
+                                    >
+
+                                {% else %}
+
+                                    <div
+                                        class="badge-logo"
+                                        style="
+                                            border: 0.3mm solid #9ca3af;
+                                            border-radius: 50%;
+                                            display: flex;
+                                            align-items: center;
+                                            justify-content: center;
+                                            font-size: 2.5mm;
+                                            font-weight: 700;
+                                        "
+                                    >
+                                        LOGO
+                                    </div>
+
+                                {% endif %}
+
+
+                                <!-- INFORMATIONS ÉTABLISSEMENT -->
+
+                                <div class="etablissement-info">
+
+
+                                    <div class="etablissement-nom">
+
+                                        {% if etablissement %}
+
+                                            {{ etablissement.nom_ecole }}
+
+                                        {% else %}
+
+                                            ÉTABLISSEMENT SCOLAIRE
+
+                                        {% endif %}
+
+                                    </div>
+
+
+                                    {% if etablissement %}
+
+                                        <div class="etablissement-motto">
+
+                                            {{ etablissement.devise_ecole }}
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                                <!-- TYPE DE BADGE -->
+
+                                {% comment %} <div class="badge-type">
+
+                                    <div class="badge-type-title">
+
+                                        ENSEIGNANT
+
+                                    </div>
+
+                                    <div class="badge-type-subtitle">
+
+                                        CARTE
+
+                                    </div>
+
+                                </div> {% endcomment %}
+
+
+                            </div>
+
+
+                            <!-- =============================================
+                                 CORPS DU BADGE
+                            ============================================== -->
+
+                            <div class="badge-body">
+
+
+                                <!-- PHOTO -->
+
+                                <div class="badge-photo-container">
+
+
+                                    {% if enseignant.photo %}
+
+                                        <img
+                                            src="{{ enseignant.photo.url }}"
+                                            alt="{{ enseignant.nom }} {{ enseignant.prenom }}"
+                                            class="badge-photo"
+                                        >
+
+                                    {% else %}
+
+                                        <div class="photo-placeholder">
+
+                                            <i class="fas fa-user"></i>
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                </div>
+
+
+                                <!-- INFORMATIONS ENSEIGNANT -->
+
+                                <div class="badge-infos">
+
+
+                                    <div class="badge-role">
+
+                                        PERSONNEL ENSEIGNANT
+
+                                    </div>
+
+
+                                    <div class="enseignant-nom">
+
+                                        {{ enseignant.nom }}
+
+                                        {{ enseignant.prenom }}
+
+                                    </div>
+
+
+                                    <div class="info-line">
+
+                                        <span class="info-label">
+
+                                            Spécialité :
+
+                                        </span>
+
+                                        {{ enseignant.specialite|default:"Non renseignée" }}
+
+                                    </div>
+
+
+                                    <div class="info-line">
+
+                                        <span class="info-label">
+
+                                            Tél :
+
+                                        </span>
+
+                                        {{ enseignant.telephone|default:"Non renseigné" }}
+
+                                    </div>
+
+
+                                    <div class="info-line">
+
+                                        <span class="info-label">
+
+                                            Email :
+
+                                        </span>
+
+                                        {{ enseignant.email|default:"Non renseigné" }}
+
+                                    </div>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                            <!-- =============================================
+                                 PIED DU BADGE
+                            ============================================== -->
+
+                            <div class="badge-footer">
+
+                                <span>
+
+                                    CARTE PROFESSIONNELLE — ENSEIGNANT
+
+                                </span>
+
+                            </div>
+
+
+                        </div>
+
+
+                    {% endfor %}
+
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================================================
+                 ACTIONS ÉCRAN
+            ====================================================== -->
+
+            <div class="screen-actions">
+
+
+                <a
+                    href="{% url 'gestion_badges_enseignants' %}"
+                    class="btn-back"
+                >
+
+                    <i class="fas fa-arrow-left mr-2"></i>
+
+                    Retour aux enseignants
+
+                </a>
+
+
+                <button
+                    type="button"
+                    class="btn-print"
+                    onclick="window.print();"
+                >
+
+                    <i class="fas fa-print mr-2"></i>
+
+                    Imprimer
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</section>
+```
+
+</div>
+
+{% endblock contenu %}
+
+{% block scripte %}
+
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+<script>
+
+$(document).ready(function () {
+
+    /*
+     * La page reste en aperçu à l'écran.
+     *
+     * L'impression est lancée uniquement lorsque
+     * l'utilisateur clique sur le bouton Imprimer.
+     */
+
+});
+
+</script>
+
+{% endblock scripte %}

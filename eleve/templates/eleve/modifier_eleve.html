@@ -1,194 +1,838 @@
+
 {% extends "login/index.html" %}
 {% load static %}
 
 {% block styl_parent %}
-  <title>Modification Élève | Accueil</title>
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-  <!-- DataTables -->
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+
+<title>Modification Élève | Accueil</title>
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+
+<style>
+    .content-wrapper {
+        background: #f4f6f9;
+    }
+
+    .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    .card-header {
+        background: #ffffff;
+        border-bottom: 1px solid #e9ecef;
+        padding: 20px;
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: #343a40;
+    }
+
+    .form-control {
+        border-radius: 7px;
+        min-height: 42px;
+    }
+
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.12);
+    }
+
+    .photo-section {
+        background: #f8f9fa;
+        border: 1px solid #e1e5e9;
+        border-radius: 10px;
+        padding: 15px;
+    }
+
+    .photo-preview {
+        width: 125px;
+        height: 145px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 3px solid #ffffff;
+        outline: 2px solid #007bff;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .photo-placeholder {
+        width: 125px;
+        height: 145px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #eef1f5;
+        border: 2px dashed #adb5bd;
+        border-radius: 8px;
+        margin-bottom: 12px;
+    }
+
+    .photo-help {
+        display: block;
+        margin-top: 7px;
+        color: #6c757d;
+        font-size: 13px;
+    }
+
+    .section-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        color: #007bff;
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+    }
+
+    .modal-footer {
+        padding: 20px 0 0;
+        margin-top: 15px;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .btn {
+        border-radius: 7px;
+        font-weight: 600;
+        padding: 9px 18px;
+    }
+</style>
+
 {% endblock %}
+
 
 {% block body %}
+
 <body class="hold-transition sidebar-mini">
-  <!-- Your content here -->
 </body>
+
 {% endblock body %}
 
+
 {% block contenu %}
-  <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper p-4" style="max-height: calc(100vh - 150px); overflow-y: auto;">
-    <!-- Content Header (Page header) -->
+
+<div class="content-wrapper p-4"
+     style="max-height: calc(100vh - 150px); overflow-y: auto;">
+
+    <!-- En-tête -->
     <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>MODIFICATION DES ELEVES</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
-              <li class="breadcrumb-item active">Modification Élève</li>
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
+        <div class="container-fluid">
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <!-- Formulaire de modification d'élève -->
-                <form action="{% url 'modifier_eleve' pk=eleve.id %}" method="post" class="row" enctype="multipart/form-data">
-                  {% csrf_token %}
+            <div class="row mb-2">
 
-                  <!-- Messages de succès et d'erreur -->
-                  {% if messages %}
-                    <div class="col-12">
-                      <div class="alert alert-info">
-                        {% for message in messages %}
-                          <p>{{ message }}</p>
-                        {% endfor %}
-                      </div>
-                    </div>
-                  {% endif %}
-       
-                  <div class="form-group col-md-6">
-                    <label for="annee_scolaire">Année scolaire :</label>
-                    <select name="annee_scolaire" class="form-control" id="annee_scolaire" required>
-                        <option value="">Sélectionner une année</option>
-                        {% for annee in annees_scolaires %}
-                            <option value="{{ annee.id }}" {% if eleve.annee_scolaire and eleve.annee_scolaire.id == annee.id %}selected{% endif %}>
-                                {{ annee.nom }}
-                            </option>
-                        {% endfor %}
-                    </select>
+                <div class="col-sm-6">
+                    <h1 class="m-0">
+                        <i class="fas fa-user-edit text-primary mr-2"></i>
+                        MODIFICATION DE L'ÉLÈVE
+                    </h1>
                 </div>
-                
-                  <div class="form-group col-md-6">
-                    <label for="niveau">Niveau:</label>
-                    <select name="niveau" class="form-control" id="niveau" required>
-                      <option value="">Sélectionner un niveau</option>
-                      {% for niveau in niveaux %}
-                        <option value="{{ niveau.id }}" {% if niveau.id == eleve.niveau.id %}selected{% endif %}>{{ niveau.nom }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                  
 
-                  <!-- Champ Groupe -->
-                  <div class="form-group col-md-6">
-                    <label for="groupe_classe">Groupe (option) :</label>
-                    <select name="groupe_classe" class="form-control" id="groupe_classe" required>
-                      <option value="">Sélectionner un groupe</option>
-                      {% for groupe in groupes %}
-                        <option value="{{ groupe.id }}" {% if groupe.id == eleve.groupe_classe.id %}selected{% endif %}>{{ groupe.nom }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
 
-                  <!-- Champ Nom -->
-                  <div class="form-group col-md-6">
-                    <label for="nom">Nom de l'élève :</label>
-                    <input type="text" class="form-control" id="nom" name="nom" value="{{ eleve.nom }}" required placeholder="Entrer le nom de l'élève">
-                  </div>
+                        <li class="breadcrumb-item">
+                            <a href="{% url 'home' %}">
+                                Accueil
+                            </a>
+                        </li>
 
-                  <!-- Champ Prénom -->
-                  <div class="form-group col-md-6">
-                    <label for="prenom">Prénom :</label>
-                    <input type="text" class="form-control" id="prenom" name="prenom" value="{{ eleve.prenom }}" required placeholder="Entrer le prénom de l'élève">
-                  </div>
+                        <li class="breadcrumb-item active">
+                            Modification Élève
+                        </li>
 
-                  <!-- Champ Date de naissance -->
-                  <div class="form-group col-md-6">
-                    <label for="date_naissance">Date de naissance :</label>
-                    <input type="date" class="form-control" id="date_naissance" name="date_naissance" value="{{ eleve.date_naissance|date:'Y-m-d' }}" required>
-                  </div>
+                    </ol>
+                </div>
 
-                  <!-- Champ Lieu de naissance -->
-                  <div class="form-group col-md-6">
-                    <label for="lieu_naissance">Lieu de naissance :</label>
-                    <input type="text" class="form-control" id="lieu_naissance" name="lieu_naissance" value="{{ eleve.lieu_naissance }}" required placeholder="Entrer le lieu de naissance">
-                  </div>
-
-                  <!-- Champ Sexe -->
-                  <div class="form-group col-md-6">
-                    <label for="genre">Sexe :</label>
-                    <select class="form-control" name="genre" required>
-                      <option value="Homme" {% if eleve.genre == 'Homme' %}selected{% endif %}>Masculin</option>
-                      <option value="Femme" {% if eleve.genre == 'Femme' %}selected{% endif %}>Féminin</option>
-                    </select>
-                  </div>
-
-                  <!-- Champ Contact -->
-                  <div class="form-group col-md-6">
-                    <label for="telephone">Contact de l'élève :</label>
-                    <input type="tel" class="form-control" id="telephone" name="telephone" value="{{ eleve.telephone }}"  placeholder="Entrer le contact de l'élève">
-                  </div>
-
-                  <!-- Champ Photo -->
-                  <div class="form-group col-md-6">
-                    <label for="photo">Photo :</label>
-                    <input type="file" class="form-control" id="photo" name="photo">
-                    {% if eleve.photo %}
-                      <img src="{{ eleve.photo.url }}" alt="photo de l'élève" style="width: 100px; height: 100px; margin-top: 10px;">
-                    {% else %}
-                      <p>Aucune photo disponible</p>
-                    {% endif %}
-                  </div>
-
-                  <!-- Informations sur les parents -->
-                  <div class="form-group col-md-6">
-                    <label for="pere">Nom et prénom du père :</label>
-                    <input type="text" class="form-control" id="pere" name="pere" value="{{ eleve.pere }}" required placeholder="Entrer le nom et prénom du père">
-                  </div>
-
-                  <div class="form-group col-md-6">
-                    <label for="profession_pere">Profession du père :</label>
-                    <input type="text" class="form-control" id="profession_pere" name="profession_pere" value="{{ eleve.profession_pere }}" required placeholder="Entrer la profession du père">
-                  </div>
-
-                  <div class="form-group col-md-6">
-                    <label for="contact_parent">Contact du père :</label>
-                    <input type="tel" class="form-control" id="contact_parent" name="contact_parent" value="{{ eleve.contact_parent }}" required placeholder="Entrer le contact du père">
-                  </div>
-
-                  <div class="form-group col-md-6">
-                    <label for="mere">Nom et prénom de la mère :</label>
-                    <input type="text" class="form-control" id="mere" name="mere" value="{{ eleve.mere }}" required placeholder="Entrer le nom et prénom de la mère">
-                  </div>
-
-                  <div class="form-group col-md-6">
-                    <label for="profession_mere">Profession de la mère :</label>
-                    <input type="text" class="form-control" id="profession_mere" name="profession_mere" value="{{ eleve.profession_mere }}" required placeholder="Entrer la profession de la mère">
-                  </div>
-
-                  <div class="form-group col-md-6">
-                    <label for="contact_mere">Contact de la mère :</label>
-                    <input type="tel" class="form-control" id="contact_mere" name="contact_mere" value="{{ eleve.contact_mere }}" required placeholder="Entrer le contact de la mère">
-                  </div>
-
-                  <!-- Modal Footer with Submit Button -->
-                  <div class="modal-footer col-12">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                    <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
-                  </div>
-                </form>
-              </div>
             </div>
-          </div>
+
         </div>
-      </div>
     </section>
-  </div>
+
+
+    <!-- Contenu principal -->
+    <section class="content">
+
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-12">
+
+                    <div class="card">
+
+                        <div class="card-header">
+
+                            <div class="section-title">
+                                <i class="fas fa-user-graduate"></i>
+                                Informations de l'élève
+                            </div>
+
+
+                            <!-- FORMULAIRE -->
+                            <form
+                                action="{% url 'modifier_eleve' pk=eleve.id %}"
+                                method="post"
+                                enctype="multipart/form-data"
+                                class="row"
+                            >
+
+                                {% csrf_token %}
+
+
+                                <!-- Messages -->
+                                {% if messages %}
+
+                                    <div class="col-12">
+
+                                        {% for message in messages %}
+
+                                            <div class="alert alert-info alert-dismissible fade show">
+
+                                                <i class="fas fa-info-circle mr-2"></i>
+
+                                                {{ message }}
+
+                                                <button
+                                                    type="button"
+                                                    class="close"
+                                                    data-dismiss="alert"
+                                                >
+                                                    <span>&times;</span>
+                                                </button>
+
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                {% endif %}
+
+
+
+                                <!-- Année scolaire -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="annee_scolaire">
+                                        Année scolaire :
+                                    </label>
+
+                                    <select
+                                        name="annee_scolaire"
+                                        class="form-control"
+                                        id="annee_scolaire"
+                                        required
+                                    >
+
+                                        <option value="">
+                                            Sélectionner une année
+                                        </option>
+
+                                        {% for annee in annees_scolaires %}
+
+                                            <option
+                                                value="{{ annee.id }}"
+                                                {% if eleve.annee_scolaire and eleve.annee_scolaire.id == annee.id %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                {{ annee.nom }}
+                                            </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+
+
+                                <!-- Niveau -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="niveau">
+                                        Niveau :
+                                    </label>
+
+                                    <select
+                                        name="niveau"
+                                        class="form-control"
+                                        id="niveau"
+                                        required
+                                    >
+
+                                        <option value="">
+                                            Sélectionner un niveau
+                                        </option>
+
+                                        {% for niveau in niveaux %}
+
+                                            <option
+                                                value="{{ niveau.id }}"
+                                                {% if eleve.niveau and niveau.id == eleve.niveau.id %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                {{ niveau.nom }}
+                                            </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+
+
+                                <!-- Groupe -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="groupe_classe">
+                                        Groupe :
+                                    </label>
+
+                                    <select
+                                        name="groupe_classe"
+                                        class="form-control"
+                                        id="groupe_classe"
+                                        required
+                                    >
+
+                                        <option value="">
+                                            Sélectionner un groupe
+                                        </option>
+
+                                        {% for groupe in groupes %}
+
+                                            <option
+                                                value="{{ groupe.id }}"
+                                                data-niveau="{{ groupe.niveau_id }}"
+                                                {% if eleve.groupe_classe and groupe.id == eleve.groupe_classe.id %}
+                                                    selected
+                                                {% endif %}
+                                            >
+                                                {{ groupe.nom }}
+                                            </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+
+
+                                <!-- NOM -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="nom">
+                                        Nom de l'élève :
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="nom"
+                                        name="nom"
+                                        value="{{ eleve.eleve.nom }}"
+                                        required
+                                        placeholder="Entrer le nom de l'élève"
+                                    >
+
+                                </div>
+
+
+
+                                <!-- PRÉNOM -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="prenom">
+                                        Prénom :
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="prenom"
+                                        name="prenom"
+                                        value="{{ eleve.eleve.prenom }}"
+                                        required
+                                        placeholder="Entrer le prénom de l'élève"
+                                    >
+
+                                </div>
+
+
+
+                                <!-- DATE DE NAISSANCE -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="date_naissance">
+                                        Date de naissance :
+                                    </label>
+
+                                    <input
+                                        type="date"
+                                        class="form-control"
+                                        id="date_naissance"
+                                        name="date_naissance"
+                                        value="{{ eleve.eleve.date_naissance|date:'Y-m-d' }}"
+                                        required
+                                    >
+
+                                </div>
+
+
+
+                                <!-- LIEU DE NAISSANCE -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="lieu_naissance">
+                                        Lieu de naissance :
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="lieu_naissance"
+                                        name="lieu_naissance"
+                                        value="{{ eleve.eleve.lieu_naissance }}"
+                                        required
+                                        placeholder="Entrer le lieu de naissance"
+                                    >
+
+                                </div>
+
+
+
+                                <!-- SEXE -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="genre">
+                                        Sexe :
+                                    </label>
+
+                                    <select
+                                        class="form-control"
+                                        name="genre"
+                                        id="genre"
+                                        required
+                                    >
+
+                                        <option
+                                            value="Homme"
+                                            {% if eleve.eleve.genre == 'Homme' %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            Masculin
+                                        </option>
+
+                                        <option
+                                            value="Femme"
+                                            {% if eleve.eleve.genre == 'Femme' %}
+                                                selected
+                                            {% endif %}
+                                        >
+                                            Féminin
+                                        </option>
+
+                                    </select>
+
+                                </div>
+
+
+
+                                <!-- TÉLÉPHONE -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="telephone">
+                                        Contact de l'élève :
+                                    </label>
+
+                                    <input
+                                        type="tel"
+                                        class="form-control"
+                                        id="telephone"
+                                        name="telephone"
+                                        value="{{ eleve.eleve.telephone|default:'' }}"
+                                        placeholder="Entrer le contact de l'élève"
+                                    >
+
+                                </div>
+
+
+
+                                <!-- PHOTO -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="photo">
+
+                                        <i class="fas fa-camera mr-1 text-primary"></i>
+
+                                        Photo de l'élève :
+
+                                    </label>
+
+                                    <div class="photo-section">
+
+                                        {% if eleve.eleve.photo %}
+
+                                            <img
+                                                src="{{ eleve.eleve.photo.url }}"
+                                                alt="Photo de {{ eleve.eleve.nom }}"
+                                                class="photo-preview"
+                                                id="preview-photo"
+                                            >
+
+                                        {% else %}
+
+                                            <div
+                                                class="photo-placeholder"
+                                                id="preview-photo-container"
+                                            >
+
+                                                <i class="fas fa-user fa-3x text-secondary"></i>
+
+                                            </div>
+
+                                        {% endif %}
+
+
+                                        <input
+                                            type="file"
+                                            class="form-control"
+                                            id="photo"
+                                            name="photo"
+                                            accept="image/jpeg,image/png,image/webp"
+                                        >
+
+
+                                        <small class="photo-help">
+
+                                            <i class="fas fa-info-circle mr-1"></i>
+
+                                            Sélectionnez une nouvelle photo pour remplacer l'ancienne.
+
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+
+
+                                <!-- PÈRE -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="pere">
+                                        Nom et prénom du père :
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="pere"
+                                        name="pere"
+                                        value="{{ eleve.eleve.pere }}"
+                                        required
+                                        placeholder="Entrer le nom et prénom du père"
+                                    >
+
+                                </div>
+
+
+
+                                <!-- PROFESSION PÈRE -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="profession_pere">
+                                        Profession du père :
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="profession_pere"
+                                        name="profession_pere"
+                                        value="{{ eleve.eleve.profession_pere }}"
+                                        required
+                                        placeholder="Entrer la profession du père"
+                                    >
+
+                                </div>
+
+
+
+                                <!-- CONTACT PÈRE -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="contact_parent">
+                                        Contact du père :
+                                    </label>
+
+                                    <input
+                                        type="tel"
+                                        class="form-control"
+                                        id="contact_parent"
+                                        name="contact_parent"
+                                        value="{{ eleve.eleve.contact_parent|default:'' }}"
+                                        required
+                                        placeholder="Entrer le contact du père"
+                                    >
+
+                                </div>
+
+
+
+                                <!-- MÈRE -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="mere">
+                                        Nom et prénom de la mère :
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="mere"
+                                        name="mere"
+                                        value="{{ eleve.eleve.mere }}"
+                                        required
+                                        placeholder="Entrer le nom et prénom de la mère"
+                                    >
+
+                                </div>
+
+
+
+                                <!-- PROFESSION MÈRE -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="profession_mere">
+                                        Profession de la mère :
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="profession_mere"
+                                        name="profession_mere"
+                                        value="{{ eleve.eleve.profession_mere }}"
+                                        required
+                                        placeholder="Entrer la profession de la mère"
+                                    >
+
+                                </div>
+
+
+
+                                <!-- CONTACT MÈRE -->
+                                <div class="form-group col-md-6">
+
+                                    <label for="contact_mere">
+                                        Contact de la mère :
+                                    </label>
+
+                                    <input
+                                        type="tel"
+                                        class="form-control"
+                                        id="contact_mere"
+                                        name="contact_mere"
+                                        value="{{ eleve.eleve.contact_mere|default:'' }}"
+                                        required
+                                        placeholder="Entrer le contact de la mère"
+                                    >
+
+                                </div>
+
+
+
+                                <!-- BOUTONS -->
+                                <div class="modal-footer col-12">
+
+                                    <a
+                                        href="{% url 'home' %}"
+                                        class="btn btn-secondary"
+                                    >
+
+                                        <i class="fas fa-times mr-1"></i>
+
+                                        Fermer
+
+                                    </a>
+
+
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary"
+                                    >
+
+                                        <i class="fas fa-save mr-1"></i>
+
+                                        Enregistrer les modifications
+
+                                    </button>
+
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- ==========================================================
+     APERÇU INSTANTANÉ DE LA PHOTO
+=========================================================== -->
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const photoInput = document.getElementById('photo');
+
+    if (!photoInput) {
+        return;
+    }
+
+
+    photoInput.addEventListener('change', function (event) {
+
+        const file = event.target.files[0];
+
+        if (!file) {
+            return;
+        }
+
+
+        /* Vérification du format */
+
+        const formatsAutorises = [
+            'image/jpeg',
+            'image/png',
+            'image/webp'
+        ];
+
+        if (!formatsAutorises.includes(file.type)) {
+
+            alert(
+                'Format de photo non autorisé. ' +
+                'Veuillez sélectionner une image JPG, PNG ou WEBP.'
+            );
+
+            photoInput.value = '';
+
+            return;
+        }
+
+
+        /* Vérification de la taille */
+
+        const tailleMax =
+            5 * 1024 * 1024;
+
+        if (file.size > tailleMax) {
+
+            alert(
+                'La taille de la photo ne doit pas dépasser 5 Mo.'
+            );
+
+            photoInput.value = '';
+
+            return;
+        }
+
+
+        /* Lecture de l'image */
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            function (e) {
+
+                const anciennePhoto =
+                    document.getElementById(
+                        'preview-photo'
+                    );
+
+
+                /* Une photo existe déjà */
+
+                if (anciennePhoto) {
+
+                    anciennePhoto.src =
+                        e.target.result;
+
+                    return;
+                }
+
+
+                /* Aucune photo auparavant */
+
+                const placeholder =
+                    document.getElementById(
+                        'preview-photo-container'
+                    );
+
+
+                if (placeholder) {
+
+                    const nouvellePhoto =
+                        document.createElement(
+                            'img'
+                        );
+
+                    nouvellePhoto.src =
+                        e.target.result;
+
+                    nouvellePhoto.alt =
+                        'Aperçu de la nouvelle photo';
+
+                    nouvellePhoto.id =
+                        'preview-photo';
+
+                    nouvellePhoto.className =
+                        'photo-preview';
+
+                    placeholder.replaceWith(
+                        nouvellePhoto
+                    );
+
+                }
+
+            };
+
+
+        reader.readAsDataURL(file);
+
+    });
+
+});
+
+</script>
+
 {% endblock %}
+

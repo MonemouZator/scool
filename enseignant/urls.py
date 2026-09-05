@@ -46,7 +46,23 @@ urlpatterns = [
 
    path('resultat-trimestriel/classe/enseigner', views.resultat_trimestriel_classe, name='resultat_trimestriel_classe'),
     path('bulletin-trimestriel/classe/enseigner', views.bulletin_trimestriel_enseignant, name='bulletin_trimestriel_classe'),
+path(
+    'badges-enseignants/',
+    views.gestion_badges_enseignants,
+    name='gestion_badges_enseignants'
+),
 
+path(
+    'badge-enseignant/<int:enseignant_id>/',
+    views.badge_enseignant,
+    name='badge_enseignant'
+),
+
+path(
+    'badges-enseignants/impression/',
+    views.badges_enseignants_impression,
+    name='badges_enseignants_impression'
+),
 ]  
 
 

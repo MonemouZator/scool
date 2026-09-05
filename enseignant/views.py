@@ -3,7 +3,7 @@ from enseignant.models import Enseignant,PaiementSalaire
 from django.shortcuts import render, redirect
 from .models import Depense
 from django.contrib import messages
-from eleve .models import Eleve , FraisScolarite
+from eleve .models import Eleve , FraisScolarite,EleveInscrit
 from annee_scolaire.models import AnneeScolaire
 from personnel.models import Administrateur
 from django.db.models import Sum,Avg
@@ -798,186 +798,1307 @@ from cycle.models import Etablissement
 
 # from enseignant.models import EnseignantMatiere
 
-# 🔐 Groupes autorisés pour l’enseignant
+
+# ============================================================
+# GROUPES AUTORISÉS POUR L'ENSEIGNANT
+# ============================================================
+
 def groupes_autorises_enseignant(enseignant):
-    return GroupeClasse.objects.filter(
-        id__in=EnseignantMatiere.objects.filter(
-            enseignant=enseignant
-        ).values_list('groupe_classe_id', flat=True)
-    ).distinct()
+
+    return (
+        GroupeClasse.objects
+        .filter(
+            id__in=(
+                EnseignantMatiere.objects
+                .filter(
+                    enseignant=enseignant
+                )
+                .values_list(
+                    'groupe_classe_id',
+                    flat=True
+                )
+            )
+        )
+        .distinct()
+    )
+
+
+# ============================================================
+# RÉSULTAT TRIMESTRIEL D'UNE CLASSE
+# ADAPTÉ À EleveInscrit
+# ============================================================
+
 @login_required
 def resultat_trimestriel_classe(request):
-    # --------------------
-    # Vérifier enseignant
-    # --------------------
-    enseignant = getattr(request.user, 'enseignant_profile', None)
+
+    # ========================================================
+    # VÉRIFIER L'ENSEIGNANT
+    # ========================================================
+
+    enseignant = getattr(
+        request.user,
+        'enseignant_profile',
+        None
+    )
+
     if not enseignant:
-        messages.error(request, "Accès réservé aux enseignants.")
-        return redirect('login')
-    ecoles = Etablissement.objects.all()
-    annees_scolaires = AnneeScolaire.objects.all()
-    # 🔐 Groupes autorisés uniquement
-    groupes_classes = groupes_autorises_enseignant(enseignant)
-    groupe_id = request.GET.get('groupe_classe')
-    annee_id = request.GET.get('annee_scolaire')
-    trimestre = request.GET.get('trimestre')
-    bulletins_list = []
-    groupe_obj = None
-    annee_scolaire_obj = None
-    trimestre_label = ""
-    statistiques = {
-        'total_inscrits': 0,
-        'ayant_composes': 0,
-        'admis': 0,
-        'non_admis': 0,
-        'filles_total': 0,
-        'filles_composes': 0,
-        'filles_admis': 0,
-        'filles_non_admis': 0,
-        'taux_reussite': 0,
-        'taux_filles_reussite': 0,
-    }
-    # --------------------
-    # FILTRAGE
-    # --------------------
-    if groupe_id and annee_id and trimestre:
-        try:
-            groupe_obj = groupes_classes.get(id=groupe_id)
-            annee_scolaire_obj = AnneeScolaire.objects.get(id=annee_id)
-            trimestre = int(trimestre)
-            trimestre_label = f"Trimestre {trimestre}"
-        except:
-            messages.error(request, "Classe non autorisée.")
-            return render(request, "enseignant/resultat_trimestriel_classe.html", {
-                'groupes_classes': groupes_classes,
-                'annees_scolaires': annees_scolaires,
-            })
-        bulletins = BulletinTrimestriel.objects.filter(
-            eleve__groupe_classe=groupe_obj,
-            annee_scolaire=annee_scolaire_obj,
-            trimestre=trimestre
+
+        messages.error(
+            request,
+            "Accès réservé aux enseignants."
         )
-        # Seuil selon cycle
-        seuil = 5 if groupe_obj.niveau.cycle.nom.lower() == "primaire" else 10
-        # --------------------
-        # Préparer classement
-        # --------------------
-        for b in bulletins:
+
+        return redirect('login')
+
+
+    # ========================================================
+    # DONNÉES GÉNÉRALES
+    # ========================================================
+
+    ecoles = Etablissement.objects.all()
+
+    annees_scolaires = (
+        AnneeScolaire.objects.all()
+    )
+
+
+    # ========================================================
+    # GROUPES AUTORISÉS
+    # ========================================================
+
+    groupes_classes = (
+        groupes_autorises_enseignant(
+            enseignant
+        )
+    )
+
+
+    # ========================================================
+    # PARAMÈTRES
+    # ========================================================
+
+    groupe_id = request.GET.get(
+        'groupe_classe'
+    )
+
+    annee_id = request.GET.get(
+        'annee_scolaire'
+    )
+
+    trimestre_param = request.GET.get(
+        'trimestre'
+    )
+
+
+    # ========================================================
+    # VARIABLES
+    # ========================================================
+
+    bulletins_list = []
+
+    groupe_obj = None
+
+    annee_scolaire_obj = None
+
+    trimestre = None
+
+    trimestre_label = ""
+
+
+    # ========================================================
+    # STATISTIQUES
+    # ========================================================
+
+    statistiques = {
+
+        'total_inscrits': 0,
+
+        'ayant_composes': 0,
+
+        'admis': 0,
+
+        'non_admis': 0,
+
+        'filles_total': 0,
+
+        'filles_composes': 0,
+
+        'filles_admis': 0,
+
+        'filles_non_admis': 0,
+
+        'taux_reussite': 0,
+
+        'taux_filles_reussite': 0,
+
+    }
+
+
+    # ========================================================
+    # FILTRAGE
+    # ========================================================
+
+    if (
+        groupe_id
+        and annee_id
+        and trimestre_param
+    ):
+
+        try:
+
+            # ==================================================
+            # VÉRIFIER LE GROUPE AUTORISÉ
+            # ==================================================
+
+            groupe_obj = (
+                groupes_classes.get(
+                    id=groupe_id
+                )
+            )
+
+
+            # ==================================================
+            # ANNÉE SCOLAIRE
+            # ==================================================
+
+            annee_scolaire_obj = (
+                AnneeScolaire.objects.get(
+                    id=annee_id
+                )
+            )
+
+
+            # ==================================================
+            # TRIMESTRE
+            # ==================================================
+
+            trimestre = int(
+                trimestre_param
+            )
+
+
+            if trimestre not in [1, 2, 3]:
+
+                raise ValueError(
+                    "Trimestre invalide"
+                )
+
+
+            trimestre_label = (
+                f"Trimestre {trimestre}"
+            )
+
+
+        except (
+            GroupeClasse.DoesNotExist,
+            AnneeScolaire.DoesNotExist,
+            ValueError,
+            TypeError
+        ):
+
+            messages.error(
+                request,
+                "Classe, année scolaire ou trimestre invalide."
+            )
+
+            return render(
+                request,
+                "enseignant/resultat_trimestriel_classe.html",
+                {
+                    'groupes_classes':
+                        groupes_classes,
+
+                    'annees_scolaires':
+                        annees_scolaires,
+
+                    'sorted_bulletins':
+                        [],
+
+                    'statistiques':
+                        statistiques,
+
+                    'ecoles':
+                        ecoles,
+                }
+            )
+
+
+        # ====================================================
+        # INSCRIPTIONS DES ÉLÈVES
+        # ====================================================
+        #
+        # IMPORTANT :
+        # On utilise EleveInscrit.
+        #
+        # Cela permet de récupérer uniquement les élèves
+        # réellement inscrits dans cette classe pour
+        # l'année scolaire sélectionnée.
+        #
+        # ====================================================
+
+        inscriptions = (
+            EleveInscrit.objects
+            .filter(
+                groupe_classe=groupe_obj,
+                annee_scolaire=annee_scolaire_obj
+            )
+            .select_related(
+                'eleve',
+                'groupe_classe',
+                'groupe_classe__niveau',
+                'groupe_classe__niveau__cycle'
+            )
+        )
+
+
+        # ====================================================
+        # IDENTIFIANTS DES ÉLÈVES INSCRITS
+        # ====================================================
+
+        eleves_ids = inscriptions.values_list(
+            'eleve_id',
+            flat=True
+        )
+
+
+        # ====================================================
+        # BULLETINS DU TRIMESTRE
+        # ====================================================
+
+        bulletins = (
+            BulletinTrimestriel.objects
+            .filter(
+                eleve_id__in=eleves_ids,
+                annee_scolaire=annee_scolaire_obj,
+                trimestre=trimestre
+            )
+            .select_related(
+                'eleve'
+            )
+        )
+
+
+        # ====================================================
+        # DICTIONNAIRE DES INSCRIPTIONS
+        # ====================================================
+
+        inscriptions_dict = {
+
+            inscription.eleve_id:
+                inscription
+
+            for inscription in inscriptions
+
+        }
+
+
+        # ====================================================
+        # SEUIL D'ADMISSION
+        # ====================================================
+
+        cycle_nom = ""
+
+        if (
+            groupe_obj.niveau
+            and groupe_obj.niveau.cycle
+        ):
+
+            cycle_nom = (
+                groupe_obj
+                .niveau
+                .cycle
+                .nom
+                .strip()
+                .lower()
+            )
+
+
+        if cycle_nom == "primaire":
+
+            seuil = 5
+
+        else:
+
+            seuil = 10
+
+
+        # ====================================================
+        # PRÉPARER LES BULLETINS
+        # ====================================================
+
+        for bulletin in bulletins:
+
+            moyenne = (
+                bulletin.moyenne_totale
+                or 0
+            )
+
+
+            # ==================================================
+            # INSCRIPTION
+            # ==================================================
+
+            inscription = (
+                inscriptions_dict.get(
+                    bulletin.eleve_id
+                )
+            )
+
+
+            # ==================================================
+            # AJOUT
+            # ==================================================
+
             bulletins_list.append({
-                'bulletin': b,
-                'moyenne': b.moyenne_totale or 0,
-                'observation': b.observation,
+
+                'bulletin':
+                    bulletin,
+
+                'inscription':
+                    inscription,
+
+                'eleve':
+                    bulletin.eleve,
+
+                'moyenne':
+                    round(
+                        float(moyenne),
+                        2
+                    ),
+
+                'observation':
+                    bulletin.observation
+                    or "-",
+
             })
-        bulletins_list.sort(key=lambda x: x['moyenne'], reverse=True)
+
+
+        # ====================================================
+        # CLASSEMENT
+        # ====================================================
+
+        bulletins_list.sort(
+
+            key=lambda x: (
+                x['moyenne']
+                if x['moyenne'] is not None
+                else 0
+            ),
+
+            reverse=True
+        )
+
+
+        # ====================================================
+        # ATTRIBUTION DES RANGS
+        # ====================================================
+
         rang = 0
-        previous = None
-        for index, b in enumerate(bulletins_list, start=1):
-            if b['moyenne'] == previous:
-                b['rang'] = f"{rang} Ex"
+
+        previous_moyenne = None
+
+
+        for index, item in enumerate(
+            bulletins_list,
+            start=1
+        ):
+
+            moyenne = item['moyenne']
+
+
+            # =================================================
+            # EX ÆQUO
+            # =================================================
+
+            if (
+                previous_moyenne is not None
+                and moyenne == previous_moyenne
+            ):
+
+                item['rang'] = (
+                    f"{rang} Ex"
+                )
+
+
+            # =================================================
+            # NOUVEAU RANG
+            # =================================================
+
             else:
+
                 rang = index
-                b['rang'] = f"{rang}{'er' if rang == 1 else 'ème'}"
-            previous = b['moyenne']
-        # --------------------
+
+                if rang == 1:
+
+                    item['rang'] = "1er"
+
+                else:
+
+                    item['rang'] = (
+                        f"{rang}ème"
+                    )
+
+
+            previous_moyenne = moyenne
+
+
+        # ====================================================
         # STATISTIQUES
-        # --------------------
-        eleves = Eleve.objects.filter(groupe_classe=groupe_obj)
-        statistiques['total_inscrits'] = eleves.count()
-        statistiques['ayant_composes'] = len([b for b in bulletins_list if b['moyenne'] > 0])
-        statistiques['admis'] = len([b for b in bulletins_list if b['moyenne'] >= seuil])
-        statistiques['non_admis'] = statistiques['ayant_composes'] - statistiques['admis']
-        if statistiques['ayant_composes'] > 0:
-            statistiques['taux_reussite'] = round(
-                statistiques['admis'] / statistiques['ayant_composes'] * 100, 2
-            )
-        filles = eleves.filter(genre__iexact="femme")
-        statistiques['filles_total'] = filles.count()
-        statistiques['filles_composes'] = len([
-            b for b in bulletins_list
-            if b['bulletin'].eleve.genre.lower() == "femme" and b['moyenne'] > 0
+        # ====================================================
+
+        # Nombre réel d'élèves inscrits dans la classe
+        statistiques[
+            'total_inscrits'
+        ] = inscriptions.count()
+
+
+        # ====================================================
+        # ÉLÈVES AYANT COMPOSÉ
+        # ====================================================
+
+        bulletins_avec_notes = [
+
+            item
+
+            for item in bulletins_list
+
+            if item['moyenne'] > 0
+
+        ]
+
+
+        statistiques[
+            'ayant_composes'
+        ] = len(
+            bulletins_avec_notes
+        )
+
+
+        # ====================================================
+        # ADMIS
+        # ====================================================
+
+        statistiques[
+            'admis'
+        ] = len([
+
+            item
+
+            for item in bulletins_avec_notes
+
+            if item['moyenne'] >= seuil
+
         ])
-        statistiques['filles_admis'] = len([
-            b for b in bulletins_list
-            if b['bulletin'].eleve.genre.lower() == "femme" and b['moyenne'] >= seuil
-        ])
-        statistiques['filles_non_admis'] = statistiques['filles_composes'] - statistiques['filles_admis']
-        if statistiques['filles_composes'] > 0:
-            statistiques['taux_filles_reussite'] = round(
-                statistiques['filles_admis'] / statistiques['filles_composes'] * 100, 2
+
+
+        # ====================================================
+        # NON ADMIS
+        # ====================================================
+
+        statistiques[
+            'non_admis'
+        ] = (
+
+            statistiques[
+                'ayant_composes'
+            ]
+
+            -
+
+            statistiques[
+                'admis'
+            ]
+
+        )
+
+
+        # ====================================================
+        # TAUX DE RÉUSSITE
+        # ====================================================
+
+        if statistiques[
+            'ayant_composes'
+        ] > 0:
+
+            statistiques[
+                'taux_reussite'
+            ] = round(
+
+                (
+                    statistiques['admis']
+                    /
+                    statistiques['ayant_composes']
+                )
+                * 100,
+
+                2
+
             )
-    # --------------------
-    # RENDER
-    # --------------------
-    return render(request, "enseignant/resultat_trimestriel_classe.html", {
-        'groupes_classes': groupes_classes,
-        'annees_scolaires': annees_scolaires,
-        'sorted_bulletins': bulletins_list,
-        'groupe_obj': groupe_obj,
-        'annee_scolaire_obj': annee_scolaire_obj,
-        'trimestre_label': trimestre_label,
-        'statistiques': statistiques,
-        'ecoles': ecoles,
-    })
+
+
+        # ====================================================
+        # FILLES INSCRITES
+        # ====================================================
+
+        filles = [
+
+            inscription
+
+            for inscription in inscriptions
+
+            if (
+                inscription.eleve.genre
+                and
+                inscription.eleve.genre
+                .strip()
+                .lower()
+                == "femme"
+            )
+
+        ]
+
+
+        statistiques[
+            'filles_total'
+        ] = len(filles)
+
+
+        # ====================================================
+        # FILLES AYANT COMPOSÉ
+        # ====================================================
+
+        filles_composes = [
+
+            item
+
+            for item in bulletins_avec_notes
+
+            if (
+                item['eleve'].genre
+                and
+                item['eleve'].genre
+                .strip()
+                .lower()
+                == "femme"
+            )
+
+        ]
+
+
+        statistiques[
+            'filles_composes'
+        ] = len(
+            filles_composes
+        )
+
+
+        # ====================================================
+        # FILLES ADMISES
+        # ====================================================
+
+        statistiques[
+            'filles_admis'
+        ] = len([
+
+            item
+
+            for item in filles_composes
+
+            if item['moyenne'] >= seuil
+
+        ])
+
+
+        # ====================================================
+        # FILLES NON ADMISES
+        # ====================================================
+
+        statistiques[
+            'filles_non_admis'
+        ] = (
+
+            statistiques[
+                'filles_composes'
+            ]
+
+            -
+
+            statistiques[
+                'filles_admis'
+            ]
+
+        )
+
+
+        # ====================================================
+        # TAUX DE RÉUSSITE DES FILLES
+        # ====================================================
+
+        if statistiques[
+            'filles_composes'
+        ] > 0:
+
+            statistiques[
+                'taux_filles_reussite'
+            ] = round(
+
+                (
+                    statistiques[
+                        'filles_admis'
+                    ]
+                    /
+                    statistiques[
+                        'filles_composes'
+                    ]
+                )
+                * 100,
+
+                2
+
+            )
+
+
+    # ========================================================
+    # CONTEXT
+    # ========================================================
+
+    context = {
+
+        'groupes_classes':
+            groupes_classes,
+
+        'annees_scolaires':
+            annees_scolaires,
+
+        'sorted_bulletins':
+            bulletins_list,
+
+        'groupe_obj':
+            groupe_obj,
+
+        'annee_scolaire_obj':
+            annee_scolaire_obj,
+
+        'trimestre':
+            trimestre,
+
+        'trimestre_label':
+            trimestre_label,
+
+        'statistiques':
+            statistiques,
+
+        'ecoles':
+            ecoles,
+
+        'groupe_id':
+            groupe_id,
+
+        'annee_scolaire_id':
+            annee_id,
+
+    }
+
+
+    # ========================================================
+    # AFFICHAGE
+    # ========================================================
+
+    return render(
+        request,
+        "enseignant/resultat_trimestriel_classe.html",
+        context
+    )
+
+
+
+
+
+
 
 @login_required
 
+
+
+# ============================================================
+# BULLETIN TRIMESTRIEL ENSEIGNANT
+# ADAPTÉ À EleveInscrit
+# ============================================================
+
 def bulletin_trimestriel_enseignant(request):
-    enseignant = getattr(request.user, 'enseignant_profile', None)
+
+    # ========================================================
+    # ENSEIGNANT CONNECTÉ
+    # ========================================================
+
+    enseignant = getattr(
+        request.user,
+        'enseignant_profile',
+        None
+    )
+
     if not enseignant:
-        messages.error(request, "Accès refusé.")
-        return redirect('home')
-    
-    # 🔐 Classes autorisées
-
-    groupes_classes = groupes_autorises_enseignant(enseignant)
-    annees_scolaires = AnneeScolaire.objects.all()
-    ecoles = Etablissement.objects.all()
-    bulletins_trimestriels = []
-    groupe_id = request.GET.get('groupe_classe')
-    annee_id = request.GET.get('annee_scolaire')
-    trimestre = request.GET.get('trimestre')
-
-    # 🔒 Sécurité : interdire toute autre classe
-
-    if groupe_id and not groupes_classes.filter(id=groupe_id).exists():
-        messages.error(request, "Vous n'êtes pas autorisé à accéder à cette classe.")
-        return redirect(request.path)
-    if groupe_id and annee_id and trimestre:
-        eleves = Eleve.objects.filter(
-            groupe_classe_id=groupe_id,
-            annee_scolaire_id=annee_id
+        messages.error(
+            request,
+            "Accès refusé."
         )
-        for eleve in eleves:
-            notes = Note.objects.filter(
-                eleve=eleve,
-                trimestre=trimestre,
-                annee_scolaire_id=annee_id
-            ).values(
-                'matiere__nom'
-            ).annotate(
-                moyenne_matiere=Avg('note_finale')
+        return redirect('home')
+
+
+    # ========================================================
+    # CLASSES AUTORISÉES POUR L'ENSEIGNANT
+    # ========================================================
+
+    groupes_classes = groupes_autorises_enseignant(
+        enseignant
+    )
+
+
+    # ========================================================
+    # DONNÉES POUR LES FILTRES
+    # ========================================================
+
+    annees_scolaires = AnneeScolaire.objects.all()
+
+    ecoles = Etablissement.objects.all()
+
+    bulletins_trimestriels = []
+
+
+    # ========================================================
+    # PARAMÈTRES
+    # ========================================================
+
+    groupe_id = request.GET.get(
+        'groupe_classe'
+    )
+
+    annee_id = request.GET.get(
+        'annee_scolaire'
+    )
+
+    trimestre = request.GET.get(
+        'trimestre'
+    )
+
+
+    # ========================================================
+    # SÉCURITÉ
+    # ========================================================
+
+    if groupe_id:
+
+        if not groupes_classes.filter(
+            id=groupe_id
+        ).exists():
+
+            messages.error(
+                request,
+                "Vous n'êtes pas autorisé à accéder à cette classe."
             )
+
+            return redirect(request.path)
+
+
+    # ========================================================
+    # TRAITEMENT
+    # ========================================================
+
+    if (
+        groupe_id
+        and annee_id
+        and trimestre
+    ):
+
+        # ====================================================
+        # RÉCUPÉRER LES INSCRIPTIONS
+        # ====================================================
+
+        inscriptions = (
+            EleveInscrit.objects
+            .filter(
+                groupe_classe_id=groupe_id,
+                annee_scolaire_id=annee_id,
+                actif=True,
+                eleve__actif=True
+            )
+            .select_related(
+                'eleve',
+                'groupe_classe',
+                'groupe_classe__niveau',
+                'niveau',
+                'niveau__cycle',
+                'annee_scolaire'
+            )
+        )
+
+
+        # ====================================================
+        # TRAITER CHAQUE INSCRIPTION
+        # ====================================================
+
+        for inscription in inscriptions:
+
+            eleve = inscription.eleve
+
+
+            # =================================================
+            # NOTES DE L'ÉLÈVE
+            # =================================================
+
+            notes = (
+                Note.objects
+                .filter(
+                    inscription=inscription,
+                    trimestre=trimestre,
+                    annee_scolaire_id=annee_id
+                )
+                .values(
+                    'matiere__nom'
+                )
+                .annotate(
+                    moyenne_matiere=Avg(
+                        'note_finale'
+                    )
+                )
+                .order_by(
+                    'matiere__nom'
+                )
+            )
+
+
+            # =================================================
+            # MOYENNE GÉNÉRALE
+            # =================================================
+
             moyenne_totale = notes.aggregate(
-                m=Avg('moyenne_matiere')
+                m=Avg(
+                    'moyenne_matiere'
+                )
             )['m']
-            bulletin = BulletinTrimestriel.objects.filter(
-                eleve=eleve,
-                trimestre=trimestre,
-                annee_scolaire_id=annee_id
-            ).first()
+
+
+            if moyenne_totale is not None:
+
+                moyenne_totale = round(
+                    float(moyenne_totale),
+                    2
+                )
+
+
+            # =================================================
+            # BULLETIN TRIMESTRIEL
+            # =================================================
+
+            bulletin = (
+                BulletinTrimestriel.objects
+                .filter(
+                    eleve=eleve,
+                    trimestre=trimestre,
+                    annee_scolaire_id=annee_id
+                )
+                .first()
+            )
+
+
+            # =================================================
+            # MOYENNE DU BULLETIN
+            # =================================================
+
+            if bulletin is not None:
+
+                moyenne_bulletin = (
+                    bulletin.moyenne_totale
+                )
+
+            else:
+
+                moyenne_bulletin = (
+                    moyenne_totale
+                )
+
+
+            # =================================================
+            # OBSERVATION
+            # =================================================
+
+            observation = "-"
+
+            if moyenne_bulletin is not None:
+
+                # ------------------------------------------------
+                # RÉCUPÉRER LE CYCLE DE L'INSCRIPTION
+                # ------------------------------------------------
+
+                cycle_nom = ""
+
+                if inscription.niveau:
+
+                    if inscription.niveau.cycle:
+
+                        cycle_nom = (
+                            inscription
+                            .niveau
+                            .cycle
+                            .nom
+                            .strip()
+                            .lower()
+                        )
+
+                # ------------------------------------------------
+                # PRIMAIRE
+                # ------------------------------------------------
+
+                if cycle_nom == "primaire":
+
+                    if moyenne_bulletin == 10:
+
+                        observation = "Excellent"
+
+                    elif moyenne_bulletin >= 8:
+
+                        observation = "Très Bien"
+
+                    elif moyenne_bulletin >= 7:
+
+                        observation = "Bien"
+
+                    elif moyenne_bulletin >= 6:
+
+                        observation = "Assez Bien"
+
+                    elif moyenne_bulletin >= 5:
+
+                        observation = "Passable"
+
+                    else:
+
+                        observation = "Faible"
+
+
+                # ------------------------------------------------
+                # COLLÈGE / LYCÉE / AUTRE
+                # ------------------------------------------------
+
+                else:
+
+                    if moyenne_bulletin == 20:
+
+                        observation = "Excellent"
+
+                    elif moyenne_bulletin >= 16:
+
+                        observation = "Très Bien"
+
+                    elif moyenne_bulletin >= 14:
+
+                        observation = "Bien"
+
+                    elif moyenne_bulletin >= 12:
+
+                        observation = "Assez Bien"
+
+                    elif moyenne_bulletin >= 10:
+
+                        observation = "Passable"
+
+                    else:
+
+                        observation = "Faible"
+
+
+            # =================================================
+            # RANG
+            # =================================================
+
+            rang_formate = "-"
+
+            if moyenne_bulletin is not None:
+
+                # Le rang sera recalculé plus bas
+                # pour toute la classe.
+
+                if bulletin is not None:
+
+                    try:
+
+                        ancien_rang = bulletin.get_rang()
+
+                        if ancien_rang:
+
+                            rang_formate = ancien_rang
+
+                    except Exception:
+
+                        rang_formate = "-"
+
+
+            # =================================================
+            # AJOUT DU BULLETIN
+            # =================================================
+
             bulletins_trimestriels.append({
-                'bulletin': bulletin,
-                'notes': notes,
-                'moyenne_totale': bulletin.moyenne_totale if bulletin else None,
-                'rang_formate': bulletin.get_rang() if bulletin else '-',
-                'observation': bulletin.observation if bulletin else '-',
+
+                'bulletin':
+                    bulletin,
+
+                'inscription':
+                    inscription,
+
+                'eleve':
+                    eleve,
+
+                'notes':
+                    notes,
+
+                'moyenne_totale':
+                    moyenne_bulletin,
+
+                'rang_formate':
+                    rang_formate,
+
+                'observation':
+                    observation,
+
             })
 
-    # Tri décroissant par moyenne pour calculer les rangs
-     #   bulletins_trimestriels.sort(key=lambda x: x['moyenne_totale'], reverse=True)
-    return render(request, 'enseignant/bulletin_trimestriel_classe.html', {
-        'groupes_classes': groupes_classes,
-        'annees_scolaires': annees_scolaires,
-        'bulletins_trimestriels': bulletins_trimestriels,
-        'ecoles': ecoles,
-    })
+
+    # ========================================================
+    # CLASSEMENT PAR MOYENNE
+    # ========================================================
+
+    bulletins_trimestriels.sort(
+        key=lambda x: (
+            x['moyenne_totale']
+            if x['moyenne_totale'] is not None
+            else 0
+        ),
+        reverse=True
+    )
+
+
+    # ========================================================
+    # CALCUL DES RANGS
+    # ========================================================
+
+    rang = 0
+
+    previous_moyenne = None
+
+
+    for index, item in enumerate(
+        bulletins_trimestriels,
+        start=1
+    ):
+
+        moyenne = item['moyenne_totale']
+
+
+        # ====================================================
+        # PAS DE MOYENNE
+        # ====================================================
+
+        if moyenne is None:
+
+            item['rang_formate'] = "-"
+
+            continue
+
+
+        # ====================================================
+        # EX ÆQUO
+        # ====================================================
+
+        if (
+            previous_moyenne is not None
+            and moyenne == previous_moyenne
+        ):
+
+            item['rang_formate'] = (
+                f"{rang}e Ex"
+            )
+
+
+        # ====================================================
+        # NOUVEAU RANG
+        # ====================================================
+
+        else:
+
+            rang = index
+
+            if rang == 1:
+
+                item['rang_formate'] = "1er"
+
+            else:
+
+                item['rang_formate'] = (
+                    f"{rang}ème"
+                )
+
+
+        previous_moyenne = moyenne
+
+
+    # ========================================================
+    # CONTEXT
+    # ========================================================
+
+    context = {
+
+        'groupes_classes':
+            groupes_classes,
+
+        'annees_scolaires':
+            annees_scolaires,
+
+        'bulletins_trimestriels':
+            bulletins_trimestriels,
+
+        'ecoles':
+            ecoles,
+
+        'groupe_id':
+            groupe_id,
+
+        'annee_scolaire_id':
+            annee_id,
+
+        'trimestre':
+            trimestre,
+
+    }
+
+
+    # ========================================================
+    # AFFICHAGE
+    # ========================================================
+
+    return render(
+        request,
+        'enseignant/bulletin_trimestriel_classe.html',
+        context
+    )
+
+from django.db.models import Q
+@login_required
+def gestion_badges_enseignants(request):
+
+    recherche = request.GET.get(
+        'recherche',
+        ''
+    ).strip()
+
+    enseignants = Enseignant.objects.all()
+
+    if recherche:
+
+        enseignants = enseignants.filter(
+            Q(nom__icontains=recherche)
+            |
+            Q(prenom__icontains=recherche)
+            |
+            Q(specialite__icontains=recherche)
+            |
+            Q(telephone__icontains=recherche)
+            |
+            Q(email__icontains=recherche)
+        )
+
+    enseignants = enseignants.order_by(
+        'nom',
+        'prenom'
+    )
+
+    etablissement = (
+        Etablissement.objects
+        .first()
+    )
+
+    context = {
+        'enseignants': enseignants,
+        'etablissement': etablissement,
+        'recherche': recherche,
+    }
+
+    return render(
+        request,
+        'enseignant/gestion_badges_enseignants.html',
+        context
+    )
+
+
+@login_required
+def badge_enseignant(request, enseignant_id):
+
+    enseignant = get_object_or_404(
+        Enseignant.objects.select_related('user'),
+        id=enseignant_id
+    )
+
+    etablissement = (
+        Etablissement.objects
+        .first()
+    )
+
+    context = {
+        'enseignant': enseignant,
+        'etablissement': etablissement,
+    }
+
+    return render(
+        request,
+        'enseignant/badge_enseignant.html',
+        context
+    )
+
+
+@login_required
+def badges_enseignants_impression(request):
+
+    if request.method != 'POST':
+        return redirect('gestion_badges_enseignants')
+
+    enseignants_ids = request.POST.getlist('enseignants')
+
+    enseignants_ids = [
+        identifiant
+        for identifiant in enseignants_ids
+        if identifiant
+    ]
+
+    if not enseignants_ids:
+        messages.warning(
+            request,
+            "Veuillez sélectionner au moins un enseignant."
+        )
+        return redirect('gestion_badges_enseignants')
+
+    enseignants = (
+        Enseignant.objects
+        .filter(id__in=enseignants_ids)
+        .select_related('user')
+        .order_by('nom', 'prenom')
+    )
+
+    if not enseignants.exists():
+        messages.error(
+            request,
+            "Aucun enseignant correspondant."
+        )
+        return redirect('gestion_badges_enseignants')
+
+    etablissement = Etablissement.objects.first()
+
+    context = {
+        'enseignants': enseignants,
+        'etablissement': etablissement,
+        'nombre_enseignants': enseignants.count(),
+    }
+
+    return render(
+        request,
+        'enseignant/impression_badges_enseignants.html',
+        context
+    )

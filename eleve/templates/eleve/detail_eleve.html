@@ -1,8 +1,9 @@
+
 {% extends "login/index.html" %}
 {% load static %}
 
 {% block styl_parent %}
-  <title>Détail de l'élève | {{ eleve.nom }} {{ eleve.prenom }}</title>
+  <title>Détail de l'élève | {{ eleve.eleve.nom }} {{ eleve.eleve.prenom }}</title>
 
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
@@ -30,8 +31,8 @@
               <h3 class="card-title">Photo</h3>
             </div>
             <div class="card-body text-center">
-              {% if eleve.photo %}
-                <img src="{{ eleve.photo.url }}" alt="Photo de {{ eleve.nom }} {{ eleve.prenom }}" class="img-fluid">
+              {% if eleve.eleve.photo %}
+                <img src="{{ eleve.eleve.photo.url }}" alt="Photo de {{ eleve.eleve.nom }} {{ eleve.eleve.prenom }}" class="img-fluid">
               {% else %}
                 <img src="{% static 'base/img/avatar.png' %}" alt="Aucune photo disponible" class="img-fluid">
                 <p class="mt-2">Aucune photo disponible.</p>
@@ -47,13 +48,13 @@
               <h3 class="card-title">Informations de l'élève</h3>
             </div>
             <div class="card-body">
-             <p><strong>Matricule :</strong> {{ eleve.matricule }}</p>
-              <p><strong>Nom :</strong> {{ eleve.nom }}</p>
-              <p><strong>Prénom :</strong> {{ eleve.prenom }}</p>
-              <p><strong>Genre :</strong> {{ eleve.genre }}</p>
-              <p><strong>Contact :</strong> {{ eleve.telephone }}</p>
-              <p><strong>Date de naissance :</strong> {{ eleve.date_naissance|date:"d/m/Y" }}</p>
-              <p><strong>Lieu de naissance :</strong> {{ eleve.lieu_naissance }}</p>
+             <p><strong>Matricule :</strong> {{ eleve.eleve.matricule }}</p>
+              <p><strong>Nom :</strong> {{ eleve.eleve.nom }}</p>
+              <p><strong>Prénom :</strong> {{ eleve.eleve.prenom }}</p>
+              <p><strong>Genre :</strong> {{ eleve.eleve.genre }}</p>
+              <p><strong>Contact :</strong> {{ eleve.eleve.telephone }}</p>
+              <p><strong>Date de naissance :</strong> {{ eleve.eleve.date_naissance|date:"d/m/Y" }}</p>
+              <p><strong>Lieu de naissance :</strong> {{ eleve.eleve.lieu_naissance }}</p>
             </div>
           </div>
         </div>
@@ -65,13 +66,13 @@
               <h3 class="card-title">Filiation</h3>
             </div>
             <div class="card-body">
-              <p><strong>Père :</strong> {{ eleve.pere }}</p>
-              <p><strong>Profession Père :</strong> {{ eleve.profession_pere }}</p>
-              <p><strong>Contact Père :</strong> {{ eleve.contact_parent }}</p>
+              <p><strong>Père :</strong> {{ eleve.eleve.pere }}</p>
+              <p><strong>Profession Père :</strong> {{ eleve.eleve.profession_pere }}</p>
+              <p><strong>Contact Père :</strong> {{ eleve.eleve.contact_parent }}</p>
               <hr>
-              <p><strong>Mère :</strong> {{ eleve.mere }}</p>
-              <p><strong>Profession Mère :</strong> {{ eleve.profession_mere }}</p>
-              <p><strong>Contact Mère :</strong> {{ eleve.contact_mere }}</p>
+              <p><strong>Mère :</strong> {{ eleve.eleve.mere }}</p>
+              <p><strong>Profession Mère :</strong> {{ eleve.eleve.profession_mere }}</p>
+              <p><strong>Contact Mère :</strong> {{ eleve.eleve.contact_mere }}</p>
             </div>
           </div>
         </div>
@@ -86,3 +87,4 @@
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
 {% endblock %}
+

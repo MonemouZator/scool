@@ -65,26 +65,34 @@ class Eleve(models.Model):
     # 🔹 Sauvegarde avec matricule automatique
     def save(self, *args, **kwargs):
         if not self.matricule:
-            self.matricule=self.generate_matricule()
-            super().save(*args, **kwargs)
-  
+            self.matricule = self.generate_matricule()
+
+        # IMPORTANT :
+        # super().save() doit être exécuté à chaque modification,
+        # sinon les modifications (nom, photo, téléphone, etc.) ne sont pas enregistrées.
+        super().save(*args, **kwargs)
+
+        # Création automatique des frais scolaires
         if self.niveau and self.annee_scolaire:
             montant_total = self.niveau.montant_frais or 0
-            frais_existe = FraisScolarite.objects.filter(eleve=self, annee_scolaire=self.annee_scolaire).exists()
+
+            frais_existe = FraisScolarite.objects.filter(
+                eleve=self,
+                annee_scolaire=self.annee_scolaire
+            ).exists()
 
             if not frais_existe:
-                # Créer les frais pour l'élève sans diviser en trois tranches
                 FraisScolarite.objects.create(
-                eleve=self,
-                annee_scolaire=self.annee_scolaire,
-                montant_total=montant_total,
-                tranche1=0,
-                tranche2=0,
-                tranche3=0,
-                total_paye=0,
-                solde=montant_total,
-                est_paye=False
-            )
+                    eleve=self,
+                    annee_scolaire=self.annee_scolaire,
+                    montant_total=montant_total,
+                    tranche1=0,
+                    tranche2=0,
+                    tranche3=0,
+                    total_paye=0,
+                    solde=montant_total,
+                    est_paye=False
+                )
 
 
 # Assurez-vous d'avoir le modèle Recu défini auparavant pour ce code à fonctionner

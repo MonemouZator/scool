@@ -1,282 +1,1116 @@
+```html
 {% extends "login/index.html" %}
 {% load static %}
 
 {% block styl_parent %}
+
 <title>Bulletins Annuel | Niveau</title>
-<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/css/adminlte.min.css' %}">
 
 <style>
-/* Page et contenu */
+
+/* ==========================================================
+   STRUCTURE GÉNÉRALE DE LA PAGE
+   ========================================================== */
+
+html,
+body {
+    min-height: 100%;
+    height: 100%;
+}
+
+.wrapper {
+    min-height: 100vh !important;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* ==========================================================
+   ZONE PRINCIPALE
+   ========================================================== */
+
 .content-wrapper {
     background-color: #fff;
     padding: 15px;
+
     font-family: 'Times New Roman', Times, serif;
     font-size: 14px;
+
+    /*
+       Permet de prendre toute la hauteur disponible
+       et de pousser le footer vers le bas.
+    */
+    flex: 1 0 auto;
+
+    min-height: calc(100vh - 57px) !important;
 }
 
-/* Chaque bulletin */
-.bulletin-eleve {
-    margin-bottom: 40px;
-    padding: 20px;
-    border: 2px solid #000;
+
+/* ==========================================================
+   FOOTER
+   ========================================================== */
+
+.main-footer {
+    flex-shrink: 0;
+    margin-top: auto;
 }
 
-/* Page break pour impression */
-.page-break {
-    page-break-after: always;
-}
 
-/* Header : photo, centre, infos */
-.header-bulletin {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+/* ==========================================================
+   ZONE FILTRE
+   ========================================================== */
+
+.filtre-container {
+    background: #f8f9fa;
+
+    border: 1px solid #ddd;
+    border-radius: 6px;
+
+    padding: 15px;
+
     margin-bottom: 15px;
 }
+
+
+/* ==========================================================
+   CHAMPS DU FILTRE
+   ========================================================== */
+
+.filtre-container .form-group {
+    margin-bottom: 0;
+}
+
+
+/* ==========================================================
+   LABELS
+   ========================================================== */
+
+.filtre-container label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+
+/* ==========================================================
+   SELECTS
+   ========================================================== */
+
+.filtre-container select {
+    width: 100%;
+    min-height: 38px;
+}
+
+
+/* ==========================================================
+   BOUTONS
+   ========================================================== */
+
+.boutons-filtre {
+    display: flex;
+
+    align-items: flex-end;
+
+    /*
+       ESPACE ENTRE LES BOUTONS
+    */
+    gap: 20px;
+
+    height: 100%;
+}
+
+
+/* Empêcher les boutons de se coller */
+
+.boutons-filtre .btn {
+    white-space: nowrap;
+}
+
+
+/* ==========================================================
+   BULLETIN
+   ========================================================== */
+
+.bulletin-eleve {
+
+    margin-bottom: 40px;
+
+    padding: 20px;
+
+    border: 2px solid #000;
+
+    background-color: #fff;
+}
+
+
+/* ==========================================================
+   HEADER DU BULLETIN
+   ========================================================== */
+
+.header-bulletin {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: flex-start;
+
+    margin-bottom: 15px;
+}
+
+
+/* ==========================================================
+   PHOTO
+   ========================================================== */
+
 .header-bulletin .photo {
+
     width: 120px;
+
     height: 150px;
+
     border: 1px solid #000;
+
     object-fit: cover;
 }
+
+
+/* ==========================================================
+   CENTRE
+   ========================================================== */
+
 .header-bulletin .centre {
+
     flex: 1;
+
     text-align: center;
+
+    padding: 0 15px;
 }
+
+
 .header-bulletin .centre h1,
 .header-bulletin .centre h2,
 .header-bulletin .centre h3,
-.header-bulletin .centre h4 {
+.header-bulletin .centre h4,
+.header-bulletin .centre h5 {
+
     margin: 2px 0;
 }
+
+
+/* ==========================================================
+   INFORMATIONS ADMINISTRATIVES
+   ========================================================== */
+
 .header-bulletin .infos {
+
     text-align: right;
+
     font-size: 12px;
+
     line-height: 1.3;
 }
 
-/* Tableaux : uniformité des couleurs */
+
+/* ==========================================================
+   TABLEAUX
+   ========================================================== */
+
 .table {
+
     width: 100%;
+
     border-collapse: collapse;
+
     margin-bottom: 15px;
 }
-.table th, .table td {
+
+
+.table th,
+.table td {
+
     border: 1px solid #000;
+
     padding: 6px;
+
     text-align: center;
-    background-color: #cce5ff; /* couleur uniforme pour tous */
+
+    background-color: #cce5ff;
 }
+
+
 .table th {
-    background-color: #007bff; /* couleur du header */
+
+    background-color: #007bff;
+
     color: #fff;
 }
 
-/* Impression : même couleur */
+
+/* ==========================================================
+   SAUT DE PAGE
+   ========================================================== */
+
+.page-break {
+
+    page-break-after: always;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+   ========================================================== */
+
+@media (max-width: 992px) {
+
+    .boutons-filtre {
+
+        margin-top: 15px;
+
+        align-items: center;
+    }
+
+}
+
+
+/* ==========================================================
+   TABLETTE / MOBILE
+   ========================================================== */
+
+@media (max-width: 768px) {
+
+
+    /* ------------------------------------------------------
+       HEADER BULLETIN
+       ------------------------------------------------------ */
+
+    .header-bulletin {
+
+        flex-direction: column;
+
+        align-items: center;
+    }
+
+
+    .header-bulletin .centre {
+
+        margin-top: 10px;
+
+        margin-bottom: 10px;
+    }
+
+
+    .header-bulletin .infos {
+
+        text-align: center;
+    }
+
+
+    /* ------------------------------------------------------
+       BOUTONS
+       ------------------------------------------------------ */
+
+    .boutons-filtre {
+
+        width: 100%;
+
+        gap: 20px;
+    }
+
+
+    .boutons-filtre .btn {
+
+        flex: 1;
+    }
+
+}
+
+
+/* ==========================================================
+   IMPRESSION
+   ========================================================== */
+
 @media print {
-    /* Masquer tout ce qui n'est pas le bulletin */
-    .btn, form, .breadcrumb, .alert, header, footer, .sidebar, .navbar, .form-inline {
+
+
+    /* ------------------------------------------------------
+       CACHER LES ÉLÉMENTS INUTILES À L'IMPRESSION
+       ------------------------------------------------------ */
+
+    .btn,
+    form,
+    .breadcrumb,
+    .alert,
+    header,
+    footer,
+    .sidebar,
+    .navbar,
+    .form-inline,
+    .filtre-container {
+
         display: none !important;
     }
 
-    /* Assurer la couleur uniforme des tableaux */
-    .table th, .table td {
-        -webkit-print-color-adjust: exact; /* Chrome/Safari */
-        print-color-adjust: exact;         /* Firefox */
+
+    /* ------------------------------------------------------
+       STRUCTURE
+       ------------------------------------------------------ */
+
+    html,
+    body {
+
+        height: auto !important;
+
+        min-height: auto !important;
+    }
+
+
+    .wrapper {
+
+        min-height: auto !important;
+
+        height: auto !important;
+
+        display: block !important;
+    }
+
+
+    .content-wrapper {
+
+        min-height: auto !important;
+
+        height: auto !important;
+
+        flex: none !important;
+
+        margin-left: 0 !important;
+
+        padding: 0 !important;
+    }
+
+
+    .main-footer {
+
+        display: none !important;
+    }
+
+
+    /* ------------------------------------------------------
+       COULEURS TABLEAUX
+       ------------------------------------------------------ */
+
+    .table th,
+    .table td {
+
+        -webkit-print-color-adjust: exact;
+
+        print-color-adjust: exact;
+
         background-color: #cce5ff !important;
+
         color: #000 !important;
+
         border: 1px solid #000 !important;
     }
 
-    /* Texte des headers */
-    .header-bulletin .centre h1, 
-    .header-bulletin .centre h2, 
+
+    .table th {
+
+        background-color: #007bff !important;
+
+        color: #fff !important;
+    }
+
+
+    /* ------------------------------------------------------
+       HEADER BULLETIN
+       ------------------------------------------------------ */
+
+    .header-bulletin .centre h1,
+    .header-bulletin .centre h2,
     .header-bulletin .centre h3,
-    .header-bulletin .centre h4 {
+    .header-bulletin .centre h4,
+    .header-bulletin .centre h5 {
+
         color: #000 !important;
     }
 
-    /* Page break */
-    .page-break { display: block; page-break-after: always; }
-}
 
+    /* ------------------------------------------------------
+       SAUT DE PAGE
+       ------------------------------------------------------ */
+
+    .page-break {
+
+        display: block;
+
+        page-break-after: always;
+
+        break-after: page;
+    }
+
+
+    /* ------------------------------------------------------
+       BULLETIN
+       ------------------------------------------------------ */
+
+    .bulletin-eleve {
+
+        border: 2px solid #000;
+
+        margin-bottom: 0;
+
+        padding: 20px;
+
+        page-break-inside: avoid;
+
+        break-inside: avoid;
+    }
+
+}
 
 </style>
 
 {% endblock %}
 
+
 {% block contenu %}
+
 <div class="content-wrapper">
+
     <section class="content">
-        <div class="container-fluid" id="contenu-a-imprimer">
 
-            <!-- FORMULAIRE DE FILTRE -->
-            <div class="container-fluid mb-3">
-                <form method="get" class="form-inline">
-                    <div class="form-group mr-2">
-                        <label for="annee_scolaire">Année scolaire :</label>
-                        <select name="annee_scolaire" id="annee_scolaire" class="form-control ml-2" required>
-                            <option value="">--Choisir--</option>
-                            {% for annee in annees_scolaires %}
-                                <option value="{{ annee.id }}" {% if annee.id|stringformat:"s" == request.GET.annee_scolaire %}selected{% endif %}>
-                                    {{ annee.nom }}
-                                </option>
-                            {% endfor %}
-                        </select>
+        <div class="container-fluid"
+             id="contenu-a-imprimer">
+
+
+            <!-- ======================================================
+                 FORMULAIRE DE FILTRE
+            ======================================================= -->
+
+            <div class="filtre-container">
+
+                <form method="get">
+
+                    <div class="row align-items-end">
+
+
+                        <!-- ==================================================
+                             ANNÉE SCOLAIRE
+                        ================================================== -->
+
+                        <div class="col-md-3">
+
+                            <div class="form-group">
+
+                                <label for="annee_scolaire">
+                                    Année scolaire :
+                                </label>
+
+                                <select
+                                    name="annee_scolaire"
+                                    id="annee_scolaire"
+                                    class="form-control"
+                                    required
+                                >
+
+                                    <option value="">
+                                        -- Choisir --
+                                    </option>
+
+                                    {% for annee in annees_scolaires %}
+
+                                        <option
+                                            value="{{ annee.id }}"
+
+                                            {% if annee.id|stringformat:"s" == request.GET.annee_scolaire %}
+                                                selected
+                                            {% endif %}
+                                        >
+
+                                            {{ annee.nom }}
+
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             CYCLE
+                        ================================================== -->
+
+                        <div class="col-md-3">
+
+                            <div class="form-group">
+
+                                <label for="cycle">
+                                    Cycle :
+                                </label>
+
+                                <select
+                                    name="cycle"
+                                    id="cycle"
+                                    class="form-control"
+                                    required
+                                >
+
+                                    <option value="">
+                                        -- Choisir --
+                                    </option>
+
+                                    {% for c in cycles %}
+
+                                        <option
+                                            value="{{ c.id }}"
+
+                                            {% if c.id|stringformat:"s" == request.GET.cycle %}
+                                                selected
+                                            {% endif %}
+                                        >
+
+                                            {{ c.nom }}
+
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             NIVEAU
+                        ================================================== -->
+
+                        <div class="col-md-3">
+
+                            <div class="form-group">
+
+                                <label for="niveau">
+                                    Niveau :
+                                </label>
+
+                                <select
+                                    name="niveau"
+                                    id="niveau"
+                                    class="form-control"
+                                    required
+                                >
+
+                                    <option value="">
+                                        -- Choisir --
+                                    </option>
+
+                                    {% for n in niveaux %}
+
+                                        <option
+                                            value="{{ n.id }}"
+
+                                            {% if n.id|stringformat:"s" == request.GET.niveau %}
+                                                selected
+                                            {% endif %}
+                                        >
+
+                                            {{ n.nom }}
+
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==================================================
+                             BOUTONS
+                        ================================================== -->
+
+                        <div class="col-md-3">
+
+                            <div class="boutons-filtre">
+
+
+                                <!-- FILTRER -->
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary"
+                                >
+
+                                    <i class="fas fa-filter"></i>
+
+                                    Filtrer
+
+                                </button>
+
+
+                                <!-- IMPRIMER -->
+
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    onclick="window.print()"
+                                >
+
+                                    <i class="fas fa-print"></i>
+
+                                    Imprimer
+
+                                </button>
+
+
+                            </div>
+
+                        </div>
+
+
                     </div>
 
-                     <div class="form-group mr-2">
-                        <label for="cycle">Cycle :</label>
-                        <select name="cycle" id="cycle" class="form-control ml-2" required>
-                            <option value="">--Choisir--</option>
-                            {% for c in cycles %}
-                                <option value="{{ c.id }}" {% if c.id|stringformat:"s" == request.GET.cycle %}selected{% endif %}>
-                                    {{ c.nom }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <div class="form-group mr-2">
-                        <label for="niveau">Niveau :</label>
-                        <select name="niveau" id="niveau" class="form-control ml-2" required>
-                            <option value="">--Choisir--</option>
-                            {% for n in niveaux %}
-                                <option value="{{ n.id }}" {% if n.id|stringformat:"s" == request.GET.niveau %}selected{% endif %}>
-                                    {{ n.nom }}
-                                </option>
-                            {% endfor %}
-                        </select>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary">Filtrer</button>
                 </form>
+
             </div>
+
+
             <hr>
 
+
+            <!-- ======================================================
+                 BULLETINS
+            ======================================================= -->
+
             {% if bulletins_annuels %}
+
                 {% for b in bulletins_annuels %}
+
+
                     <div class="bulletin-eleve">
 
-                        <!-- Header -->
+
+                        <!-- ==================================================
+                             HEADER
+                        ================================================== -->
+
                         <div class="header-bulletin">
 
-                                {% for ecole in ecoles %}
-                                
-                                
-                            <div class="photo">
-                                {% if b.eleve.photo %}
-                                    <img src="{{ b.eleve.photo.url }}" class="photo">
-                                {% else %}
-                                    <div style="width: 120px; height: 150px; display:flex; align-items:center; justify-content:center;">Pas de photo</div>
-                                {% endif %}
-                            </div>
 
-                            <div class="centre">
-                                <h2>{{ecole.pays}}</h2>
-                                <h5 style="margin:0;">{{ecole.devise_pays}}</h5>
-                                <h2>{{ecole.nom_ecole}}</h2>
-                                <h5 style="margin:0;">{{ecole.devise_ecole}}</h5>
-                                <h3>Bulletin Annuel – {{ annee_scolaire_obj.nom }}</h3>
-                                <h5>Classe : {{ niveau_obj.nom }}</h5>
-                                <h4>Élève : {{ b.eleve.nom }} {{ b.eleve.prenom }}</h4>
-                            </div>
+                            {% for ecole in ecoles %}
 
-                            <div class="infos">
-                                <strong>{{ecole.meapu}}</strong><br>
-                                <strong>IRE/{{ecole.ire}}</strong><br>
-                                <strong>DPE/{{ecole.dpe}}</strong><br>
-                                <strong>DSSE/{{ecole.dsee}}</strong>
-                            </div>
+
+                                <!-- ==================================================
+                                     PHOTO
+                                ================================================== -->
+
+                                <div class="photo">
+
+                                    {% if b.eleve.photo %}
+
+                                        <img
+                                            src="{{ b.eleve.photo.url }}"
+                                            class="photo"
+                                            alt="Photo de l'élève"
+                                        >
+
+                                    {% else %}
+
+                                        <div
+                                            style="
+                                                width:120px;
+                                                height:150px;
+                                                display:flex;
+                                                align-items:center;
+                                                justify-content:center;
+                                                border:1px solid #000;
+                                            "
+                                        >
+
+                                            Pas de photo
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <!-- ==================================================
+                                     CENTRE
+                                ================================================== -->
+
+                                <div class="centre">
+
+                                    <h2>
+                                        {{ ecole.pays }}
+                                    </h2>
+
+                                    <h5 style="margin:0;">
+                                        {{ ecole.devise_pays }}
+                                    </h5>
+
+                                    <h2>
+                                        {{ ecole.nom_ecole }}
+                                    </h2>
+
+                                    <h5 style="margin:0;">
+                                        {{ ecole.devise_ecole }}
+                                    </h5>
+
+                                    <h3>
+                                        Bulletin Annuel –
+                                        {{ annee_scolaire_obj.nom }}
+                                    </h3>
+
+                                    <h5>
+                                        Niveau :
+                                        {{ niveau_obj.nom }}
+                                    </h5>
+
+                                    <h4>
+                                        Élève :
+                                        {{ b.eleve.nom }}
+                                        {{ b.eleve.prenom }}
+                                    </h4>
+
+                                </div>
+
+
+                                <!-- ==================================================
+                                     INFORMATIONS ADMINISTRATIVES
+                                ================================================== -->
+
+                                <div class="infos">
+
+                                    <strong>
+                                        {{ ecole.meapu }}
+                                    </strong>
+
+                                    <br>
+
+                                    <strong>
+                                        IRE/{{ ecole.ire }}
+                                    </strong>
+
+                                    <br>
+
+                                    <strong>
+                                        DPE/{{ ecole.dpe }}
+                                    </strong>
+
+                                    <br>
+
+                                    <strong>
+                                        DSSE/{{ ecole.dsee }}
+                                    </strong>
+
+                                </div>
+
 
                             {% endfor %}
 
                         </div>
 
-                        <!-- Informations élève -->
+
+                        <!-- ==================================================
+                             INFORMATIONS ÉLÈVE
+                        ================================================== -->
+
                         <table class="table">
+
                             <tr>
-                                <th>Matricule</th><th>Nom</th><th>Prénom</th><th>Date de naissance</th>
+
+                                <th>
+                                    Matricule
+                                </th>
+
+                                <th>
+                                    Nom
+                                </th>
+
+                                <th>
+                                    Prénom
+                                </th>
+
+                                <th>
+                                    Date de naissance
+                                </th>
+
                             </tr>
+
+
                             <tr>
-                                <td>{{ b.eleve.matricule }}</td>
-                                <td>{{ b.eleve.nom }}</td>
-                                <td>{{ b.eleve.prenom }}</td>
-                                <td>{{ b.eleve.date_naissance|date:"d/m/Y" }}</td>
+
+                                <td>
+                                    {{ b.eleve.matricule }}
+                                </td>
+
+                                <td>
+                                    {{ b.eleve.nom }}
+                                </td>
+
+                                <td>
+                                    {{ b.eleve.prenom }}
+                                </td>
+
+                                <td>
+                                    {{ b.eleve.date_naissance|date:"d/m/Y" }}
+                                </td>
+
                             </tr>
+
                         </table>
 
-                        <!-- Moyennes -->
+
+                        <!-- ==================================================
+                             MOYENNES
+                        ================================================== -->
+
                         <table class="table">
+
                             <tr>
-                                <th>Trimestre 1</th>
-                                <th>Trimestre 2</th>
-                                <th>Trimestre 3</th>
-                                <th>Moyenne Annuelle</th>
-                                <th>Observation</th>
-                                <th>Rang</th>
+
+                                <th>
+                                    Trimestre 1
+                                </th>
+
+                                <th>
+                                    Trimestre 2
+                                </th>
+
+                                <th>
+                                    Trimestre 3
+                                </th>
+
+                                <th>
+                                    Moyenne Annuelle
+                                </th>
+
+                                <th>
+                                    Observation
+                                </th>
+
+                                <th>
+                                    Rang
+                                </th>
+
                             </tr>
+
+
                             <tr>
+
+
                                 {% for m in b.moyennes_trimestrielles %}
-                                    <td>{{ m }}</td>
+
+                                    <td>
+                                        {{ m }}
+                                    </td>
+
                                 {% endfor %}
-                                <td>{{ b.moyenne_annuelle }}</td>
-                                <td>{{ b.observation }}</td>
-                                <td>{{ b.rang }}</td>
+
+
+                                <td>
+                                    {{ b.moyenne_annuelle }}
+                                </td>
+
+
+                                <td>
+                                    {{ b.observation }}
+                                </td>
+
+
+                                <td>
+                                    {{ b.rang }}
+                                </td>
+
+
                             </tr>
+
                         </table>
 
-                         {% for ecole in ecoles %}
-                        
-                      
-                      <!-- Remarque et signature -->
-                      <div class="mt-4 text-center">
-     
-                        <h4>Directeur:</h4><br><br>
-                        <h4>{{ecole.responsable}}</h4>
-                      </div>
+
+                        <!-- ==================================================
+                             SIGNATURE
+                        ================================================== -->
+
+                        {% for ecole in ecoles %}
+
+                            <div class="mt-4 text-center">
+
+                                <h4>
+                                    Directeur :
+                                </h4>
+
+                                <br>
+                                <br>
+
+                                <h4>
+                                    {{ ecole.responsable }}
+                                </h4>
+
+                            </div>
+
                         {% endfor %}
-                        <div class="page-break"></div>
+
+
                     </div>
+
+
+                    <!-- ======================================================
+                         SAUT DE PAGE ENTRE LES BULLETINS
+                    ======================================================= -->
+
+                    {% if not forloop.last %}
+
+                        <div class="page-break"></div>
+
+                    {% endif %}
+
+
                 {% endfor %}
+
+
             {% else %}
-                <p>Aucun bulletin disponible pour les critères sélectionnés.</p>
+
+
+                <div class="alert alert-info">
+
+                    Aucun bulletin disponible
+                    pour les critères sélectionnés.
+
+                </div>
+
+
             {% endif %}
 
-            <button class="btn btn-primary mt-3" onclick="window.print()">Imprimer</button>
 
         </div>
+
     </section>
+
 </div>
+
 {% endblock %}
 
+
 {% block scripte %}
-<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
-<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<script src="{% static 'base/js/adminlte.min.js' %}"></script>
-<script>
-$(document).ready(function() {
-    $('#cycle').change(function() {
-        var cycleId = $(this).val();
-        if (cycleId) {
-            $.ajax({
-                url: "{% url 'ajax_niveaux' %}",
-                data: {'cycle_id': cycleId},
-                success: function(data) {
-                    var $niveau = $('#niveau');
-                    $niveau.empty();
-                    $niveau.append('<option value="">--Choisir--</option>');
-                    data.forEach(function(n) {
-                        $niveau.append('<option value="'+n.id+'">'+n.nom+'</option>');
-                    });
-                }
-            });
-        } else {
-            $('#niveau').empty();
-            $('#niveau').append('<option value="">--Choisir--</option>');
-        }
-    });
-});
+
+
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}">
 </script>
+
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}">
+</script>
+
+<script src="{% static 'base/js/adminlte.min.js' %}">
+</script>
+
+
+<script>
+
+$(document).ready(function () {
+
+
+    // ==========================================================
+    // CHARGEMENT DES NIVEAUX SELON LE CYCLE
+    // ==========================================================
+
+    $('#cycle').change(function () {
+
+        var cycleId = $(this).val();
+
+
+        if (cycleId) {
+
+            $.ajax({
+
+                url: "{% url 'ajax_niveaux' %}",
+
+                data: {
+
+                    'cycle_id': cycleId
+
+                },
+
+                success: function (data) {
+
+
+                    var $niveau =
+                        $('#niveau');
+
+
+                    $niveau.empty();
+
+
+                    $niveau.append(
+                        '<option value="">-- Choisir --</option>'
+                    );
+
+
+                    data.forEach(function (n) {
+
+
+                        $niveau.append(
+
+                            '<option value="' +
+                            n.id +
+                            '">' +
+                            n.nom +
+                            '</option>'
+
+                        );
+
+                    });
+
+                },
+
+
+                error: function () {
+
+                    alert(
+                        "Impossible de charger les niveaux."
+                    );
+
+                }
+
+            });
+
+        }
+
+        else {
+
+
+            $('#niveau').empty();
+
+
+            $('#niveau').append(
+
+                '<option value="">-- Choisir --</option>'
+
+            );
+
+        }
+
+    });
+
+});
+
+</script>
+
 {% endblock %}
+```

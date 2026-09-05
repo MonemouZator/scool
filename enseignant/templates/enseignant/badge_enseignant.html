@@ -1,0 +1,905 @@
+
+{% extends "login/index.html" %}
+{% load static %}
+
+{% block styl_parent %}
+
+<title>Badge Enseignant</title>
+
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+
+<style>
+
+    /* =====================================================
+       ÉCRAN
+    ===================================================== */
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .wrapper {
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .content-wrapper {
+        min-height: 0 !important;
+        height: calc(100vh - 57px) !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+
+    /* =====================================================
+       ZONE DU BADGE
+    ===================================================== */
+
+    .badge-page {
+        min-height: 100%;
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: flex-start;
+
+        padding: 30px 20px 50px;
+    }
+
+
+    /* =====================================================
+       BADGE
+       FORMAT : 86mm × 54mm
+    ===================================================== */
+
+    .teacher-badge {
+
+        width: 86mm;
+        height: 54mm;
+
+        position: relative;
+
+        overflow: hidden;
+
+        background: #ffffff;
+
+        border: 1px solid #222;
+
+        border-radius: 3mm;
+
+        box-shadow:
+            0 5px 20px rgba(0, 0, 0, 0.18);
+
+        color: #222222;
+
+        font-family:
+            "Source Sans Pro",
+            Arial,
+            sans-serif;
+    }
+
+
+    /* =====================================================
+       EN-TÊTE
+       16mm
+    ===================================================== */
+
+    .badge-header {
+
+        height: 16mm;
+
+        display: flex;
+
+        align-items: center;
+
+        gap: 3mm;
+
+        padding: 2mm 3mm;
+
+        background: #f8f9fa;
+
+        border-bottom: 0.5mm solid #222222;
+    }
+
+
+    /* LOGO */
+
+    .badge-logo {
+
+        width: 12mm;
+
+        height: 12mm;
+
+        object-fit: contain;
+
+        flex-shrink: 0;
+    }
+
+
+    .badge-logo-placeholder {
+
+        width: 12mm;
+
+        height: 12mm;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        background: #eeeeee;
+
+        border-radius: 1mm;
+
+        flex-shrink: 0;
+    }
+
+
+    .badge-logo-placeholder i {
+
+        font-size: 6mm;
+
+        color: #555555;
+    }
+
+
+    /* NOM ÉTABLISSEMENT */
+
+    .school-info {
+
+        flex: 1;
+
+        min-width: 0;
+    }
+
+
+    .school-name {
+
+        margin: 0;
+
+        font-size: 4.2mm;
+
+        line-height: 1.1;
+
+        font-weight: 700;
+
+        color: #222222;
+
+        text-transform: uppercase;
+
+        white-space: nowrap;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+    }
+
+
+    .school-motto {
+
+        margin: 1mm 0 0;
+
+        font-size: 2.5mm;
+
+        line-height: 1.1;
+
+        color: #222222;
+
+        white-space: nowrap;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+    }
+
+
+    /* =====================================================
+       CORPS
+       34mm
+    ===================================================== */
+
+    .badge-body {
+
+        height: 34mm;
+
+        display: flex;
+
+        padding: 2mm 3mm;
+
+        gap: 3mm;
+    }
+
+
+    /* =====================================================
+       PHOTO
+    ===================================================== */
+
+    .photo-container {
+
+        width: 25mm;
+
+        height: 30mm;
+
+        flex-shrink: 0;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        overflow: hidden;
+
+        border: 0.4mm solid #222222;
+
+        background: #eeeeee;
+    }
+
+
+    .teacher-photo {
+
+        width: 100%;
+
+        height: 100%;
+
+        object-fit: cover;
+    }
+
+
+    .photo-placeholder {
+
+        width: 100%;
+
+        height: 100%;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        color: #777777;
+    }
+
+
+    .photo-placeholder i {
+
+        font-size: 10mm;
+    }
+
+
+    /* =====================================================
+       INFORMATIONS
+    ===================================================== */
+
+    .teacher-info {
+
+        flex: 1;
+
+        min-width: 0;
+
+        display: flex;
+
+        flex-direction: column;
+
+        justify-content: center;
+
+        overflow: hidden;
+    }
+
+
+    .badge-type {
+
+        display: inline-block;
+
+        align-self: flex-start;
+
+        margin-bottom: 1.2mm;
+
+        padding: 0.7mm 2mm;
+
+        border: 0.3mm solid #222222;
+
+        border-radius: 1mm;
+
+        font-size: 2.3mm;
+
+        font-weight: 700;
+
+        color: #222222;
+
+        text-transform: uppercase;
+    }
+
+
+    .teacher-name {
+
+        margin: 0 0 1.5mm;
+
+        font-size: 4.2mm;
+
+        line-height: 1.05;
+
+        font-weight: 700;
+
+        color: #222222;
+
+        text-transform: uppercase;
+
+        word-break: break-word;
+    }
+
+
+    .info-line {
+
+        display: flex;
+
+        align-items: flex-start;
+
+        gap: 1.5mm;
+
+        margin-bottom: 1mm;
+
+        font-size: 2.6mm;
+
+        line-height: 1.15;
+
+        color: #222222;
+    }
+
+
+    .info-icon {
+
+        width: 3mm;
+
+        flex-shrink: 0;
+
+        text-align: center;
+
+        color: #222222;
+    }
+
+
+    .info-label {
+
+        font-weight: 700;
+
+        flex-shrink: 0;
+    }
+
+
+    .info-value {
+
+        min-width: 0;
+
+        overflow: hidden;
+
+        text-overflow: ellipsis;
+
+        white-space: nowrap;
+    }
+
+
+    /* =====================================================
+       PIED
+       4mm
+    ===================================================== */
+
+    .badge-footer {
+
+        position: absolute;
+
+        left: 0;
+
+        right: 0;
+
+        bottom: 0;
+
+        height: 4mm;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        background: #f8f9fa;
+
+        border-top: 0.4mm solid #222222;
+
+        font-size: 2.1mm;
+
+        font-weight: 600;
+
+        color: #222222;
+    }
+
+
+    /* =====================================================
+       BOUTONS ÉCRAN
+    ===================================================== */
+
+    .badge-actions {
+
+        display: flex;
+
+        justify-content: center;
+
+        gap: 10px;
+
+        margin-top: 20px;
+    }
+
+
+    /* =====================================================
+       IMPRESSION
+    ===================================================== */
+
+    @page {
+
+        size: auto;
+
+        margin: 0;
+    }
+
+
+    @media print {
+
+        html,
+        body {
+
+            width: 86mm;
+
+            height: 54mm;
+
+            margin: 0;
+
+            padding: 0;
+
+            overflow: hidden !important;
+
+            background: #ffffff;
+        }
+
+
+        .main-header,
+        .main-sidebar,
+        .main-footer,
+        .content-header,
+        .breadcrumb,
+        .badge-actions {
+
+            display: none !important;
+        }
+
+
+        .content-wrapper {
+
+            width: 86mm !important;
+
+            height: 54mm !important;
+
+            min-height: 54mm !important;
+
+            margin: 0 !important;
+
+            padding: 0 !important;
+
+            overflow: hidden !important;
+
+            background: #ffffff !important;
+        }
+
+
+        .content {
+
+            margin: 0 !important;
+
+            padding: 0 !important;
+        }
+
+
+        .container-fluid {
+
+            margin: 0 !important;
+
+            padding: 0 !important;
+        }
+
+
+        .badge-page {
+
+            width: 86mm;
+
+            height: 54mm;
+
+            min-height: 54mm;
+
+            margin: 0;
+
+            padding: 0;
+
+            display: block;
+        }
+
+
+        .teacher-badge {
+
+            width: 86mm;
+
+            height: 54mm;
+
+            margin: 0;
+
+            border: 0.4mm solid #222222;
+
+            border-radius: 0;
+
+            box-shadow: none;
+
+            page-break-after: avoid;
+
+            page-break-inside: avoid;
+        }
+
+    }
+
+
+    /* =====================================================
+       PETITS ÉCRANS
+    ===================================================== */
+
+    @media screen and (max-width: 600px) {
+
+        .badge-page {
+
+            padding: 20px 10px 40px;
+        }
+
+        .badge-actions {
+
+            flex-direction: column;
+
+            align-items: center;
+        }
+
+    }
+
+</style>
+
+{% endblock styl_parent %}
+
+
+{% block body %}
+
+<body class="hold-transition sidebar-mini">
+
+{% endblock body %}
+
+
+{% block contenu %}
+
+<div class="content-wrapper">
+
+    <section class="content-header">
+
+        <div class="container-fluid">
+
+            <div class="row mb-2">
+
+                <div class="col-sm-6">
+
+                    <h1>
+
+                        <i class="fas fa-id-card mr-2"></i>
+
+                        Badge Enseignant
+
+                    </h1>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="content">
+
+        <div class="container-fluid">
+
+
+            <div class="badge-page">
+
+
+                <!-- =================================================
+                     BADGE
+                ================================================== -->
+
+                <div class="teacher-badge">
+
+
+                    <!-- =================================================
+                         EN-TÊTE
+                    ================================================== -->
+
+                    <div class="badge-header">
+
+
+                        {% if etablissement and etablissement.logo %}
+
+                            <img
+                                src="{{ etablissement.logo.url }}"
+                                alt="Logo"
+                                class="badge-logo"
+                            >
+
+                        {% else %}
+
+                            <div class="badge-logo-placeholder">
+
+                                <i class="fas fa-school"></i>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <div class="school-info">
+
+                            <h2 class="school-name">
+
+                                {% if etablissement %}
+
+                                    {{ etablissement.nom_ecole }}
+
+                                {% else %}
+
+                                    ÉTABLISSEMENT SCOLAIRE
+
+                                {% endif %}
+
+                            </h2>
+
+
+                            {% if etablissement and etablissement.devise_ecole %}
+
+                                <p class="school-motto">
+
+                                    {{ etablissement.devise_ecole }}
+
+                                </p>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         CORPS
+                    ================================================== -->
+
+                    <div class="badge-body">
+
+
+                        <!-- PHOTO -->
+
+                        <div class="photo-container">
+
+                            {% if enseignant.photo %}
+
+                                <img
+                                    src="{{ enseignant.photo.url }}"
+                                    alt="{{ enseignant.nom }} {{ enseignant.prenom }}"
+                                    class="teacher-photo"
+                                >
+
+                            {% else %}
+
+                                <div class="photo-placeholder">
+
+                                    <i class="fas fa-user"></i>
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- INFORMATIONS -->
+
+                        <div class="teacher-info">
+
+
+                            <div class="badge-type">
+
+                                ENSEIGNANT
+
+                            </div>
+
+
+                            <h1 class="teacher-name">
+
+                                {{ enseignant.nom|upper }}
+
+                                {{ enseignant.prenom }}
+
+                            </h1>
+
+
+                            {% if enseignant.specialite %}
+
+                                <div class="info-line">
+
+                                    <span class="info-icon">
+
+                                        <i class="fas fa-graduation-cap"></i>
+
+                                    </span>
+
+                                    <span class="info-label">
+
+                                        Spécialité :
+
+                                    </span>
+
+                                    <span class="info-value">
+
+                                        {{ enseignant.specialite }}
+
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if enseignant.telephone %}
+
+                                <div class="info-line">
+
+                                    <span class="info-icon">
+
+                                        <i class="fas fa-phone"></i>
+
+                                    </span>
+
+                                    <span class="info-label">
+
+                                        Tél :
+
+                                    </span>
+
+                                    <span class="info-value">
+
+                                        {{ enseignant.telephone }}
+
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if enseignant.email %}
+
+                                <div class="info-line">
+
+                                    <span class="info-icon">
+
+                                        <i class="fas fa-envelope"></i>
+
+                                    </span>
+
+                                    <span class="info-label">
+
+                                        Email :
+
+                                    </span>
+
+                                    <span class="info-value">
+
+                                        {{ enseignant.email }}
+
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         PIED
+                    ================================================== -->
+
+                    <div class="badge-footer">
+
+                        CARTE PROFESSIONNELLE — ENSEIGNANT
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- =================================================
+                     ACTIONS
+                ================================================== -->
+
+                <div class="badge-actions">
+
+                    <a
+                        href="javascript:history.back()"
+                        class="btn btn-secondary"
+                    >
+
+                        <i class="fas fa-arrow-left mr-1"></i>
+
+                        Retour
+
+                    </a>
+
+
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        onclick="window.print()"
+                    >
+
+                        <i class="fas fa-print mr-1"></i>
+
+                        Imprimer le badge
+
+                    </button>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock contenu %}
+
+
+{% block scripte %}
+
+<script>
+
+    /*
+     * Impression directe du badge
+     */
+    function imprimerBadge() {
+
+        window.print();
+
+    }
+
+</script>
+
+{% endblock scripte %}
+

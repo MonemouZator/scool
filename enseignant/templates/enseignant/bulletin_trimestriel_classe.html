@@ -1,186 +1,1296 @@
+
 {% extends "login/enseignant_dashboard.html" %}
 {% load static %}
+
 {% block styl_parent %}
+
 <title>Bulletins Trimestriels | Enseignant</title>
+
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700&display=fallback">
+
 <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+
 <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+
 <style>
-  .content-wrapper {
-    padding: 15px;
+
+/* ==========================================================
+   RÈGLES GÉNÉRALES
+   ========================================================== */
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden !important;
+    box-sizing: border-box;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+
+/* ==========================================================
+   CONTENEUR PRINCIPAL
+   IMPORTANT :
+   Ne pas mettre width:100% ici car AdminLTE gère déjà
+   la largeur du content-wrapper.
+   ========================================================== */
+
+.content-wrapper {
     background-color: #fefefe;
-  }
-  .eleve-section {
-    margin-bottom: 40px;
+    min-height: calc(100vh - 57px);
+
+    padding: 15px;
+
+    max-width: 100%;
+    overflow-x: hidden !important;
+}
+
+
+/* ==========================================================
+   TITRE DE LA PAGE
+   ========================================================== */
+
+.content-header {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.content-header h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+
+/* ==========================================================
+   FILTRE
+   ========================================================== */
+
+.filter-card {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto 25px auto;
+}
+
+.filter-card .card {
+    width: 100%;
+    margin: 0;
+}
+
+.filter-card .card-header {
     padding: 20px;
-    border: 2px solid #000;
-  }
-  .eleve-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-  .infos-right {
-    text-align: right;
-    font-size: 15px;
-  }
-  @media print {
-    .no-print, .breadcrumb, footer {
-      display: none !important;
+}
+
+
+/* ==========================================================
+   BULLETIN
+   ========================================================== */
+
+.eleve-section {
+
+    /*
+       Le bulletin est limité sur grand écran pour avoir
+       une présentation propre.
+    */
+    width: 100%;
+    max-width: 1000px;
+
+    margin: 0 auto 40px auto;
+
+    padding: 25px;
+
+    background-color: #ffffff;
+
+    border: 2px solid #000000;
+
+    /*
+       Empêche tout dépassement du contenu.
+    */
+    overflow: hidden;
+
+    box-sizing: border-box;
+}
+
+
+/* ==========================================================
+   EN-TÊTE DU BULLETIN
+   ========================================================== */
+
+.eleve-header {
+
+    width: 100%;
+
+    display: grid;
+
+    /*
+       Colonne photo | centre école | colonne vide
+       La colonne droite permet de garder le centre
+       parfaitement centré.
+    */
+    grid-template-columns: 100px minmax(0, 1fr) 100px;
+
+    align-items: start;
+
+    column-gap: 15px;
+
+    margin-bottom: 20px;
+}
+
+
+/* ==========================================================
+   PHOTO
+   ========================================================== */
+
+.photo-eleve {
+
+    width: 100px;
+
+    min-width: 0;
+
+    text-align: left;
+}
+
+.photo-eleve img {
+
+    display: block;
+
+    width: 90px;
+    height: 90px;
+
+    max-width: 100%;
+
+    object-fit: cover;
+
+    border: 1px solid #000;
+
+    margin: 0;
+}
+
+
+/* ==========================================================
+   INFORMATIONS ÉCOLE
+   ========================================================== */
+
+.ecole-header {
+
+    width: 100%;
+
+    min-width: 0;
+
+    text-align: center;
+
+    overflow-wrap: anywhere;
+
+    word-wrap: break-word;
+}
+
+.ecole-header h4 {
+
+    margin: 3px 0;
+
+    font-size: 18px;
+
+    line-height: 1.3;
+}
+
+.ecole-header p {
+
+    margin: 3px 0;
+
+    font-size: 14px;
+
+    line-height: 1.3;
+}
+
+.ecole-header strong {
+
+    display: inline-block;
+
+    margin-top: 4px;
+
+    font-size: 14px;
+
+    line-height: 1.4;
+}
+
+
+/* ==========================================================
+   TABLEAUX
+   ========================================================== */
+
+.eleve-section table {
+
+    width: 100% !important;
+
+    max-width: 100% !important;
+
+    margin: 0 0 20px 0;
+
+    border-collapse: collapse;
+
+    table-layout: fixed;
+
+    /*
+       Très important pour empêcher les tableaux
+       de dépasser horizontalement.
+    */
+    word-wrap: break-word;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* ==========================================================
+   CELLULES
+   ========================================================== */
+
+.eleve-section th,
+.eleve-section td {
+
+    padding: 9px 10px;
+
+    vertical-align: middle;
+
+    text-align: center;
+
+    /*
+       Empêche les textes longs de forcer
+       la largeur du tableau.
+    */
+    overflow-wrap: anywhere;
+
+    word-break: normal;
+
+    white-space: normal;
+
+    max-width: 100%;
+}
+
+
+/* ==========================================================
+   TABLEAU 1 : INFORMATIONS ÉLÈVE
+   ========================================================== */
+
+.eleve-info-table th:nth-child(1),
+.eleve-info-table td:nth-child(1) {
+    width: 30%;
+}
+
+.eleve-info-table th:nth-child(2),
+.eleve-info-table td:nth-child(2) {
+    width: 30%;
+}
+
+.eleve-info-table th:nth-child(3),
+.eleve-info-table td:nth-child(3) {
+    width: 40%;
+}
+
+
+/* ==========================================================
+   TABLEAU 2 : NOTES
+   ========================================================== */
+
+.notes-table th:first-child,
+.notes-table td:first-child {
+
+    width: 70%;
+
+    text-align: left;
+}
+
+.notes-table th:last-child,
+.notes-table td:last-child {
+
+    width: 30%;
+
+    text-align: center;
+}
+
+
+/* ==========================================================
+   TABLEAU 3 : RÉSULTAT
+   ========================================================== */
+
+.resultat-table th:nth-child(1),
+.resultat-table td:nth-child(1) {
+
+    width: 20%;
+}
+
+.resultat-table th:nth-child(2),
+.resultat-table td:nth-child(2) {
+
+    width: 30%;
+}
+
+.resultat-table th:nth-child(3),
+.resultat-table td:nth-child(3) {
+
+    width: 50%;
+}
+
+
+/* ==========================================================
+   SIGNATURE
+   ========================================================== */
+
+.signature {
+
+    width: 100%;
+
+    text-align: center;
+
+    margin-top: 35px;
+
+    overflow-wrap: anywhere;
+}
+
+
+/* ==========================================================
+   ÉCRANS MOYENS
+   ========================================================== */
+
+@media (max-width: 1100px) {
+
+    .content-wrapper {
+        padding: 12px;
     }
+
     .eleve-section {
-      page-break-after: always;
-      border: none;
+        max-width: 100%;
+        padding: 20px;
     }
-  }
+
+}
+
+
+/* ==========================================================
+   TABLETTES
+   ========================================================== */
+
+@media (max-width: 768px) {
+
+    .content-wrapper {
+        padding: 8px;
+    }
+
+
+    /* ------------------------------------------------------
+       TITRE
+       ------------------------------------------------------ */
+
+    .content-header h1 {
+        font-size: 22px;
+    }
+
+
+    /* ------------------------------------------------------
+       FILTRE
+       ------------------------------------------------------ */
+
+    .filter-card .card-header {
+        padding: 15px;
+    }
+
+
+    /* ------------------------------------------------------
+       BULLETIN
+       ------------------------------------------------------ */
+
+    .eleve-section {
+
+        width: 100%;
+
+        max-width: 100%;
+
+        padding: 15px;
+
+        margin-bottom: 25px;
+
+        border-width: 1px;
+    }
+
+
+    /* ------------------------------------------------------
+       EN-TÊTE
+       ------------------------------------------------------ */
+
+    .eleve-header {
+
+        display: grid;
+
+        grid-template-columns: 75px minmax(0, 1fr) 0;
+
+        column-gap: 10px;
+
+        align-items: start;
+    }
+
+
+    .photo-eleve {
+
+        width: 75px;
+    }
+
+
+    .photo-eleve img {
+
+        width: 70px;
+
+        height: 70px;
+    }
+
+
+    .ecole-header h4 {
+
+        font-size: 16px;
+    }
+
+
+    .ecole-header p {
+
+        font-size: 12px;
+    }
+
+
+    .ecole-header strong {
+
+        font-size: 12px;
+    }
+
+
+    /* ------------------------------------------------------
+       TABLEAUX
+       ------------------------------------------------------ */
+
+    .eleve-section table {
+
+        font-size: 12px;
+
+        margin-bottom: 15px;
+    }
+
+
+    .eleve-section th,
+    .eleve-section td {
+
+        padding: 7px 5px;
+    }
+
+
+    /* TABLEAU INFORMATIONS */
+
+    .eleve-info-table th:nth-child(1),
+    .eleve-info-table td:nth-child(1) {
+
+        width: 30%;
+    }
+
+    .eleve-info-table th:nth-child(2),
+    .eleve-info-table td:nth-child(2) {
+
+        width: 30%;
+    }
+
+    .eleve-info-table th:nth-child(3),
+    .eleve-info-table td:nth-child(3) {
+
+        width: 40%;
+    }
+
+
+    /* TABLEAU NOTES */
+
+    .notes-table th:first-child,
+    .notes-table td:first-child {
+
+        width: 65%;
+    }
+
+    .notes-table th:last-child,
+    .notes-table td:last-child {
+
+        width: 35%;
+    }
+
+
+    /* TABLEAU RÉSULTAT */
+
+    .resultat-table th:nth-child(1),
+    .resultat-table td:nth-child(1) {
+
+        width: 20%;
+    }
+
+    .resultat-table th:nth-child(2),
+    .resultat-table td:nth-child(2) {
+
+        width: 30%;
+    }
+
+    .resultat-table th:nth-child(3),
+    .resultat-table td:nth-child(3) {
+
+        width: 50%;
+    }
+
+
+    /* ------------------------------------------------------
+       SIGNATURE
+       ------------------------------------------------------ */
+
+    .signature {
+
+        margin-top: 25px;
+
+        font-size: 13px;
+    }
+
+}
+
+
+/* ==========================================================
+   PETITS TÉLÉPHONES
+   ========================================================== */
+
+@media (max-width: 480px) {
+
+    .content-wrapper {
+        padding: 5px;
+    }
+
+
+    .content-header h1 {
+        font-size: 19px;
+    }
+
+
+    .eleve-section {
+
+        padding: 8px;
+
+        margin-bottom: 20px;
+    }
+
+
+    /* ------------------------------------------------------
+       EN-TÊTE MOBILE
+       ------------------------------------------------------ */
+
+    .eleve-header {
+
+        display: flex;
+
+        flex-direction: column;
+
+        align-items: center;
+
+        gap: 8px;
+
+        text-align: center;
+    }
+
+
+    .photo-eleve {
+
+        width: 100%;
+
+        text-align: center;
+    }
+
+
+    .photo-eleve img {
+
+        width: 75px;
+
+        height: 75px;
+
+        margin: 0 auto;
+    }
+
+
+    .ecole-header {
+
+        width: 100%;
+
+        text-align: center;
+    }
+
+
+    .ecole-header h4 {
+
+        font-size: 14px;
+
+        margin: 2px 0;
+    }
+
+
+    .ecole-header p {
+
+        font-size: 11px;
+
+        margin: 2px 0;
+    }
+
+
+    .ecole-header strong {
+
+        font-size: 11px;
+    }
+
+
+    /* ------------------------------------------------------
+       TABLEAUX MOBILE
+       ------------------------------------------------------ */
+
+    .eleve-section table {
+
+        width: 100% !important;
+
+        font-size: 11px;
+    }
+
+
+    .eleve-section th,
+    .eleve-section td {
+
+        padding: 6px 3px;
+    }
+
+
+    .signature {
+
+        font-size: 11px;
+
+        margin-top: 20px;
+    }
+
+
+    .btn {
+
+        width: 100%;
+    }
+
+}
+
+
+/* ==========================================================
+   TRÈS PETITS ÉCRANS
+   ========================================================== */
+
+@media (max-width: 360px) {
+
+    .eleve-section {
+
+        padding: 6px;
+    }
+
+
+    .eleve-section table {
+
+        font-size: 10px;
+    }
+
+
+    .eleve-section th,
+    .eleve-section td {
+
+        padding: 5px 2px;
+    }
+
+
+    .ecole-header h4 {
+
+        font-size: 13px;
+    }
+
+
+    .ecole-header p,
+    .ecole-header strong {
+
+        font-size: 10px;
+    }
+
+}
+
+
+/* ==========================================================
+   IMPRESSION
+   ========================================================== */
+
+@media print {
+
+    html,
+    body {
+
+        width: 100% !important;
+
+        max-width: none !important;
+
+        overflow: visible !important;
+    }
+
+
+    .no-print,
+    .breadcrumb,
+    footer,
+    .main-sidebar,
+    .main-header {
+
+        display: none !important;
+    }
+
+
+    .content-wrapper {
+
+        margin-left: 0 !important;
+
+        padding: 0 !important;
+
+        width: 100% !important;
+
+        max-width: none !important;
+
+        min-height: auto !important;
+
+        overflow: visible !important;
+    }
+
+
+    .eleve-section {
+
+        width: 100% !important;
+
+        max-width: none !important;
+
+        margin: 0 !important;
+
+        padding: 15px !important;
+
+        border: 2px solid #000 !important;
+
+        overflow: visible !important;
+
+        page-break-after: always;
+    }
+
+
+    .eleve-section:last-child {
+
+        page-break-after: auto;
+    }
+
+
+    .eleve-section table {
+
+        width: 100% !important;
+
+        max-width: 100% !important;
+
+        page-break-inside: avoid;
+    }
+
+
+    .eleve-header {
+
+        display: grid !important;
+
+        grid-template-columns: 100px minmax(0, 1fr) 100px !important;
+    }
+
+}
+
 </style>
+
 {% endblock %}
+
 
 {% block body %}
+
 <body class="hold-transition sidebar-mini">
+
 {% endblock %}
 
+
 {% block contenu %}
- <div class="content-wrapper p-4" style="max-height: calc(100vh - 150px); overflow-y: auto;">
-  <!-- TITRE -->
-  <section class="content-header">
-    <h1>Bulletins Trimestriels </h1>
-  </section>
-  <!-- FILTRE -->
-  <section class="content no-print">
-    <div class="card">
-      <div class="card-header">
-        <form method="get">
-          <div class="row">
-            <div class="col-md-4">
-              <label>Classe</label>
-              <select name="groupe_classe" class="form-control" required>
-                <option value="">-- Sélectionner --</option>
-                {% for g in groupes_classes %}
-                  <option value="{{ g.id }}" {% if request.GET.groupe_classe == g.id|stringformat:"s" %}selected{% endif %}>
-                    {{ g.nom }}
-                  </option>
-                {% endfor %}
-              </select>
+
+<div class="content-wrapper">
+
+    <!-- =====================================================
+         TITRE
+         ===================================================== -->
+
+    <section class="content-header">
+
+        <h1>
+            Bulletins Trimestriels
+        </h1>
+
+    </section>
+
+
+    <!-- =====================================================
+         FILTRE
+         ===================================================== -->
+
+    <section class="content no-print filter-card">
+
+        <div class="card">
+
+            <div class="card-header">
+
+                <form method="get">
+
+                    <div class="row">
+
+                        <!-- CLASSE -->
+
+                        <div class="col-md-4 mb-2">
+
+                            <label>
+                                Classe
+                            </label>
+
+                            <select
+                                name="groupe_classe"
+                                class="form-control"
+                                required
+                            >
+
+                                <option value="">
+                                    -- Sélectionner --
+                                </option>
+
+                                {% for g in groupes_classes %}
+
+                                    <option
+                                        value="{{ g.id }}"
+                                        {% if request.GET.groupe_classe == g.id|stringformat:"s" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {{ g.nom }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- ANNÉE SCOLAIRE -->
+
+                        <div class="col-md-4 mb-2">
+
+                            <label>
+                                Année scolaire
+                            </label>
+
+                            <select
+                                name="annee_scolaire"
+                                class="form-control"
+                                required
+                            >
+
+                                <option value="">
+                                    -- Sélectionner --
+                                </option>
+
+                                {% for a in annees_scolaires %}
+
+                                    <option
+                                        value="{{ a.id }}"
+                                        {% if request.GET.annee_scolaire == a.id|stringformat:"s" %}
+                                            selected
+                                        {% endif %}
+                                    >
+                                        {{ a.nom }}
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+
+                        <!-- TRIMESTRE -->
+
+                        <div class="col-md-4 mb-2">
+
+                            <label>
+                                Trimestre
+                            </label>
+
+                            <select
+                                name="trimestre"
+                                class="form-control"
+                                required
+                            >
+
+                                <option value="">
+                                    -- Sélectionner --
+                                </option>
+
+                                <option
+                                    value="1"
+                                    {% if request.GET.trimestre == "1" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    1er
+                                </option>
+
+                                <option
+                                    value="2"
+                                    {% if request.GET.trimestre == "2" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    2ème
+                                </option>
+
+                                <option
+                                    value="3"
+                                    {% if request.GET.trimestre == "3" %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    3ème
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary mt-3"
+                    >
+
+                        <i class="fas fa-search"></i>
+
+                        Afficher
+
+                    </button>
+
+                </form>
+
             </div>
-            <div class="col-md-4">
-              <label>Année scolaire</label>
-              <select name="annee_scolaire" class="form-control" required>
-                <option value="">-- Sélectionner --</option>
-                {% for a in annees_scolaires %}
-                  <option value="{{ a.id }}" {% if request.GET.annee_scolaire == a.id|stringformat:"s" %}selected{% endif %}>
-                    {{ a.nom }}
-                  </option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label>Trimestre</label>
-              <select name="trimestre" class="form-control" required>
-                <option value="">-- Sélectionner --</option>
-                <option value="1" {% if request.GET.trimestre == "1" %}selected{% endif %}>1er</option>
-                <option value="2" {% if request.GET.trimestre == "2" %}selected{% endif %}>2ème</option>
-                <option value="3" {% if request.GET.trimestre == "3" %}selected{% endif %}>3ème</option>
-              </select>
-            </div>
-          </div>
-          <button class="btn btn-primary mt-3">
-            <i class="fas fa-search"></i> Afficher
-          </button>
-          {% comment %} <button type="button" onclick="window.print()" class="btn btn-success mt-3">
-            <i class="fas fa-print"></i> Imprimer
-          </button> {% endcomment %}
-        </form>
-      </div>
-    </div>
-  </section>
-  <!-- BULLETINS -->
-  <section class="content">
-    {% if bulletins_trimestriels %}
-      {% for bulletin in bulletins_trimestriels %}
-      <div class="eleve-section">
-        <!-- EN-TÊTE -->
-        <div class="eleve-header">
-          <div>
-            {% if bulletin.bulletin.eleve.photo %}
-              <img src="{{ bulletin.bulletin.eleve.photo.url }}" width="90">
-            {% endif %}
-          </div>
-          <div style="text-align:center; flex:1;">
-            {% for ecole in ecoles %}
-                    <h4>{{ ecole.pays }}</h4>
-      <p>{{ ecole.devise_pays }}</p>
-        <h4>{{ ecole.nom_ecole }}</h4>
-        <p>{{ ecole.devise_ecole }}</p>
-              <strong>Bulletin du {{ request.GET.trimestre }}ᵉ Trimestre</strong><br>
-              Classe : {{ bulletin.bulletin.eleve.groupe_classe }}
-            {% endfor %}
-          </div>
-          {% comment %} <div class="infos-right">
-            {% for ecole in ecoles %}
-              <strong>IRE : {{ ecole.ire }}</strong><br>
-              <strong>DPE : {{ ecole.dpe }}</strong>
-            {% endfor %}
-          </div> {% endcomment %}
+
         </div>
-        <!-- INFOS ELEVE -->
-        <table class="table table-bordered mt-3">
-          <tr>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Date de naissance</th>
-          </tr>
-          <tr>
-            <td>{{ bulletin.bulletin.eleve.nom }}</td>
-            <td>{{ bulletin.bulletin.eleve.prenom }}</td>
-            <td>{{ bulletin.bulletin.eleve.date_naissance }}</td>
-          </tr>
-        </table>
-        <!-- NOTES -->
-        <table class="table table-bordered table-striped">
-          <tr>
-            <th>Matière</th>
-            <th>Moyenne</th>
-          </tr>
-          {% for n in bulletin.notes %}
-          <tr>
-            <td>{{ n.matiere__nom }}</td>
-            <td>{{ n.moyenne_matiere }}</td>
-          </tr>
-          {% endfor %}
-        </table>
-        <!-- RESULTAT -->
-        <table class="table table-bordered">
-          <tr>
-            <th>Rang</th>
-            <th>Moyenne Générale</th>
-            <th>Observation</th>
-          </tr>
-          <tr>
-            <td>{{ bulletin.rang_formate }}</td>
-            <td>{{ bulletin.moyenne_totale }}</td>
-            <td>{{ bulletin.observation }}</td>
-          </tr>
-        </table>
-        <!-- SIGNATURE -->
-        <div class="text-center mt-4">
-          {% for ecole in ecoles %}
-            <strong>Le Directeur</strong><br><br>
-            <strong>{{ ecole.responsable }}</strong>
-          {% endfor %}
-        </div>
-      </div>
-      {% endfor %}
-    {% else %}
-      <p class="alert alert-warning text-center">
-        Aucun bulletin disponible pour cette classe.
-      </p>
-    {% endif %}
-  </section>
+
+    </section>
+
+
+    <!-- =====================================================
+         BULLETINS
+         ===================================================== -->
+
+    <section class="content">
+
+        {% if bulletins_trimestriels %}
+
+            {% for bulletin in bulletins_trimestriels %}
+
+                <div class="eleve-section">
+
+
+                    <!-- =========================================
+                         EN-TÊTE
+                         ========================================= -->
+
+                    <div class="eleve-header">
+
+                        <!-- PHOTO -->
+
+                        <div class="photo-eleve">
+
+                            {% if bulletin.eleve.photo %}
+
+                                <img
+                                    src="{{ bulletin.eleve.photo.url }}"
+                                    alt="Photo de {{ bulletin.eleve.nom }}"
+                                >
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ÉTABLISSEMENT -->
+
+                        <div class="ecole-header">
+
+                            {% for ecole in ecoles %}
+
+                                <h4>
+                                    {{ ecole.pays }}
+                                </h4>
+
+                                <p>
+                                    {{ ecole.devise_pays }}
+                                </p>
+
+                                <h4>
+                                    {{ ecole.nom_ecole }}
+                                </h4>
+
+                                <p>
+                                    {{ ecole.devise_ecole }}
+                                </p>
+
+                                <strong>
+                                    Bulletin du
+                                    {{ request.GET.trimestre }}ᵉ Trimestre
+                                </strong>
+
+                                <br>
+
+                                <strong>
+                                    Classe :
+                                    {{ bulletin.inscription.groupe_classe.nom }}
+                                </strong>
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <!-- COLONNE DROITE VIDE
+                             Elle sert à garder le centre
+                             parfaitement centré sur ordinateur. -->
+
+                        <div></div>
+
+                    </div>
+
+
+                    <!-- =========================================
+                         TABLEAU 1 : INFORMATIONS ÉLÈVE
+                         ========================================= -->
+
+                    <table class="table table-bordered eleve-info-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Nom
+                                </th>
+
+                                <th>
+                                    Prénom
+                                </th>
+
+                                <th>
+                                    Date de naissance
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    {{ bulletin.eleve.nom }}
+                                </td>
+
+                                <td>
+                                    {{ bulletin.eleve.prenom }}
+                                </td>
+
+                                <td>
+                                    {{ bulletin.eleve.date_naissance }}
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+
+                    <!-- =========================================
+                         TABLEAU 2 : NOTES
+                         ========================================= -->
+
+                    <table class="table table-bordered table-striped notes-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Matière
+                                </th>
+
+                                <th>
+                                    Moyenne
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for n in bulletin.notes %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ n.matiere__nom }}
+                                    </td>
+
+                                    <td>
+                                        {{ n.moyenne_matiere }}
+                                    </td>
+
+                                </tr>
+
+                            {% empty %}
+
+                                <tr>
+
+                                    <td colspan="2">
+                                        Aucune note disponible
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+
+                    <!-- =========================================
+                         TABLEAU 3 : RÉSULTAT
+                         ========================================= -->
+
+                    <table class="table table-bordered resultat-table">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Rang
+                                </th>
+
+                                <th>
+                                    Moyenne Générale
+                                </th>
+
+                                <th>
+                                    Observation
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    {{ bulletin.rang_formate|default:"-" }}
+                                </td>
+
+                                <td>
+
+                                    {% if bulletin.moyenne_totale != None %}
+
+                                        {{ bulletin.moyenne_totale }}
+
+                                    {% else %}
+
+                                        -
+
+                                    {% endif %}
+
+                                </td>
+
+                                <td>
+                                    {{ bulletin.observation|default:"-" }}
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+
+                    <!-- =========================================
+                         SIGNATURE
+                         ========================================= -->
+
+                    <div class="signature">
+
+                        {% for ecole in ecoles %}
+
+                            <strong>
+                                Le Directeur
+                            </strong>
+
+                            <br><br>
+
+                            <strong>
+                                {{ ecole.responsable }}
+                            </strong>
+
+                        {% endfor %}
+
+                    </div>
+
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="alert alert-warning text-center">
+
+                Aucun bulletin disponible pour cette classe.
+
+            </p>
+
+        {% endif %}
+
+    </section>
+
 </div>
+
 {% endblock %}
+
+
 {% block scripte %}
+
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
 {% endblock %}
+

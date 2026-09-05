@@ -1,0 +1,2091 @@
+
+{% extends "login/enseignant_dashboard.html" %}
+{% load static %}
+
+{% block styl_parent %}
+
+<title>Enseignant | Notes</title>
+
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/css/adminlte.min.css' %}">
+
+<style>
+
+/* ==========================================================
+   GLOBAL
+========================================================== */
+
+html,
+body {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden !important;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+.content-wrapper {
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    padding: 20px;
+}
+
+.container-fluid {
+    width: 100%;
+    max-width: 100%;
+    margin: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    overflow-x: hidden;
+}
+
+
+/* ==========================================================
+   EN-TÊTE
+========================================================== */
+
+.page-header {
+    width: 100%;
+    margin-bottom: 25px;
+    overflow-wrap: anywhere;
+}
+
+.page-header h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.3;
+}
+
+.page-header h1 i {
+    margin-right: 8px;
+}
+
+.page-header p {
+    margin-top: 8px;
+    margin-bottom: 0;
+    color: #6c757d;
+    font-size: 15px;
+}
+
+
+/* ==========================================================
+   FILTRES
+========================================================== */
+
+.filter-card {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 25px;
+    padding: 20px;
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.filter-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.filter-title i {
+    color: #007bff;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.form-control {
+    width: 100% !important;
+    max-width: 100%;
+    min-width: 0;
+}
+
+.btn-search {
+    width: 100%;
+    min-height: 38px;
+    margin-top: 29px;
+    white-space: nowrap;
+}
+
+
+/* ==========================================================
+   INFORMATIONS SÉLECTION
+========================================================== */
+
+.selection-info {
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    padding: 12px 15px;
+    background: #f8f9fa;
+    border-left: 4px solid #007bff;
+    border-radius: 4px;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+
+/* ==========================================================
+   RÉSULTATS
+========================================================== */
+
+.result-card {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 25px;
+    background: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.result-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.result-header h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.result-header h4 i {
+    margin-right: 7px;
+}
+
+
+/* ==========================================================
+   TABLEAU
+========================================================== */
+
+.table-container {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.notes-table {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.notes-table th,
+.notes-table td {
+    vertical-align: middle;
+    padding: 10px 8px;
+    overflow-wrap: anywhere;
+    white-space: normal;
+}
+
+.notes-table th:nth-child(1),
+.notes-table td:nth-child(1) {
+    width: 5%;
+}
+
+.notes-table th:nth-child(2),
+.notes-table td:nth-child(2) {
+    width: 15%;
+}
+
+.notes-table th:nth-child(3),
+.notes-table td:nth-child(3) {
+    width: 25%;
+}
+
+.notes-table th:nth-child(4),
+.notes-table td:nth-child(4) {
+    width: 13%;
+}
+
+.notes-table th:nth-child(5),
+.notes-table td:nth-child(5) {
+    width: 15%;
+}
+
+.notes-table th:nth-child(6),
+.notes-table td:nth-child(6) {
+    width: 13%;
+}
+
+.notes-table th:nth-child(7),
+.notes-table td:nth-child(7) {
+    width: 14%;
+}
+
+.student-name {
+    font-weight: 600;
+}
+
+.note-value {
+    text-align: center;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.no-note {
+    color: #6c757d;
+    font-weight: normal;
+}
+
+
+/* ==========================================================
+   BOUTON MODIFIER
+========================================================== */
+
+.btn-modifier {
+    white-space: nowrap;
+}
+
+
+/* ==========================================================
+   MODALE
+========================================================== */
+
+#modalModifierNote .modal-header {
+    background: #007bff;
+    color: #ffffff;
+}
+
+#modalModifierNote .modal-header .close {
+    color: #ffffff;
+    opacity: 1;
+}
+
+#modalModifierNote .modal-title {
+    font-weight: 600;
+}
+
+.student-info-modal {
+    background: #f8f9fa;
+    border-left: 4px solid #007bff;
+    border-radius: 5px;
+    padding: 12px 15px;
+    margin-bottom: 20px;
+}
+
+.student-info-modal .nom-eleve {
+    font-size: 18px;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.student-info-modal .matricule-eleve {
+    color: #6c757d;
+    font-size: 14px;
+}
+
+.modal-note-label {
+    font-weight: 600;
+}
+
+.note-input {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.modal-selection {
+    background: #f8f9fa;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.modal-selection div {
+    margin-bottom: 4px;
+}
+
+.modal-selection div:last-child {
+    margin-bottom: 0;
+}
+
+
+/* ==========================================================
+   BOÎTE VIDE
+========================================================== */
+
+.empty-box {
+    width: 100%;
+    padding: 50px 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.empty-box i {
+    margin-bottom: 15px;
+}
+
+.empty-box h5 {
+    margin-bottom: 8px;
+    color: #343a40;
+    font-size: 18px;
+}
+
+.empty-box p {
+    margin: 0;
+    font-size: 14px;
+}
+
+
+/* ==========================================================
+   DATATABLES
+========================================================== */
+
+.dataTables_wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+    padding: 15px;
+}
+
+.dataTables_wrapper .row {
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    max-width: 100%;
+    min-width: 0;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 991px) {
+
+    .content-wrapper {
+        padding: 12px;
+    }
+
+    .page-header h1 {
+        font-size: 24px;
+    }
+
+    .btn-search {
+        margin-top: 0;
+    }
+
+    .selection-info {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+    }
+}
+
+@media (max-width: 767px) {
+
+    .content-wrapper {
+        padding: 8px;
+    }
+
+    .page-header h1 {
+        font-size: 21px;
+    }
+
+    .filter-card {
+        padding: 12px;
+    }
+
+    .result-header {
+        padding: 12px;
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .notes-table {
+        font-size: 12px;
+    }
+
+    .notes-table th,
+    .notes-table td {
+        padding: 7px 5px;
+    }
+
+    .dataTables_wrapper {
+        padding: 10px;
+    }
+
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_length {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 10px;
+    }
+
+    .dataTables_wrapper .dataTables_filter input {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+}
+
+</style>
+
+{% endblock styl_parent %}
+
+
+{% block body %}
+
+<body class="hold-transition sidebar-mini">
+
+{% endblock body %}
+
+
+{% block contenu %}
+
+<div class="content-wrapper">
+
+<div class="container-fluid">
+
+
+    <!-- =====================================================
+         EN-TÊTE
+    ====================================================== -->
+
+    <div class="page-header">
+
+        <h1>
+            <i class="fas fa-edit"></i>
+            Modification des notes
+        </h1>
+
+        <p>
+            Recherchez les élèves et modifiez leurs notes
+            selon vos classes et matières affectées.
+        </p>
+
+    </div>
+
+
+    <!-- =====================================================
+         MESSAGES
+    ====================================================== -->
+
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="alert
+                {% if message.tags == 'error' %}
+                    alert-danger
+                {% elif message.tags == 'success' %}
+                    alert-success
+                {% elif message.tags == 'warning' %}
+                    alert-warning
+                {% else %}
+                    alert-info
+                {% endif %}
+                alert-dismissible fade show"
+                role="alert">
+
+                <i class="fas
+                    {% if message.tags == 'success' %}
+                        fa-check-circle
+                    {% elif message.tags == 'error' %}
+                        fa-exclamation-circle
+                    {% elif message.tags == 'warning' %}
+                        fa-exclamation-triangle
+                    {% else %}
+                        fa-info-circle
+                    {% endif %}
+                "></i>
+
+                {{ message }}
+
+                <button type="button"
+                        class="close"
+                        data-dismiss="alert">
+
+                    <span>&times;</span>
+
+                </button>
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         FILTRES
+    ====================================================== -->
+
+    <div class="filter-card">
+
+        <div class="filter-title">
+
+            <i class="fas fa-filter"></i>
+
+            Sélectionner les critères
+
+        </div>
+
+
+        <form method="GET" id="formRechercheNotes">
+
+            <div class="row">
+
+
+                <!-- =================================================
+                     ANNÉE
+                ================================================== -->
+
+                <div class="col-lg-2 col-md-4 col-sm-6">
+
+                    <div class="form-group">
+
+                        <label for="annee">
+                            <i class="fas fa-calendar-alt"></i>
+                            Année scolaire
+                        </label>
+
+                        <select
+                            name="annee"
+                            id="annee"
+                            class="form-control"
+                            required>
+
+                            <option value="">
+                                -- Sélectionner --
+                            </option>
+
+                            {% for annee in annees %}
+
+                                <option
+                                    value="{{ annee.id }}"
+                                    {% if annee_selectionnee|stringformat:"s" == annee.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}>
+
+                                    {{ annee.nom }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     NIVEAU
+                ================================================== -->
+
+                <div class="col-lg-2 col-md-4 col-sm-6">
+
+                    <div class="form-group">
+
+                        <label for="niveau">
+                            <i class="fas fa-layer-group"></i>
+                            Niveau
+                        </label>
+
+                        <select
+                            name="niveau"
+                            id="niveau"
+                            class="form-control"
+                            required>
+
+                            <option value="">
+                                -- Sélectionner --
+                            </option>
+
+                            {% for niveau in niveaux %}
+
+                                <option
+                                    value="{{ niveau.niveau_id }}"
+                                    {% if niveau_selectionne|stringformat:"s" == niveau.niveau_id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}>
+
+                                    {{ niveau.niveau__nom }}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     CLASSE
+                ================================================== -->
+
+                <div class="col-lg-2 col-md-4 col-sm-6">
+
+                    <div class="form-group">
+
+                        <label for="groupe">
+                            <i class="fas fa-users"></i>
+                            Classe
+                        </label>
+
+                        <select
+                            name="groupe"
+                            id="groupe"
+                            class="form-control"
+                            required
+                            {% if not niveau_selectionne %}
+                                disabled
+                            {% endif %}>
+
+                            {% if not niveau_selectionne %}
+
+                                <option value="">
+                                    -- Sélectionnez d'abord le niveau --
+                                </option>
+
+                            {% else %}
+
+                                <option value="">
+                                    -- Sélectionner --
+                                </option>
+
+                                {% for groupe in groupes %}
+
+                                    <option
+                                        value="{{ groupe.groupe_classe_id }}"
+                                        {% if groupe_selectionne|stringformat:"s" == groupe.groupe_classe_id|stringformat:"s" %}
+                                            selected
+                                        {% endif %}>
+
+                                        {{ groupe.groupe_classe__nom }}
+
+                                    </option>
+
+                                {% endfor %}
+
+                            {% endif %}
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     MATIÈRE
+                     
+                     IMPORTANT :
+                     Cette liste provient UNIQUEMENT des
+                     EnseignantMatiere de l'enseignant connecté.
+                ================================================== -->
+
+                <div class="col-lg-2 col-md-4 col-sm-6">
+
+                    <div class="form-group">
+
+                        <label for="matiere">
+                            <i class="fas fa-book"></i>
+                            Matière
+                        </label>
+
+                        <select
+                            name="matiere"
+                            id="matiere"
+                            class="form-control"
+                            required
+                            {% if not niveau_selectionne or not groupe_selectionne %}
+                                disabled
+                            {% endif %}>
+
+                            {% if not niveau_selectionne %}
+
+                                <option value="">
+                                    -- Sélectionnez d'abord le niveau --
+                                </option>
+
+                            {% elif not groupe_selectionne %}
+
+                                <option value="">
+                                    -- Sélectionnez d'abord la classe --
+                                </option>
+
+                            {% elif matieres %}
+
+                                <option value="">
+                                    -- Sélectionner la matière --
+                                </option>
+
+                                {% for matiere in matieres %}
+
+                                    <option
+                                        value="{{ matiere.matiere_id }}"
+                                        {% if matiere_selectionnee|stringformat:"s" == matiere.matiere_id|stringformat:"s" %}
+                                            selected
+                                        {% endif %}>
+
+                                        {{ matiere.matiere__nom }}
+
+                                    </option>
+
+                                {% endfor %}
+
+                            {% else %}
+
+                                <option value="">
+                                    Aucune matière affectée
+                                </option>
+
+                            {% endif %}
+
+                        </select>
+
+                        <small class="text-muted">
+
+                            {% if niveau_selectionne and groupe_selectionne %}
+
+                                <i class="fas fa-lock"></i>
+
+                                Seules les matières que vous enseignez
+                                dans cette classe sont disponibles.
+
+                            {% else %}
+
+                                <i class="fas fa-info-circle"></i>
+
+                                Sélectionnez d'abord le niveau et la classe.
+
+                            {% endif %}
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     TRIMESTRE
+                ================================================== -->
+
+                <div class="col-lg-2 col-md-4 col-sm-6">
+
+                    <div class="form-group">
+
+                        <label for="trimestre">
+                            <i class="fas fa-calendar-check"></i>
+                            Trimestre
+                        </label>
+
+                        <select
+                            name="trimestre"
+                            id="trimestre"
+                            class="form-control"
+                            required>
+
+                            <option value="">
+                                -- Sélectionner --
+                            </option>
+
+                            <option
+                                value="1"
+                                {% if trimestre_selectionne|stringformat:"s" == "1" %}
+                                    selected
+                                {% endif %}>
+
+                                Trimestre 1
+
+                            </option>
+
+                            <option
+                                value="2"
+                                {% if trimestre_selectionne|stringformat:"s" == "2" %}
+                                    selected
+                                {% endif %}>
+
+                                Trimestre 2
+
+                            </option>
+
+                            <option
+                                value="3"
+                                {% if trimestre_selectionne|stringformat:"s" == "3" %}
+                                    selected
+                                {% endif %}>
+
+                                Trimestre 3
+
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     RECHERCHER
+                ================================================== -->
+
+                <div class="col-lg-2 col-md-4 col-sm-6">
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary btn-block btn-search">
+
+                        <i class="fas fa-search"></i>
+
+                        Rechercher
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         INFORMATIONS DE SÉLECTION
+    ====================================================== -->
+
+    {% if annee_selectionnee and niveau_selectionne and groupe_selectionne and matiere_selectionnee and trimestre_selectionne %}
+
+        <div class="selection-info">
+
+            <i class="fas fa-info-circle text-primary"></i>
+
+            <strong>Recherche :</strong>
+
+
+            <span>
+
+                <strong>Année :</strong>
+
+                {% for annee in annees %}
+
+                    {% if annee.id|stringformat:"s" == annee_selectionnee|stringformat:"s" %}
+
+                        {{ annee.nom }}
+
+                    {% endif %}
+
+                {% endfor %}
+
+            </span>
+
+
+            <span>
+
+                <strong>Niveau :</strong>
+
+                {% for niveau in niveaux %}
+
+                    {% if niveau.niveau_id|stringformat:"s" == niveau_selectionne|stringformat:"s" %}
+
+                        {{ niveau.niveau__nom }}
+
+                    {% endif %}
+
+                {% endfor %}
+
+            </span>
+
+
+            <span>
+
+                <strong>Classe :</strong>
+
+                {% for groupe in groupes %}
+
+                    {% if groupe.groupe_classe_id|stringformat:"s" == groupe_selectionne|stringformat:"s" %}
+
+                        {{ groupe.groupe_classe__nom }}
+
+                    {% endif %}
+
+                {% endfor %}
+
+            </span>
+
+
+            <span>
+
+                <strong>Matière :</strong>
+
+                {% for matiere in matieres %}
+
+                    {% if matiere.matiere_id|stringformat:"s" == matiere_selectionnee|stringformat:"s" %}
+
+                        {{ matiere.matiere__nom }}
+
+                    {% endif %}
+
+                {% endfor %}
+
+            </span>
+
+
+            <span>
+
+                <strong>Trimestre :</strong>
+
+                {% if trimestre_selectionne|stringformat:"s" == "1" %}
+                    Trimestre 1
+                {% elif trimestre_selectionne|stringformat:"s" == "2" %}
+                    Trimestre 2
+                {% elif trimestre_selectionne|stringformat:"s" == "3" %}
+                    Trimestre 3
+                {% endif %}
+
+            </span>
+
+        </div>
+
+    {% endif %}
+
+
+    <!-- =====================================================
+         TABLEAU DES ÉLÈVES
+    ====================================================== -->
+
+    {% if eleves_notes %}
+
+        <div class="result-card">
+
+            <div class="result-header">
+
+                <h4>
+
+                    <i class="fas fa-users"></i>
+
+                    Liste des élèves
+
+                </h4>
+
+                <span class="badge badge-primary">
+
+                    {{ eleves_notes|length }} élève(s)
+
+                </span>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table
+                    id="table-notes"
+                    class="table table-bordered table-hover notes-table">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Matricule</th>
+
+                            <th>Élève</th>
+
+                            <th class="text-center">
+                                Note cours
+                            </th>
+
+                            <th class="text-center">
+                                Note composition
+                            </th>
+
+                            <th class="text-center">
+                                Note finale
+                            </th>
+
+                            <th class="text-center">
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                    {% for item in eleves_notes %}
+
+                        <tr>
+
+                            <!-- NUMÉRO -->
+
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+
+
+                            <!-- MATRICULE -->
+
+                            <td>
+
+                                {% if item.eleve.matricule %}
+
+                                    <strong>
+                                        {{ item.eleve.matricule }}
+                                    </strong>
+
+                                {% else %}
+
+                                    <span class="text-muted">
+                                        Non défini
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- ÉLÈVE -->
+
+                            <td>
+
+                                <div class="student-name">
+
+                                    {{ item.eleve.nom }}
+                                    {{ item.eleve.prenom }}
+
+                                </div>
+
+                            </td>
+
+
+                            {% if item.note %}
+
+                                <!-- NOTE COURS -->
+
+                                <td class="note-value">
+
+                                    {% if item.note.note_cours != None %}
+
+                                        {{ item.note.note_cours }}
+
+                                    {% else %}
+
+                                        <span class="no-note">
+                                            -
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- NOTE COMPOSITION -->
+
+                                <td class="note-value">
+
+                                    {% if item.note.note_comp != None %}
+
+                                        {{ item.note.note_comp }}
+
+                                    {% else %}
+
+                                        <span class="no-note">
+                                            -
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- NOTE FINALE -->
+
+                                <td class="note-value">
+
+                                    {% if item.note.note_finale != None %}
+
+                                        {{ item.note.note_finale }}
+
+                                    {% else %}
+
+                                        <span class="no-note">
+                                            -
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <!-- ACTION -->
+
+                                <td class="text-center">
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-warning btn-sm btn-modifier"
+
+                                        data-toggle="modal"
+                                        data-target="#modalModifierNote"
+
+                                        data-note-id="{{ item.note.id }}"
+
+                                        data-inscription-id="{{ item.inscription.id }}"
+
+                                        data-nom="{{ item.eleve.nom }}"
+
+                                        data-prenom="{{ item.eleve.prenom }}"
+
+                                        data-matricule="{{ item.eleve.matricule|default_if_none:'' }}"
+
+                                        data-note-cours="{{ item.note.note_cours|default_if_none:'' }}"
+
+                                        data-note-comp="{{ item.note.note_comp|default_if_none:'' }}">
+
+                                        <i class="fas fa-edit"></i>
+
+                                        Modifier
+
+                                    </button>
+
+                                </td>
+
+
+                            {% else %}
+
+                                <!-- AUCUNE NOTE -->
+
+                                <td
+                                    colspan="3"
+                                    class="text-center text-muted">
+
+                                    <i class="fas fa-minus-circle"></i>
+
+                                    Aucune note enregistrée
+
+                                </td>
+
+                                <td class="text-center">
+
+                                    <span class="badge badge-secondary">
+
+                                        Aucune note
+
+                                    </span>
+
+                                </td>
+
+                            {% endif %}
+
+                        </tr>
+
+                    {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+    {% elif annee_selectionnee and niveau_selectionne and groupe_selectionne and matiere_selectionnee and trimestre_selectionne %}
+
+
+        <!-- =====================================================
+             AUCUN ÉLÈVE
+        ====================================================== -->
+
+        <div class="result-card">
+
+            <div class="empty-box">
+
+                <i class="fas fa-users-slash fa-3x"></i>
+
+                <h5>
+                    Aucun élève trouvé
+                </h5>
+
+                <p>
+                    Aucun élève inscrit ne correspond
+                    aux critères sélectionnés.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    {% else %}
+
+
+        <!-- =====================================================
+             MESSAGE INITIAL
+        ====================================================== -->
+
+        <div class="result-card">
+
+            <div class="empty-box">
+
+                <i class="fas fa-search fa-3x"></i>
+
+                <h5>
+                    Rechercher les notes
+                </h5>
+
+                <p>
+                    Sélectionnez l'année scolaire, le niveau,
+                    la classe, la matière et le trimestre
+                    pour afficher les élèves.
+                </p>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+</div>
+
+
+<!-- ==========================================================
+     MODALE DE MODIFICATION
+=========================================================== -->
+
+<div
+    class="modal fade"
+    id="modalModifierNote"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="modalModifierNoteLabel"
+    aria-hidden="true">
+
+    <div
+        class="modal-dialog modal-lg modal-dialog-centered"
+        role="document">
+
+        <div class="modal-content">
+
+
+            <!-- =================================================
+                 EN-TÊTE
+            ================================================== -->
+
+            <div class="modal-header">
+
+                <h5
+                    class="modal-title"
+                    id="modalModifierNoteLabel">
+
+                    <i class="fas fa-edit"></i>
+
+                    Modifier les notes
+
+                </h5>
+
+                <button
+                    type="button"
+                    class="close"
+                    data-dismiss="modal"
+                    aria-label="Fermer">
+
+                    <span aria-hidden="true">
+                        &times;
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <!-- =================================================
+                 FORMULAIRE
+            ================================================== -->
+
+            <form
+                method="POST"
+                id="formModifierNote">
+
+                {% csrf_token %}
+
+
+                <div class="modal-body">
+
+
+                    <!-- =================================================
+                         IDENTIFIANTS
+                    ================================================== -->
+
+                    <input
+                        type="hidden"
+                        name="note_id"
+                        id="modal_note_id">
+
+
+                    <input
+                        type="hidden"
+                        name="inscription_id"
+                        id="modal_inscription_id">
+
+
+                    <!-- =================================================
+                         CRITÈRES
+                    ================================================== -->
+
+                    <input
+                        type="hidden"
+                        name="annee"
+                        value="{{ annee_selectionnee }}">
+
+                    <input
+                        type="hidden"
+                        name="niveau"
+                        value="{{ niveau_selectionne }}">
+
+                    <input
+                        type="hidden"
+                        name="groupe"
+                        value="{{ groupe_selectionne }}">
+
+                    <input
+                        type="hidden"
+                        name="matiere"
+                        value="{{ matiere_selectionnee }}">
+
+                    <input
+                        type="hidden"
+                        name="trimestre"
+                        value="{{ trimestre_selectionne }}">
+
+
+                    <!-- =================================================
+                         INFORMATIONS ÉLÈVE
+                    ================================================== -->
+
+                    <div class="student-info-modal">
+
+                        <div class="nom-eleve">
+
+                            <i class="fas fa-user-graduate"></i>
+
+                            <span id="modal_nom_eleve">
+                                -
+                            </span>
+
+                        </div>
+
+                        <div class="matricule-eleve">
+
+                            Matricule :
+
+                            <strong id="modal_matricule">
+                                -
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         CONTEXTE
+                    ================================================== -->
+
+                    <div class="modal-selection">
+
+                        <div>
+
+                            <strong>Année :</strong>
+
+                            {% for annee in annees %}
+
+                                {% if annee.id|stringformat:"s" == annee_selectionnee|stringformat:"s" %}
+
+                                    {{ annee.nom }}
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div>
+
+                            <strong>Niveau :</strong>
+
+                            {% for niveau in niveaux %}
+
+                                {% if niveau.niveau_id|stringformat:"s" == niveau_selectionne|stringformat:"s" %}
+
+                                    {{ niveau.niveau__nom }}
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div>
+
+                            <strong>Classe :</strong>
+
+                            {% for groupe in groupes %}
+
+                                {% if groupe.groupe_classe_id|stringformat:"s" == groupe_selectionne|stringformat:"s" %}
+
+                                    {{ groupe.groupe_classe__nom }}
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div>
+
+                            <strong>Matière :</strong>
+
+                            {% for matiere in matieres %}
+
+                                {% if matiere.matiere_id|stringformat:"s" == matiere_selectionnee|stringformat:"s" %}
+
+                                    {{ matiere.matiere__nom }}
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+
+                        <div>
+
+                            <strong>Trimestre :</strong>
+
+                            {% if trimestre_selectionne|stringformat:"s" == "1" %}
+                                Trimestre 1
+                            {% elif trimestre_selectionne|stringformat:"s" == "2" %}
+                                Trimestre 2
+                            {% elif trimestre_selectionne|stringformat:"s" == "3" %}
+                                Trimestre 3
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         NOTES
+                    ================================================== -->
+
+                    <div class="row">
+
+
+                        <!-- NOTE COURS -->
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+
+                                <label
+                                    for="modal_note_cours"
+                                    class="modal-note-label">
+
+                                    <i class="fas fa-book"></i>
+
+                                    Note cours
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="note_cours"
+                                    id="modal_note_cours"
+                                    class="form-control note-input"
+                                    min="0"
+                                    max="20"
+                                    step="0.01"
+                                    placeholder="0 - 20">
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- NOTE COMPOSITION -->
+
+                        <div class="col-md-6">
+
+                            <div class="form-group">
+
+                                <label
+                                    for="modal_note_comp"
+                                    class="modal-note-label">
+
+                                    <i class="fas fa-file-alt"></i>
+
+                                    Note composition
+
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="note_comp"
+                                    id="modal_note_comp"
+                                    class="form-control note-input"
+                                    min="0"
+                                    max="20"
+                                    step="0.01"
+                                    placeholder="0 - 20">
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         NOTE FINALE
+                    ================================================== -->
+
+                    <div class="alert alert-secondary mb-0">
+
+                        <i class="fas fa-calculator"></i>
+
+                        <strong>
+                            Note finale :
+                        </strong>
+
+                        calculée automatiquement.
+
+                        <br>
+
+                        <small class="text-muted">
+
+                            La note finale ne peut pas être
+                            saisie ou modifiée manuellement.
+
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     FOOTER
+                ================================================== -->
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal">
+
+                        <i class="fas fa-times"></i>
+
+                        Annuler
+
+                    </button>
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary">
+
+                        <i class="fas fa-save"></i>
+
+                        Enregistrer les modifications
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock contenu %}
+
+
+{% block scripte %}
+
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+
+<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+
+<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+
+<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+
+<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+
+<script src="{% static 'base/js/adminlte.min.js' %}"></script>
+
+
+<script>
+
+$(document).ready(function () {
+
+
+    /* ==========================================================
+       DATATABLES
+    ========================================================== */
+
+    if ($('#table-notes').length) {
+
+        $('#table-notes').DataTable({
+
+            responsive: true,
+
+            autoWidth: false,
+
+            lengthChange: false,
+
+            pageLength: 25,
+
+            ordering: false,
+
+            language: {
+
+                search: "Rechercher :",
+
+                zeroRecords:
+                    "Aucun élève trouvé.",
+
+                info:
+                    "Élèves _START_ à _END_ sur _TOTAL_",
+
+                infoEmpty:
+                    "Aucun élève",
+
+                infoFiltered:
+                    "(filtré sur _MAX_ élèves)",
+
+                paginate: {
+
+                    first: "Premier",
+
+                    last: "Dernier",
+
+                    next: "Suivant",
+
+                    previous: "Précédent"
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+    /* ==========================================================
+       CHANGEMENT DU NIVEAU
+       
+       On recharge la page pour afficher uniquement
+       les classes correspondant aux affectations
+       de l'enseignant pour ce niveau.
+    ========================================================== */
+
+    $('#niveau').on('change', function () {
+
+        var niveau = $(this).val();
+
+        var annee = $('#annee').val();
+
+        if (annee !== '' && niveau !== '') {
+
+            var url =
+                window.location.pathname +
+                '?annee=' +
+                encodeURIComponent(annee) +
+                '&niveau=' +
+                encodeURIComponent(niveau);
+
+            window.location.href = url;
+
+        }
+
+    });
+
+
+    /* ==========================================================
+       CHANGEMENT DE LA CLASSE
+       
+       Très important :
+       après sélection de la classe, on recharge la page.
+       
+       La vue Python reçoit :
+           annee
+           niveau
+           groupe
+       
+       et renvoie UNIQUEMENT les matières enseignées
+       par l'enseignant dans cette classe.
+    ========================================================== */
+
+    $('#groupe').on('change', function () {
+
+        var groupe = $(this).val();
+
+        var niveau = $('#niveau').val();
+
+        var annee = $('#annee').val();
+
+        if (
+            annee !== '' &&
+            niveau !== '' &&
+            groupe !== ''
+        ) {
+
+            var url =
+                window.location.pathname +
+                '?annee=' +
+                encodeURIComponent(annee) +
+                '&niveau=' +
+                encodeURIComponent(niveau) +
+                '&groupe=' +
+                encodeURIComponent(groupe);
+
+            window.location.href = url;
+
+        }
+
+    });
+
+
+    /* ==========================================================
+       OUVERTURE MODALE
+    ========================================================== */
+
+    $(document).on(
+        'click',
+        '.btn-modifier',
+        function () {
+
+            var bouton = $(this);
+
+
+            /* --------------------------------------------------
+               IDENTIFIANTS
+            -------------------------------------------------- */
+
+            var noteId =
+                bouton.attr('data-note-id');
+
+            var inscriptionId =
+                bouton.attr('data-inscription-id');
+
+
+            /* --------------------------------------------------
+               ÉLÈVE
+            -------------------------------------------------- */
+
+            var nom =
+                bouton.attr('data-nom') || '';
+
+            var prenom =
+                bouton.attr('data-prenom') || '';
+
+            var matricule =
+                bouton.attr('data-matricule') || '';
+
+
+            /* --------------------------------------------------
+               NOTES
+            -------------------------------------------------- */
+
+            var noteCours =
+                bouton.attr('data-note-cours');
+
+            var noteComp =
+                bouton.attr('data-note-comp');
+
+
+            /* --------------------------------------------------
+               REMPLIR LES CHAMPS CACHÉS
+            -------------------------------------------------- */
+
+            $('#modal_note_id')
+                .val(noteId || '');
+
+            $('#modal_inscription_id')
+                .val(inscriptionId || '');
+
+
+            /* --------------------------------------------------
+               INFORMATIONS ÉLÈVE
+            -------------------------------------------------- */
+
+            $('#modal_nom_eleve')
+                .text(
+                    (nom + ' ' + prenom).trim()
+                );
+
+            $('#modal_matricule')
+                .text(
+                    matricule || 'Non défini'
+                );
+
+
+            /* --------------------------------------------------
+               NOTES
+            -------------------------------------------------- */
+
+            $('#modal_note_cours')
+                .val(noteCours || '');
+
+            $('#modal_note_comp')
+                .val(noteComp || '');
+
+        }
+    );
+
+
+    /* ==========================================================
+       FERMETURE MODALE
+    ========================================================== */
+
+    $('#modalModifierNote').on(
+        'hidden.bs.modal',
+        function () {
+
+            $('#modal_note_id')
+                .val('');
+
+            $('#modal_inscription_id')
+                .val('');
+
+            $('#modal_nom_eleve')
+                .text('-');
+
+            $('#modal_matricule')
+                .text('-');
+
+            $('#modal_note_cours')
+                .val('');
+
+            $('#modal_note_comp')
+                .val('');
+
+        }
+    );
+
+
+    /* ==========================================================
+       VALIDATION DU FORMULAIRE
+    ========================================================== */
+
+    $('#formModifierNote').on(
+        'submit',
+        function (event) {
+
+            var noteCours =
+                $('#modal_note_cours').val();
+
+            var noteComp =
+                $('#modal_note_comp').val();
+
+
+            /* --------------------------------------------------
+               NOTE COURS
+            -------------------------------------------------- */
+
+            if (
+                noteCours !== '' &&
+                (
+                    isNaN(parseFloat(noteCours)) ||
+                    parseFloat(noteCours) < 0 ||
+                    parseFloat(noteCours) > 20
+                )
+            ) {
+
+                event.preventDefault();
+
+                alert(
+                    'La note de cours doit être comprise entre 0 et 20.'
+                );
+
+                $('#modal_note_cours').focus();
+
+                return false;
+
+            }
+
+
+            /* --------------------------------------------------
+               NOTE COMPOSITION
+            -------------------------------------------------- */
+
+            if (
+                noteComp !== '' &&
+                (
+                    isNaN(parseFloat(noteComp)) ||
+                    parseFloat(noteComp) < 0 ||
+                    parseFloat(noteComp) > 20
+                )
+            ) {
+
+                event.preventDefault();
+
+                alert(
+                    'La note de composition doit être comprise entre 0 et 20.'
+                );
+
+                $('#modal_note_comp').focus();
+
+                return false;
+
+            }
+
+
+            /* --------------------------------------------------
+               NOTE ID
+            -------------------------------------------------- */
+
+            if (
+                $('#modal_note_id').val() === ''
+            ) {
+
+                event.preventDefault();
+
+                alert(
+                    'Impossible d’identifier la note.'
+                );
+
+                return false;
+
+            }
+
+
+            /* --------------------------------------------------
+               INSCRIPTION ID
+            -------------------------------------------------- */
+
+            if (
+                $('#modal_inscription_id').val() === ''
+            ) {
+
+                event.preventDefault();
+
+                alert(
+                    'Impossible d’identifier l’inscription de l’élève.'
+                );
+
+                return false;
+
+            }
+
+
+            /* --------------------------------------------------
+               CRITÈRES
+            -------------------------------------------------- */
+
+            if (
+                $('input[name="annee"]').val() === '' ||
+                $('input[name="niveau"]').val() === '' ||
+                $('input[name="groupe"]').val() === '' ||
+                $('input[name="matiere"]').val() === '' ||
+                $('input[name="trimestre"]').val() === ''
+            ) {
+
+                event.preventDefault();
+
+                alert(
+                    'Les critères de recherche sont incomplets.'
+                );
+
+                return false;
+
+            }
+
+
+            return true;
+
+        }
+    );
+
+});
+
+</script>
+
+{% endblock scripte %}
+

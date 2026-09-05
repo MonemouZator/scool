@@ -36,6 +36,9 @@ urlpatterns = [
     path('enregistre-profil/etablissement/', views.enregistrement, name='enregistrement'),
     path('aficharge-profil/etablissement/', views.afficharge_info_ecole, name='afficharge_info_ecole'),
 
-    # Modification profil établissement
-    path('modification/<int:pk>/', views.modifier, name='modifier_info_ecole'),
+   path(
+    'etablissement/modification/<int:pk>/',
+    views.modifier_info_ecole,
+    name='modifier_info_ecole'
+),
 ]

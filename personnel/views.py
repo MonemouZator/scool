@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from annee_scolaire.models import AnneeScolaire
-from eleve.models import Eleve
+from eleve.models import Eleve,EleveInscrit
 from enseignant.models import Enseignant
 from niveau.models import Niveau
 from django.utils.timezone import now
@@ -268,73 +268,217 @@ def deloquer_compte(request):
 
 #LES TABLEAUX DE BORD DES DIFFERENTS UTILISATEURS CONCERNES
 
-# TABLEAUX DE BORD DU COMPTABLE
+# =========================================================
+# TABLEAU DE BORD DU COMPTABLE
+# =========================================================
+
 @login_required
 def comptable_dashboard(request):
+
+    # -----------------------------------------------------
+    # SERVICES DE L'UTILISATEUR
+    # -----------------------------------------------------
+
     services = request.session.get('services', [])
-    annee_selectionnee = AnneeScolaire.objects.filter(date_debut__lte=date.today(), date_fin__gte=date.today()).first()
+
+
+    # -----------------------------------------------------
+    # ANNÉE SCOLAIRE EN COURS
+    # -----------------------------------------------------
+
+    annee_selectionnee = (
+        AnneeScolaire.objects
+        .filter(
+            date_debut__lte=date.today(),
+            date_fin__gte=date.today()
+        )
+        .first()
+    )
+
+
+    # -----------------------------------------------------
+    # NOMBRE D'ÉLÈVES
+    #
+    # IMPORTANT :
+    # On utilise maintenant EleveInscrit.
+    # -----------------------------------------------------
 
     if annee_selectionnee:
-        nombre_eleves_par_annee = Eleve.objects.filter(annee_scolaire=annee_selectionnee).count()
-    else:
-        nombre_eleves_par_annee = 0
 
-    nombre_enseignants = Enseignant.objects.count()
-    nombre_niveaux = Niveau.objects.count()
-    User = get_user_model()
-    nombre_utilisateurs = User.objects.count()
-
-    #Préparer les données du graphique
-    labels = []
-    data = []
-
-    mois_fr = ["", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
-
-    if annee_selectionnee:
-        # Filtrer les paiements pour l'année sélectionnée
-        paiements_par_mois = (
-            Recu.objects
-            .filter(date_recu__gte=datetime(annee_selectionnee.date_debut.year, 1, 1), 
-                    date_recu__lt=datetime(annee_selectionnee.date_fin.year + 1, 1, 1))
-            .values('date_recu__month')  # Grouper par mois
-            .annotate(total=Sum('montant'))
-            .order_by('date_recu__month')
+        nombre_eleves_par_annee = (
+            EleveInscrit.objects
+            .filter(
+                annee_scolaire=annee_selectionnee
+            )
+            .values('eleve')
+            .distinct()
+            .count()
         )
 
-        # Créer un dictionnaire avec les mois et le total des paiements
-        mois_dict = {item['date_recu__month']: item['total'] for item in paiements_par_mois}
+    else:
 
-        # Préparer les labels et les données à afficher
+        nombre_eleves_par_annee = 0
+
+
+    # -----------------------------------------------------
+    # NOMBRE D'ENSEIGNANTS
+    # -----------------------------------------------------
+
+    nombre_enseignants = Enseignant.objects.count()
+
+
+    # -----------------------------------------------------
+    # NOMBRE DE NIVEAUX
+    # -----------------------------------------------------
+
+    nombre_niveaux = Niveau.objects.count()
+
+
+    # -----------------------------------------------------
+    # NOMBRE D'UTILISATEURS
+    # -----------------------------------------------------
+
+    User = get_user_model()
+
+    nombre_utilisateurs = User.objects.count()
+
+
+    # =====================================================
+    # GRAPHIQUE DES PAIEMENTS
+    # =====================================================
+
+    labels = []
+
+    data = []
+
+
+    mois_fr = [
+        "",
+        "Janvier",
+        "Février",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Août",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Décembre"
+    ]
+
+
+    # -----------------------------------------------------
+    # PAIEMENTS DE L'ANNÉE SCOLAIRE SÉLECTIONNÉE
+    # -----------------------------------------------------
+
+    if annee_selectionnee:
+
+        paiements_par_mois = (
+            Recu.objects
+            .filter(
+                frais_scolarite__annee_scolaire=annee_selectionnee
+            )
+            .values(
+                'date_recu__month'
+            )
+            .annotate(
+                total=Sum('montant')
+            )
+            .order_by(
+                'date_recu__month'
+            )
+        )
+
+
+        # -------------------------------------------------
+        # DICTIONNAIRE DES PAIEMENTS
+        # -------------------------------------------------
+
+        mois_dict = {
+            item['date_recu__month']: item['total']
+            for item in paiements_par_mois
+        }
+
+
+        # -------------------------------------------------
+        # PRÉPARATION DU GRAPHIQUE
+        # -------------------------------------------------
+
         for month in range(1, 13):
-            labels.append(mois_fr[month])  # Utiliser le mois en français
-            # Convertir le montant en float pour éviter l'erreur de sérialisation
-            data.append(float(mois_dict.get(month, 0)))  # Ajouter 0 si aucun paiement pour ce mois
 
-        # Affichage pour le débogage
-        print("Labels:", labels)
-        print("Data:", data)
+            labels.append(
+                mois_fr[month]
+            )
 
-    # Contexte à envoyer au template
+            data.append(
+                float(
+                    mois_dict.get(month, 0)
+                )
+            )
+
+
+    # -----------------------------------------------------
+    # SI AUCUNE ANNÉE SCOLAIRE
+    # -----------------------------------------------------
+
+    else:
+
+        labels = mois_fr[1:]
+
+        data = [0] * 12
+
+
+    # =====================================================
+    # CONTEXTE
+    # =====================================================
+
     context = {
+
         'services': services,
+
         'annee_selectionnee': annee_selectionnee,
+
         'nombre_eleves_par_annee': nombre_eleves_par_annee,
+
         'nombre_enseignants': nombre_enseignants,
+
         'nombre_niveaux': nombre_niveaux,
+
         'nombre_utilisateurs': nombre_utilisateurs,
-        'labels': json.dumps(labels),  # Convertir labels en JSON
-        'data': json.dumps(data),  # Convertir data en JSON
+
+        'labels': json.dumps(labels),
+
+        'data': json.dumps(data),
     }
 
-    return render(request, 'login/comptable_dashboard.html', context)
+
+    # =====================================================
+    # AFFICHAGE
+    # =====================================================
+
+    return render(
+        request,
+        'login/comptable_dashboard.html',
+        context
+    )
+
+
 
 #############################################
-# TABLEAUX DE BORD DE DIRECTEUR
+# TABLEAUX DE BORD DE enseignants
 #############################################
+
 
 @login_required
 def enseignant_dashboard(request):
+
     services = request.session.get('services', [])
+
+    # ==========================================================
+    # ANNÉE SCOLAIRE ACTIVE
+    # ==========================================================
     try:
         annee = AnneeScolaire.objects.get(
             date_debut__lte=now().date(),
@@ -342,176 +486,526 @@ def enseignant_dashboard(request):
         )
     except AnneeScolaire.DoesNotExist:
         annee = None
-    # Nombre total d'élèves
+
+    # ==========================================================
+    # NOMBRE TOTAL D'ÉLÈVES
+    # ==========================================================
     if annee:
-        nombre_eleves_par_annee = Eleve.objects.filter(
-            annee_scolaire=annee, actif=True
-        ).count()
+        nombre_eleves_par_annee = (
+            EleveInscrit.objects
+            .filter(
+                annee_scolaire=annee,
+                actif=True,
+                eleve__actif=True
+            )
+            .values('eleve')
+            .distinct()
+            .count()
+        )
     else:
         nombre_eleves_par_annee = 0
-    # ✅ Tous les niveaux avec nombre d'élèves
-    niveaux_avec_effectifs = (
-        Niveau.objects
-        .annotate(
-            nombre_eleves=Count(
-                'eleve',
-                filter=Q(eleve__annee_scolaire=annee, eleve__actif=True)
+
+    # ==========================================================
+    # NIVEAUX AVEC EFFECTIFS
+    # ==========================================================
+    if annee:
+        niveaux_avec_effectifs = (
+            Niveau.objects
+            .annotate(
+                nombre_eleves=Count(
+                    'eleveinscrit',
+                    filter=Q(
+                        eleveinscrit__annee_scolaire=annee,
+                        eleveinscrit__actif=True,
+                        eleveinscrit__eleve__actif=True
+                    ),
+                    distinct=True
+                )
             )
+            .order_by('nom')
         )
-        .order_by('nom')
-    )
-    # Autres compteurs
+    else:
+        niveaux_avec_effectifs = (
+            Niveau.objects
+            .annotate(
+                nombre_eleves=Count(
+                    'eleveinscrit',
+                    filter=Q(
+                        eleveinscrit__actif=True,
+                        eleveinscrit__eleve__actif=True
+                    ),
+                    distinct=True
+                )
+            )
+            .order_by('nom')
+        )
+
+    # ==========================================================
+    # AUTRES COMPTEURS
+    # ==========================================================
     nombre_enseignants = Enseignant.objects.count()
+
     nombre_niveaux = Niveau.objects.count()
+
     User = get_user_model()
     nombre_utilisateurs = User.objects.count()
+
+    # ==========================================================
+    # CONTEXTE
+    # ==========================================================
     context = {
         'services': services,
-        'annee_selectionnee': annee,
-        'nombre_eleves_par_annee': nombre_eleves_par_annee,
-        'nombre_enseignants': nombre_enseignants,
-        'nombre_niveaux': nombre_niveaux,
-        'nombre_utilisateurs': nombre_utilisateurs,
-        'niveaux_avec_effectifs': niveaux_avec_effectifs,  # ✅ clé pour cartes
-    }
-    return render(request, 'login/enseignant_dashboard.html', context)
 
-##############################################################   
-#TABLEAU DE BORD DU DIRECTEUR
+        'annee_selectionnee': annee,
+
+        'nombre_eleves_par_annee': nombre_eleves_par_annee,
+
+        'nombre_enseignants': nombre_enseignants,
+
+        'nombre_niveaux': nombre_niveaux,
+
+        'nombre_utilisateurs': nombre_utilisateurs,
+
+        'niveaux_avec_effectifs': niveaux_avec_effectifs,
+    }
+
+    return render(
+        request,
+        'login/enseignant_dashboard.html',
+        context
+    )
+
+
 ##############################################################
-from django.db.models import Count, Q
 # TABLEAU DE BORD DU DIRECTEUR
+##############################################################
+
+from django.db.models import Count, Q
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.utils.timezone import now
+
+from annee_scolaire.models import AnneeScolaire
+from niveau.models import Niveau
+from enseignant.models import Enseignant
+from eleve.models import EleveInscrit
+
+
 @login_required
 def dashbord(request):
+
     services = request.session.get('services', [])
-    annee = AnneeScolaire.objects.filter(
-        date_debut__lte=now().date(),
-        date_fin__gte=now().date()
-    ).order_by('-date_debut').first()
-    # Nombre total d'élèves
-    if annee:
-        nombre_eleves_par_annee = Eleve.objects.filter(
-            annee_scolaire=annee, actif=True
-        ).count()
-    else:
-        nombre_eleves_par_annee = 0
-    # ✅ TOUS LES NIVEAUX + COMPTE DES ÉLÈVES
-    niveaux_avec_effectifs = (
-        Niveau.objects
-        .annotate(
-            nombre_eleves=Count(
-                'eleve',
-                filter=Q(eleve__annee_scolaire=annee, eleve__actif=True)
-            )
+
+    # ==========================================================
+    # ANNÉE SCOLAIRE EN COURS
+    # ==========================================================
+
+    annee = (
+        AnneeScolaire.objects
+        .filter(
+            date_debut__lte=now().date(),
+            date_fin__gte=now().date()
         )
-        .order_by('nom')
+        .order_by('-date_debut')
+        .first()
     )
+
+    # ==========================================================
+    # NOMBRE TOTAL D'ÉLÈVES INSCRITS POUR L'ANNÉE EN COURS
+    # ==========================================================
+
+    if annee:
+
+        nombre_eleves_par_annee = (
+            EleveInscrit.objects
+            .filter(
+                annee_scolaire=annee,
+                actif=True
+            )
+            .count()
+        )
+
+    else:
+
+        nombre_eleves_par_annee = 0
+
+    # ==========================================================
+    # TOUS LES NIVEAUX + EFFECTIF DES ÉLÈVES INSCRITS
+    # ==========================================================
+
+    if annee:
+
+        niveaux_avec_effectifs = (
+            Niveau.objects
+            .annotate(
+                nombre_eleves=Count(
+                    'eleveinscrit',
+                    filter=Q(
+                        eleveinscrit__annee_scolaire=annee,
+                        eleveinscrit__actif=True
+                    )
+                )
+            )
+            .order_by('nom')
+        )
+
+    else:
+
+        niveaux_avec_effectifs = (
+            Niveau.objects
+            .annotate(
+                nombre_eleves=Count(
+                    'eleveinscrit'
+                )
+            )
+            .order_by('nom')
+        )
+
+    # ==========================================================
+    # NOMBRE D'ENSEIGNANTS
+    # ==========================================================
+
     nombre_enseignants = Enseignant.objects.count()
+
+    # ==========================================================
+    # NOMBRE DE NIVEAUX
+    # ==========================================================
+
     nombre_niveaux = Niveau.objects.count()
+
+    # ==========================================================
+    # NOMBRE D'UTILISATEURS
+    # ==========================================================
+
     User = get_user_model()
+
     nombre_utilisateurs = User.objects.count()
+
+    # ==========================================================
+    # CONTEXTE
+    # ==========================================================
+
     context = {
         'services': services,
+
         'annee_selectionnee': annee,
+
         'nombre_eleves_par_annee': nombre_eleves_par_annee,
-        'niveaux_avec_effectifs': niveaux_avec_effectifs,  # ✅ clé
+
+        'niveaux_avec_effectifs': niveaux_avec_effectifs,
+
         'nombre_enseignants': nombre_enseignants,
+
         'nombre_niveaux': nombre_niveaux,
+
         'nombre_utilisateurs': nombre_utilisateurs,
     }
-    return render(request, 'login/index.html', context)
 
+    return render(
+        request,
+        'login/index.html',
+        context
+    )
 ######################################################
-# TABLEAUX DE BORD DU FONDATEUR
+# TABLEAU DE BORD DU FONDATEUR
 ######################################################
 
 @login_required
 def dashbaord_fondateur(request):
+
     services = request.session.get('services', [])
 
-    # Déterminer l'année scolaire sélectionnée ou en cours
-    annee_selectionnee = AnneeScolaire.objects.filter(
-        date_debut__lte=date.today(),
-        date_fin__gte=date.today()
-    ).first()
-
-    # Nombre d'élèves
-    nombre_eleves_par_annee = (
-        Eleve.objects.filter(annee_scolaire=annee_selectionnee).count()
-        if annee_selectionnee else 0
+    # ==========================================================
+    # ANNÉE SCOLAIRE EN COURS
+    # ==========================================================
+    annee_selectionnee = (
+        AnneeScolaire.objects
+        .filter(
+            date_debut__lte=date.today(),
+            date_fin__gte=date.today()
+        )
+        .first()
     )
 
-    # Statistiques générales
+    # ==========================================================
+    # NOMBRE D'ÉLÈVES INSCRITS
+    # ==========================================================
+    if annee_selectionnee:
+
+        nombre_eleves_par_annee = (
+            EleveInscrit.objects
+            .filter(
+                annee_scolaire=annee_selectionnee,
+                actif=True,
+                eleve__actif=True
+            )
+            .values('eleve')
+            .distinct()
+            .count()
+        )
+
+    else:
+        nombre_eleves_par_annee = 0
+
+    # ==========================================================
+    # EFFECTIFS PAR NIVEAU
+    # ==========================================================
+    niveaux_avec_effectifs = []
+
+    if annee_selectionnee:
+
+        niveaux = Niveau.objects.all().order_by('nom')
+
+        for niveau in niveaux:
+
+            effectif = (
+                EleveInscrit.objects
+                .filter(
+                    annee_scolaire=annee_selectionnee,
+                    niveau=niveau,
+                    actif=True,
+                    eleve__actif=True
+                )
+                .values('eleve')
+                .distinct()
+                .count()
+            )
+
+            niveau.nombre_eleves = effectif
+
+            niveaux_avec_effectifs.append(niveau)
+
+    else:
+
+        niveaux = Niveau.objects.all().order_by('nom')
+
+        for niveau in niveaux:
+            niveau.nombre_eleves = 0
+            niveaux_avec_effectifs.append(niveau)
+
+    # ==========================================================
+    # STATISTIQUES GÉNÉRALES
+    # ==========================================================
     nombre_enseignants = Enseignant.objects.count()
+
     nombre_niveaux = Niveau.objects.count()
+
     User = get_user_model()
+
     nombre_utilisateurs = User.objects.count()
 
-    # Initialiser les totaux financiers
-    total_entree = total_sortie = solde_net = total_impaye = 0
+    # ==========================================================
+    # INITIALISATION DES DONNÉES FINANCIÈRES
+    # ==========================================================
+    total_entree = 0
+    total_sortie = 0
+    solde_net = 0
+    total_impaye = 0
 
+    total_sorties_salaire = 0
+    total_sorties_depense = 0
+
+    # ==========================================================
+    # STATISTIQUES FINANCIÈRES
+    # ==========================================================
     if annee_selectionnee:
-        # Total des paiements effectués par les élèves
-        total_entree = FraisScolarite.objects.filter(
-            annee_scolaire=annee_selectionnee
-        ).aggregate(total=Sum('total_paye'))['total'] or 0
 
-        # Total des salaires versés
-        total_sorties_salaire = PaiementSalaire.objects.filter(
-            annee_scolaire=annee_selectionnee
-        ).aggregate(total=Sum('montant'))['total'] or 0
+        # ------------------------------------------------------
+        # TOTAL DES ENTRÉES
+        # Paiements scolaires
+        # ------------------------------------------------------
+        total_entree = (
+            FraisScolarite.objects
+            .filter(
+                annee_scolaire=annee_selectionnee
+            )
+            .aggregate(
+                total=Sum('total_paye')
+            )['total'] or 0
+        )
 
-        # Total des autres dépenses
-        total_sorties_depense = Depense.objects.filter(
-            annee_scolaire=annee_selectionnee
-        ).aggregate(total=Sum('montant'))['total'] or 0
+        # ------------------------------------------------------
+        # SALAIRES
+        # ------------------------------------------------------
+        total_sorties_salaire = (
+            PaiementSalaire.objects
+            .filter(
+                annee_scolaire=annee_selectionnee
+            )
+            .aggregate(
+                total=Sum('montant')
+            )['total'] or 0
+        )
 
-        total_sortie = total_sorties_salaire + total_sorties_depense
+        # ------------------------------------------------------
+        # AUTRES DÉPENSES
+        # ------------------------------------------------------
+        total_sorties_depense = (
+            Depense.objects
+            .filter(
+                annee_scolaire=annee_selectionnee
+            )
+            .aggregate(
+                total=Sum('montant')
+            )['total'] or 0
+        )
+
+        # ------------------------------------------------------
+        # TOTAL DES SORTIES
+        # ------------------------------------------------------
+        total_sortie = (
+            total_sorties_salaire
+            + total_sorties_depense
+        )
+
+        # ------------------------------------------------------
+        # SOLDE NET
+        # ------------------------------------------------------
         solde_net = total_entree - total_sortie
 
-        # Total impayé réel
-        total_impaye = FraisScolarite.objects.filter(
-            annee_scolaire=annee_selectionnee
-        ).aggregate(total=Sum(F('montant_total') - F('total_paye')))['total'] or 0
+        # ------------------------------------------------------
+        # TOTAL IMPAYÉ
+        # ------------------------------------------------------
+        total_impaye = (
+            FraisScolarite.objects
+            .filter(
+                annee_scolaire=annee_selectionnee
+            )
+            .aggregate(
+                total=Sum(
+                    F('montant_total') - F('total_paye')
+                )
+            )['total'] or 0
+        )
 
-    # Préparer les données du graphique mensuel
+    # ==========================================================
+    # GRAPHIQUE DES PAIEMENTS PAR MOIS
+    # ==========================================================
     labels = []
     data = []
-    mois_fr = ["", "Janvier", "Février", "Mars", "Avril", "Mai", "Juin",
-               "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
+
+    mois_fr = [
+        "",
+        "Janvier",
+        "Février",
+        "Mars",
+        "Avril",
+        "Mai",
+        "Juin",
+        "Juillet",
+        "Août",
+        "Septembre",
+        "Octobre",
+        "Novembre",
+        "Décembre"
+    ]
 
     if annee_selectionnee:
+
         paiements_par_mois = (
             Recu.objects
             .filter(
-                date_recu__gte=datetime(annee_selectionnee.date_debut.year, 1, 1),
-                date_recu__lt=datetime(annee_selectionnee.date_fin.year + 1, 1, 1)
+                frais_scolarite__annee_scolaire=annee_selectionnee
             )
-            .values('date_recu__month')
-            .annotate(total=Sum('montant'))
-            .order_by('date_recu__month')
+            .values(
+                'date_recu__month'
+            )
+            .annotate(
+                total=Sum('montant')
+            )
+            .order_by(
+                'date_recu__month'
+            )
         )
-        mois_dict = {item['date_recu__month']: item['total'] for item in paiements_par_mois}
-        for month in range(1, 13):
-            labels.append(mois_fr[month])
-            data.append(float(mois_dict.get(month, 0)))
 
+        mois_dict = {
+            item['date_recu__month']: item['total']
+            for item in paiements_par_mois
+        }
+
+        for month in range(1, 13):
+
+            labels.append(
+                mois_fr[month]
+            )
+
+            data.append(
+                float(
+                    mois_dict.get(month, 0)
+                )
+            )
+
+    else:
+
+        labels = mois_fr[1:]
+        data = [0] * 12
+
+    # ==========================================================
+    # CONTEXTE
+    # ==========================================================
     context = {
+
         'services': services,
-        'annee_selectionnee': annee_selectionnee,
-        'nombre_eleves_par_annee': nombre_eleves_par_annee,
-        'nombre_enseignants': nombre_enseignants,
-        'nombre_niveaux': nombre_niveaux,
-        'nombre_utilisateurs': nombre_utilisateurs,
-        'labels': json.dumps(labels),
-        'data': json.dumps(data),
-        'total_entree': total_entree,
-        'total_sortie': total_sortie,
-        'solde_net': solde_net,
-        'total_impaye': total_impaye,
+
+        # Année
+        'annee_selectionnee':
+            annee_selectionnee,
+
+        # Élèves
+        'nombre_eleves_par_annee':
+            nombre_eleves_par_annee,
+
+        # Effectifs par niveau
+        'niveaux_avec_effectifs':
+            niveaux_avec_effectifs,
+
+        # Statistiques générales
+        'nombre_enseignants':
+            nombre_enseignants,
+
+        'nombre_niveaux':
+            nombre_niveaux,
+
+        'nombre_utilisateurs':
+            nombre_utilisateurs,
+
+        # Graphique
+        'labels':
+            json.dumps(labels),
+
+        'data':
+            json.dumps(data),
+
+        # Finances
+        'total_entree':
+            total_entree,
+
+        'total_sortie':
+            total_sortie,
+
+        'solde_net':
+            solde_net,
+
+        'total_impaye':
+            total_impaye,
+
+        'total_sorties_salaire':
+            total_sorties_salaire,
+
+        'total_sorties_depense':
+            total_sorties_depense,
     }
 
-    return render(request, 'login/dashbaord_fondateur.html', context)
+    return render(
+        request,
+        'login/dashbaord_fondateur.html',
+        context
+    )
+
+
+
+
 
 #################################################################
    
@@ -612,6 +1106,7 @@ def change_password(request):
 #################################################################
 
 User = get_user_model()
+
 def forgot_pwd(request):
     if request.method == 'POST':
         email = request.POST.get('email')
@@ -624,21 +1119,27 @@ def forgot_pwd(request):
             Token.objects.create(user=user, token=token)
 
             # Construire l'URL de réinitialisation
-            url = f"http://localhost:8000/xoauth/{token}/change-pwd/"
+            # url = f"http://localhost:8000/xoauth/{token}/change-pwd/"
+            url = f"https://ecole-bnb.onrender.com/xoauth/{token}/change-pwd/"
 
             # Préparer et envoyer l'email
             subject = "Changement de mot de passe"
             message = f"Bonjour {user.get_full_name()},\n\nCliquez sur ce lien pour changer votre mot de passe :\n{url}\n\nSi vous n'avez pas fait cette demande, ignorez cet e-mail."
+
             email_from = settings.EMAIL_HOST_USER
             email_msg = EmailMessage(subject, message, email_from, [email])
             email_msg.send()
 
-            context = {"message": True}
+            context = {
+                "message": "Un lien de changement de mot de passe a été envoyé à votre adresse e-mail."
+            }
             return render(request, 'login/forgot_pwd.html', context)
 
         except User.DoesNotExist:
             # Aucun utilisateur trouvé avec cet email
-            context = {"error": True}
+            context = {
+                "error": "L'adresse e-mail saisie n'existe pas dans notre système."
+            }
             return render(request, 'login/forgot_pwd.html', context)
 
     return render(request, 'login/forgot_pwd.html')

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'matiere',
     'niveau',
     'personnel',
+    'messagerie',
 
 ]
 
@@ -161,13 +162,6 @@ if DEBUG:
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'ecole',   # nom exact de ta base MySQL
-#         'USER': 'root',             # ton utilisateur MySQL
-#         'PASSWORD': '',  # mets ton vrai mot de passe
-#         'HOST': '127.0.0.1',        # localhost ou 127.0.0.1
-#         'PORT': '3306',             # port MySQL (par défaut 3306)
-#     }
-# }
+
+
+# https://dashboard.render.com/

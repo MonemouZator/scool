@@ -2,209 +2,1066 @@
 {% load static %}
 
 {% block styl_parent %}
+
 <title>Configuration des Niveaux</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/css/adminlte.min.css' %}">
+
+<style>
+
+    .content-wrapper {
+        background-color: #f4f6f9;
+    }
+
+    .card {
+        border-radius: 8px;
+    }
+
+    .card-header {
+        border-radius: 8px 8px 0 0 !important;
+    }
+
+    .table th,
+    .table td {
+        vertical-align: middle;
+    }
+
+    .table thead th {
+        text-align: center;
+    }
+
+    .modal-header {
+        border-radius: 6px 6px 0 0;
+    }
+
+    .filter-title {
+        font-weight: 600;
+    }
+
+</style>
+
 {% endblock %}
 
 {% block body %}
+
 <body class="hold-transition sidebar-mini">
+
 {% endblock %}
 
 {% block contenu %}
 
- <div class="content-wrapper p-4" style="max-height: calc(100vh - 150px); overflow-y: auto;">
+<div class="content-wrapper p-4"
+     style="max-height: calc(100vh - 150px); overflow-y: auto;">
 
-  {% if messages %}
+```
+<!-- =====================================================
+     MESSAGES
+====================================================== -->
+
+{% if messages %}
+
     <div class="mt-3">
-      {% for message in messages %}
-        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
 
-  <!-- Formulaire de filtrage -->
-  <div class="card card-light shadow-sm mb-4">
+        {% for message in messages %}
+
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show"
+                 role="alert">
+
+                {{ message }}
+
+                <button type="button"
+                        class="close"
+                        data-dismiss="alert"
+                        aria-label="Close">
+
+                    <span aria-hidden="true">&times;</span>
+
+                </button>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+{% endif %}
+
+
+<!-- =====================================================
+     FORMULAIRE DE RECHERCHE
+====================================================== -->
+
+<div class="card card-light shadow-sm mb-4">
+
     <div class="card-header bg-info text-white">
-      <h5 class="mb-0"><i class="fas fa-filter"></i> Rechercher les élèves en fonction de l'année scolaire, par niveau et par classe.</h5>
+
+        <h5 class="mb-0 filter-title">
+
+            <i class="fas fa-filter mr-2"></i>
+
+            Rechercher les élèves en fonction de l'année
+            scolaire, du niveau et de la classe.
+
+        </h5>
+
     </div>
+
+
     <div class="card-body">
-      <form method="post" action="{% url 'configuration' %}" class="row g-3">
-        {% csrf_token %}
 
-        <div class="col-md-4">
-          <label for="annee_scolaire" class="form-label"><i class="fas fa-calendar-alt"></i> Année scolaire</label>
-          <select name="annee_scolaire" id="annee_scolaire" class="form-control form-control-sm shadow-sm" required>
-            <option value="">Sélectionner une année</option>
-            {% for annee in annees_scolaires %}
-              <option value="{{ annee.id }}" {% if request.POST.annee_scolaire and annee.id|stringformat:"s" == request.POST.annee_scolaire %}selected{% endif %}>{{ annee.nom }}</option>
-            {% endfor %}
-          </select>
-        </div>
+        <!-- IMPORTANT :
+             La recherche utilise GET car la vue utilise request.GET
+        -->
 
-        <div class="col-md-4">
-          <label for="niveau" class="form-label"><i class="fas fa-layer-group"></i> Niveau</label>
-          <select name="niveau" id="niveau" class="form-control form-control-sm shadow-sm" required>
-            <option value="">Sélectionner un niveau</option>
-            {% for niveau in niveaux %}
-              <option value="{{ niveau.id }}" {% if request.POST.niveau and niveau.id|stringformat:"s" == request.POST.niveau %}selected{% endif %}>{{ niveau.nom }}</option>
-            {% endfor %}
-          </select>
-        </div>
+        <form method="get"
+              action="{% url 'configuration' %}"
+              class="row g-3">
 
-        <div class="col-md-4">
-          <label for="groupeclasse" class="form-label"><i class="fas fa-users-class"></i> Groupe Classe</label>
-          <select name="groupeclasse" id="groupeclasse" class="form-control form-control-sm shadow-sm">
-            <option value="">Sélectionner un groupe classe</option>
-            {% for gc in groupeclasses %}
-              <option value="{{ gc.id }}" {% if request.POST.groupeclasse and gc.id|stringformat:"s" == request.POST.groupeclasse %}selected{% endif %}>{{ gc.nom }}</option>
-            {% endfor %}
-          </select>
-        </div>
 
-        <div class="col-12 text-center mt-3">
-          <button type="submit" class="btn btn-primary px-4 shadow"><i class="fas fa-search"></i> Rechercher</button>
-          <hr style="border: 1px solid #16A085; margin: 20px 0;">
-        </div>
-      </form>
+            <!-- =================================================
+                 ANNÉE SCOLAIRE
+            ================================================== -->
+
+            <div class="col-md-4">
+
+                <label for="annee_scolaire"
+                       class="form-label">
+
+                    <i class="fas fa-calendar-alt mr-1"></i>
+
+                    Année scolaire
+
+                </label>
+
+
+                <select name="annee_scolaire"
+                        id="annee_scolaire"
+                        class="form-control form-control-sm shadow-sm"
+                        required>
+
+                    <option value="">
+                        Sélectionner une année
+                    </option>
+
+
+                    {% for annee in annees_scolaires %}
+
+                        <option value="{{ annee.id }}"
+
+                            {% if selected_annee_id|stringformat:"s" == annee.id|stringformat:"s" %}
+                                selected
+                            {% endif %}>
+
+                            {{ annee.nom }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- =================================================
+                 NIVEAU
+            ================================================== -->
+
+            <div class="col-md-4">
+
+                <label for="niveau"
+                       class="form-label">
+
+                    <i class="fas fa-layer-group mr-1"></i>
+
+                    Niveau
+
+                </label>
+
+
+                <select name="niveau"
+                        id="niveau"
+                        class="form-control form-control-sm shadow-sm"
+                        required>
+
+                    <option value="">
+                        Sélectionner un niveau
+                    </option>
+
+
+                    {% for niveau in niveaux %}
+
+                        <option value="{{ niveau.id }}"
+
+                            {% if selected_niveau_id|stringformat:"s" == niveau.id|stringformat:"s" %}
+                                selected
+                            {% endif %}>
+
+                            {{ niveau.nom }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- =================================================
+                 GROUPE CLASSE
+            ================================================== -->
+
+            <div class="col-md-4">
+
+                <label for="groupeclasse"
+                       class="form-label">
+
+                    <i class="fas fa-users mr-1"></i>
+
+                    Groupe Classe
+
+                </label>
+
+
+                <select name="groupeclasse"
+                        id="groupeclasse"
+                        class="form-control form-control-sm shadow-sm">
+
+                    <option value="">
+                        Sélectionner un groupe classe
+                    </option>
+
+
+                    {% for gc in groupeclasses %}
+
+                        <option value="{{ gc.id }}"
+
+                            {% if selected_groupe_id|stringformat:"s" == gc.id|stringformat:"s" %}
+                                selected
+                            {% endif %}>
+
+                            {{ gc.nom }}
+
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+            <!-- =================================================
+                 BOUTON RECHERCHER
+            ================================================== -->
+
+            <div class="col-12 text-center mt-3">
+
+                <button type="submit"
+                        class="btn btn-primary px-4 shadow">
+
+                    <i class="fas fa-search mr-1"></i>
+
+                    Rechercher
+
+                </button>
+
+
+                <a href="{% url 'configuration' %}"
+                   class="btn btn-secondary px-4 shadow ml-2">
+
+                    <i class="fas fa-sync-alt mr-1"></i>
+
+                    Réinitialiser
+
+                </a>
+
+
+                <hr style="border: 1px solid #16A085; margin: 20px 0;">
+
+            </div>
+
+        </form>
+
     </div>
-  </div>
 
-  <!-- Résultats après filtrage -->
-  {% if request.method == "POST" %}
-    {% if eleves_frais %}
-      <div class="table-responsive mt-4">
-        <table id="elevesTable" class="table table-bordered table-striped">
-          <thead class="bg-info text-white text-center">
-            <tr>
-            <th>Matricule</th>
-              <th>Nom</th>
-              <th>Prénom</th>
-              <th>Montant dû</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for item in eleves_frais %}
-              <tr>
-              <td>{{ item.eleve.matricule }}</td>
-                <td>{{ item.eleve.nom }}</td>
-                <td>{{ item.eleve.prenom }}</td>
-                <td>
-                  {% if item.frais %}
-                    {{ item.frais.solde|floatformat:0 }} GNF
-                  {% else %}
-                    <span class="text-muted">Aucun frais trouvé</span>
-                  {% endif %}
-                </td>
-                <td class="text-center">
-                  <button type="button" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modal_{{ item.eleve.id }}">
-                    💰 Payer
-                  </button>
-
-                  <!-- Modal paiement -->
-                  <div class="modal fade" id="modal_{{ item.eleve.id }}" tabindex="-1" role="dialog" aria-labelledby="paiementLabel_{{ item.eleve.id }}" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header bg-primary text-white">
-                          <h5 class="modal-title" id="paiementLabel_{{ item.eleve.id }}">Paiement pour: {{ item.eleve.nom }} {{ item.eleve.prenom }}</h5>
-                          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div class="modal-body">
-                          <form method="POST" action="{% url 'effectuer_paiement' %}">
-                            {% csrf_token %}
-                            <input type="hidden" name="eleve_id" value="{{ item.eleve.id }}">
-                            <div class="form-group">
-                              <label for="montant">Montant</label>
-                              <input type="number" step="0.01" name="montant" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                              <label for="date_paiement">Date de paiement</label>
-                              <input type="date" name="date_paiement" class="form-control" value="{{ today|default:'' }}">
-                            </div>
-                            <div class="form-group">
-                              <label for="tranche">Tranche à payer</label>
-                              <select name="tranche" class="form-control">
-                                <option value="1">Tranche 1</option>
-                                <option value="2">Tranche 2</option>
-                                <option value="3">Tranche 3</option>
-                              </select>
-                            </div>
-                            <div class="text-end">
-                              <button type="submit" class="btn btn-success">💳 Valider le paiement</button>
-                            </div>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-    {% else %}
-      <p>Aucun élève trouvé pour les critères de recherche spécifiés.</p>
-    {% endif %}
-  {% endif %}
 </div>
+
+
+
+<!-- =====================================================
+     RÉSULTATS
+====================================================== -->
+
+{% if request.GET %}
+
+    {% if eleves_frais %}
+
+        <div class="card shadow-sm">
+
+            <div class="card-header bg-white">
+
+                <h5 class="mb-0">
+
+                    <i class="fas fa-user-graduate mr-2"></i>
+
+                    Élèves inscrits
+
+                    <span class="badge badge-info ml-2">
+
+                        {{ eleves_frais|length }}
+
+                    </span>
+
+                </h5>
+
+            </div>
+
+
+            <div class="card-body">
+
+                <div class="table-responsive">
+
+                    <table id="elevesTable"
+                           class="table table-bordered table-striped table-hover">
+
+                        <thead class="bg-info text-white">
+
+                            <tr>
+
+                                <th>Matricule</th>
+
+                                <th>Nom</th>
+
+                                <th>Prénom</th>
+
+                                <th>Année scolaire</th>
+
+                                <th>Niveau</th>
+
+                                <th>Classe</th>
+
+                                <th>Montant dû</th>
+
+                                <th>Action</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for item in eleves_frais %}
+
+                                <tr>
+
+                                    <!-- =================================================
+                                         MATRICULE
+                                    ================================================== -->
+
+                                    <td>
+
+                                        {{ item.inscription.eleve.matricule }}
+
+                                    </td>
+
+
+                                    <!-- =================================================
+                                         NOM
+                                    ================================================== -->
+
+                                    <td>
+
+                                        {{ item.inscription.eleve.nom }}
+
+                                    </td>
+
+
+                                    <!-- =================================================
+                                         PRÉNOM
+                                    ================================================== -->
+
+                                    <td>
+
+                                        {{ item.inscription.eleve.prenom }}
+
+                                    </td>
+
+
+                                    <!-- =================================================
+                                         ANNÉE
+                                    ================================================== -->
+
+                                    <td>
+
+                                        {{ item.inscription.annee_scolaire.nom }}
+
+                                    </td>
+
+
+                                    <!-- =================================================
+                                         NIVEAU
+                                    ================================================== -->
+
+                                    <td>
+
+                                        {{ item.inscription.niveau.nom }}
+
+                                    </td>
+
+
+                                    <!-- =================================================
+                                         CLASSE
+                                    ================================================== -->
+
+                                    <td>
+
+                                        {{ item.inscription.groupe_classe.nom }}
+
+                                    </td>
+
+
+                                    <!-- =================================================
+                                         FRAIS
+                                    ================================================== -->
+
+                                    <td>
+
+                                        {% if item.frais %}
+
+                                            <strong>
+
+                                                {{ item.frais.solde|floatformat:0 }}
+
+                                            </strong>
+
+                                            GNF
+
+                                        {% else %}
+
+                                            <span class="text-muted">
+
+                                                Aucun frais trouvé
+
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- =================================================
+                                         ACTION
+                                    ================================================== -->
+
+                                    <td class="text-center">
+
+                                        <button type="button"
+                                                class="btn btn-sm btn-primary"
+                                                data-toggle="modal"
+                                                data-target="#modal_{{ item.inscription.id }}">
+
+                                            <i class="fas fa-money-bill-wave mr-1"></i>
+
+                                            Payer
+
+                                        </button>
+
+
+
+                                        <!-- =================================================
+                                             MODAL PAIEMENT
+                                        ================================================== -->
+
+                                        <div class="modal fade"
+                                             id="modal_{{ item.inscription.id }}"
+                                             tabindex="-1"
+                                             role="dialog"
+                                             aria-labelledby="paiementLabel_{{ item.inscription.id }}"
+                                             aria-hidden="true">
+
+                                            <div class="modal-dialog modal-lg"
+                                                 role="document">
+
+                                                <div class="modal-content">
+
+
+                                                    <!-- =================================================
+                                                         HEADER
+                                                    ================================================== -->
+
+                                                    <div class="modal-header bg-primary text-white">
+
+                                                        <h5 class="modal-title"
+                                                            id="paiementLabel_{{ item.inscription.id }}">
+
+                                                            <i class="fas fa-credit-card mr-2"></i>
+
+                                                            Paiement de :
+
+                                                            {{ item.inscription.eleve.nom }}
+
+                                                            {{ item.inscription.eleve.prenom }}
+
+                                                        </h5>
+
+
+                                                        <button type="button"
+                                                                class="close text-white"
+                                                                data-dismiss="modal"
+                                                                aria-label="Close">
+
+                                                            <span aria-hidden="true">
+
+                                                                &times;
+
+                                                            </span>
+
+                                                        </button>
+
+                                                    </div>
+
+
+
+                                                    <!-- =================================================
+                                                         BODY
+                                                    ================================================== -->
+
+                                                    <div class="modal-body">
+
+                                                        <form method="POST"
+                                                              action="{% url 'effectuer_paiement' %}">
+
+                                                            {% csrf_token %}
+
+
+                                                            <!-- =================================================
+                                                                 ID ELEVEINSCRIT
+                                                            ================================================== -->
+
+                                                            <input type="hidden"
+                                                                   name="inscription_id"
+                                                                   value="{{ item.inscription.id }}">
+
+
+
+                                                            <!-- =================================================
+                                                                 INFORMATIONS ÉLÈVE
+                                                            ================================================== -->
+
+                                                            <div class="row">
+
+                                                                <div class="col-md-6">
+
+                                                                    <div class="form-group">
+
+                                                                        <label>
+
+                                                                            Matricule
+
+                                                                        </label>
+
+                                                                        <input type="text"
+                                                                               class="form-control"
+                                                                               value="{{ item.inscription.eleve.matricule }}"
+                                                                               readonly>
+
+                                                                    </div>
+
+                                                                </div>
+
+
+                                                                <div class="col-md-6">
+
+                                                                    <div class="form-group">
+
+                                                                        <label>
+
+                                                                            Élève
+
+                                                                        </label>
+
+                                                                        <input type="text"
+                                                                               class="form-control"
+                                                                               value="{{ item.inscription.eleve.nom }} {{ item.inscription.eleve.prenom }}"
+                                                                               readonly>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+
+
+
+                                                            <!-- =================================================
+                                                                 INFORMATIONS INSCRIPTION
+                                                            ================================================== -->
+
+                                                            <div class="row">
+
+                                                                <div class="col-md-4">
+
+                                                                    <div class="form-group">
+
+                                                                        <label>
+
+                                                                            Année scolaire
+
+                                                                        </label>
+
+                                                                        <input type="text"
+                                                                               class="form-control"
+                                                                               value="{{ item.inscription.annee_scolaire.nom }}"
+                                                                               readonly>
+
+                                                                    </div>
+
+                                                                </div>
+
+
+                                                                <div class="col-md-4">
+
+                                                                    <div class="form-group">
+
+                                                                        <label>
+
+                                                                            Niveau
+
+                                                                        </label>
+
+                                                                        <input type="text"
+                                                                               class="form-control"
+                                                                               value="{{ item.inscription.niveau.nom }}"
+                                                                               readonly>
+
+                                                                    </div>
+
+                                                                </div>
+
+
+                                                                <div class="col-md-4">
+
+                                                                    <div class="form-group">
+
+                                                                        <label>
+
+                                                                            Groupe classe
+
+                                                                        </label>
+
+                                                                        <input type="text"
+                                                                               class="form-control"
+                                                                               value="{{ item.inscription.groupe_classe.nom }}"
+                                                                               readonly>
+
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
+
+
+
+                                                            <!-- =================================================
+                                                                 MONTANT RESTANT
+                                                            ================================================== -->
+
+                                                            {% if item.frais %}
+
+                                                                <div class="alert alert-info">
+
+                                                                    <i class="fas fa-info-circle mr-1"></i>
+
+                                                                    <strong>
+
+                                                                        Montant restant :
+
+                                                                    </strong>
+
+                                                                    {{ item.frais.solde|floatformat:0 }}
+
+                                                                    GNF
+
+                                                                </div>
+
+                                                            {% else %}
+
+                                                                <div class="alert alert-warning">
+
+                                                                    <i class="fas fa-exclamation-triangle mr-1"></i>
+
+                                                                    Aucun frais de scolarité trouvé
+                                                                    pour cette inscription.
+
+                                                                </div>
+
+                                                            {% endif %}
+
+
+
+                                                            <!-- =================================================
+                                                                 MONTANT À PAYER
+                                                            ================================================== -->
+
+                                                            <div class="form-group">
+
+                                                                <label for="montant_{{ item.inscription.id }}">
+
+                                                                    <i class="fas fa-money-bill mr-1"></i>
+
+                                                                    Montant à payer
+
+                                                                </label>
+
+
+                                                                <input type="number"
+                                                                       step="0.01"
+                                                                       min="0"
+                                                                       name="montant"
+                                                                       id="montant_{{ item.inscription.id }}"
+                                                                       class="form-control"
+                                                                       required>
+
+                                                            </div>
+
+
+
+                                                            <!-- =================================================
+                                                                 DATE
+                                                            ================================================== -->
+
+                                                            <div class="form-group">
+
+                                                                <label for="date_paiement_{{ item.inscription.id }}">
+
+                                                                    <i class="fas fa-calendar-day mr-1"></i>
+
+                                                                    Date de paiement
+
+                                                                </label>
+
+
+                                                                <input type="date"
+                                                                       name="date_paiement"
+                                                                       id="date_paiement_{{ item.inscription.id }}"
+                                                                       class="form-control"
+                                                                       value="{{ today|date:'Y-m-d' }}"
+                                                                       required>
+
+                                                            </div>
+
+
+
+                                                            <!-- =================================================
+                                                                 TRANCHE
+                                                            ================================================== -->
+
+                                                            <div class="form-group">
+
+                                                                <label for="tranche_{{ item.inscription.id }}">
+
+                                                                    <i class="fas fa-layer-group mr-1"></i>
+
+                                                                    Tranche à payer
+
+                                                                </label>
+
+
+                                                                <select name="tranche"
+                                                                        id="tranche_{{ item.inscription.id }}"
+                                                                        class="form-control"
+                                                                        required>
+
+                                                                    <option value="1">
+
+                                                                        Tranche 1
+
+                                                                    </option>
+
+                                                                    <option value="2">
+
+                                                                        Tranche 2
+
+                                                                    </option>
+
+                                                                    <option value="3">
+
+                                                                        Tranche 3
+
+                                                                    </option>
+
+                                                                </select>
+
+                                                            </div>
+
+
+
+                                                            <!-- =================================================
+                                                                 BOUTONS
+                                                            ================================================== -->
+
+                                                            <div class="text-right">
+
+                                                                <button type="button"
+                                                                        class="btn btn-secondary"
+                                                                        data-dismiss="modal">
+
+                                                                    <i class="fas fa-times mr-1"></i>
+
+                                                                    Annuler
+
+                                                                </button>
+
+
+                                                                <button type="submit"
+                                                                        class="btn btn-success">
+
+                                                                    <i class="fas fa-check mr-1"></i>
+
+                                                                    Valider le paiement
+
+                                                                </button>
+
+                                                            </div>
+
+                                                        </form>
+
+                                                    </div>
+
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    {% else %}
+
+        <div class="alert alert-warning mt-4">
+
+            <i class="fas fa-info-circle mr-2"></i>
+
+            Aucun élève trouvé pour les critères de recherche
+            spécifiés.
+
+        </div>
+
+    {% endif %}
+
+{% endif %}
+```
+
+</div>
+
 {% endblock %}
 
 {% block scripte %}
+
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
 
 <script>
+
 $(document).ready(function() {
-    $("#elevesTable").DataTable({
-        "responsive": true,
-        "lengthChange": false,
-        "autoWidth": false
+
+
+    /* =====================================================
+       DATATABLE
+    ====================================================== */
+
+    if ($("#elevesTable").length) {
+
+        $("#elevesTable").DataTable({
+
+            responsive: true,
+
+            lengthChange: false,
+
+            autoWidth: false,
+
+            pageLength: 10,
+
+            language: {
+
+                search: "Rechercher :",
+
+                lengthMenu: "Afficher _MENU_ élèves",
+
+                zeroRecords: "Aucun résultat trouvé",
+
+                info: "Affichage de _START_ à _END_ sur _TOTAL_ élèves",
+
+                infoEmpty: "Aucun élève",
+
+                infoFiltered: "(filtré sur _MAX_ élèves)",
+
+                paginate: {
+
+                    first: "Premier",
+
+                    last: "Dernier",
+
+                    next: "Suivant",
+
+                    previous: "Précédent"
+
+                }
+
+            }
+
+        });
+
+    }
+
+
+
+    /* =====================================================
+       NIVEAU → GROUPE CLASSE
+    ====================================================== */
+
+    $("#niveau").change(function() {
+
+        var niveau_id = $(this).val();
+
+        var group_select = $("#groupeclasse");
+
+
+        if (niveau_id) {
+
+            $.ajax({
+
+                url: "{% url 'get_groupe' %}",
+
+                data: {
+
+                    'niveau_id': niveau_id
+
+                },
+
+
+                success: function(data) {
+
+                    group_select.empty();
+
+
+                    group_select.append(
+
+                        '<option value="">Sélectionner un groupe classe</option>'
+
+                    );
+
+
+                    if (data.groupes && data.groupes.length > 0) {
+
+                        data.groupes.forEach(function(gc) {
+
+                            group_select.append(
+
+                                '<option value="' +
+
+                                gc.id +
+
+                                '">' +
+
+                                gc.nom +
+
+                                '</option>'
+
+                            );
+
+                        });
+
+                    }
+
+                },
+
+
+                error: function() {
+
+                    group_select.empty();
+
+
+                    group_select.append(
+
+                        '<option value="">Erreur de chargement</option>'
+
+                    );
+
+                }
+
+            });
+
+
+        } else {
+
+            group_select.empty();
+
+
+            group_select.append(
+
+                '<option value="">Sélectionner un groupe classe</option>'
+
+            );
+
+        }
+
     });
 
-    // Filtrage dynamique Niveau → Groupe Classe
-    $("#niveau").change(function() {
-        var niveau_id = $(this).val();
-        var group_select = $("#groupeclasse");
-        if(niveau_id){
-            $.ajax({
-                url: "{% url 'get_groupe' %}",
-                data: {'niveau_id': niveau_id},
-                success: function(data){
-                    group_select.empty();
-                    group_select.append('<option value="">Sélectionner un groupe classe</option>');
-                    data.groupes.forEach(function(gc){
-                        group_select.append('<option value="'+gc.id+'">'+gc.nom+'</option>');
-                    });
-                }
-            });
-        } else {
-            group_select.empty();
-            group_select.append('<option value="">Sélectionner un groupe classe</option>');
-        }
-    });
 });
+
 </script>
+
 {% endblock %}
