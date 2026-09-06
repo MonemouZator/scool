@@ -89,6 +89,11 @@ urlpatterns = [
 
     path('bilans/', include('enseignant.urls')),
 
+    path(
+    'messagerie/',
+    include('messagerie.urls')
+    ),
+
 ] # Pour servir les fichiers statiques uniquement en développement
 if settings.DEBUG:
     urlpatterns += staticfiles_urlpatterns()  # Pour servir les fichiers static (CSS, JS) en dev

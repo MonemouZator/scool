@@ -1,154 +1,415 @@
-
 {% extends "base/index.html" %}
 {% load static %}
 
-{% block chat %}
-<a class="nav-link" href="#">
-    <i class="far fa-comments"></i>
-</a>
-{% endblock %}
+{% block styl_parent %}
 
+<title>Espace Directeur</title>
+
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+
+<style>
+
+/* ==========================================================
+   MESSAGERIE
+========================================================== */
+
+.message-badge {
+    position: relative;
+    top: -2px;
+    margin-left: 4px;
+    font-size: 10px;
+}
+
+
+/* ==========================================================
+   CARTES DES NIVEAUX
+========================================================== */
+
+.niveau-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 25px;
+    justify-content: flex-start;
+}
+
+.niveau-col {
+    flex: 1 1 200px;
+    max-width: 250px;
+}
+
+.niveau-col .small-box {
+    width: 100%;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    min-height: 150px;
+    color: white;
+    background-color: #267b3d;
+    position: relative;
+    transition: transform 0.2s ease;
+}
+
+.niveau-col .small-box:hover {
+    transform: translateY(-5px);
+}
+
+.niveau-col .small-box .icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 2rem;
+    opacity: 0.3;
+}
+
+.niveau-col .small-box-footer {
+    color: white;
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 992px) {
+
+    .niveau-col {
+        flex: 0 0 33.33%;
+        max-width: 33.33%;
+    }
+
+}
+
+@media (max-width: 576px) {
+
+    .niveau-col {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+
+}
+
+</style>
+
+{% endblock styl_parent %}
+
+
+{# ==========================================================
+   MESSAGERIE
+   Le bloc chat est prévu par base/index.html
+========================================================== #}
+
+{% block chat %}
+
+<a class="nav-link"
+   href="{% url 'boite_reception' %}"
+   title="Messagerie">
+
+    <i class="far fa-envelope"></i>
+
+    {% if messages_non_lus and messages_non_lus > 0 %}
+
+        <span class="badge badge-danger message-badge">
+            {{ messages_non_lus }}
+        </span>
+
+    {% endif %}
+
+</a>
+
+{% endblock chat %}
+
+
+{# ==========================================================
+   MENU SIDEBAR
+========================================================== #}
 
 {% block menu_sidebar %}
+
 
 <!-- ==========================================================
      TABLEAU DE BORD
 ========================================================== -->
+
 <li class="nav-item">
+
     <a href="{% url 'fondateur.dashbord' %}"
-       class="nav-link {% if request.resolver_match.url_name == 'fondateur.dashbord' %}active{% endif %}">
+       class="nav-link
+       {% if request.resolver_match.url_name == 'fondateur.dashbord' %}
+           active
+       {% endif %}">
+
         <i class="nav-icon fas fa-tachometer-alt"></i>
-        <p>Tableau de bord</p>
+
+        <p>
+            Tableau de bord
+        </p>
+
     </a>
+
 </li>
 
 
 <!-- ==========================================================
      GESTION ENSEIGNANTS
 ========================================================== -->
+
 <li class="nav-item">
-    <a href="#" class="nav-link">
+
+    <a href="#"
+       class="nav-link">
+
         <p>
             Gestion enseignants
-            <span class="right badge badge-danger">voir +</span>
+
+            <span class="right badge badge-danger">
+                voir +
+            </span>
         </p>
+
     </a>
+
 
     <ul class="nav nav-treeview">
 
         <li class="nav-item">
+
             <a href="{% url 'enseignant' %}"
-               class="nav-link {% if request.resolver_match.url_name == 'enseignant' %}active{% endif %}">
+               class="nav-link
+               {% if request.resolver_match.url_name == 'enseignant' %}
+                   active
+               {% endif %}">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">1</span>
+                    <span class="text-white">
+                        1
+                    </span>
                 </i>
-                <p>Enseignants</p>
+
+                <p>
+                    Enseignants
+                </p>
+
             </a>
+
         </li>
 
     </ul>
+
 </li>
 
 
 <!-- ==========================================================
      GESTION ÉLÈVES
 ========================================================== -->
+
 <li class="nav-item">
-    <a href="#" class="nav-link">
+
+    <a href="#"
+       class="nav-link">
+
         <p>
             Gestion élèves
-            <span class="right badge badge-danger">voir +</span>
+
+            <span class="right badge badge-danger">
+                voir +
+            </span>
         </p>
+
     </a>
+
 
     <ul class="nav nav-treeview">
 
-        <li class="nav-item">
-            <a href="{% url 'eleve' %}" class="nav-link">
-                <i class="badge badge-danger">
-                    <span class="text-white">1</span>
-                </i>
-                <p>Liste Totale</p>
-            </a>
-        </li>
 
         <li class="nav-item">
+
+            <a href="{% url 'eleve' %}"
+               class="nav-link">
+
+                <i class="badge badge-danger">
+                    <span class="text-white">
+                        1
+                    </span>
+                </i>
+
+                <p>
+                    Liste Totale
+                </p>
+
+            </a>
+
+        </li>
+
+
+        <li class="nav-item">
+
             <a href="{% url 'forme' %}"
-               class="nav-link {% if request.resolver_match.url_name == 'forme' %}active{% endif %}">
+               class="nav-link
+               {% if request.resolver_match.url_name == 'forme' %}
+                   active
+               {% endif %}">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">2</span>
+                    <span class="text-white">
+                        2
+                    </span>
                 </i>
-                <p>Inscription</p>
+
+                <p>
+                    Inscription
+                </p>
+
             </a>
+
         </li>
 
-        <li class="nav-item">
-            <a href="{% url 'reinscrire_eleve' %}" class="nav-link">
-                <i class="badge badge-danger">
-                    <span class="text-white">3</span>
-                </i>
-                <p>Réinscription</p>
-            </a>
-        </li>
 
         <li class="nav-item">
-            <a href="{% url 'liste_eleves_par_niveau' %}" class="nav-link">
+
+            <a href="{% url 'reinscrire_eleve' %}"
+               class="nav-link">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">4</span>
+                    <span class="text-white">
+                        3
+                    </span>
                 </i>
-                <p>Élèves par niveau</p>
+
+                <p>
+                    Réinscription
+                </p>
+
             </a>
+
         </li>
 
+
         <li class="nav-item">
-            <a href="{% url 'liste_eleves_par_groupe' %}" class="nav-link">
+
+            <a href="{% url 'liste_eleves_par_niveau' %}"
+               class="nav-link">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">5</span>
+                    <span class="text-white">
+                        4
+                    </span>
                 </i>
-                <p>Élèves par option</p>
+
+                <p>
+                    Élèves par niveau
+                </p>
+
             </a>
+
+        </li>
+
+
+        <li class="nav-item">
+
+            <a href="{% url 'liste_eleves_par_groupe' %}"
+               class="nav-link">
+
+                <i class="badge badge-danger">
+                    <span class="text-white">
+                        5
+                    </span>
+                </i>
+
+                <p>
+                    Élèves par option
+                </p>
+
+            </a>
+
         </li>
 
     </ul>
+
 </li>
 
 
 <!-- ==========================================================
-     GESTION ENSEIGNANTS
+     GESTION DES BADGES
 ========================================================== -->
+
 <li class="nav-item">
-    <a href="#" class="nav-link">
+
+    <a href="#"
+       class="nav-link">
+
         <p>
             Gestion des badges
-            <span class="right badge badge-danger">voir +</span>
+
+            <span class="right badge badge-danger">
+                voir +
+            </span>
         </p>
+
     </a>
+
 
     <ul class="nav nav-treeview">
 
-        <li class="nav-item">
-            <a href="{% url 'gestion_badges_eleves' %}"
-               class="nav-link {% if request.resolver_match.url_name == 'gestion_badges_eleves' %}active{% endif %}">
-                <i class="badge badge-danger">
-                    <span class="text-white">1</span>
-                </i>
-                <p>Badges des élèves</p>
-            </a>
-        </li>
 
         <li class="nav-item">
-            <a href="{% url 'gestion_badges_enseignants' %}"
-               class="nav-link {% if request.resolver_match.url_name == 'gestion_badges_enseignants' %}active{% endif %}">
+
+            <a href="{% url 'gestion_badges_eleves' %}"
+               class="nav-link
+               {% if request.resolver_match.url_name == 'gestion_badges_eleves' %}
+                   active
+               {% endif %}">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">1</span>
+                    <span class="text-white">
+                        1
+                    </span>
                 </i>
-                <p>Badges des enseignants</p>
+
+                <p>
+                    Badges des élèves
+                </p>
+
             </a>
+
+        </li>
+
+
+        <li class="nav-item">
+
+            <a href="{% url 'gestion_badges_enseignants' %}"
+               class="nav-link
+               {% if request.resolver_match.url_name == 'gestion_badges_enseignants' %}
+                   active
+               {% endif %}">
+
+                <i class="badge badge-danger">
+                    <span class="text-white">
+                        2
+                    </span>
+                </i>
+
+                <p>
+                    Badges des enseignants
+                </p>
+
+            </a>
+
         </li>
 
     </ul>
-
-
 
 </li>
 
@@ -156,614 +417,763 @@
 <!-- ==========================================================
      GESTION BULLETINS
 ========================================================== -->
+
 <li class="nav-item">
-    <a href="#" class="nav-link">
+
+    <a href="#"
+       class="nav-link">
+
         <p>
             Gestion bulletins
-            <span class="right badge badge-danger">voir +</span>
+
+            <span class="right badge badge-danger">
+                voir +
+            </span>
         </p>
+
     </a>
+
 
     <ul class="nav nav-treeview">
 
-        <li class="nav-item">
-            <a href="{% url 'trimestre' %}" class="nav-link">
-                <i class="badge badge-danger">
-                    <span class="text-white">1</span>
-                </i>
-                <p>Valider bulletin trimestriel</p>
-            </a>
-        </li>
 
         <li class="nav-item">
-            <a href="{% url 'valider_bulletin' %}" class="nav-link">
+
+            <a href="{% url 'trimestre' %}"
+               class="nav-link">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">2</span>
+                    <span class="text-white">
+                        1
+                    </span>
                 </i>
-                <p>Valider bulletin annuel</p>
+
+                <p>
+                    Valider bulletin trimestriel
+                </p>
+
             </a>
+
         </li>
 
-        <li class="nav-item">
-            <a href="{% url 'bulletins_trimestriels' %}" class="nav-link">
-                <i class="badge badge-danger">
-                    <span class="text-white">3</span>
-                </i>
-                <p>Bulletin par niveau</p>
-            </a>
-        </li>
 
         <li class="nav-item">
-            <a href="{% url 'bulletins_option' %}" class="nav-link">
+
+            <a href="{% url 'valider_bulletin' %}"
+               class="nav-link">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">4</span>
+                    <span class="text-white">
+                        2
+                    </span>
                 </i>
-                <p>Bulletin par classe</p>
+
+                <p>
+                    Valider bulletin annuel
+                </p>
+
             </a>
+
         </li>
 
-        <li class="nav-item">
-            <a href="{% url 'bulletins_annuels_classe' %}" class="nav-link">
-                <i class="badge badge-danger">
-                    <span class="text-white">5</span>
-                </i>
-                <p>Bulletin annuel classe</p>
-            </a>
-        </li>
 
         <li class="nav-item">
-            <a href="{% url 'bulletins_annuels' %}" class="nav-link">
+
+            <a href="{% url 'bulletins_trimestriels' %}"
+               class="nav-link">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">6</span>
+                    <span class="text-white">
+                        3
+                    </span>
                 </i>
-                <p>Bulletin annuel niveau</p>
+
+                <p>
+                    Bulletin par niveau
+                </p>
+
             </a>
+
+        </li>
+
+
+        <li class="nav-item">
+
+            <a href="{% url 'bulletins_option' %}"
+               class="nav-link">
+
+                <i class="badge badge-danger">
+                    <span class="text-white">
+                        4
+                    </span>
+                </i>
+
+                <p>
+                    Bulletin par classe
+                </p>
+
+            </a>
+
+        </li>
+
+
+        <li class="nav-item">
+
+            <a href="{% url 'bulletins_annuels_classe' %}"
+               class="nav-link">
+
+                <i class="badge badge-danger">
+                    <span class="text-white">
+                        5
+                    </span>
+                </i>
+
+                <p>
+                    Bulletin annuel classe
+                </p>
+
+            </a>
+
+        </li>
+
+
+        <li class="nav-item">
+
+            <a href="{% url 'bulletins_annuels' %}"
+               class="nav-link">
+
+                <i class="badge badge-danger">
+                    <span class="text-white">
+                        6
+                    </span>
+                </i>
+
+                <p>
+                    Bulletin annuel niveau
+                </p>
+
+            </a>
+
         </li>
 
     </ul>
+
 </li>
 
 
 <!-- ==========================================================
      AFFICHAGE DES RÉSULTATS
 ========================================================== -->
+
 <li class="nav-item">
-    <a href="#" class="nav-link">
+
+    <a href="#"
+       class="nav-link">
+
         <p>
             Affichage des résultats
-            <span class="right badge badge-danger">voir +</span>
+
+            <span class="right badge badge-danger">
+                voir +
+            </span>
         </p>
+
     </a>
+
 
     <ul class="nav nav-treeview">
 
-        <li class="nav-item">
-            <a href="{% url 'resultat_groupe' %}" class="nav-link">
-                <i class="badge badge-danger">
-                    <span class="text-white">1</span>
-                </i>
-                <p>Résultat trimestriel classe</p>
-            </a>
-        </li>
 
         <li class="nav-item">
-            <a href="{% url 'resultats_trimestriels' %}" class="nav-link">
+
+            <a href="{% url 'resultat_groupe' %}"
+               class="nav-link">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">2</span>
+                    <span class="text-white">
+                        1
+                    </span>
                 </i>
-                <p>Résultat trimestriel niveau</p>
+
+                <p>
+                    Résultat trimestriel classe
+                </p>
+
             </a>
+
         </li>
 
-        <li class="nav-item">
-            <a href="{% url 'resultat_annuel' %}" class="nav-link">
-                <i class="badge badge-danger">
-                    <span class="text-white">3</span>
-                </i>
-                <p>Résultat annuel classe</p>
-            </a>
-        </li>
 
         <li class="nav-item">
-            <a href="{% url 'resultats_annuels' %}" class="nav-link">
+
+            <a href="{% url 'resultats_trimestriels' %}"
+               class="nav-link">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">4</span>
+                    <span class="text-white">
+                        2
+                    </span>
                 </i>
-                <p>Résultat annuel par niveau</p>
+
+                <p>
+                    Résultat trimestriel niveau
+                </p>
+
             </a>
+
+        </li>
+
+
+        <li class="nav-item">
+
+            <a href="{% url 'resultat_annuel' %}"
+               class="nav-link">
+
+                <i class="badge badge-danger">
+                    <span class="text-white">
+                        3
+                    </span>
+                </i>
+
+                <p>
+                    Résultat annuel classe
+                </p>
+
+            </a>
+
+        </li>
+
+
+        <li class="nav-item">
+
+            <a href="{% url 'resultats_annuels' %}"
+               class="nav-link">
+
+                <i class="badge badge-danger">
+                    <span class="text-white">
+                        4
+                    </span>
+                </i>
+
+                <p>
+                    Résultat annuel par niveau
+                </p>
+
+            </a>
+
         </li>
 
     </ul>
+
 </li>
 
 
 <!-- ==========================================================
      PARAMÈTRES
 ========================================================== -->
+
 <li class="nav-item">
-    <a href="#" class="nav-link">
+
+    <a href="#"
+       class="nav-link">
+
         <p>
             Paramètres
-            <span class="right badge badge-danger">voir +</span>
+
+            <span class="right badge badge-danger">
+                voir +
+            </span>
         </p>
+
     </a>
+
 
     <ul class="nav nav-treeview">
 
-        <li class="nav-item">
-            <a href="{% url 'an' %}" class="nav-link">
-                <i class="badge badge-danger">
-                    <span class="text-white">1</span>
-                </i>
-                <p>Années Scolaires</p>
-            </a>
-        </li>
 
         <li class="nav-item">
-            <a href="{% url 'cycle' %}" class="nav-link">
+
+            <a href="{% url 'an' %}"
+               class="nav-link">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">2</span>
+                    <span class="text-white">
+                        1
+                    </span>
                 </i>
-                <p>Gestion des Cycles</p>
+
+                <p>
+                    Années Scolaires
+                </p>
+
             </a>
+
         </li>
 
-        <li class="nav-item">
-            <a href="{% url 'niveau' %}" class="nav-link">
-                <i class="badge badge-danger">
-                    <span class="text-white">3</span>
-                </i>
-                <p>Gestion des Niveaux</p>
-            </a>
-        </li>
 
         <li class="nav-item">
-            <a href="{% url 'groupe' %}" class="nav-link">
+
+            <a href="{% url 'cycle' %}"
+               class="nav-link">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">4</span>
+                    <span class="text-white">
+                        2
+                    </span>
                 </i>
-                <p>Groupes de classes</p>
+
+                <p>
+                    Gestion des Cycles
+                </p>
+
             </a>
+
         </li>
 
-        <li class="nav-item">
-            <a href="{% url 'matiere' %}" class="nav-link">
-                <i class="badge badge-danger">
-                    <span class="text-white">5</span>
-                </i>
-                <p>Gestion des Matières</p>
-            </a>
-        </li>
 
         <li class="nav-item">
-            <a href="{% url 'afficharge_info_ecole' %}" class="nav-link">
+
+            <a href="{% url 'niveau' %}"
+               class="nav-link">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">6</span>
+                    <span class="text-white">
+                        3
+                    </span>
                 </i>
-                <p>Établissement</p>
+
+                <p>
+                    Gestion des Niveaux
+                </p>
+
             </a>
+
+        </li>
+
+
+        <li class="nav-item">
+
+            <a href="{% url 'groupe' %}"
+               class="nav-link">
+
+                <i class="badge badge-danger">
+                    <span class="text-white">
+                        4
+                    </span>
+                </i>
+
+                <p>
+                    Groupes de classes
+                </p>
+
+            </a>
+
+        </li>
+
+
+        <li class="nav-item">
+
+            <a href="{% url 'matiere' %}"
+               class="nav-link">
+
+                <i class="badge badge-danger">
+                    <span class="text-white">
+                        5
+                    </span>
+                </i>
+
+                <p>
+                    Gestion des Matières
+                </p>
+
+            </a>
+
+        </li>
+
+
+        <li class="nav-item">
+
+            <a href="{% url 'afficharge_info_ecole' %}"
+               class="nav-link">
+
+                <i class="badge badge-danger">
+                    <span class="text-white">
+                        6
+                    </span>
+                </i>
+
+                <p>
+                    Établissement
+                </p>
+
+            </a>
+
         </li>
 
     </ul>
+
 </li>
 
 
 <!-- ==========================================================
      MON COMPTE
 ========================================================== -->
+
 <li class="nav-item">
-    <a href="#" class="nav-link">
+
+    <a href="#"
+       class="nav-link">
+
         <p>
             Mon Compte
-            <span class="right badge badge-danger">voir +</span>
+
+            <span class="right badge badge-danger">
+                voir +
+            </span>
         </p>
+
     </a>
+
 
     <ul class="nav nav-treeview">
 
-        <li class="nav-item">
-            <a href="{% url 'password_reset_request' %}" class="nav-link">
-                <i class="badge badge-danger">
-                    <span class="text-white">3</span>
-                </i>
-                <p>Changer mot de passe</p>
-            </a>
-        </li>
 
         <li class="nav-item">
-            <a href="{% url 'profil' %}" class="nav-link">
+
+            <a href="{% url 'password_reset_request' %}"
+               class="nav-link">
+
                 <i class="badge badge-danger">
-                    <span class="text-white">4</span>
+                    <span class="text-white">
+                        3
+                    </span>
                 </i>
-                <p>Profil</p>
+
+                <p>
+                    Changer mot de passe
+                </p>
+
             </a>
+
+        </li>
+
+
+        <li class="nav-item">
+
+            <a href="{% url 'profil' %}"
+               class="nav-link">
+
+                <i class="badge badge-danger">
+                    <span class="text-white">
+                        4
+                    </span>
+                </i>
+
+                <p>
+                    Profil
+                </p>
+
+            </a>
+
         </li>
 
     </ul>
+
 </li>
 
 
-<!-- HISTORIQUE -->
+<!-- ==========================================================
+     MESSAGERIE DANS LE MENU
+========================================================== -->
+
 <li class="nav-item">
-    <a href="{% url 'historique_action' %}" class="nav-link">
+
+    <a href="{% url 'boite_reception' %}"
+       class="nav-link
+       {% if request.resolver_match.url_name == 'boite_reception' %}
+           active
+       {% endif %}">
+
+        <i class="nav-icon fas fa-envelope"></i>
+
+        <p>
+
+            Messagerie
+
+            {% if messages_non_lus and messages_non_lus > 0 %}
+
+                <span class="right badge badge-danger">
+                    {{ messages_non_lus }}
+                </span>
+
+            {% endif %}
+
+        </p>
+
+    </a>
+
+</li>
+
+
+<!-- ==========================================================
+     HISTORIQUE
+========================================================== -->
+
+<li class="nav-item">
+
+    <a href="{% url 'historique_action' %}"
+       class="nav-link">
+
         <i class="nav-icon fas fa-history"></i>
-        <p>Historique</p>
+
+        <p>
+            Historique
+        </p>
+
     </a>
+
 </li>
 
 
-<!-- DÉCONNEXION -->
+<!-- ==========================================================
+     DÉCONNEXION
+========================================================== -->
+
 <li class="nav-item">
-    <a href="{% url 'logout' %}" class="nav-link">
+
+    <a href="{% url 'logout' %}"
+       class="nav-link">
+
         <i class="fas fa-sign-out-alt fa-2x text-warning"></i>
-        <p>Déconnexion</p>
+
+        <p>
+            Déconnexion
+        </p>
+
     </a>
+
 </li>
 
-{% endblock %}
+{% endblock menu_sidebar %}
 
 
+{# ==========================================================
+   CONTENU DU TABLEAU DE BORD
+========================================================== #}
 
 {% block contenu %}
 
 <div class="content-wrapper p-4"
      style="max-height: calc(100vh - 150px); overflow-y: auto;">
 
-{% block content_wrapper %}
+    {% block content_wrapper %}
 
-<!-- ==========================================================
-     EN-TÊTE
-========================================================== -->
-<div class="content-header">
 
-    <div class="container-fluid">
+    <!-- ======================================================
+         EN-TÊTE
+    ====================================================== -->
 
-        <div class="row mb-2">
+    <div class="content-header">
 
-            <div class="col-sm-6">
+        <div class="container-fluid">
 
-                <h1 class="m-0">
-                    ESPACE DIRECTEUR
-                </h1>
+            <div class="row mb-2">
+
+
+                <div class="col-sm-6">
+
+                    <h1 class="m-0">
+                        ESPACE DIRECTEUR
+                    </h1>
+
+                </div>
+
+
+                <div class="col-sm-6">
+
+                    <ol class="breadcrumb float-sm-right">
+
+                        <li class="breadcrumb-item">
+
+                            <a href="{% url 'fondateur.dashbord' %}">
+                                Accueil
+                            </a>
+
+                        </li>
+
+                        <li class="breadcrumb-item active">
+                            Tableau de bord
+                        </li>
+
+                    </ol>
+
+                </div>
+
 
             </div>
 
-            <div class="col-sm-6">
-
-                <ol class="breadcrumb float-sm-right">
-
-                    <li class="breadcrumb-item">
-                        <a href="{% url 'fondateur.dashbord' %}">
-                            Accueil
-                        </a>
-                    </li>
-
-                    <li class="breadcrumb-item active">
-                        Tableau de bord
-                    </li>
-
-                </ol>
-
-            </div>
-
         </div>
 
     </div>
 
-</div>
 
+    <!-- ======================================================
+         CONTENU
+    ====================================================== -->
 
-<section class="content">
+    <section class="content">
 
-<div class="container-fluid">
+        <div class="container-fluid">
 
 
-<!-- ==========================================================
-     ANNÉE SCOLAIRE
-========================================================== -->
-{% if annee_selectionnee %}
+            <!-- ==================================================
+                 ANNÉE SCOLAIRE
+            ================================================== -->
 
-<div class="alert alert-primary">
+            {% if annee_selectionnee %}
 
-    <i class="fas fa-calendar-alt"></i>
+                <div class="alert alert-primary">
 
-    <strong>
-        Année scolaire en cours :
-    </strong>
+                    <i class="fas fa-calendar-alt mr-2"></i>
 
-    {{ annee_selectionnee.nom }}
+                    <strong>
+                        Année scolaire en cours :
+                    </strong>
 
-</div>
+                    {{ annee_selectionnee.nom }}
 
-{% else %}
+                </div>
 
-<div class="alert alert-warning">
+            {% else %}
 
-    <i class="fas fa-exclamation-triangle"></i>
+                <div class="alert alert-warning">
 
-    Aucune année scolaire en cours n'est définie.
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
 
-</div>
+                    Aucune année scolaire en cours n'est définie.
 
-{% endif %}
+                </div>
 
+            {% endif %}
 
 
-<!-- ==========================================================
-     CARTES PRINCIPALES
-========================================================== -->
-<div class="row">
+            <!-- ==================================================
+                 CARTES PRINCIPALES
+            ================================================== -->
 
+            <div class="row">
 
-<!-- ÉLÈVES -->
-<div class="col-lg-3 col-6">
 
-    <div class="small-box bg-info">
+                <!-- ÉLÈVES -->
 
-        <div class="inner">
+                <div class="col-lg-3 col-6">
 
-            <h3>
-                {{ nombre_eleves_par_annee }}
-            </h3>
+                    <div class="small-box bg-info">
 
-            <p>
-                Élèves inscrits
-            </p>
+                        <div class="inner">
 
-        </div>
+                            <h3>
+                                {{ nombre_eleves_par_annee }}
+                            </h3>
 
-        <div class="icon">
-            <i class="fas fa-user-graduate"></i>
-        </div>
+                            <p>
+                                Élèves inscrits
+                            </p>
 
-       
+                        </div>
 
-    </div>
+                        <div class="icon">
 
-</div>
+                            <i class="fas fa-user-graduate"></i>
 
-
-<!-- ENSEIGNANTS -->
-<div class="col-lg-3 col-6">
-
-    <div class="small-box bg-success">
-
-        <div class="inner">
-
-            <h3>
-                {{ nombre_enseignants }}
-            </h3>
-
-            <p>
-                Enseignants
-            </p>
-
-        </div>
-
-        <div class="icon">
-            <i class="fas fa-chalkboard-teacher"></i>
-        </div>
-
-       
-
-    </div>
-
-</div>
-
-
-<!-- UTILISATEURS -->
-<div class="col-lg-3 col-6">
-
-    <div class="small-box bg-warning">
-
-        <div class="inner">
-
-            <h3>
-                {{ nombre_utilisateurs }}
-            </h3>
-
-            <p>
-                Utilisateurs
-            </p>
-
-        </div>
-
-        <div class="icon">
-            <i class="fas fa-users"></i>
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- NIVEAUX -->
-<div class="col-lg-3 col-6">
-
-    <div class="small-box bg-danger">
-
-        <div class="inner">
-
-            <h3>
-                {{ nombre_niveaux }}
-            </h3>
-
-            <p>
-                Niveaux
-            </p>
-
-        </div>
-
-        <div class="icon">
-            <i class="fas fa-layer-group"></i>
-        </div>
-
- 
-
-    </div>
-
-</div>
-
-</div>
-
-
-
-<!-- ==========================================================
-     ÉLÈVES PAR NIVEAU
-========================================================== -->
-
-<style>
-
-.niveau-row {
-
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 15px;
-
-    margin-top: 25px;
-
-    justify-content: flex-start;
-
-}
-
-
-.niveau-col {
-
-    flex: 1 1 200px;
-
-    max-width: 250px;
-
-}
-
-
-.niveau-col .small-box {
-
-    width: 100%;
-
-    border-radius: 20px;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
-
-    align-items: center;
-
-    padding: 20px;
-
-    min-height: 150px;
-
-    color: white;
-
-    background-color: #267b3d;
-
-    position: relative;
-
-    transition: transform 0.2s;
-
-}
-
-
-.niveau-col .small-box:hover {
-
-    transform: translateY(-5px);
-
-}
-
-
-.niveau-col .small-box .icon {
-
-    position: absolute;
-
-    top: 10px;
-
-    right: 10px;
-
-    font-size: 2rem;
-
-    opacity: 0.3;
-
-}
-
-
-.niveau-col .small-box-footer {
-
-    color: white;
-
-    display: block;
-
-    margin-top: 10px;
-
-    text-align: center;
-
-    font-weight: bold;
-
-    text-decoration: none;
-
-}
-
-
-@media (max-width: 992px) {
-
-    .niveau-col {
-
-        flex: 0 0 33.33%;
-
-        max-width: 33.33%;
-
-    }
-
-}
-
-
-@media (max-width: 576px) {
-
-    .niveau-col {
-
-        flex: 0 0 100%;
-
-        max-width: 100%;
-
-    }
-
-}
-
-</style>
-
-
-    <div class="card-body">
-
-        <div class="niveau-row">
-
-            {% for niveau in niveaux_avec_effectifs %}
-
-            <div class="niveau-col">
-
-                <div class="small-box">
-
-                    <div class="inner text-center">
-
-                        <p>
-                            Niveau :
-                            {{ niveau.nom }}
-                        </p>
-
-                        <h4>
-                            {{ niveau.nombre_eleves }}
-                        </h4>
-
-                        <small>
-                            Élève{{ niveau.nombre_eleves|pluralize }}
-                        </small>
+                        </div>
 
                     </div>
 
-                    <div class="icon">
+                </div>
 
-                        <i class="fas fa-users"></i>
+
+                <!-- ENSEIGNANTS -->
+
+                <div class="col-lg-3 col-6">
+
+                    <div class="small-box bg-success">
+
+                        <div class="inner">
+
+                            <h3>
+                                {{ nombre_enseignants }}
+                            </h3>
+
+                            <p>
+                                Enseignants
+                            </p>
+
+                        </div>
+
+                        <div class="icon">
+
+                            <i class="fas fa-chalkboard-teacher"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- UTILISATEURS -->
+
+                <div class="col-lg-3 col-6">
+
+                    <div class="small-box bg-warning">
+
+                        <div class="inner">
+
+                            <h3>
+                                {{ nombre_utilisateurs }}
+                            </h3>
+
+                            <p>
+                                Utilisateurs
+                            </p>
+
+                        </div>
+
+                        <div class="icon">
+
+                            <i class="fas fa-users"></i>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- NIVEAUX -->
+
+                <div class="col-lg-3 col-6">
+
+                    <div class="small-box bg-danger">
+
+                        <div class="inner">
+
+                            <h3>
+                                {{ nombre_niveaux }}
+                            </h3>
+
+                            <p>
+                                Niveaux
+                            </p>
+
+                        </div>
+
+                        <div class="icon">
+
+                            <i class="fas fa-layer-group"></i>
+
+                        </div>
 
                     </div>
 
@@ -771,39 +1181,82 @@
 
             </div>
 
-            {% empty %}
 
-            <div class="col-12">
+            <!-- ==================================================
+                 ÉLÈVES PAR NIVEAU
+            ================================================== -->
 
-                <div class="alert alert-info">
+            <div class="card-body">
 
-                    Aucun niveau disponible.
+                <div class="niveau-row">
+
+
+                    {% for niveau in niveaux_avec_effectifs %}
+
+                        <div class="niveau-col">
+
+                            <div class="small-box">
+
+                                <div class="inner text-center">
+
+                                    <p>
+                                        Niveau :
+                                        {{ niveau.nom }}
+                                    </p>
+
+                                    <h4>
+                                        {{ niveau.nombre_eleves }}
+                                    </h4>
+
+                                    <small>
+                                        Élève{{ niveau.nombre_eleves|pluralize }}
+                                    </small>
+
+                                </div>
+
+
+                                <div class="icon">
+
+                                    <i class="fas fa-users"></i>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    {% empty %}
+
+                        <div class="col-12">
+
+                            <div class="alert alert-info">
+
+                                Aucun niveau disponible.
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
 
                 </div>
 
             </div>
 
-            {% endfor %}
 
         </div>
 
-    </div>
+    </section>
 
 
-
-
-</div>
-
-</section>
-
-{% endblock %}
+    {% endblock content_wrapper %}
 
 </div>
 
-{% endblock %}
+{% endblock contenu %}
 
 
 {% block script_fils %}
 
-{% endblock %}
-
+{% endblock script_fils %}
