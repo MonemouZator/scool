@@ -41,4 +41,9 @@ urlpatterns = [
     views.modifier_info_ecole,
     name='modifier_info_ecole'
 ),
+    path(
+        'supprime/etablissement/<int:pk>/',
+        views.supprimer_ecole,
+        name='supprimer-ecole'
+    ),
 ]
