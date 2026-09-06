@@ -1,3 +1,4 @@
+
 {% load static %}
 
 <!DOCTYPE html>
@@ -8,18 +9,16 @@
     <meta charset="utf-8">
 
     <meta name="viewport"
-          content="width=device-width, initial-scale=1">
+          content="width=device-width, initial-scale=1, viewport-fit=cover">
 
     <title>Messagerie | WhatsApp</title>
-
 
     <!-- =====================================================
          GOOGLE FONT
     ====================================================== -->
 
     <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=fallback">
-
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
 
     <!-- =====================================================
          FONT AWESOME
@@ -28,7 +27,6 @@
     <link rel="stylesheet"
           href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
 
-
     <!-- =====================================================
          BOOTSTRAP
     ====================================================== -->
@@ -36,22 +34,21 @@
     <link rel="stylesheet"
           href="{% static 'base/plugins/bootstrap/css/bootstrap.min.css' %}">
 
-
     <!-- =====================================================
          ADMINLTE
     ====================================================== -->
 
     <link rel="stylesheet"
-          href="{% static 'base/css/adminlte.min.css' %}">
-
+          href="{% static 'base/dist/css/adminlte.min.css' %}">
 
     <style>
 
         /* =====================================================
            VARIABLES
-        ===================================================== */
+        ====================================================== */
 
         :root {
+
             --primary: #2563eb;
             --primary-dark: #1d4ed8;
             --primary-soft: #eff6ff;
@@ -61,6 +58,7 @@
             --light-muted: #9ca3af;
 
             --border: #e5e7eb;
+
             --surface: #ffffff;
             --page-bg: #f3f6fa;
 
@@ -71,155 +69,145 @@
 
             --group: #7c3aed;
 
-            --shadow:
-                0 6px 24px rgba(15, 23, 42, .07);
+            --navbar-height: 56px;
+
+            --app-height: 100vh;
         }
 
 
         /* =====================================================
            RESET
-        ===================================================== */
-
-        * {
-            box-sizing: border-box;
-        }
+        ====================================================== */
 
         html,
         body {
+
             width: 100%;
             height: 100%;
+
             margin: 0;
             padding: 0;
+
+            overflow: hidden;
+
+            font-family:
+                "Source Sans Pro",
+                Arial,
+                sans-serif;
+
+            background: var(--page-bg);
+
+            color: var(--text);
         }
 
-        body {
-            background: var(--page-bg);
-            font-family: "Source Sans Pro", sans-serif;
-            color: var(--text);
-            overflow: hidden;
+
+        *,
+        *::before,
+        *::after {
+
+            box-sizing: border-box;
         }
 
 
         /* =====================================================
            WRAPPER
-        ===================================================== */
+        ====================================================== */
 
         .wrapper {
+
             width: 100%;
-            height: 100vh;
-            min-height: 100vh;
+            height: var(--app-height);
+
+            min-height: var(--app-height);
+
+            display: flex;
+            flex-direction: column;
+
+            overflow: hidden;
         }
 
 
         /* =====================================================
            NAVBAR
-        ===================================================== */
+        ====================================================== */
 
         .main-header {
-            width: 100%;
-            height: 56px;
-            min-height: 56px;
 
-            margin-left: 0 !important;
+            flex: 0 0 var(--navbar-height);
 
-            padding: 0 8px;
+            height: var(--navbar-height);
 
-            background: #ffffff !important;
-
-            border-bottom: 1px solid var(--border);
-
-            box-shadow:
-                0 1px 3px rgba(15, 23, 42, .03);
-
-            z-index: 10;
-        }
-
-        .main-header .nav-link {
-            color: var(--muted);
-        }
-
-        .main-header .nav-link:hover {
-            color: var(--primary);
-        }
-
-        .navbar-brand-messagerie {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-
-            margin-left: 2px;
-
-            color: var(--text);
-
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        .navbar-brand-messagerie i {
-            color: var(--primary);
-            font-size: 18px;
-        }
-
-        .navbar-badge {
-            font-size: 9px;
+            z-index: 1000;
         }
 
 
         /* =====================================================
-           CONTENU
-        ===================================================== */
+           CONTENT WRAPPER
+        ====================================================== */
 
         .content-wrapper {
-            width: 100%;
-            height: calc(100vh - 56px);
-            min-height: 0 !important;
 
             margin-left: 0 !important;
 
-            padding: 10px;
+            width: 100%;
 
-            background: var(--page-bg);
+            height:
+                calc(
+                    var(--app-height)
+                    - var(--navbar-height)
+                );
+
+            min-height:
+                calc(
+                    var(--app-height)
+                    - var(--navbar-height)
+                );
 
             overflow: hidden;
-        }
 
-        .messagerie-container {
-            width: 100%;
-            height: 100%;
-
-            padding: 0;
+            background: var(--page-bg);
         }
 
 
         /* =====================================================
-           CONTENEUR WHATSAPP
-        ===================================================== */
+           CONTAINER PRINCIPAL
+        ====================================================== */
 
-        .whatsapp-container {
-            display: flex;
+        .messagerie-container {
 
             width: 100%;
             height: 100%;
 
-            min-height: 0;
+            padding: 12px;
+        }
 
-            overflow: hidden;
+
+        .whatsapp-container {
+
+            width: 100%;
+            height: 100%;
+
+            display: flex;
 
             background: var(--surface);
 
             border: 1px solid var(--border);
 
-            border-radius: 12px;
+            border-radius: 10px;
 
-            box-shadow: var(--shadow);
+            overflow: hidden;
+
+            box-shadow:
+                0 4px 18px rgba(0, 0, 0, .06);
         }
 
 
         /* =====================================================
            SIDEBAR
-        ===================================================== */
+        ====================================================== */
 
         .conversation-sidebar {
+
             width: 320px;
             min-width: 320px;
 
@@ -228,7 +216,7 @@
             display: flex;
             flex-direction: column;
 
-            background: #ffffff;
+            background: #fff;
 
             border-right: 1px solid var(--border);
         }
@@ -236,216 +224,218 @@
 
         /* =====================================================
            SIDEBAR HEADER
-        ===================================================== */
+        ====================================================== */
 
-        .sidebar-header {
-            flex-shrink: 0;
+        .conversation-sidebar-header {
 
-            padding: 13px 14px 11px;
+            height: 58px;
 
-            background: #ffffff;
+            padding: 0 14px;
 
-            border-bottom: 1px solid var(--border);
-        }
-
-        .sidebar-title {
             display: flex;
             align-items: center;
             justify-content: space-between;
 
-            margin-bottom: 9px;
+            border-bottom: 1px solid var(--border);
         }
 
-        .sidebar-title h4 {
-            margin: 0;
+
+        .conversation-sidebar-title {
+
+            font-size: 19px;
+
+            font-weight: 700;
 
             color: var(--text);
-
-            font-size: 17px;
-            font-weight: 700;
         }
 
-        .sidebar-title .badge {
-            border-radius: 10px;
-            padding: 4px 7px;
-            font-size: 10px;
+
+        .unread-badge {
+
+            min-width: 22px;
+            height: 22px;
+
+            padding: 0 6px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            background: var(--primary);
+
+            color: #fff;
+
+            border-radius: 50px;
+
+            font-size: 11px;
+
             font-weight: 600;
         }
 
 
         /* =====================================================
-           RECHERCHE
-        ===================================================== */
+           SEARCH
+        ====================================================== */
 
-        .search-box {
-            position: relative;
+        .conversation-search {
 
-            width: 100%;
+            padding: 9px 10px;
+
+            border-bottom: 1px solid var(--border);
         }
 
-        .search-box input {
+
+        .conversation-search-wrapper {
+
+            position: relative;
+        }
+
+
+        .conversation-search-wrapper i {
+
+            position: absolute;
+
+            left: 12px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: var(--light-muted);
+
+            font-size: 13px;
+        }
+
+
+        #rechercheConversation {
+
             width: 100%;
+
             height: 36px;
 
-            padding: 7px 12px 7px 34px;
+            padding:
+                5px 10px 5px 34px;
 
-            border: 1px solid #edf0f3;
+            border: 1px solid #e2e8f0;
 
-            border-radius: 18px;
+            border-radius: 8px;
 
             outline: none;
 
-            background: #f6f8fa;
+            background: #f8fafc;
 
-            color: var(--text);
-
-            font-size: 12px;
-
-            transition:
-                border-color .15s ease,
-                background .15s ease,
-                box-shadow .15s ease;
+            font-size: 13px;
         }
 
-        .search-box input:focus {
-            border-color: #bfdbfe;
 
-            background: #ffffff;
+        #rechercheConversation:focus {
 
-            box-shadow:
-                0 0 0 3px rgba(37, 99, 235, .07);
-        }
+            border-color: var(--primary);
 
-        .search-box input::placeholder {
-            color: #a0a7b1;
-        }
-
-        .search-box i {
-            position: absolute;
-
-            top: 10px;
-            left: 12px;
-
-            color: #9aa2ad;
-
-            font-size: 12px;
-
-            pointer-events: none;
+            background: #fff;
         }
 
 
         /* =====================================================
-           LISTE
-        ===================================================== */
+           LISTE CONVERSATIONS
+        ====================================================== */
 
         .conversation-list {
+
             flex: 1;
 
-            min-height: 0;
-
             overflow-y: auto;
-            overflow-x: hidden;
 
-            background: #ffffff;
+            overflow-x: hidden;
         }
 
+
         .conversation-list::-webkit-scrollbar {
+
             width: 5px;
         }
 
-        .conversation-list::-webkit-scrollbar-track {
-            background: transparent;
-        }
 
         .conversation-list::-webkit-scrollbar-thumb {
-            border-radius: 8px;
+
             background: #d1d5db;
+
+            border-radius: 20px;
         }
 
 
         /* =====================================================
-           TITRES DE SECTION
-        ===================================================== */
-
-        .section-title {
-            padding: 9px 14px 6px;
-
-            background: #fafbfc;
-
-            border-bottom: 1px solid #f0f2f5;
-
-            color: #98a1ad;
-
-            font-size: 9px;
-            font-weight: 700;
-
-            letter-spacing: .07em;
-
-            text-transform: uppercase;
-        }
-
-
-        /* =====================================================
-           ITEM CONVERSATION
-        ===================================================== */
+           CONVERSATION ITEM
+        ====================================================== */
 
         .conversation-item {
-            display: flex;
-            align-items: center;
 
             width: 100%;
 
-            padding: 8px 12px;
+            min-height: 65px;
 
-            color: var(--text) !important;
+            padding: 8px 11px;
 
-            text-decoration: none !important;
+            display: flex;
+            align-items: center;
 
-            border-bottom: 1px solid #f4f5f7;
+            color: var(--text);
 
-            cursor: pointer;
+            text-decoration: none;
 
-            transition:
-                background .15s ease;
+            border-bottom: 1px solid #f1f5f9;
+
+            transition: background .15s ease;
         }
+
 
         .conversation-item:hover {
+
+            color: var(--text);
+
             background: #f8fafc;
+
+            text-decoration: none;
         }
 
+
         .conversation-item.active {
-            background: #eff6ff;
+
+            background: var(--primary-soft);
+
+            border-left: 3px solid var(--primary);
+
+            padding-left: 8px;
         }
 
 
         /* =====================================================
-           AVATAR SIDEBAR
-        ===================================================== */
+           AVATAR
+        ====================================================== */
 
         .avatar {
-            width: 42px;
-            height: 42px;
-            min-width: 42px;
 
-            margin-right: 10px;
+            width: 44px;
+            height: 44px;
 
-            overflow: hidden;
-
-            border-radius: 50%;
+            min-width: 44px;
 
             display: flex;
             align-items: center;
             justify-content: center;
 
-            background: #e8eefc;
+            overflow: hidden;
 
-            color: var(--primary);
+            border-radius: 50%;
 
-            font-size: 16px;
+            background: #e5e7eb;
+
+            color: #6b7280;
+
+            font-size: 17px;
         }
 
+
         .avatar img {
-            display: block;
 
             width: 100%;
             height: 100%;
@@ -453,98 +443,114 @@
             object-fit: cover;
         }
 
+
         .avatar-group {
+
             background: #ede9fe;
+
             color: var(--group);
         }
 
 
         /* =====================================================
-           INFOS
-        ===================================================== */
+           CONVERSATION INFO
+        ====================================================== */
 
         .conversation-info {
-            flex: 1;
 
             min-width: 0;
+
+            flex: 1;
+
+            margin-left: 10px;
         }
+
 
         .conversation-top {
+
             display: flex;
+
             align-items: center;
 
-            width: 100%;
+            justify-content: space-between;
         }
+
 
         .conversation-name {
+
             display: block;
 
-            width: 100%;
+            max-width: 100%;
 
             overflow: hidden;
-
-            color: var(--text);
-
-            font-size: 13px;
-            font-weight: 600;
 
             white-space: nowrap;
+
             text-overflow: ellipsis;
+
+            font-size: 14px;
+
+            font-weight: 600;
         }
 
-        .conversation-preview {
-            margin-top: 2px;
 
-            overflow: hidden;
+        .conversation-preview {
+
+            margin-top: 2px;
 
             color: var(--muted);
 
-            font-size: 11px;
+            font-size: 12px;
 
             white-space: nowrap;
+
+            overflow: hidden;
 
             text-overflow: ellipsis;
         }
 
 
         /* =====================================================
-           FOOTER SIDEBAR
-        ===================================================== */
+           SIDEBAR FOOTER
+        ====================================================== */
 
         .new-conversation {
-            flex-shrink: 0;
 
             padding: 9px;
 
-            background: #ffffff;
+            display: flex;
+
+            gap: 7px;
 
             border-top: 1px solid var(--border);
+
+            background: #fff;
         }
+
 
         .new-conversation .btn {
-            width: 100%;
 
-            margin-bottom: 5px;
+            flex: 1;
 
-            border-radius: 7px;
+            min-width: 0;
+
+            height: 36px;
+
+            padding: 5px 7px;
 
             font-size: 12px;
-            font-weight: 600;
-        }
 
-        .new-conversation .btn:last-child {
-            margin-bottom: 0;
+            white-space: nowrap;
         }
 
 
         /* =====================================================
-           ZONE CHAT
-        ===================================================== */
+           CHAT AREA
+        ====================================================== */
 
         .chat-area {
-            flex: 1;
 
-            width: calc(100% - 320px);
+            flex: 1;
 
             min-width: 0;
 
@@ -554,148 +560,73 @@
             flex-direction: column;
 
             background: var(--chat-bg);
+
+            overflow: hidden;
         }
 
 
         /* =====================================================
-           HEADER CHAT
-        ===================================================== */
+           CHAT HEADER
+        ====================================================== */
 
         .chat-header {
-            height: 58px;
-            min-height: 58px;
 
-            flex-shrink: 0;
+            flex: 0 0 58px;
+
+            height: 58px;
+
+            padding: 7px 12px;
 
             display: flex;
             align-items: center;
 
-            padding: 7px 13px;
-
-            background: #ffffff;
+            background: #fff;
 
             border-bottom: 1px solid var(--border);
         }
 
-        .chat-header .avatar {
-            width: 38px;
-            height: 38px;
-            min-width: 38px;
 
-            margin-right: 9px;
-        }
+        .mobile-back {
 
-        .chat-user-name {
+            display: none;
+
+            width: 35px;
+            height: 35px;
+
+            margin-right: 4px;
+
+            border: 0;
+
+            background: transparent;
+
             color: var(--text);
 
-            font-size: 15px;
-
-            font-weight: 700;
-
-            line-height: 1.1;
-        }
-
-        .chat-status {
-            margin-top: 2px;
-
-            color: #98a1ad;
-
-            font-size: 10px;
+            font-size: 17px;
         }
 
 
-        /* =====================================================
-           ZONE MESSAGES
-        ===================================================== */
+        .chat-user-avatar {
 
-        .messages-area {
-            flex: 1;
+            width: 40px;
+            height: 40px;
 
-            min-height: 0;
-
-            overflow-y: auto;
-            overflow-x: hidden;
-
-            padding: 8px 11px;
-
-            background-color: var(--chat-bg);
-
-            background-image:
-                radial-gradient(
-                    rgba(100, 116, 139, .035) 1px,
-                    transparent 1px
-                );
-
-            background-size: 18px 18px;
-        }
-
-        .messages-area::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        .messages-area::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .messages-area::-webkit-scrollbar-thumb {
-            border-radius: 8px;
-            background: #cbd5e1;
-        }
-
-
-        /* =====================================================
-           LIGNE MESSAGE
-        ===================================================== */
-
-        .message-wrapper {
-            display: flex !important;
-
-            align-items: flex-end;
-
-            width: 100%;
-
-            margin-bottom: 3px;
-
-            padding: 0;
-
-            text-align: left !important;
-        }
-
-        .message-wrapper.received {
-            justify-content: flex-start !important;
-        }
-
-        .message-wrapper.sent {
-            justify-content: flex-end !important;
-        }
-
-
-        /* =====================================================
-           AVATAR MESSAGE
-        ===================================================== */
-
-        .message-avatar {
-            width: 23px;
-            height: 23px;
-            min-width: 23px;
-
-            overflow: hidden;
-
-            border-radius: 50%;
+            min-width: 40px;
 
             display: flex;
             align-items: center;
             justify-content: center;
 
-            background: #dbeafe;
+            overflow: hidden;
 
-            color: var(--primary);
+            border-radius: 50%;
 
-            font-size: 9px;
+            background: #e5e7eb;
+
+            color: #6b7280;
         }
 
-        .message-avatar img {
-            display: block;
+
+        .chat-user-avatar img {
 
             width: 100%;
             height: 100%;
@@ -703,196 +634,360 @@
             object-fit: cover;
         }
 
-        .message-wrapper.received .message-avatar {
-            margin-right: 4px;
-            margin-left: 0;
+
+        .chat-user-info {
+
+            min-width: 0;
+
+            margin-left: 9px;
         }
 
+
+        .chat-user-name {
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+
+        .chat-user-status {
+
+            color: #22a06b;
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           MESSAGES AREA
+        ====================================================== */
+
+        .messages-area {
+
+            flex: 1;
+
+            min-height: 0;
+
+            padding: 12px 14px;
+
+            overflow-y: auto;
+
+            overflow-x: hidden;
+
+            scroll-behavior: smooth;
+        }
+
+
+        .messages-area::-webkit-scrollbar {
+
+            width: 5px;
+        }
+
+
+        .messages-area::-webkit-scrollbar-thumb {
+
+            background: #cbd5e1;
+
+            border-radius: 20px;
+        }
+
+
+        /* =====================================================
+           MESSAGE WRAPPER
+        ====================================================== */
+
+        .message-wrapper {
+
+            width: 100%;
+
+            display: flex;
+
+            align-items: flex-end;
+
+            margin-bottom: 6px;
+        }
+
+
+        .message-wrapper.sent {
+
+            justify-content: flex-end;
+        }
+
+
+        .message-wrapper.received {
+
+            justify-content: flex-start;
+        }
+
+
+        /* =====================================================
+           MESSAGE AVATAR
+        ====================================================== */
+
+        .message-avatar {
+
+            width: 27px;
+            height: 27px;
+
+            min-width: 27px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+
+            border-radius: 50%;
+
+            background: #dbeafe;
+
+            color: #64748b;
+
+            font-size: 11px;
+        }
+
+
+        .message-avatar img {
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+        }
+
+
+        .message-wrapper.received .message-avatar {
+
+            margin-right: 5px;
+        }
+
+
         .message-wrapper.sent .message-avatar {
-            margin-left: 4px;
-            margin-right: 0;
+
+            margin-left: 5px;
         }
 
 
         /* =====================================================
            BULLE MESSAGE
-           LARGEUR ADAPTÉE AU CONTENU
-        ===================================================== */
+        ====================================================== */
 
         .message-bubble {
-            display: block;
+
+            /*
+             * IMPORTANT :
+             * Cadre beaucoup plus petit.
+             */
 
             width: fit-content;
 
-            max-width: 68%;
+            max-width: 58%;
 
             min-width: 0;
 
-            padding: 4px 7px;
+            padding: 5px 8px;
 
-            border-radius: 8px;
+            border-radius: 9px;
 
-            text-align: left !important;
+            font-size: 13px;
+
+            line-height: 1.3;
 
             box-shadow:
-                0 1px 1px rgba(15, 23, 42, .08);
+                0 1px 1px rgba(0, 0, 0, .07);
 
-            overflow-wrap: break-word;
-            word-break: normal;
+            overflow-wrap: anywhere;
         }
 
 
         /* =====================================================
-           BULLE REÇUE
-        ===================================================== */
+           MESSAGE REÇU
+        ====================================================== */
 
         .message-wrapper.received .message-bubble {
 
-            background: var(--received) !important;
+            background: var(--received);
 
-            color: var(--text);
-
-            border-top-left-radius: 2px;
+            border-top-left-radius: 3px;
         }
 
 
         /* =====================================================
-           BULLE ENVOYÉE
-        ===================================================== */
+           MESSAGE ENVOYÉ
+        ====================================================== */
 
         .message-wrapper.sent .message-bubble {
 
-            background: var(--sent) !important;
+            background: var(--sent);
 
-            color: var(--text);
-
-            border-top-right-radius: 2px;
+            border-top-right-radius: 3px;
         }
 
 
         /* =====================================================
-           EXPÉDITEUR
-        ===================================================== */
+           NOM EXPÉDITEUR
+        ====================================================== */
 
         .message-sender {
-            display: block;
 
-            margin-bottom: 2px;
+            margin: 0 0 1px 0;
 
-            color: var(--primary);
+            color: #2563eb;
 
             font-size: 10px;
 
             font-weight: 700;
 
-            line-height: 1.1;
-
-            text-align: left !important;
+            line-height: 1.15;
         }
 
-        .message-wrapper.sent .message-sender {
-            color: #4b5563;
 
-            text-align: left !important;
+        .message-wrapper.sent .message-sender {
+
+            color: #128c7e;
         }
 
 
         /* =====================================================
-           TEXTE
-        ===================================================== */
+           CONTENU + HEURE
+        ====================================================== */
 
-        .message-text {
+        .message-content {
+
             display: block;
-
-            width: auto;
-
-            max-width: none;
 
             margin: 0;
 
             padding: 0;
 
-            color: #293241;
-
-            font-size: 13px;
-
-            line-height: 1.28;
-
-            text-align: left !important;
-
-            white-space: pre-wrap;
-
-            overflow-wrap: break-word;
+            line-height: 1.3;
         }
 
 
-        /* =====================================================
-           META / HEURE
-        ===================================================== */
+        .message-text {
+
+            display: inline;
+
+            margin: 0;
+
+            padding: 0;
+
+            font-size: 13px;
+
+            line-height: 1.3;
+
+            word-break: break-word;
+
+            overflow-wrap: anywhere;
+        }
+
+
+        /*
+         * L'heure reste près du texte,
+         * sans créer un gros espace vertical.
+         */
 
         .message-meta {
-            display: block;
 
-            width: 100%;
+            display: inline-flex;
 
-            margin-top: 2px;
+            align-items: center;
 
-            color: #84909c;
+            margin-left: 5px;
+
+            color: #7b7b7b;
 
             font-size: 8px;
 
             line-height: 1;
 
-            text-align: right !important;
-
             white-space: nowrap;
+
+            vertical-align: bottom;
         }
 
+
         .message-check {
+
             margin-left: 2px;
 
-            color: #3b82f6;
+            font-size: 8px;
+        }
+
+
+        .message-wrapper.sent
+        .message-check {
+
+            color: #4b8f7c;
         }
 
 
         /* =====================================================
-           FORMULAIRE
-        ===================================================== */
+           FORMULAIRE MESSAGE
+        ====================================================== */
+
+        .message-form-container {
+
+            flex: 0 0 auto;
+
+            padding: 7px 9px;
+
+            background: #fff;
+
+            border-top: 1px solid var(--border);
+
+            padding-bottom:
+                max(
+                    7px,
+                    env(safe-area-inset-bottom)
+                );
+        }
+
 
         .message-form {
-            flex-shrink: 0;
+
+            width: 100%;
 
             display: flex;
+
             align-items: flex-end;
 
             gap: 7px;
 
-            padding: 7px 9px;
-
-            background: #ffffff;
-
-            border-top: 1px solid var(--border);
+            margin: 0;
         }
 
+
         .message-input-wrapper {
+
             flex: 1;
 
             min-width: 0;
         }
 
+
         .message-input {
-            display: block;
 
             width: 100%;
 
             min-height: 38px;
-            max-height: 100px;
 
-            padding: 8px 12px;
+            max-height: 90px;
+
+            padding: 8px 11px;
 
             resize: none;
 
-            border: 1px solid #e6e9ee;
+            overflow-y: auto;
+
+            border: 1px solid #d9dee5;
 
             border-radius: 19px;
 
@@ -902,35 +997,42 @@
 
             color: var(--text);
 
-            font-size: 13px;
+            font-family: inherit;
 
-            line-height: 1.3;
+            font-size: 14px;
 
-            transition:
-                border-color .15s ease,
-                background .15s ease,
-                box-shadow .15s ease;
+            line-height: 20px;
         }
+
 
         .message-input:focus {
-            border-color: #bfdbfe;
 
-            background: #ffffff;
+            border-color: var(--primary);
+
+            background: #fff;
 
             box-shadow:
-                0 0 0 3px rgba(37, 99, 235, .06);
+                0 0 0 2px rgba(
+                    37,
+                    99,
+                    235,
+                    .08
+                );
         }
 
+
         .message-input::placeholder {
-            color: #a0a7b1;
+
+            color: #9ca3af;
         }
 
 
         /* =====================================================
            BOUTON ENVOYER
-        ===================================================== */
+        ====================================================== */
 
         .send-button {
+
             width: 38px;
             height: 38px;
 
@@ -940,48 +1042,40 @@
             align-items: center;
             justify-content: center;
 
-            margin: 0;
-
-            border: none;
+            border: 0;
 
             border-radius: 50%;
 
-            outline: none;
-
             background: var(--primary);
 
-            color: #ffffff;
+            color: #fff;
 
             cursor: pointer;
 
-            box-shadow:
-                0 3px 8px rgba(37, 99, 235, .18);
-
             transition:
                 background .15s ease,
-                transform .15s ease,
-                box-shadow .15s ease;
+                transform .1s ease;
         }
+
 
         .send-button:hover {
+
             background: var(--primary-dark);
-
-            transform: translateY(-1px);
-
-            box-shadow:
-                0 5px 12px rgba(37, 99, 235, .22);
         }
 
-        .send-button:focus {
-            outline: none;
+
+        .send-button:active {
+
+            transform: scale(.94);
         }
 
 
         /* =====================================================
-           MESSAGE VIDE
-        ===================================================== */
+           PAGE D'ACCUEIL
+        ====================================================== */
 
         .empty-chat {
+
             width: 100%;
             height: 100%;
 
@@ -990,20 +1084,22 @@
             align-items: center;
             justify-content: center;
 
-            padding: 20px;
-
-            background: var(--chat-bg);
-
             text-align: center;
+
+            padding: 25px;
         }
+
 
         .empty-chat-content {
-            max-width: 400px;
+
+            max-width: 430px;
         }
 
+
         .empty-chat-icon {
-            width: 64px;
-            height: 64px;
+
+            width: 70px;
+            height: 70px;
 
             margin: 0 auto 12px;
 
@@ -1013,169 +1109,525 @@
 
             border-radius: 50%;
 
-            background: #dbeafe;
+            background: var(--primary-soft);
 
             color: var(--primary);
 
-            font-size: 25px;
+            font-size: 28px;
         }
 
-        .empty-chat h3 {
-            margin-bottom: 5px;
 
-            color: var(--text);
+        .empty-chat h4 {
 
-            font-size: 18px;
+            margin: 0 0 5px;
+
+            font-size: 20px;
 
             font-weight: 700;
         }
 
+
         .empty-chat p {
-            margin: 0;
+
+            margin: 0 0 15px;
 
             color: var(--muted);
 
-            font-size: 12px;
+            font-size: 13px;
+        }
 
-            line-height: 1.5;
+
+        .empty-chat-buttons {
+
+            display: flex;
+
+            justify-content: center;
+
+            gap: 7px;
+        }
+
+
+        .empty-chat-buttons .btn {
+
+            font-size: 12px;
         }
 
 
         /* =====================================================
            MOBILE
-        ===================================================== */
+        ====================================================== */
 
-        @media (max-width: 768px) {
+        @media (max-width: 767.98px) {
 
+            html,
             body {
+
                 overflow: hidden;
             }
 
+
+            .main-header {
+
+                flex-basis: 52px;
+
+                height: 52px;
+            }
+
+
             .content-wrapper {
+
+                height:
+                    calc(
+                        var(--app-height)
+                        - 52px
+                    );
+
+                min-height:
+                    calc(
+                        var(--app-height)
+                        - 52px
+                    );
+            }
+
+
+            .messagerie-container {
+
                 padding: 0;
             }
 
+
             .whatsapp-container {
-                border: none;
+
+                border: 0;
+
                 border-radius: 0;
+
                 box-shadow: none;
             }
 
+
+            /* -------------------------------------------------
+               SIDEBAR MOBILE
+            -------------------------------------------------- */
+
             .conversation-sidebar {
+
                 width: 100%;
+
                 min-width: 100%;
+
+                border-right: 0;
             }
 
-            .chat-area {
-                display: none;
-
-                width: 100%;
-            }
 
             .conversation-sidebar.mobile-hidden {
+
                 display: none;
             }
 
-            .chat-area.mobile-visible {
-                display: flex;
-                width: 100%;
+
+            .conversation-sidebar-header {
+
+                height: 53px;
+
+                padding:
+                    0 12px;
             }
 
-            .messages-area {
-                padding: 7px;
+
+            .conversation-sidebar-title {
+
+                font-size: 18px;
             }
 
-            .message-bubble {
-                max-width: 76%;
+
+            .conversation-search {
+
+                padding: 7px 9px;
             }
 
-            .message-text {
+
+            #rechercheConversation {
+
+                height: 35px;
+
                 font-size: 13px;
             }
 
-            .chat-header {
-                height: 56px;
-                min-height: 56px;
+
+            .conversation-item {
+
+                min-height: 62px;
+
+                padding:
+                    7px 10px;
             }
+
+
+            .avatar {
+
+                width: 42px;
+                height: 42px;
+
+                min-width: 42px;
+            }
+
+
+            .conversation-name {
+
+                font-size: 14px;
+            }
+
+
+            .conversation-preview {
+
+                font-size: 11px;
+            }
+
+
+            .new-conversation {
+
+                padding: 7px;
+
+                gap: 5px;
+
+                padding-bottom:
+                    max(
+                        7px,
+                        env(safe-area-inset-bottom)
+                    );
+            }
+
+
+            .new-conversation .btn {
+
+                height: 35px;
+
+                font-size: 11px;
+            }
+
+
+            /* -------------------------------------------------
+               CHAT MOBILE
+            -------------------------------------------------- */
+
+            .chat-area {
+
+                display: none;
+
+                width: 100%;
+
+                min-width: 100%;
+            }
+
+
+            .chat-area.mobile-visible {
+
+                display: flex;
+            }
+
+
+            .chat-header {
+
+                flex-basis: 52px;
+
+                height: 52px;
+
+                padding:
+                    6px 8px;
+            }
+
+
+            .mobile-back {
+
+                display: flex;
+
+                align-items: center;
+                justify-content: center;
+            }
+
+
+            .chat-user-avatar {
+
+                width: 38px;
+                height: 38px;
+
+                min-width: 38px;
+            }
+
+
+            .chat-user-name {
+
+                font-size: 14px;
+            }
+
+
+            .chat-user-status {
+
+                font-size: 10px;
+            }
+
+
+            /* -------------------------------------------------
+               MESSAGES MOBILE
+            -------------------------------------------------- */
+
+            .messages-area {
+
+                padding:
+                    9px 8px;
+
+                -webkit-overflow-scrolling: touch;
+            }
+
+
+            .message-wrapper {
+
+                margin-bottom: 5px;
+            }
+
+
+            .message-avatar {
+
+                width: 24px;
+                height: 24px;
+
+                min-width: 24px;
+
+                font-size: 9px;
+            }
+
+
+            .message-wrapper.received
+            .message-avatar {
+
+                margin-right: 4px;
+            }
+
+
+            .message-wrapper.sent
+            .message-avatar {
+
+                margin-left: 4px;
+            }
+
+
+            /*
+             * Bulle encore plus compacte sur Android.
+             */
+
+            .message-bubble {
+
+                max-width: 72%;
+
+                padding:
+                    4px 7px;
+
+                border-radius: 8px;
+
+                font-size: 12px;
+
+                line-height: 1.25;
+            }
+
+
+            .message-sender {
+
+                margin-bottom: 1px;
+
+                font-size: 9px;
+
+                line-height: 1.1;
+            }
+
+
+            .message-text {
+
+                font-size: 12px;
+
+                line-height: 1.25;
+            }
+
+
+            .message-meta {
+
+                margin-left: 4px;
+
+                font-size: 7px;
+            }
+
+
+            .message-check {
+
+                font-size: 7px;
+
+                margin-left: 1px;
+            }
+
+
+            /* -------------------------------------------------
+               INPUT MOBILE
+            -------------------------------------------------- */
+
+            .message-form-container {
+
+                padding:
+                    6px 7px;
+
+                padding-bottom:
+                    max(
+                        6px,
+                        env(safe-area-inset-bottom)
+                    );
+            }
+
 
             .message-form {
-                padding: 6px;
+
+                gap: 5px;
             }
 
+
             .message-input {
+
                 min-height: 37px;
+
+                max-height: 85px;
+
+                padding:
+                    8px 10px;
+
+                font-size: 13px;
+
+                border-radius: 19px;
+            }
+
+
+            .send-button {
+
+                width: 37px;
+                height: 37px;
+
+                min-width: 37px;
+
+                font-size: 13px;
+            }
+
+
+            /* -------------------------------------------------
+               EMPTY MOBILE
+            -------------------------------------------------- */
+
+            .empty-chat {
+
+                padding: 18px;
+            }
+
+
+            .empty-chat-icon {
+
+                width: 60px;
+                height: 60px;
+
+                font-size: 23px;
+            }
+
+
+            .empty-chat h4 {
+
+                font-size: 18px;
+            }
+
+
+            .empty-chat p {
+
+                font-size: 12px;
+            }
+
+
+            .empty-chat-buttons {
+
+                flex-direction: column;
+
+                max-width: 230px;
+
+                margin: auto;
+            }
+
+        }
+
+
+        /* =====================================================
+           TRÈS PETITS ÉCRANS
+        ====================================================== */
+
+        @media (max-width: 380px) {
+
+            .message-bubble {
+
+                max-width: 76%;
+            }
+
+
+            .message-text {
+
+                font-size: 11.5px;
+            }
+
+
+            .message-meta {
+
+                font-size: 7px;
+            }
+
+
+            .new-conversation .btn {
+
+                font-size: 10px;
             }
         }
 
 
         /* =====================================================
-           PETIT MOBILE
-        ===================================================== */
+           MODE PAYSAGE ANDROID
+        ====================================================== */
 
-        @media (max-width: 480px) {
+        @media (max-width: 767.98px)
+        and (orientation: landscape) {
 
-            .main-header {
-                height: 52px;
-                min-height: 52px;
+            .conversation-sidebar-header {
+
+                height: 45px;
             }
 
-            .content-wrapper {
-                height: calc(100vh - 52px);
-            }
-
-            .navbar-brand-messagerie {
-                font-size: 16px;
-            }
-
-            .sidebar-header {
-                padding: 10px;
-            }
-
-            .conversation-sidebar {
-                width: 100%;
-            }
 
             .conversation-item {
-                padding: 7px 10px;
+
+                min-height: 54px;
             }
 
-            .avatar {
-                width: 40px;
-                height: 40px;
-                min-width: 40px;
+
+            .chat-header {
+
+                height: 45px;
+
+                flex-basis: 45px;
             }
 
-            .message-avatar {
-                width: 21px;
-                height: 21px;
-                min-width: 21px;
+
+            .messages-area {
+
+                padding-top: 5px;
+
+                padding-bottom: 5px;
             }
 
-            .message-wrapper {
-                margin-bottom: 3px;
-            }
 
-            .message-bubble {
-                max-width: 82%;
-                padding: 4px 7px;
-            }
+            .message-form-container {
 
-            .message-text {
-                font-size: 12px;
-            }
+                padding-top: 4px;
 
-            .message-sender {
-                font-size: 9px;
-            }
-
-            .message-meta {
-                font-size: 8px;
-            }
-
-            .send-button {
-                width: 37px;
-                height: 37px;
-                min-width: 37px;
+                padding-bottom: 4px;
             }
         }
 
@@ -1188,7 +1640,6 @@
 
 <div class="wrapper">
 
-
     <!-- =====================================================
          NAVBAR
     ====================================================== -->
@@ -1200,8 +1651,7 @@
             <li class="nav-item">
 
                 <a class="nav-link"
-                   href="{% url 'fondateur.dashbord' %}"
-                   title="Retour au tableau de bord">
+                   href="{% url 'fondateur.dashbord' %}">
 
                     <i class="fas fa-arrow-left"></i>
 
@@ -1211,47 +1661,17 @@
 
         </ul>
 
+        <span class="navbar-text font-weight-bold">
 
-        <span class="navbar-brand-messagerie">
-
-            <i class="fas fa-comments"></i>
-
-            <span>Messagerie</span>
+            Messagerie
 
         </span>
-
-
-        <ul class="navbar-nav ml-auto">
-
-            <li class="nav-item">
-
-                <a class="nav-link"
-                   href="{% url 'boite_reception' %}"
-                   title="Actualiser">
-
-                    <i class="fas fa-sync-alt"></i>
-
-                    {% if messages_non_lus > 0 %}
-
-                        <span class="badge badge-danger navbar-badge">
-
-                            {{ messages_non_lus }}
-
-                        </span>
-
-                    {% endif %}
-
-                </a>
-
-            </li>
-
-        </ul>
 
     </nav>
 
 
     <!-- =====================================================
-         CONTENU
+         CONTENT
     ====================================================== -->
 
     <div class="content-wrapper">
@@ -1265,241 +1685,175 @@
                      SIDEBAR
                 ================================================== -->
 
-                <div class="conversation-sidebar">
+                <aside class="conversation-sidebar">
 
 
-                    <div class="sidebar-header">
+                    <div class="conversation-sidebar-header">
 
-                        <div class="sidebar-title">
+                        <span class="conversation-sidebar-title">
 
-                            <h4>
-                                Discussions
-                            </h4>
+                            Discussions
+
+                        </span>
+
+                        {% if messages_non_lus %}
+
+                            <span class="unread-badge">
+
+                                {{ messages_non_lus }}
+
+                            </span>
+
+                        {% endif %}
+
+                    </div>
 
 
-                            {% if messages_non_lus > 0 %}
+                    <!-- SEARCH -->
 
-                                <span class="badge badge-primary">
+                    <div class="conversation-search">
 
-                                    {{ messages_non_lus }}
-
-                                </span>
-
-                            {% endif %}
-
-                        </div>
-
-
-                        <div class="search-box">
+                        <div class="conversation-search-wrapper">
 
                             <i class="fas fa-search"></i>
 
-                            <input type="text"
-                                   id="rechercheConversation"
-                                   placeholder="Rechercher une discussion..."
-                                   autocomplete="off">
+                            <input
+                                type="text"
+                                id="rechercheConversation"
+                                placeholder="Rechercher une discussion..."
+                                autocomplete="off"
+                            >
 
                         </div>
 
                     </div>
 
 
-                    <!-- =================================================
-                         LISTE DES DISCUSSIONS
-                    ================================================== -->
+                    <!-- LISTE -->
 
-                    <div class="conversation-list"
-                         id="conversationList">
+                    <div class="conversation-list">
 
 
-                        <!-- =================================================
+                        <!-- =============================================
                              CONVERSATIONS PRIVÉES
-                        ================================================== -->
+                        ============================================== -->
 
-                        {% if utilisateurs_conversations %}
+                        {% for utilisateur in utilisateurs_conversations %}
 
-
-                            <div class="section-title">
-
-                                Conversations
-
-                            </div>
-
-
-                            {% for utilisateur in utilisateurs_conversations %}
+                            <a href="{% url 'conversation' utilisateur.id %}"
+                               class="conversation-item
+                               {% if utilisateur_selectionne and utilisateur_selectionne.id == utilisateur.id %}
+                               active
+                               {% endif %}"
+                               data-name="{{ utilisateur.username|lower }}">
 
 
-                                <a href="{% url 'conversation' utilisateur.id %}"
-                                   class="conversation-item
+                                <div class="avatar">
 
-                                   {% if utilisateur_selectionne and utilisateur_selectionne.id == utilisateur.id %}
+                                    {% if utilisateur.photo %}
 
-                                       active
+                                        <img
+                                            src="{{ utilisateur.photo.url }}"
+                                            alt="{{ utilisateur.username }}"
+                                        >
 
-                                   {% endif %}"
+                                    {% else %}
 
-                                   data-name="{{ utilisateur.username|lower }}">
+                                        <i class="fas fa-user"></i>
 
+                                    {% endif %}
 
-                                    <div class="avatar">
-
-
-                                        {% if utilisateur.photo %}
-
-                                            <img src="{{ utilisateur.photo.url }}"
-                                                 alt="{{ utilisateur.username }}">
-
-                                        {% else %}
-
-                                            <i class="fas fa-user"></i>
-
-                                        {% endif %}
+                                </div>
 
 
-                                    </div>
+                                <div class="conversation-info">
 
+                                    <div class="conversation-top">
 
-                                    <div class="conversation-info">
+                                        <span class="conversation-name">
 
+                                            {% if utilisateur.get_full_name %}
 
-                                        <div class="conversation-top">
+                                                {{ utilisateur.get_full_name }}
 
-                                            <span class="conversation-name">
+                                            {% else %}
 
-                                                {% if utilisateur.get_full_name %}
+                                                {{ utilisateur.username }}
 
-                                                    {{ utilisateur.get_full_name }}
+                                            {% endif %}
 
-                                                {% else %}
-
-                                                    {{ utilisateur.username }}
-
-                                                {% endif %}
-
-                                            </span>
-
-                                        </div>
-
-
-                                        <div class="conversation-preview">
-
-                                            Discussion privée
-
-                                        </div>
-
+                                        </span>
 
                                     </div>
 
-                                </a>
+
+                                    <div class="conversation-preview">
+
+                                        Discussion privée
+
+                                    </div>
+
+                                </div>
+
+                            </a>
+
+                        {% endfor %}
 
 
-                            {% endfor %}
-
-
-                        {% endif %}
-
-
-                        <!-- =================================================
+                        <!-- =============================================
                              GROUPES
-                        ================================================== -->
+                        ============================================== -->
 
-                        {% if groupes %}
+                        {% for groupe in groupes %}
 
-
-                            <div class="section-title">
-
-                                Groupes
-
-                            </div>
-
-
-                            {% for groupe in groupes %}
+                            <a href="{% url 'groupe_conversation' groupe.id %}"
+                               class="conversation-item
+                               {% if groupe_selectionne and groupe_selectionne.id == groupe.id %}
+                               active
+                               {% endif %}"
+                               data-name="{{ groupe.nom|lower }}">
 
 
-                                <a href="{% url 'groupe_conversation' groupe.id %}"
-                                   class="conversation-item
+                                <div class="avatar avatar-group">
 
-                                   {% if groupe_selectionne and groupe_selectionne.id == groupe.id %}
+                                    <i class="fas fa-users"></i>
 
-                                       active
-
-                                   {% endif %}"
-
-                                   data-name="{{ groupe.nom|lower }}">
+                                </div>
 
 
-                                    <div class="avatar avatar-group">
+                                <div class="conversation-info">
 
-                                        <i class="fas fa-users"></i>
+                                    <div class="conversation-top">
+
+                                        <span class="conversation-name">
+
+                                            {{ groupe.nom }}
+
+                                        </span>
 
                                     </div>
 
 
-                                    <div class="conversation-info">
+                                    <div class="conversation-preview">
 
-
-                                        <div class="conversation-top">
-
-                                            <span class="conversation-name">
-
-                                                {{ groupe.nom }}
-
-                                            </span>
-
-                                        </div>
-
-
-                                        <div class="conversation-preview">
-
-                                            Groupe de discussion
-
-                                        </div>
-
+                                        Groupe de discussion
 
                                     </div>
 
-                                </a>
+                                </div>
 
+                            </a>
 
-                            {% endfor %}
-
-
-                        {% endif %}
-
-
-                        <!-- =================================================
-                             AUCUNE DISCUSSION
-                        ================================================== -->
-
-                        {% if not utilisateurs_conversations and not groupes %}
-
-
-                            <div class="text-center p-4">
-
-                                <i class="fas fa-comments fa-2x text-muted mb-3"></i>
-
-                                <p class="text-muted mb-0"
-                                   style="font-size:12px;">
-
-                                    Aucune discussion
-
-                                </p>
-
-                            </div>
-
-
-                        {% endif %}
-
+                        {% endfor %}
 
                     </div>
 
 
                     <!-- =================================================
-                         ACTIONS
+                         FOOTER SIDEBAR
                     ================================================== -->
 
                     <div class="new-conversation">
-
 
                         <a href="{% url 'nouveau_message' %}"
                            class="btn btn-primary">
@@ -1520,47 +1874,46 @@
 
                         </a>
 
-
                     </div>
 
-
-                </div>
+                </aside>
 
 
                 <!-- =================================================
-                     CHAT
+                     CHAT AREA
                 ================================================== -->
 
-                <div class="chat-area"
-                     id="chatArea">
+                <main class="chat-area"
+                      id="chatArea">
 
-
-                    <!-- =================================================
-                         CHAT PRIVÉ
-                    ================================================== -->
 
                     {% if utilisateur_selectionne %}
 
+                        <!-- =========================================
+                             HEADER CHAT PRIVÉ
+                        ========================================== -->
 
                         <div class="chat-header">
 
-
-                            <button type="button"
-                                    class="btn btn-link d-md-none mr-1"
-                                    onclick="retourConversations()">
+                            <button
+                                type="button"
+                                class="mobile-back"
+                                onclick="retourConversations()"
+                                aria-label="Retour">
 
                                 <i class="fas fa-arrow-left"></i>
 
                             </button>
 
 
-                            <div class="avatar">
-
+                            <div class="chat-user-avatar">
 
                                 {% if utilisateur_selectionne.photo %}
 
-                                    <img src="{{ utilisateur_selectionne.photo.url }}"
-                                         alt="{{ utilisateur_selectionne.username }}">
+                                    <img
+                                        src="{{ utilisateur_selectionne.photo.url }}"
+                                        alt="{{ utilisateur_selectionne.username }}"
+                                    >
 
                                 {% else %}
 
@@ -1568,11 +1921,10 @@
 
                                 {% endif %}
 
-
                             </div>
 
 
-                            <div>
+                            <div class="chat-user-info">
 
                                 <div class="chat-user-name">
 
@@ -1589,9 +1941,12 @@
                                 </div>
 
 
-                                <div class="chat-status">
+                                <div class="chat-user-status">
 
-                                    Conversation privée
+                                    <i class="fas fa-circle"
+                                       style="font-size:6px;"></i>
+
+                                    Discussion privée
 
                                 </div>
 
@@ -1600,9 +1955,9 @@
                         </div>
 
 
-                        <!-- =================================================
-                             MESSAGES PRIVÉS
-                        ================================================== -->
+                        <!-- =========================================
+                             MESSAGES
+                        ========================================== -->
 
                         <div class="messages-area"
                              id="messagesArea">
@@ -1610,18 +1965,19 @@
 
                             {% if conversation %}
 
-
                                 {% for msg in conversation %}
 
 
                                     {% if msg.expediteur_id == request.user.id %}
 
+                                        <!-- =================================
+                                             MESSAGE ENVOYÉ
+                                        ================================== -->
 
                                         <div class="message-wrapper sent">
 
 
                                             <div class="message-bubble">
-
 
                                                 <div class="message-sender">
 
@@ -1630,47 +1986,48 @@
                                                 </div>
 
 
-                                                <div class="message-text">
+                                                <div class="message-content">
 
-                                                    {{ msg.contenu|linebreaksbr }}
+                                                    <span class="message-text">
 
-                                                </div>
+                                                        {{ msg.contenu|linebreaksbr }}
 
-
-                                                <div class="message-meta">
-
-                                                    {{ msg.date_envoi|date:"H:i" }}
+                                                    </span>
 
 
-                                                    <span class="message-check">
+                                                    <span class="message-meta">
 
+                                                        {{ msg.date_envoi|date:"H:i" }}
 
-                                                        {% if msg.lu %}
+                                                        <span class="message-check">
 
-                                                            <i class="fas fa-check-double"></i>
+                                                            {% if msg.lu %}
 
-                                                        {% else %}
+                                                                <i class="fas fa-check-double"></i>
 
-                                                            <i class="fas fa-check"></i>
+                                                            {% else %}
 
-                                                        {% endif %}
+                                                                <i class="fas fa-check"></i>
 
+                                                            {% endif %}
+
+                                                        </span>
 
                                                     </span>
 
                                                 </div>
-
 
                                             </div>
 
 
                                             <div class="message-avatar">
 
+                                                {% if request.user.photo %}
 
-                                                {% if msg.expediteur.photo %}
-
-                                                    <img src="{{ msg.expediteur.photo.url }}"
-                                                         alt="Vous">
+                                                    <img
+                                                        src="{{ request.user.photo.url }}"
+                                                        alt="{{ request.user.username }}"
+                                                    >
 
                                                 {% else %}
 
@@ -1678,26 +2035,28 @@
 
                                                 {% endif %}
 
-
                                             </div>
-
 
                                         </div>
 
 
                                     {% else %}
 
+                                        <!-- =================================
+                                             MESSAGE REÇU
+                                        ================================== -->
 
                                         <div class="message-wrapper received">
 
 
                                             <div class="message-avatar">
 
-
                                                 {% if msg.expediteur.photo %}
 
-                                                    <img src="{{ msg.expediteur.photo.url }}"
-                                                         alt="{{ msg.expediteur.username }}">
+                                                    <img
+                                                        src="{{ msg.expediteur.photo.url }}"
+                                                        alt="{{ msg.expediteur.username }}"
+                                                    >
 
                                                 {% else %}
 
@@ -1705,15 +2064,12 @@
 
                                                 {% endif %}
 
-
                                             </div>
 
 
                                             <div class="message-bubble">
 
-
                                                 <div class="message-sender">
-
 
                                                     {% if msg.expediteur.get_full_name %}
 
@@ -1725,167 +2081,153 @@
 
                                                     {% endif %}
 
-
                                                 </div>
 
 
-                                                <div class="message-text">
+                                                <div class="message-content">
 
-                                                    {{ msg.contenu|linebreaksbr }}
+                                                    <span class="message-text">
+
+                                                        {{ msg.contenu|linebreaksbr }}
+
+                                                    </span>
+
+
+                                                    <span class="message-meta">
+
+                                                        {{ msg.date_envoi|date:"H:i" }}
+
+                                                    </span>
 
                                                 </div>
-
-
-                                                <div class="message-meta">
-
-                                                    {{ msg.date_envoi|date:"H:i" }}
-
-                                                </div>
-
 
                                             </div>
 
-
                                         </div>
 
-
                                     {% endif %}
-
 
                                 {% endfor %}
 
 
                             {% else %}
 
-
                                 <div class="empty-chat">
-
 
                                     <div class="empty-chat-content">
 
-
                                         <div class="empty-chat-icon">
 
-                                            <i class="fas fa-comment"></i>
+                                            <i class="fas fa-comments"></i>
 
                                         </div>
 
 
-                                        <h3>
+                                        <h4>
+
                                             Aucun message
-                                        </h3>
+
+                                        </h4>
 
 
                                         <p>
 
-                                            Commencez la conversation avec
-
-                                            <strong>
-
-                                                {% if utilisateur_selectionne.get_full_name %}
-
-                                                    {{ utilisateur_selectionne.get_full_name }}
-
-                                                {% else %}
-
-                                                    {{ utilisateur_selectionne.username }}
-
-                                                {% endif %}
-
-                                            </strong>
+                                            Commencez une nouvelle conversation.
 
                                         </p>
-
 
                                     </div>
 
                                 </div>
 
-
                             {% endif %}
-
 
                         </div>
 
 
-                        <!-- =================================================
-                             FORMULAIRE PRIVÉ
-                        ================================================== -->
+                        <!-- =========================================
+                             FORMULAIRE
+                        ========================================== -->
 
-                        <form method="post"
-                              action="{% url 'conversation' utilisateur_selectionne.id %}"
-                              class="message-form">
+                        <div class="message-form-container">
 
+                            <form method="post"
+                                  action="{% url 'conversation' utilisateur_selectionne.id %}"
+                                  class="message-form">
 
-                            {% csrf_token %}
+                                {% csrf_token %}
 
+                                <input
+                                    type="hidden"
+                                    name="type_message"
+                                    value="individuel"
+                                >
 
-                            <input type="hidden"
-                                   name="type_message"
-                                   value="individuel">
-
-
-                            <input type="hidden"
-                                   name="destinataire"
-                                   value="{{ utilisateur_selectionne.id }}">
-
-
-                            <div class="message-input-wrapper">
-
-
-                                <textarea
-                                    name="contenu"
-                                    id="messageInput"
-                                    class="message-input"
-                                    rows="1"
-                                    placeholder="Écrire un message..."
-                                    autocomplete="off"
-                                    required></textarea>
+                                <input
+                                    type="hidden"
+                                    name="destinataire"
+                                    value="{{ utilisateur_selectionne.id }}"
+                                >
 
 
-                            </div>
+                                <div class="message-input-wrapper">
+
+                                    <textarea
+                                        name="contenu"
+                                        id="messageInput"
+                                        class="message-input"
+                                        rows="1"
+                                        placeholder="Écrire un message..."
+                                        autocomplete="off"
+                                        required
+                                    ></textarea>
+
+                                </div>
 
 
-                            <button
-                                type="submit"
-                                class="send-button"
-                                title="Envoyer">
+                                <button
+                                    type="submit"
+                                    class="send-button"
+                                    title="Envoyer"
+                                    aria-label="Envoyer">
 
-                                <i class="fas fa-paper-plane"></i>
+                                    <i class="fas fa-paper-plane"></i>
 
-                            </button>
+                                </button>
 
+                            </form>
 
-                        </form>
+                        </div>
 
-
-                    <!-- =================================================
-                         CHAT GROUPE
-                    ================================================== -->
 
                     {% elif groupe_selectionne %}
 
+                        <!-- =========================================
+                             HEADER GROUPE
+                        ========================================== -->
 
                         <div class="chat-header">
 
-
-                            <button type="button"
-                                    class="btn btn-link d-md-none mr-1"
-                                    onclick="retourConversations()">
+                            <button
+                                type="button"
+                                class="mobile-back"
+                                onclick="retourConversations()"
+                                aria-label="Retour">
 
                                 <i class="fas fa-arrow-left"></i>
 
                             </button>
 
 
-                            <div class="avatar avatar-group">
+                            <div class="chat-user-avatar"
+                                 style="background:#ede9fe;color:#7c3aed;">
 
                                 <i class="fas fa-users"></i>
 
                             </div>
 
 
-                            <div>
+                            <div class="chat-user-info">
 
                                 <div class="chat-user-name">
 
@@ -1894,7 +2236,11 @@
                                 </div>
 
 
-                                <div class="chat-status">
+                                <div class="chat-user-status"
+                                     style="color:#7c3aed;">
+
+                                    <i class="fas fa-users"
+                                       style="font-size:9px;"></i>
 
                                     Groupe de discussion
 
@@ -1905,9 +2251,9 @@
                         </div>
 
 
-                        <!-- =================================================
+                        <!-- =========================================
                              MESSAGES GROUPE
-                        ================================================== -->
+                        ========================================== -->
 
                         <div class="messages-area"
                              id="messagesArea">
@@ -1915,18 +2261,16 @@
 
                             {% if conversation_groupe %}
 
-
                                 {% for msg in conversation_groupe %}
 
 
                                     {% if msg.expediteur_id == request.user.id %}
 
+                                        <!-- MESSAGE GROUPE ENVOYÉ -->
 
                                         <div class="message-wrapper sent">
 
-
                                             <div class="message-bubble">
-
 
                                                 <div class="message-sender">
 
@@ -1935,37 +2279,40 @@
                                                 </div>
 
 
-                                                <div class="message-text">
+                                                <div class="message-content">
 
-                                                    {{ msg.contenu|linebreaksbr }}
+                                                    <span class="message-text">
 
-                                                </div>
+                                                        {{ msg.contenu|linebreaksbr }}
 
-
-                                                <div class="message-meta">
-
-                                                    {{ msg.date_envoi|date:"H:i" }}
+                                                    </span>
 
 
-                                                    <span class="message-check">
+                                                    <span class="message-meta">
 
-                                                        <i class="fas fa-check"></i>
+                                                        {{ msg.date_envoi|date:"H:i" }}
+
+                                                        <span class="message-check">
+
+                                                            <i class="fas fa-check"></i>
+
+                                                        </span>
 
                                                     </span>
 
                                                 </div>
-
 
                                             </div>
 
 
                                             <div class="message-avatar">
 
+                                                {% if request.user.photo %}
 
-                                                {% if msg.expediteur.photo %}
-
-                                                    <img src="{{ msg.expediteur.photo.url }}"
-                                                         alt="Vous">
+                                                    <img
+                                                        src="{{ request.user.photo.url }}"
+                                                        alt="{{ request.user.username }}"
+                                                    >
 
                                                 {% else %}
 
@@ -1973,26 +2320,25 @@
 
                                                 {% endif %}
 
-
                                             </div>
-
 
                                         </div>
 
 
                                     {% else %}
 
+                                        <!-- MESSAGE GROUPE REÇU -->
 
                                         <div class="message-wrapper received">
 
-
                                             <div class="message-avatar">
-
 
                                                 {% if msg.expediteur.photo %}
 
-                                                    <img src="{{ msg.expediteur.photo.url }}"
-                                                         alt="{{ msg.expediteur.username }}">
+                                                    <img
+                                                        src="{{ msg.expediteur.photo.url }}"
+                                                        alt="{{ msg.expediteur.username }}"
+                                                    >
 
                                                 {% else %}
 
@@ -2000,15 +2346,12 @@
 
                                                 {% endif %}
 
-
                                             </div>
 
 
                                             <div class="message-bubble">
 
-
                                                 <div class="message-sender">
-
 
                                                     {% if msg.expediteur.get_full_name %}
 
@@ -2020,44 +2363,40 @@
 
                                                     {% endif %}
 
-
                                                 </div>
 
 
-                                                <div class="message-text">
+                                                <div class="message-content">
 
-                                                    {{ msg.contenu|linebreaksbr }}
+                                                    <span class="message-text">
+
+                                                        {{ msg.contenu|linebreaksbr }}
+
+                                                    </span>
+
+
+                                                    <span class="message-meta">
+
+                                                        {{ msg.date_envoi|date:"H:i" }}
+
+                                                    </span>
 
                                                 </div>
-
-
-                                                <div class="message-meta">
-
-                                                    {{ msg.date_envoi|date:"H:i" }}
-
-                                                </div>
-
 
                                             </div>
 
-
                                         </div>
 
-
                                     {% endif %}
-
 
                                 {% endfor %}
 
 
                             {% else %}
 
-
                                 <div class="empty-chat">
 
-
                                     <div class="empty-chat-content">
-
 
                                         <div class="empty-chat-icon">
 
@@ -2066,159 +2405,145 @@
                                         </div>
 
 
-                                        <h3>
+                                        <h4>
 
-                                            Groupe vide
+                                            Aucun message
 
-                                        </h3>
+                                        </h4>
 
 
                                         <p>
 
-                                            Commencez la discussion dans
-
-                                            <strong>
-
-                                                {{ groupe_selectionne.nom }}
-
-                                            </strong>
+                                            Commencez la discussion dans ce groupe.
 
                                         </p>
-
 
                                     </div>
 
                                 </div>
 
-
                             {% endif %}
-
 
                         </div>
 
 
-                        <!-- =================================================
+                        <!-- =========================================
                              FORMULAIRE GROUPE
-                        ================================================== -->
+                        ========================================== -->
 
-                        <form method="post"
-                              action="{% url 'groupe_conversation' groupe_selectionne.id %}"
-                              class="message-form">
+                        <div class="message-form-container">
 
+                            <form method="post"
+                                  action="{% url 'groupe_conversation' groupe_selectionne.id %}"
+                                  class="message-form">
 
-                            {% csrf_token %}
+                                {% csrf_token %}
 
+                                <input
+                                    type="hidden"
+                                    name="type_message"
+                                    value="groupe"
+                                >
 
-                            <input type="hidden"
-                                   name="type_message"
-                                   value="groupe">
-
-
-                            <input type="hidden"
-                                   name="groupe_id"
-                                   value="{{ groupe_selectionne.id }}">
-
-
-                            <div class="message-input-wrapper">
-
-
-                                <textarea
-                                    name="contenu"
-                                    id="messageInput"
-                                    class="message-input"
-                                    rows="1"
-                                    placeholder="Écrire dans le groupe..."
-                                    autocomplete="off"
-                                    required></textarea>
+                                <input
+                                    type="hidden"
+                                    name="groupe_id"
+                                    value="{{ groupe_selectionne.id }}"
+                                >
 
 
-                            </div>
+                                <div class="message-input-wrapper">
 
-
-                            <button
-                                type="submit"
-                                class="send-button"
-                                title="Envoyer">
-
-                                <i class="fas fa-paper-plane"></i>
-
-                            </button>
-
-
-                        </form>
-
-
-                    <!-- =================================================
-                         AUCUNE CONVERSATION
-                    ================================================== -->
-
-                    {% else %}
-
-
-                        <div class="empty-chat">
-
-
-                            <div class="empty-chat-content">
-
-
-                                <div class="empty-chat-icon">
-
-                                    <i class="fas fa-comments"></i>
+                                    <textarea
+                                        name="contenu"
+                                        id="messageInput"
+                                        class="message-input"
+                                        rows="1"
+                                        placeholder="Écrire un message..."
+                                        autocomplete="off"
+                                        required
+                                    ></textarea>
 
                                 </div>
 
 
-                                <h3>
+                                <button
+                                    type="submit"
+                                    class="send-button"
+                                    title="Envoyer"
+                                    aria-label="Envoyer">
 
-                                    Votre messagerie
+                                    <i class="fas fa-paper-plane"></i>
 
-                                </h3>
+                                </button>
+
+                            </form>
+
+                        </div>
+
+
+                    {% else %}
+
+                        <!-- =========================================
+                             AUCUNE CONVERSATION
+                        ========================================== -->
+
+                        <div class="empty-chat">
+
+                            <div class="empty-chat-content">
+
+                                <div class="empty-chat-icon">
+
+                                    <i class="fab fa-whatsapp"></i>
+
+                                </div>
+
+
+                                <h4>
+
+                                    Bienvenue dans votre messagerie
+
+                                </h4>
 
 
                                 <p>
 
-                                    Sélectionnez une conversation privée
-                                    ou un groupe pour commencer.
+                                    Sélectionnez une discussion
+                                    ou commencez une nouvelle conversation.
 
                                 </p>
 
 
-                                <div class="mt-3">
-
+                                <div class="empty-chat-buttons">
 
                                     <a href="{% url 'nouveau_message' %}"
-                                       class="btn btn-primary btn-sm mr-1">
+                                       class="btn btn-primary">
 
                                         <i class="fas fa-user-plus mr-1"></i>
 
-                                        Conversation
+                                        Nouvelle conversation
 
                                     </a>
 
 
                                     <a href="{% url 'creer_groupe' %}"
-                                       class="btn btn-outline-secondary btn-sm">
+                                       class="btn btn-outline-secondary">
 
                                         <i class="fas fa-users mr-1"></i>
 
-                                        Groupe
+                                        Nouveau groupe
 
                                     </a>
 
-
                                 </div>
-
 
                             </div>
 
-
                         </div>
-
 
                     {% endif %}
 
-
-                </div>
+                </main>
 
             </div>
 
@@ -2233,18 +2558,67 @@
      JAVASCRIPT
 ========================================================= -->
 
-<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
-
-<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-
-<script src="{% static 'base/js/adminlte.min.js' %}"></script>
-
-
 <script>
 
-    /* =====================================================
-       RECHERCHE
-    ===================================================== */
+    /* =========================================================
+       HAUTEUR RÉELLE DU VIEWPORT ANDROID
+    ========================================================== */
+
+    function ajusterHauteurViewport() {
+
+        let hauteur = window.innerHeight;
+
+        if (window.visualViewport) {
+
+            hauteur = window.visualViewport.height;
+        }
+
+        document.documentElement.style.setProperty(
+            '--app-height',
+            hauteur + 'px'
+        );
+    }
+
+
+    ajusterHauteurViewport();
+
+
+    window.addEventListener(
+        'resize',
+        ajusterHauteurViewport
+    );
+
+
+    window.addEventListener(
+        'orientationchange',
+        function () {
+
+            setTimeout(
+                ajusterHauteurViewport,
+                150
+            );
+
+        }
+    );
+
+
+    if (window.visualViewport) {
+
+        visualViewport.addEventListener(
+            'resize',
+            ajusterHauteurViewport
+        );
+
+        visualViewport.addEventListener(
+            'scroll',
+            ajusterHauteurViewport
+        );
+    }
+
+
+    /* =========================================================
+       RECHERCHE CONVERSATION
+    ========================================================== */
 
     const recherche =
         document.getElementById(
@@ -2281,19 +2655,17 @@
                             nom.includes(terme)
                                 ? 'flex'
                                 : 'none';
-
                     }
                 );
 
             }
         );
-
     }
 
 
-    /* =====================================================
-       SCROLL AUTOMATIQUE
-    ===================================================== */
+    /* =========================================================
+       ZONE MESSAGES
+    ========================================================== */
 
     const messagesArea =
         document.getElementById(
@@ -2303,22 +2675,29 @@
 
     function scrollMessages() {
 
-        if (messagesArea) {
+        if (!messagesArea) {
 
-            messagesArea.scrollTop =
-                messagesArea.scrollHeight;
-
+            return;
         }
 
+
+        requestAnimationFrame(
+            function () {
+
+                messagesArea.scrollTop =
+                    messagesArea.scrollHeight;
+
+            }
+        );
     }
 
 
     scrollMessages();
 
 
-    /* =====================================================
-       CHAMP MESSAGE
-    ===================================================== */
+    /* =========================================================
+       INPUT MESSAGE
+    ========================================================== */
 
     const messageInput =
         document.getElementById(
@@ -2329,22 +2708,39 @@
     if (messageInput) {
 
 
-        /* =================================================
-           ENTER = ENVOYER
-        ================================================== */
+        /* -----------------------------------------------------
+           ENTRÉE = ENVOYER
+        ------------------------------------------------------ */
 
         messageInput.addEventListener(
             'keydown',
             function (event) {
 
                 if (
-                    event.key === 'Enter' &&
+                    event.key === 'Enter'
+                    &&
                     !event.shiftKey
                 ) {
 
                     event.preventDefault();
 
-                    this.form.submit();
+
+                    if (this.form) {
+
+                        if (
+                            typeof this.form.requestSubmit
+                            === 'function'
+                        ) {
+
+                            this.form.requestSubmit();
+
+                        } else {
+
+                            this.form.submit();
+
+                        }
+
+                    }
 
                 }
 
@@ -2352,9 +2748,9 @@
         );
 
 
-        /* =================================================
-           HAUTEUR AUTOMATIQUE
-        ================================================== */
+        /* -----------------------------------------------------
+           AGRANDISSEMENT AUTOMATIQUE
+        ------------------------------------------------------ */
 
         messageInput.addEventListener(
             'input',
@@ -2362,11 +2758,50 @@
 
                 this.style.height = 'auto';
 
+
                 this.style.height =
                     Math.min(
                         this.scrollHeight,
-                        100
+                        90
                     ) + 'px';
+
+            }
+        );
+
+
+        /* -----------------------------------------------------
+           FOCUS ANDROID
+        ------------------------------------------------------ */
+
+        messageInput.addEventListener(
+            'focus',
+            function () {
+
+                ajusterHauteurViewport();
+
+
+                setTimeout(
+                    function () {
+
+                        ajusterHauteurViewport();
+
+                        scrollMessages();
+
+                    },
+                    100
+                );
+
+
+                setTimeout(
+                    function () {
+
+                        ajusterHauteurViewport();
+
+                        scrollMessages();
+
+                    },
+                    350
+                );
 
             }
         );
@@ -2374,9 +2809,9 @@
     }
 
 
-    /* =====================================================
-       MOBILE
-    ===================================================== */
+    /* =========================================================
+       RETOUR LISTE MOBILE
+    ========================================================== */
 
     function retourConversations() {
 
@@ -2402,19 +2837,20 @@
             chat.classList.remove(
                 'mobile-visible'
             );
-
         }
 
+
+        ajusterHauteurViewport();
     }
 
 
-    /* =====================================================
-       OUVERTURE DU CHAT SUR MOBILE
-    ===================================================== */
+    /* =========================================================
+       AFFICHER CHAT MOBILE
+    ========================================================== */
 
-    {% if utilisateur_selectionne or groupe_selectionne %}
+    function afficherChatMobile() {
 
-        if (window.innerWidth <= 768) {
+        if (window.innerWidth <= 767.98) {
 
             const sidebar =
                 document.querySelector(
@@ -2443,11 +2879,114 @@
 
         }
 
+    }
+
+
+    /* =========================================================
+       CONVERSATION ACTIVE
+    ========================================================== */
+
+    {% if utilisateur_selectionne or groupe_selectionne %}
+
+        afficherChatMobile();
+
     {% endif %}
 
-</script>
 
+    /* =========================================================
+       RESIZE
+    ========================================================== */
+
+    window.addEventListener(
+        'resize',
+        function () {
+
+            ajusterHauteurViewport();
+
+
+            {% if utilisateur_selectionne or groupe_selectionne %}
+
+                if (window.innerWidth > 767.98) {
+
+                    const sidebar =
+                        document.querySelector(
+                            '.conversation-sidebar'
+                        );
+
+
+                    const chat =
+                        document.getElementById(
+                            'chatArea'
+                        );
+
+
+                    if (sidebar && chat) {
+
+                        sidebar.classList.remove(
+                            'mobile-hidden'
+                        );
+
+
+                        chat.classList.remove(
+                            'mobile-visible'
+                        );
+
+                    }
+
+                } else {
+
+                    afficherChatMobile();
+
+                }
+
+            {% endif %}
+
+        }
+    );
+
+
+    /* =========================================================
+       VISIBILITÉ PAGE
+    ========================================================== */
+
+    document.addEventListener(
+        'visibilitychange',
+        function () {
+
+            if (!document.hidden) {
+
+                ajusterHauteurViewport();
+
+
+                setTimeout(
+                    scrollMessages,
+                    100
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       LOAD
+    ========================================================== */
+
+    window.addEventListener(
+        'load',
+        function () {
+
+            ajusterHauteurViewport();
+
+            scrollMessages();
+
+        }
+    );
+
+</script>
 
 </body>
 
 </html>
+
