@@ -1,472 +1,341 @@
 {% load static %}
 
 <!DOCTYPE html>
+
 <html lang="fr">
 
 <head>
 
-    <meta charset="utf-8">
+<meta charset="utf-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1">
 
-    <title>Gestion School | Accueil</title>
+<title>
+    {% block title %}
+        Gestion School
+    {% endblock title %}
+</title>
 
 
-    <!-- =========================================================
-         GOOGLE FONT
-    ========================================================== -->
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+<!-- =========================================================
+     GOOGLE FONT
+========================================================== -->
 
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
-    <!-- =========================================================
-         FONT AWESOME
-    ========================================================== -->
-    <link rel="stylesheet"
-          href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
 
+<!-- =========================================================
+     FONT AWESOME
+========================================================== -->
 
-    <!-- =========================================================
-         IONICONS
-    ========================================================== -->
-    <link rel="stylesheet"
-          href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+<link rel="stylesheet"
+      href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
 
 
-    <!-- =========================================================
-         TEMPUS DOMINUS
-    ========================================================== -->
-    <link rel="stylesheet"
-          href="{% static 'base/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+<!-- =========================================================
+     IONICONS
+========================================================== -->
 
+<link rel="stylesheet"
+      href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
-    <!-- =========================================================
-         ICHECK
-    ========================================================== -->
-    <link rel="stylesheet"
-          href="{% static 'base/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
 
+<!-- =========================================================
+     ADMINLTE PLUGINS
+========================================================== -->
 
-    <!-- =========================================================
-         JQVMAP
-    ========================================================== -->
-    <link rel="stylesheet"
-          href="{% static 'base/plugins/jqvmap/jqvmap.min.css' %}">
+<link rel="stylesheet"
+      href="{% static 'base/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
 
+<link rel="stylesheet"
+      href="{% static 'base/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
 
-    <!-- =========================================================
-         ADMINLTE
-    ========================================================== -->
-    <link rel="stylesheet"
-          href="{% static 'base/css/adminlte.min.css' %}">
+<link rel="stylesheet"
+      href="{% static 'base/plugins/jqvmap/jqvmap.min.css' %}">
 
+<link rel="stylesheet"
+      href="{% static 'base/plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
 
-    <!-- =========================================================
-         OVERLAY SCROLLBARS
-    ========================================================== -->
-    <link rel="stylesheet"
-          href="{% static 'base/plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
+<link rel="stylesheet"
+      href="{% static 'base/plugins/daterangepicker/daterangepicker.css' %}">
 
+<link rel="stylesheet"
+      href="{% static 'base/plugins/summernote/summernote-bs4.min.css' %}">
 
-    <!-- =========================================================
-         DATERANGEPICKER
-    ========================================================== -->
-    <link rel="stylesheet"
-          href="{% static 'base/plugins/daterangepicker/daterangepicker.css' %}">
 
+<!-- =========================================================
+     ADMINLTE
+========================================================== -->
 
-    <!-- =========================================================
-         SUMMERNOTE
-    ========================================================== -->
-    <link rel="stylesheet"
-          href="{% static 'base/plugins/summernote/summernote-bs4.min.css' %}">
+<link rel="stylesheet"
+      href="{% static 'base/css/adminlte.min.css' %}">
 
 
-    <!-- =========================================================
-         STYLES DU TEMPLATE ENFANT
-    ========================================================== -->
+<!-- =========================================================
+     CSS PAGE ENFANT
+========================================================== -->
 
-    {% block styl_parent %}
-    {% endblock styl_parent %}
+{% block styl_parent %}
+{% endblock styl_parent %}
 
 
-    <!-- =========================================================
-         STYLE GLOBAL
-    ========================================================== -->
+<!-- =========================================================
+     CSS GLOBAL
+========================================================== -->
 
-    <style>
+<style>
 
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-        }
+    html,
+    body {
+        min-height: 100%;
+        margin: 0;
+        padding: 0;
+    }
 
 
-        body {
-            font-family: "Source Sans Pro", sans-serif;
-        }
+    body {
+        font-family: "Source Sans Pro", sans-serif;
+        overflow-x: hidden;
+    }
 
 
-        /* =====================================================
-           WRAPPER PRINCIPAL
-        ====================================================== */
+    /* =========================================================
+       SIDEBAR
+    ========================================================= */
 
-        .wrapper {
-            width: 100%;
-            height: 100vh;
-            min-height: 100vh;
-            overflow: hidden;
-        }
+    .main-sidebar {
+        z-index: 1038;
+    }
 
+    .main-sidebar .sidebar {
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 
-        /* =====================================================
-           NAVBAR
-        ====================================================== */
 
-        .main-header {
-            position: fixed !important;
+    /* =========================================================
+       NAVBAR
+    ========================================================= */
 
-            top: 0;
-            right: 0;
+    .main-header {
+        z-index: 1030;
+    }
 
-            height: 57px;
 
-            margin-left: 250px !important;
+    /* =========================================================
+       CONTENU
+    ========================================================= */
 
-            z-index: 1035;
+    .content-wrapper {
+        min-height: calc(100vh - 57px) !important;
+    }
 
-            transition: margin-left 0.3s ease;
-        }
 
+    /* =========================================================
+       FOOTER
+    ========================================================= */
 
-        /* =====================================================
-           SIDEBAR
-        ====================================================== */
+    .main-footer {
+        position: relative;
+    }
 
-        .main-sidebar {
-            position: fixed !important;
 
-            top: 0;
-            left: 0;
-            bottom: 0;
+    /* =========================================================
+       MENU SIDEBAR
+    ========================================================= */
 
-            width: 250px;
-            height: 100vh;
+    .nav-sidebar .nav-link p {
+        white-space: normal;
+    }
 
-            z-index: 1040;
+    .nav-sidebar .badge {
+        min-width: 22px;
+        text-align: center;
+    }
 
-            overflow: hidden;
-        }
 
+    /* =========================================================
+       USER PANEL
+    ========================================================= */
 
-        .main-sidebar .sidebar {
-            height: calc(100vh - 57px);
+    .user-panel {
+        overflow: hidden;
+    }
 
-            overflow-y: auto;
-            overflow-x: hidden;
+    .user-panel .image img {
+        width: 35px;
+        height: 35px;
+        object-fit: cover;
+    }
 
-            padding-bottom: 20px;
-        }
+    .user-panel .info {
+        min-width: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
 
-        /* =====================================================
-           CONTENU CENTRAL
-        ====================================================== */
+    /* =========================================================
+       MESSAGERIE
+    ========================================================= */
 
-        .content-wrapper {
-            position: fixed !important;
+    .message-badge {
+        position: relative;
+        top: -1px;
+        margin-left: 5px;
+        vertical-align: middle;
+        font-size: 10px;
+        min-width: 18px;
+        padding: 3px 5px;
+    }
 
-            top: 57px;
-            right: 0;
-            bottom: 50px;
-            left: 250px;
 
-            margin: 0 !important;
+    .messagerie-nav-link {
+        position: relative;
+    }
 
-            min-height: 0 !important;
 
-            overflow-y: auto;
-            overflow-x: hidden;
+    .messagerie-nav-link .message-badge {
+        margin-left: 5px;
+    }
 
-            background-color: #f4f6f9;
 
-            transition: left 0.3s ease;
-        }
+    /* =========================================================
+       TITRE
+    ========================================================= */
 
+    .page-title-box {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+    }
 
-        /* =====================================================
-           FOOTER
-        ====================================================== */
+    .page-title-box h1 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 1.3;
+    }
 
-        .main-footer {
-            position: fixed !important;
 
-            left: 250px;
-            right: 0;
-            bottom: 0;
+    /* =========================================================
+       SCROLLBAR
+    ========================================================= */
 
-            height: 50px;
+    .content-wrapper::-webkit-scrollbar,
+    .main-sidebar .sidebar::-webkit-scrollbar {
+        width: 7px;
+    }
 
-            margin: 0 !important;
+    .content-wrapper::-webkit-scrollbar-thumb,
+    .main-sidebar .sidebar::-webkit-scrollbar-thumb {
+        background: #adb5bd;
+        border-radius: 10px;
+    }
 
-            padding: 12px 15px;
+    .content-wrapper::-webkit-scrollbar-track,
+    .main-sidebar .sidebar::-webkit-scrollbar-track {
+        background: transparent;
+    }
 
-            z-index: 1030;
 
-            background-color: #ffffff;
+    /* =========================================================
+       MODALES
+    ========================================================= */
 
-            border-top: 1px solid #dee2e6;
+    .modal {
+        z-index: 1055 !important;
+    }
 
-            font-size: 13px;
+    .modal-backdrop {
+        z-index: 1050 !important;
+    }
 
-            transition: left 0.3s ease;
-        }
+    .modal-dialog {
+        position: relative;
+        z-index: 1056;
+    }
 
+    .modal-content {
+        position: relative;
+        z-index: 1057;
+        background-color: #ffffff;
+        color: #212529;
+    }
 
-        /* =====================================================
-           SIDEBAR RÉDUITE
-        ====================================================== */
 
-        body.sidebar-collapse .main-header {
-            margin-left: 4.6rem !important;
-        }
+    /* =========================================================
+       CONTENU MODALE
+    ========================================================= */
 
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        position: relative;
+        z-index: 1058;
+    }
 
-        body.sidebar-collapse .content-wrapper {
-            left: 4.6rem;
-        }
 
+    /* =========================================================
+       MODALE CENTRÉE
+    ========================================================= */
 
-        body.sidebar-collapse .main-footer {
-            left: 4.6rem;
-        }
+    .modal-dialog-centered {
+        display: flex;
+        align-items: center;
+        min-height: calc(100% - 1rem);
+    }
 
 
-        /* =====================================================
-           SIDEBAR SEARCH
-        ====================================================== */
+    /* =========================================================
+       PRELOADER
+    ========================================================= */
 
-        .form-control-sidebar {
-            border-radius: 4px;
-        }
+    .preloader {
+        z-index: 9999 !important;
+    }
 
+    .preloader img {
+        object-fit: cover;
+    }
 
-        /* =====================================================
-           USER PANEL
-        ====================================================== */
 
-        .user-panel {
-            overflow: hidden;
-        }
+    /* =========================================================
+       PETITS ÉCRANS
+    ========================================================= */
 
-
-        .user-panel .image img {
-            width: 35px;
-            height: 35px;
-
-            object-fit: cover;
-        }
-
-
-        .user-panel .info {
-            min-width: 0;
-
-            white-space: nowrap;
-
-            overflow: hidden;
-
-            text-overflow: ellipsis;
-        }
-
-
-        /* =====================================================
-           MENU SIDEBAR
-        ====================================================== */
-
-        .nav-sidebar .nav-link p {
-            white-space: normal;
-        }
-
-
-        .nav-sidebar .badge {
-            min-width: 22px;
-
-            text-align: center;
-        }
-
-
-        /* =====================================================
-           MESSAGERIE
-        ====================================================== */
-
-        .message-badge {
-            margin-left: 5px;
-
-            vertical-align: middle;
-        }
-
-
-        /* =====================================================
-           PRELOADER
-        ====================================================== */
-
-        .preloader img {
-            object-fit: cover;
-        }
-
-
-        /* =====================================================
-           SCROLLBAR
-        ====================================================== */
-
-        .content-wrapper::-webkit-scrollbar,
-        .main-sidebar .sidebar::-webkit-scrollbar {
-            width: 7px;
-        }
-
-
-        .content-wrapper::-webkit-scrollbar-thumb,
-        .main-sidebar .sidebar::-webkit-scrollbar-thumb {
-            background: #adb5bd;
-
-            border-radius: 10px;
-        }
-
-
-        .content-wrapper::-webkit-scrollbar-track,
-        .main-sidebar .sidebar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-
-        /* =====================================================
-           MOBILE
-        ====================================================== */
-
-        @media (max-width: 767.98px) {
-
-            .main-header {
-                margin-left: 0 !important;
-
-                height: 57px;
-            }
-
-
-            .main-sidebar {
-                width: 250px;
-            }
-
-
-            .content-wrapper {
-                top: 57px;
-                left: 0 !important;
-                bottom: 50px;
-            }
-
-
-            .main-footer {
-                left: 0 !important;
-
-                height: 50px;
-            }
-
-
-            body.sidebar-open .main-header {
-                margin-left: 250px !important;
-            }
-
-
-            body.sidebar-open .content-wrapper {
-                left: 250px !important;
-            }
-
-
-            body.sidebar-open .main-footer {
-                left: 250px !important;
-            }
-
-        }
-
-
-        /* =====================================================
-           PETITS ÉCRANS
-        ====================================================== */
-
-        @media (max-width: 575.98px) {
-
-            .main-footer {
-                font-size: 11px;
-
-                padding: 10px;
-            }
-
-
-            .main-footer .float-right {
-                display: none !important;
-            }
-
-        }
-
-
-        /* =====================================================
-           CONTENU
-        ====================================================== */
-
-        .content-wrapper .content-header {
-            padding-top: 15px;
-        }
-
-
-        .content-wrapper .content {
-            padding-bottom: 25px;
-        }
-
-
-        /* =====================================================
-           TITRE ACCUEIL
-        ====================================================== */
-
-        .page-title-box {
-            width: 100%;
-
-            padding: 10px;
-
-            border-radius: 6px;
-        }
-
+    @media (max-width: 767.98px) {
 
         .page-title-box h1 {
-            margin: 0;
-
-            font-size: 22px;
-
-            font-weight: 600;
-
-            line-height: 1.3;
+            font-size: 17px;
         }
 
-
-        /* =====================================================
-           PETITS ÉCRANS TITRE
-        ====================================================== */
-
-        @media (max-width: 767.98px) {
-
-            .page-title-box h1 {
-                font-size: 17px;
-            }
-
+        .content-wrapper {
+            min-height: calc(100vh - 57px) !important;
         }
 
+    }
 
-    </style>
+
+    @media (max-width: 575.98px) {
+
+        .main-footer {
+            font-size: 11px;
+        }
+
+        .main-footer .float-right {
+            display: none !important;
+        }
+
+    }
+
+</style>
+
 
 </head>
-
 
 <!-- =============================================================
      BODY
@@ -478,7 +347,6 @@
 
 {% endblock body %}
 
-
 <!-- =============================================================
      WRAPPER
 ============================================================== -->
@@ -486,1411 +354,952 @@
 <div class="wrapper">
 
 
-    <!-- =========================================================
-         PRELOADER
-    ========================================================== -->
+<!-- =========================================================
+     PRELOADER
+========================================================== -->
 
-    <div class="preloader flex-column justify-content-center align-items-center">
+<div class="preloader flex-column justify-content-center align-items-center">
 
-        <a href="#"
-           class="brand-link">
+    <img src="{% static 'base/img/log.jpg' %}"
+         height="100"
+         width="100"
+         alt="Logo"
+         class="brand-image img-circle elevation-3">
 
-            <img src="{% static 'base/img/log.jpg' %}"
-                 height="100"
-                 width="100"
-                 alt="Logo"
-                 class="brand-image img-circle elevation-3">
-
-        </a>
-
-    </div>
+</div>
 
 
-    <!-- =========================================================
-         NAVBAR
-    ========================================================== -->
+<!-- =========================================================
+     NAVBAR
+========================================================== -->
 
-    <nav class="main-header navbar navbar-expand navbar-white navbar-light">
-
-
-        <!-- =====================================================
-             LEFT NAVBAR
-        ====================================================== -->
-
-        <ul class="navbar-nav">
+<nav class="main-header navbar navbar-expand navbar-white navbar-light">
 
 
-            <!-- MENU -->
-            <li class="nav-item">
+    <!-- =====================================================
+         MENU GAUCHE
+    ====================================================== -->
 
-                <a class="nav-link"
-                   data-widget="pushmenu"
-                   href="#"
-                   role="button"
-                   title="Menu">
+    <ul class="navbar-nav">
 
-                    <i class="fas fa-bars"></i>
+        <!-- MENU SIDEBAR -->
 
-                </a>
+        <li class="nav-item">
 
-            </li>
+            <a class="nav-link"
+               data-widget="pushmenu"
+               href="#"
+               role="button"
+               title="Menu">
 
+                <i class="fas fa-bars"></i>
 
-            <!-- =================================================
-                 ACCUEIL
-            ================================================== -->
+            </a>
 
-            <li class="nav-item d-none d-sm-inline-block">
-
-             
-
-                <a href="#"
-                   class="nav-link">
-
-                    <i class="fas fa-home mr-1"></i>
-
-                    Accueil
-
-                </a>
-
-            </li>
+        </li>
 
 
-            <!-- =================================================
-                 MESSAGERIE
-            ================================================== -->
+        <!-- ACCUEIL -->
 
-            <li class="nav-item">
+        <li class="nav-item d-none d-sm-inline-block">
 
-                <a href="{% url 'boite_reception' %}"
-                   class="nav-link"
-                   title="Messagerie">
+            <a href="{% url 'home' %}"
+               class="nav-link">
 
-                    <i class="nav-icon fas fa-envelope"></i>
+                <i class="fas fa-home mr-1"></i>
+
+                Accueil
+
+            </a>
+
+        </li>
 
 
-                    <span class="d-none d-md-inline ml-1">
+        <!-- =================================================
+             MESSAGERIE NAVBAR
+        ================================================== -->
 
-                        Messagerie
+        <li class="nav-item">
+
+            {% block chat %}
+
+            <a href="{% url 'boite_reception' %}"
+               class="nav-link messagerie-nav-link"
+               title="Messagerie">
+
+                <i class="fas fa-envelope"></i>
+
+                <span class="d-none d-md-inline ml-1">
+                    Messagerie
+                </span>
+
+
+                {% if messages_non_lus and messages_non_lus > 0 %}
+
+                    <span class="badge badge-danger message-badge">
+
+                        {{ messages_non_lus }}
 
                     </span>
 
+                {% endif %}
 
-                    {% if messages_non_lus and messages_non_lus > 0 %}
+            </a>
 
-                        <span class="badge badge-danger message-badge">
+            {% endblock chat %}
 
-                            {{ messages_non_lus }}
+        </li>
 
-                        </span>
-
-                    {% endif %}
-
-                </a>
-
-            </li>
+    </ul>
 
 
-        </ul>
+    <!-- =====================================================
+         MENU DROIT
+    ====================================================== -->
+
+    <ul class="navbar-nav ml-auto">
 
 
-        <!-- =====================================================
-             RIGHT NAVBAR
-        ====================================================== -->
+        <!-- RECHERCHE -->
 
-        <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
 
+            <a class="nav-link"
+               data-widget="navbar-search"
+               href="#"
+               role="button"
+               title="Recherche">
 
-            <!-- RECHERCHE -->
+                <i class="fas fa-search"></i>
 
-            <li class="nav-item">
-
-                <a class="nav-link"
-                   data-widget="navbar-search"
-                   href="#"
-                   role="button"
-                   title="Recherche">
-
-                    <i class="fas fa-search"></i>
-
-                </a>
+            </a>
 
 
-                <div class="navbar-search-block">
+            <div class="navbar-search-block">
 
-                    <form class="form-inline">
+                <form class="form-inline">
 
-                        <div class="input-group input-group-sm">
+                    <div class="input-group input-group-sm">
 
-                            <input class="form-control form-control-navbar"
-                                   type="search"
-                                   placeholder="Recherche"
-                                   aria-label="Recherche">
-
-
-                            <div class="input-group-append">
-
-                                <button class="btn btn-navbar"
-                                        type="submit">
-
-                                    <i class="fas fa-search"></i>
-
-                                </button>
+                        <input class="form-control form-control-navbar"
+                               type="search"
+                               placeholder="Recherche"
+                               aria-label="Recherche">
 
 
-                                <button class="btn btn-navbar"
-                                        type="button"
-                                        data-widget="navbar-search">
+                        <div class="input-group-append">
 
-                                    <i class="fas fa-times"></i>
+                            <button class="btn btn-navbar"
+                                    type="submit">
 
-                                </button>
+                                <i class="fas fa-search"></i>
 
-                            </div>
+                            </button>
+
+
+                            <button class="btn btn-navbar"
+                                    type="button"
+                                    data-widget="navbar-search">
+
+                                <i class="fas fa-times"></i>
+
+                            </button>
 
                         </div>
 
-                    </form>
+                    </div>
 
-                </div>
+                </form>
 
-            </li>
+            </div>
+
+        </li>
+
+    </ul>
+
+</nav>
 
 
-        </ul>
+<!-- =========================================================
+     SIDEBAR
+========================================================== -->
 
-    </nav>
+{% block aside %}
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
 
 
-    <!-- =========================================================
+    <!-- =====================================================
+         LOGO
+    ====================================================== -->
+
+    <a href="{% url 'home' %}"
+       class="brand-link">
+
+        <img src="{% static 'base/img/log.jpg' %}"
+             alt="Logo"
+             class="brand-image img-circle elevation-3"
+             style="opacity:.8">
+
+        <span class="brand-text font-weight-light">
+            Gestion School
+        </span>
+
+    </a>
+
+
+    <!-- =====================================================
          SIDEBAR
-    ========================================================== -->
+    ====================================================== -->
 
-    {% block aside %}
-
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <div class="sidebar">
 
 
-        <!-- =====================================================
-             SIDEBAR
-        ====================================================== -->
+        <!-- =================================================
+             USER
+        ================================================== -->
 
-        <div class="sidebar">
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
 
+            <div class="image">
 
-            <!-- =================================================
-                 USER PANEL
-            ================================================== -->
+                {% if request.user.photo %}
 
-            <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <img src="{{ request.user.photo.url }}"
+                         class="img-circle elevation-2"
+                         alt="Photo utilisateur">
 
+                {% else %}
 
-                <div class="image">
+                    <img src="{% static 'images/default-avatar.png' %}"
+                         class="img-circle elevation-2"
+                         alt="Utilisateur">
 
-                    {% if request.user.photo %}
-
-                        <img src="{{ request.user.photo.url }}"
-                             class="img-circle elevation-2"
-                             alt="Photo utilisateur">
-
-                    {% else %}
-
-                        <img src="{% static 'images/default-avatar.png' %}"
-                             class="img-circle elevation-2"
-                             alt="Utilisateur">
-
-                    {% endif %}
-
-                </div>
-
-
-                <div class="info">
-
-                    <a href="#"
-                       class="d-block">
-
-                        {{ request.user.nom }}
-
-                        {{ request.user.prenom }}
-
-                    </a>
-
-                </div>
-
+                {% endif %}
 
             </div>
 
 
-            <!-- =================================================
-                 SIDEBAR SEARCH
-            ================================================== -->
+            <div class="info">
 
-            <div class="form-inline">
+                <a href="#"
+                   class="d-block">
 
-                <div class="input-group"
-                     data-widget="sidebar-search">
+                    {{ request.user.nom }}
 
+                    {{ request.user.prenom }}
 
-                    <input class="form-control form-control-sidebar"
-                           type="search"
-                           placeholder="Rechercher"
-                           aria-label="Rechercher">
-
-
-                    <div class="input-group-append">
-
-                        <button class="btn btn-sidebar"
-                                type="button">
-
-                            <i class="fas fa-search fa-fw"></i>
-
-                        </button>
-
-                    </div>
-
-
-                </div>
-
-            </div>
-
-
-            <!-- =================================================
-                 MENU
-            ================================================== -->
-
-            <nav class="mt-2">
-
-                <ul class="nav nav-pills nav-sidebar flex-column"
-                    data-widget="treeview"
-                    role="menu"
-                    data-accordion="false">
-
-
-                    {% block menu_sidebar %}
-
-
-                    <!-- =================================================
-                         GESTION ENSEIGNANTS
-                    ================================================== -->
-
-                    <li class="nav-item">
-
-
-                        <a href="#"
-                           class="nav-link">
-
-                            <i class="fas fa-chalkboard-teacher nav-icon"></i>
-
-
-                            <p>
-
-                                Gestion enseignants
-
-                                <span class="right badge badge-danger">
-
-                                    voir +
-
-                                </span>
-
-                            </p>
-
-                        </a>
-
-
-                        <ul class="nav nav-treeview">
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'enseignant' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            1
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Enseignants
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                        </ul>
-
-                    </li>
-
-
-                    <!-- =================================================
-                         GESTION ÉLÈVES
-                    ================================================== -->
-
-                    <li class="nav-item">
-
-
-                        <a href="#"
-                           class="nav-link">
-
-                            <i class="fas fa-user-graduate nav-icon"></i>
-
-
-                            <p>
-
-                                Gestion élèves
-
-                                <span class="right badge badge-danger">
-
-                                    voir +
-
-                                </span>
-
-                            </p>
-
-                        </a>
-
-
-                        <ul class="nav nav-treeview">
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'eleve' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            1
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Ajouter un nouvel élève
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'eleve' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            2
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Liste des élèves
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'liste_eleves_par_niveau_annee' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            3
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Élèves par niveau
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'liste_eleves_par_groupe' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            4
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Élèves par option
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                        </ul>
-
-                    </li>
-
-
-                    <!-- =================================================
-                         GESTION BULLETINS
-                    ================================================== -->
-
-                    <li class="nav-item">
-
-
-                        <a href="#"
-                           class="nav-link">
-
-                            <i class="fas fa-file-alt nav-icon"></i>
-
-
-                            <p>
-
-                                Gestion bulletins
-
-                                <span class="right badge badge-danger">
-
-                                    voir +
-
-                                </span>
-
-                            </p>
-
-                        </a>
-
-
-                        <ul class="nav nav-treeview">
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'bulletins_trimestriels' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            1
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Bulletins trimestriels
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'bulletins_option' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            3
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Bulletin trimestriel classe
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="#"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            4
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Bulletin annuel classe
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'resultat_groupe' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            4
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Résultat trimestriel classe
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'resultat_annuel' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            5
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Résultat annuel classe
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'resultats_trimestriels' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            6
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Résultat trimestriel niveau
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'resultats_annuels' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            7
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Résultat annuel par niveau
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                        </ul>
-
-                    </li>
-
-
-                    <!-- =================================================
-                         PARAMÈTRES
-                    ================================================== -->
-
-                    <li class="nav-item">
-
-
-                        <a href="#"
-                           class="nav-link">
-
-                            <i class="fas fa-cogs nav-icon"></i>
-
-
-                            <p>
-
-                                Paramètres
-
-                                <span class="right badge badge-danger">
-
-                                    voir +
-
-                                </span>
-
-                            </p>
-
-                        </a>
-
-
-                        <ul class="nav nav-treeview">
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'an' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            1
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Années scolaires
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'cycle' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            2
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Gestion des cycles
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'niveau' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            3
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Gestion des niveaux
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'groupe' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            4
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Groupes de classe
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'matiere' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            5
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Gestion des matières
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                        </ul>
-
-                    </li>
-
-
-                    <!-- =================================================
-                         GESTION UTILISATEURS
-                    ================================================== -->
-
-                    <li class="nav-item">
-
-
-                        <a href="#"
-                           class="nav-link">
-
-                            <i class="fas fa-users nav-icon"></i>
-
-
-                            <p>
-
-                                Gestion utilisateurs
-
-                                <span class="right badge badge-danger">
-
-                                    voir +
-
-                                </span>
-
-                            </p>
-
-                        </a>
-
-
-                        <ul class="nav nav-treeview">
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'ajouter_administrateur' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            1
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Ajout utilisateur
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'liste_administrateurs' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            2
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Liste des utilisateurs
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="nav-item">
-
-                                <a href="{% url 'password_reset_request' %}"
-                                   class="nav-link">
-
-                                    <i class="badge badge-danger">
-
-                                        <span class="text-white">
-                                            3
-                                        </span>
-
-                                    </i>
-
-
-                                    <p>
-                                        Mot de passe oublié
-                                    </p>
-
-                                </a>
-
-                            </li>
-
-
-                        </ul>
-
-                    </li>
-
-
-                    <!-- =================================================
-                         HISTORIQUE
-                    ================================================== -->
-
-                    <li class="nav-item">
-
-                        <a href="{% url 'historique_action' %}"
-                           class="nav-link">
-
-                            <i class="fas fa-history nav-icon"></i>
-
-
-                            <p>
-                                Historique
-                            </p>
-
-                        </a>
-
-                    </li>
-
-
-                    <!-- =================================================
-                         DÉCONNEXION
-                    ================================================== -->
-
-                    <li class="nav-item">
-
-                        <a href="{% url 'logout' %}"
-                           class="nav-link">
-
-                            <i class="fas fa-sign-out-alt nav-icon text-warning"></i>
-
-
-                            <p>
-                                Déconnexion
-                            </p>
-
-                        </a>
-
-                    </li>
-
-
-                    {% endblock menu_sidebar %}
-
-
-                </ul>
-
-            </nav>
-
-
-        </div>
-
-    </aside>
-
-    {% endblock aside %}
-
-
-    <!-- =========================================================
-         CONTENU PRINCIPAL
-    ========================================================== -->
-
-    {% block contenu %}
-
-    <div class="content-wrapper">
-
-
-        <!-- =====================================================
-             CONTENT HEADER
-        ====================================================== -->
-
-        <div class="content-header">
-
-            <div class="container-fluid">
-
-
-                <div class="row mb-2">
-
-
-                    <div class="col-sm-6">
-
-
-                        <div class="page-title-box bg-gradient-primary">
-
-
-                            <h1 class="text-white text-center">
-
-                                BIENVENUE À LA PAGE D'ACCUEIL
-                                DE GESTION SCHOOL
-
-                            </h1>
-
-
-                        </div>
-
-
-                    </div>
-
-
-                    <div class="col-sm-6">
-
-
-                        <ol class="breadcrumb float-sm-right">
-
-
-                            <li class="breadcrumb-item">
-
-                                <a href="#">
-
-                                    Accueil
-
-                                </a>
-
-                            </li>
-
-
-                            <li class="breadcrumb-item active">
-
-                                Tableau de bord
-
-                            </li>
-
-
-                        </ol>
-
-
-                    </div>
-
-
-                </div>
-
+                </a>
 
             </div>
 
         </div>
 
 
-        <!-- =====================================================
-             CONTENU
-        ====================================================== -->
+        <!-- =================================================
+             RECHERCHE SIDEBAR
+        ================================================== -->
 
-        <section class="content">
+        <div class="form-inline">
+
+            <div class="input-group"
+                 data-widget="sidebar-search">
+
+                <input class="form-control form-control-sidebar"
+                       type="search"
+                       placeholder="Rechercher"
+                       aria-label="Rechercher">
 
 
-            <div class="container-fluid">
+                <div class="input-group-append">
+
+                    <button class="btn btn-sidebar"
+                            type="button">
+
+                        <i class="fas fa-search fa-fw"></i>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             MENU
+        ================================================== -->
+
+        <nav class="mt-2">
+
+            <ul class="nav nav-pills nav-sidebar flex-column"
+                data-widget="treeview"
+                role="menu"
+                data-accordion="false">
+
+
+                {% block menu_sidebar %}
 
 
                 <!-- =================================================
-                     STATISTIQUES
+                     ENSEIGNANTS
                 ================================================== -->
 
-                <div class="row">
+                <li class="nav-item">
 
+                    <a href="#"
+                       class="nav-link">
 
-                    <!-- =================================================
-                         ÉLÈVES
-                    ================================================== -->
+                        <i class="fas fa-chalkboard-teacher nav-icon"></i>
 
-                    <div class="col-lg-3 col-6">
+                        <p>
 
+                            Gestion enseignants
 
-                        <div class="small-box bg-info">
+                            <i class="right fas fa-angle-left"></i>
 
+                        </p>
 
-                            <div class="inner">
+                    </a>
 
 
-                                {% if annee_selectionnee %}
+                    <ul class="nav nav-treeview">
 
-
-                                    <h4>
-
-                                        {{ nombre_eleves_par_annee }}
-
-                                    </h4>
-
-
-                                    <p>
-
-                                        Élèves inscrits
-
-                                    </p>
-
-
-                                    <small>
-
-                                        Année scolaire :
-
-                                        {{ annee_selectionnee.nom }}
-
-                                    </small>
-
-
-                                {% else %}
-
-
-                                    <p>
-
-                                        Aucune année scolaire
-                                        en cours.
-
-                                    </p>
-
-
-                                {% endif %}
-
-
-                            </div>
-
-
-                            <div class="icon">
-
-                                <i class="fas fa-user-graduate"></i>
-
-                            </div>
-
-
-                            <a href="#"
-                               class="small-box-footer">
-
-                                Plus d'informations
-
-                                <i class="fas fa-arrow-circle-right"></i>
-
-                            </a>
-
-
-                        </div>
-
-
-                    </div>
-
-
-                    <!-- =================================================
-                         ENSEIGNANTS
-                    ================================================== -->
-
-                    <div class="col-lg-3 col-6">
-
-
-                        <div class="small-box bg-success">
-
-
-                            <div class="inner">
-
-
-                                <h3>
-
-                                    25
-
-                                </h3>
-
-
-                                <p>
-
-                                    Enseignants
-
-                                </p>
-
-
-                            </div>
-
-
-                            <div class="icon">
-
-                                <i class="fas fa-chalkboard-teacher"></i>
-
-                            </div>
-
+                        <li class="nav-item">
 
                             <a href="{% url 'enseignant' %}"
-                               class="small-box-footer">
+                               class="nav-link">
 
-                                Plus d'informations
+                                <i class="far fa-circle nav-icon"></i>
 
-                                <i class="fas fa-arrow-circle-right"></i>
+                                <p>
+                                    Enseignants
+                                </p>
 
                             </a>
 
+                        </li>
 
-                        </div>
+                    </ul>
 
-
-                    </div>
-
-
-                    <!-- =================================================
-                         UTILISATEURS
-                    ================================================== -->
-
-                    <div class="col-lg-3 col-6">
+                </li>
 
 
-                        <div class="small-box bg-warning">
+                <!-- =================================================
+                     ÉLÈVES
+                ================================================== -->
+
+                <li class="nav-item">
+
+                    <a href="#"
+                       class="nav-link">
+
+                        <i class="fas fa-user-graduate nav-icon"></i>
+
+                        <p>
+
+                            Gestion élèves
+
+                            <i class="right fas fa-angle-left"></i>
+
+                        </p>
+
+                    </a>
 
 
-                            <div class="inner">
+                    <ul class="nav nav-treeview">
 
 
-                                <h3>
+                        <li class="nav-item">
 
-                                    6
+                            <a href="{% url 'eleve' %}"
+                               class="nav-link">
 
-                                </h3>
-
+                                <i class="far fa-circle nav-icon"></i>
 
                                 <p>
-
-                                    Utilisateurs
-
+                                    Liste des élèves
                                 </p>
-
-
-                            </div>
-
-
-                            <div class="icon">
-
-                                <i class="fas fa-users"></i>
-
-                            </div>
-
-
-                            <a href="{% url 'liste_administrateurs' %}"
-                               class="small-box-footer">
-
-                                Plus d'informations
-
-                                <i class="fas fa-arrow-circle-right"></i>
 
                             </a>
 
-
-                        </div>
-
-
-                    </div>
+                        </li>
 
 
-                    <!-- =================================================
-                         CLASSES
-                    ================================================== -->
+                        <li class="nav-item">
 
-                    <div class="col-lg-3 col-6">
+                            <a href="{% url 'liste_eleves_par_niveau_annee' %}"
+                               class="nav-link">
 
-
-                        <div class="small-box bg-danger">
-
-
-                            <div class="inner">
-
-
-                                <h3>
-
-                                    25
-
-                                </h3>
-
+                                <i class="far fa-circle nav-icon"></i>
 
                                 <p>
-
-                                    Classes
-
+                                    Élèves par niveau
                                 </p>
 
+                            </a>
 
-                            </div>
+                        </li>
 
 
-                            <div class="icon">
+                        <li class="nav-item">
 
-                                <i class="fas fa-school"></i>
+                            <a href="{% url 'liste_eleves_par_groupe' %}"
+                               class="nav-link">
 
-                            </div>
+                                <i class="far fa-circle nav-icon"></i>
 
+                                <p>
+                                    Élèves par option
+                                </p>
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </li>
+
+
+                <!-- =================================================
+                     BULLETINS
+                ================================================== -->
+
+                <li class="nav-item">
+
+                    <a href="#"
+                       class="nav-link">
+
+                        <i class="fas fa-file-alt nav-icon"></i>
+
+                        <p>
+
+                            Gestion bulletins
+
+                            <i class="right fas fa-angle-left"></i>
+
+                        </p>
+
+                    </a>
+
+
+                    <ul class="nav nav-treeview">
+
+
+                        <li class="nav-item">
+
+                            <a href="{% url 'bulletins_trimestriels' %}"
+                               class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+
+                                <p>
+                                    Bulletins trimestriels
+                                </p>
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a href="{% url 'bulletins_option' %}"
+                               class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+
+                                <p>
+                                    Bulletin trimestriel classe
+                                </p>
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a href="{% url 'resultat_groupe' %}"
+                               class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+
+                                <p>
+                                    Résultat trimestriel classe
+                                </p>
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a href="{% url 'resultat_annuel' %}"
+                               class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+
+                                <p>
+                                    Résultat annuel classe
+                                </p>
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a href="{% url 'resultats_trimestriels' %}"
+                               class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+
+                                <p>
+                                    Résultat trimestriel niveau
+                                </p>
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a href="{% url 'resultats_annuels' %}"
+                               class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+
+                                <p>
+                                    Résultat annuel niveau
+                                </p>
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </li>
+
+
+                <!-- =================================================
+                     PARAMÈTRES
+                ================================================== -->
+
+                <li class="nav-item">
+
+                    <a href="#"
+                       class="nav-link">
+
+                        <i class="fas fa-cogs nav-icon"></i>
+
+                        <p>
+
+                            Paramètres
+
+                            <i class="right fas fa-angle-left"></i>
+
+                        </p>
+
+                    </a>
+
+
+                    <ul class="nav nav-treeview">
+
+
+                        <li class="nav-item">
+
+                            <a href="{% url 'an' %}"
+                               class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+
+                                <p>
+                                    Années scolaires
+                                </p>
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a href="{% url 'cycle' %}"
+                               class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+
+                                <p>
+                                    Gestion des cycles
+                                </p>
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a href="{% url 'niveau' %}"
+                               class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+
+                                <p>
+                                    Gestion des niveaux
+                                </p>
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
 
                             <a href="{% url 'groupe' %}"
-                               class="small-box-footer">
+                               class="nav-link">
 
-                                Plus d'informations
+                                <i class="far fa-circle nav-icon"></i>
 
-                                <i class="fas fa-arrow-circle-right"></i>
+                                <p>
+                                    Groupes de classe
+                                </p>
 
                             </a>
 
+                        </li>
 
-                        </div>
+
+                        <li class="nav-item">
+
+                            <a href="{% url 'matiere' %}"
+                               class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+
+                                <p>
+                                    Gestion des matières
+                                </p>
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </li>
 
 
-                    </div>
+                <!-- =================================================
+                     UTILISATEURS
+                ================================================== -->
 
+                <li class="nav-item">
+
+                    <a href="#"
+                       class="nav-link">
+
+                        <i class="fas fa-users nav-icon"></i>
+
+                        <p>
+
+                            Gestion utilisateurs
+
+                            <i class="right fas fa-angle-left"></i>
+
+                        </p>
+
+                    </a>
+
+
+                    <ul class="nav nav-treeview">
+
+
+                        <li class="nav-item">
+
+                            <a href="{% url 'ajouter_administrateur' %}"
+                               class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+
+                                <p>
+                                    Ajouter utilisateur
+                                </p>
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a href="{% url 'liste_administrateurs' %}"
+                               class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+
+                                <p>
+                                    Liste utilisateurs
+                                </p>
+
+                            </a>
+
+                        </li>
+
+
+                        <li class="nav-item">
+
+                            <a href="{% url 'password_reset_request' %}"
+                               class="nav-link">
+
+                                <i class="far fa-circle nav-icon"></i>
+
+                                <p>
+                                    Mot de passe
+                                </p>
+
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </li>
+
+
+                <!-- =================================================
+                     MESSAGERIE SIDEBAR
+                ================================================== -->
+
+                <li class="nav-item">
+
+                    <a href="{% url 'boite_reception' %}"
+                       class="nav-link">
+
+                        <i class="fas fa-envelope nav-icon"></i>
+
+                        <p>
+
+                            Messagerie
+
+                            {% if messages_non_lus and messages_non_lus > 0 %}
+
+                                <span class="right badge badge-danger">
+
+                                    {{ messages_non_lus }}
+
+                                </span>
+
+                            {% endif %}
+
+                        </p>
+
+                    </a>
+
+                </li>
+
+
+                <!-- =================================================
+                     HISTORIQUE
+                ================================================== -->
+
+                <li class="nav-item">
+
+                    <a href="{% url 'historique_action' %}"
+                       class="nav-link">
+
+                        <i class="fas fa-history nav-icon"></i>
+
+                        <p>
+                            Historique
+                        </p>
+
+                    </a>
+
+                </li>
+
+
+                <!-- =================================================
+                     DÉCONNEXION
+                ================================================== -->
+
+                <li class="nav-item">
+
+                    <a href="{% url 'logout' %}"
+                       class="nav-link">
+
+                        <i class="fas fa-sign-out-alt nav-icon text-warning"></i>
+
+                        <p>
+                            Déconnexion
+                        </p>
+
+                    </a>
+
+                </li>
+
+
+                {% endblock menu_sidebar %}
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+</aside>
+
+{% endblock aside %}
+
+
+<!-- =========================================================
+     CONTENU PRINCIPAL
+========================================================== -->
+
+{% block contenu %}
+
+<div class="content-wrapper">
+
+    <div class="content-header">
+
+        <div class="container-fluid">
+
+            <div class="row mb-2">
+
+                <div class="col-sm-6">
+
+                    <h1 class="m-0">
+                        Gestion School
+                    </h1>
 
                 </div>
 
 
+                <div class="col-sm-6">
+
+                    <ol class="breadcrumb float-sm-right">
+
+                        <li class="breadcrumb-item">
+
+                            <a href="{% url 'home' %}">
+                                Accueil
+                            </a>
+
+                        </li>
+
+                        <li class="breadcrumb-item active">
+                            Tableau de bord
+                        </li>
+
+                    </ol>
+
+                </div>
+
             </div>
-
-
-        </section>
-
-
-    </div>
-
-    {% endblock contenu %}
-
-
-    <!-- =========================================================
-         FOOTER
-    ========================================================== -->
-
-    <footer class="main-footer">
-
-
-        <strong>
-
-            Copyright &copy; 2024-2026 benz-zator-monemou.
-
-        </strong>
-
-
-        Tous droits réservés.
-
-
-        <span class="ml-2">
-
-            Veuillez me contacter en cas de difficulté :
-
-            <strong>
-                628 68 02 20
-            </strong>
-
-        </span>
-
-
-        <div class="float-right d-none d-sm-inline-block">
-
-
-            <b>
-                Version
-            </b>
-
-            1.0.0
-
 
         </div>
 
+    </div>
 
-    </footer>
+
+    <section class="content">
+
+        <div class="container-fluid">
+
+            {% block content_wrapper %}
+
+                <div class="card">
+
+                    <div class="card-body">
+
+                        Bienvenue dans Gestion School.
+
+                    </div>
+
+                </div>
+
+            {% endblock content_wrapper %}
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock contenu %}
 
 
-    <!-- =========================================================
-         CONTROL SIDEBAR
-    ========================================================== -->
+<!-- =========================================================
+     FOOTER
+========================================================== -->
 
-    <aside class="control-sidebar control-sidebar-dark">
+<footer class="main-footer">
 
-    </aside>
+    <strong>
+
+        Copyright &copy; 2024-2026 benz-zator-monemou.
+
+    </strong>
+
+    Tous droits réservés.
+
+
+    <span class="ml-2">
+
+        Veuillez me contacter en cas de difficulté :
+
+        <strong>
+            628 68 02 20
+        </strong>
+
+    </span>
+
+
+    <div class="float-right d-none d-sm-inline-block">
+
+        <b>
+            Version
+        </b>
+
+        1.0.0
+
+    </div>
+
+</footer>
+
+
+<!-- =========================================================
+     CONTROL SIDEBAR
+========================================================== -->
+
+<aside class="control-sidebar control-sidebar-dark">
+</aside>
 
 
 </div>
-<!-- /.wrapper -->
-
 
 <!-- =============================================================
-     SCRIPTS
+     JAVASCRIPT
 ============================================================== -->
 
 {% block scripte %}
 
+<!-- JQUERY -->
 
-<!-- =========================================================
-     JQUERY
-========================================================== -->
+<script src="{% static 'base/plugins/jquery/jquery.min.js' %}">
+</script>
 
-<script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+<!-- JQUERY UI -->
 
-
-<!-- =========================================================
-     JQUERY UI
-========================================================== -->
-
-<script src="{% static 'base/plugins/jquery-ui/jquery-ui.min.js' %}"></script>
-
+<script src="{% static 'base/plugins/jquery-ui/jquery-ui.min.js' %}">
+</script>
 
 <script>
 
@@ -1898,118 +1307,132 @@
 
 </script>
 
+<!-- BOOTSTRAP -->
+
+<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}">
+</script>
+
+<!-- CHART -->
+
+<script src="{% static 'base/plugins/chart.js/Chart.min.js' %}">
+</script>
+
+<!-- SPARKLINE -->
+
+<script src="{% static 'base/plugins/sparklines/sparkline.js' %}">
+</script>
+
+<!-- JQVMAP -->
+
+<script src="{% static 'base/plugins/jqvmap/jquery.vmap.min.js' %}">
+</script>
+
+<script src="{% static 'base/plugins/jqvmap/maps/jquery.vmap.usa.js' %}">
+</script>
+
+<!-- JQUERY KNOB -->
+
+<script src="{% static 'base/plugins/jquery-knob/jquery.knob.min.js' %}">
+</script>
+
+<!-- MOMENT -->
+
+<script src="{% static 'base/plugins/moment/moment.min.js' %}">
+</script>
+
+<!-- DATERANGEPICKER -->
+
+<script src="{% static 'base/plugins/daterangepicker/daterangepicker.js' %}">
+</script>
+
+<!-- TEMPUS DOMINUS -->
+
+<script src="{% static 'base/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}">
+</script>
+
+<!-- SUMMERNOTE -->
+
+<script src="{% static 'base/plugins/summernote/summernote-bs4.min.js' %}">
+</script>
+
+<!-- OVERLAY SCROLLBARS -->
+
+<script src="{% static 'base/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}">
+</script>
+
+<!-- ADMINLTE -->
+
+<script src="{% static 'base/js/adminlte.min.js' %}">
+</script>
 
 <!-- =========================================================
-     BOOTSTRAP
-========================================================== -->
-
-<script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-
-
-<!-- =========================================================
-     CHART JS
-========================================================== -->
-
-<script src="{% static 'base/plugins/chart.js/Chart.min.js' %}"></script>
-
-
-<!-- =========================================================
-     SPARKLINE
-========================================================== -->
-
-<script src="{% static 'base/plugins/sparklines/sparkline.js' %}"></script>
-
-
-<!-- =========================================================
-     JQVMAP
-========================================================== -->
-
-<script src="{% static 'base/plugins/jqvmap/jquery.vmap.min.js' %}"></script>
-
-<script src="{% static 'base/plugins/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
-
-
-<!-- =========================================================
-     JQUERY KNOB
-========================================================== -->
-
-<script src="{% static 'base/plugins/jquery-knob/jquery.knob.min.js' %}"></script>
-
-
-<!-- =========================================================
-     MOMENT
-========================================================== -->
-
-<script src="{% static 'base/plugins/moment/moment.min.js' %}"></script>
-
-
-<!-- =========================================================
-     DATERANGEPICKER
-========================================================== -->
-
-<script src="{% static 'base/plugins/daterangepicker/daterangepicker.js' %}"></script>
-
-
-<!-- =========================================================
-     TEMPUS DOMINUS
-========================================================== -->
-
-<script src="{% static 'base/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
-
-
-<!-- =========================================================
-     SUMMERNOTE
-========================================================== -->
-
-<script src="{% static 'base/plugins/summernote/summernote-bs4.min.js' %}"></script>
-
-
-<!-- =========================================================
-     OVERLAY SCROLLBARS
-========================================================== -->
-
-<script src="{% static 'base/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
-
-
-<!-- =========================================================
-     ADMINLTE
-========================================================== -->
-
-<script src="{% static 'base/js/adminlte.min.js' %}"></script>
-
-
-<!-- =========================================================
-     INITIALISATION ADMINLTE
+     INITIALISATION
 ========================================================== -->
 
 <script>
 
-    $(document).ready(function () {
-
-        /*
-         * Sidebar treeview
-         */
-        $('[data-widget="treeview"]').Treeview('init');
+$(document).ready(function () {
 
 
-        /*
-         * Sidebar search
-         */
-        $('[data-widget="sidebar-search"]').SidebarSearch();
+    /* =====================================================
+       SIDEBAR TREEVIEW
+    ===================================================== */
+
+    $('[data-widget="treeview"]').Treeview('init');
 
 
-        /*
-         * Navbar search
-         */
-        $('[data-widget="navbar-search"]').NavbarSearch();
+    /* =====================================================
+       SIDEBAR SEARCH
+    ===================================================== */
+
+    $('[data-widget="sidebar-search"]').SidebarSearch();
+
+
+    /* =====================================================
+       NAVBAR SEARCH
+    ===================================================== */
+
+    $('[data-widget="navbar-search"]').NavbarSearch();
+
+
+    /* =====================================================
+       CORRECTION MODALES
+    ===================================================== */
+
+    $(document).on('show.bs.modal', '.modal', function () {
+
+        var modal = $(this);
+
+        if (!modal.parent().is('body')) {
+
+            modal.appendTo('body');
+
+        }
 
     });
 
+
+    /* =====================================================
+       NETTOYAGE APRÈS FERMETURE MODALE
+    ===================================================== */
+
+    $(document).on('hidden.bs.modal', '.modal', function () {
+
+        if ($('.modal.show').length === 0) {
+
+            $('body').removeClass('modal-open');
+
+            $('.modal-backdrop').remove();
+
+        }
+
+    });
+
+});
+
 </script>
 
-
 {% endblock scripte %}
-
 
 </body>
 

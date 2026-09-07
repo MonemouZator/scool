@@ -1,11 +1,22 @@
 {% extends "base/index.html" %}
 {% load static %}
 
-{% block chat %}
-<a class="nav-link" href="">
-  <i class="far fa-comments"></i>
+{% block chat %} <a class="nav-link messagerie-nav-link"
+href="{% url 'boite_reception' %}"
+title="Messagerie">
+
+<i class="fas fa-envelope"></i>
+
+  <span class="d-none d-md-inline ml-1">
+    Messagerie
+  </span>
+
+{% if messages_non_lus and messages_non_lus > 0 %} <span class="badge badge-danger message-badge">
+{{ messages_non_lus }} </span>
+{% endif %}
+
 </a>
-{% endblock %}
+{% endblock chat %}
 
 {% block menu_sidebar %}
 <!-- Tableau de bord -->

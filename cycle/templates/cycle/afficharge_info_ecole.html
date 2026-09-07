@@ -23,17 +23,11 @@
 <link rel="stylesheet"
       href="{% static 'base/css/adminlte.min.css' %}">
 
-
 <style>
-
-/* =========================================================
-   STRUCTURE
-========================================================= */
 
 .content-wrapper {
     min-height: calc(100vh - 57px) !important;
 }
-
 
 /* =========================================================
    TABLEAU
@@ -54,152 +48,93 @@
     white-space: nowrap;
 }
 
-
 /* =========================================================
-   LOGO DANS LE TABLEAU
+   LOGO TABLEAU
 ========================================================= */
 
 .logo-table {
     width: 60px;
     height: 60px;
-
     object-fit: contain;
-
     border-radius: 6px;
-
     border: 1px solid #ddd;
-
     padding: 3px;
-
     background: #fff;
 }
 
-
 /* =========================================================
-   APERÇU LOGO DANS LA MODALE
+   LOGO MODALE
 ========================================================= */
 
 .logo-preview {
-    width: 100px;
-    height: 100px;
-
+    width: 80px;
+    height: 80px;
     object-fit: contain;
-
     border-radius: 6px;
-
     border: 1px solid #ddd;
-
-    padding: 5px;
-
+    padding: 4px;
     background: #fff;
-
-    margin-top: 10px;
+    margin-top: 5px;
 }
-
 
 /* =========================================================
    BOUTONS ACTIONS
 ========================================================= */
 
 .action-btn {
-    display: inline-block;
-
-    margin-right: 10px;
-
+    display: inline-block !important;
+    margin: 0 5px;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
     text-decoration: none !important;
-
     cursor: pointer;
-}
-
-.action-btn:last-child {
-    margin-right: 0;
+    box-shadow: none !important;
+    outline: none !important;
 }
 
 .action-btn i {
-    font-size: 1.35rem;
+    font-size: 1.25rem;
 }
 
+.action-btn:hover i {
+    opacity: 0.70;
+}
 
 /* =========================================================
    BOUTON AJOUTER
-   COULEUR FIXE
 ========================================================= */
 
 .btn-ajouter-ecole,
 .btn-ajouter-ecole:hover,
 .btn-ajouter-ecole:focus,
 .btn-ajouter-ecole:active,
-.btn-ajouter-ecole.active,
-.btn-ajouter-ecole:focus:active {
+.btn-ajouter-ecole.active {
 
     background-color: #007bff !important;
-
     border: 1px solid #007bff !important;
-
-    border-color: #007bff !important;
-
-    color: #ffffff !important;
+    color: #fff !important;
 
     box-shadow: none !important;
-
     outline: none !important;
 
     font-weight: 600;
-
     opacity: 1 !important;
-
-    transition: none !important;
-
     text-decoration: none !important;
 }
 
-
-/* Icône du bouton */
-
 .btn-ajouter-ecole i {
-    color: #ffffff !important;
+    color: #fff !important;
 }
-
-
-/* Empêche Bootstrap/AdminLTE de changer
-   l'apparence pendant le clic */
-
-.btn-ajouter-ecole:active,
-.btn-ajouter-ecole.active {
-    background-color: #007bff !important;
-    border-color: #007bff !important;
-    color: #ffffff !important;
-    box-shadow: none !important;
-    transform: none !important;
-}
-
 
 /* =========================================================
    HEADER CARD
 ========================================================= */
 
 .card-primary > .card-header {
-    background-color: #007bff;
-    border-color: #007bff;
-}
-
-
-/* =========================================================
-   MODALES
-========================================================= */
-
-.modal-header .close {
-    outline: none !important;
-}
-
-.modal-header.bg-primary {
     background-color: #007bff !important;
+    border-color: #007bff !important;
 }
-
-.modal-header.bg-danger {
-    background-color: #dc3545 !important;
-}
-
 
 /* =========================================================
    FORMULAIRES
@@ -211,18 +146,124 @@
 
 .form-control:focus {
     border-color: #80bdff;
-    box-shadow: 0 0 0 0.1rem rgba(0, 123, 255, 0.15);
+
+    box-shadow:
+        0 0 0 0.1rem
+        rgba(0, 123, 255, 0.15);
 }
 
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    font-weight: 600;
+    font-size: 14px;
+}
 
 /* =========================================================
-   MESSAGES
+   MODALES
 ========================================================= */
 
-.alert {
-    border-left-width: 5px !important;
+.modal {
+    z-index: 1050 !important;
 }
 
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+.modal-dialog {
+    position: relative;
+    z-index: 1051 !important;
+}
+
+/* =========================================================
+   MODALE MODIFICATION
+========================================================= */
+
+.modal-ecole {
+    max-width: 650px !important;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.modal-content {
+    position: relative;
+    z-index: 1052 !important;
+
+    border: none !important;
+    border-radius: 6px !important;
+
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.30) !important;
+
+    pointer-events: auto !important;
+}
+
+.modal-header {
+    padding: 10px 15px !important;
+    min-height: 50px;
+}
+
+.modal-header .modal-title {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.modal-header.bg-primary {
+    background-color: #007bff !important;
+}
+
+.modal-header.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.modal-body {
+    padding: 15px !important;
+    max-height: 65vh;
+    overflow-y: auto;
+
+    pointer-events: auto !important;
+}
+
+.modal-footer {
+    padding: 10px 15px !important;
+}
+
+.modal-footer .btn {
+    font-size: 14px;
+    padding: 6px 12px;
+}
+
+.modal button,
+.modal input,
+.modal select,
+.modal textarea,
+.modal a,
+.modal label {
+    pointer-events: auto !important;
+}
+
+.modal-header .close {
+    color: #fff !important;
+    opacity: 1 !important;
+
+    outline: none !important;
+    box-shadow: none !important;
+
+    font-size: 25px;
+}
+
+/* =========================================================
+   MODALE SUPPRESSION
+========================================================= */
+
+.modal-suppression {
+    max-width: 430px !important;
+    width: 90%;
+}
 
 /* =========================================================
    RESPONSIVE
@@ -245,12 +286,44 @@
         width: 100%;
     }
 
+    .content-header h1 {
+        font-size: 1.4rem;
+    }
+
+    .modal-ecole {
+        max-width: 95% !important;
+        width: 95%;
+    }
+
+    .modal-suppression {
+        max-width: 95% !important;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .modal-body {
+        padding: 12px !important;
+    }
+
+    .modal-ecole {
+        width: 96%;
+    }
+
+    .logo-preview {
+        width: 70px;
+        height: 70px;
+    }
+
+    .logo-table {
+        width: 50px;
+        height: 50px;
+    }
 }
 
 </style>
 
 {% endblock styl_parent %}
-
 
 {% block body %}
 
@@ -258,877 +331,300 @@
 
 {% endblock body %}
 
-
 {% block contenu %}
 
 <div class="content-wrapper">
 
 
-    <!-- =====================================================
-         EN-TÊTE
-    ====================================================== -->
+<!-- =====================================================
+     HEADER
+====================================================== -->
 
-    <section class="content-header">
+<section class="content-header">
 
-        <div class="container-fluid">
+    <div class="container-fluid">
 
-            <div class="row mb-2">
+        <div class="row mb-2">
 
-                <div class="col-sm-6">
+            <div class="col-sm-6">
 
-                    <h1>
-                        GESTION DES INFOS DE L'ÉCOLE
-                    </h1>
+                <h1>
+                    <i class="fas fa-school mr-2"></i>
+                    Gestion des informations de l'école
+                </h1>
 
-                </div>
+            </div>
 
+            <div class="col-sm-6">
 
-                <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
 
-                    <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'home' %}">
+                            Accueil
+                        </a>
+                    </li>
 
-                        <li class="breadcrumb-item">
-                            <a href="#">
-                                Accueil
-                            </a>
-                        </li>
+                    <li class="breadcrumb-item active">
+                        Informations établissement
+                    </li>
 
-                        <li class="breadcrumb-item active">
-                            Informations établissement
-                        </li>
-
-                    </ol>
-
-                </div>
+                </ol>
 
             </div>
 
         </div>
 
-    </section>
+    </div>
+
+</section>
 
 
+<!-- =====================================================
+     CONTENU
+====================================================== -->
 
-    <!-- =====================================================
-         CONTENU
-    ====================================================== -->
+<section class="content">
 
-    <section class="content">
+    <div class="container-fluid">
 
-        <div class="container-fluid">
+        <div class="row">
 
-            <div class="row">
+            <div class="col-12">
 
-                <div class="col-12">
+                <div class="card card-primary">
 
-                    <div class="card card-primary">
+                    <!-- HEADER CARD -->
+                    <div class="card-header">
 
+                        <h3 class="card-title">
 
-                        <!-- =================================================
-                             HEADER CARD
-                        ================================================== -->
+                            <i class="fas fa-school mr-2"></i>
 
-                        <div class="card-header">
+                            Informations de l'établissement
 
-                            <h3 class="card-title">
+                        </h3>
 
-                                <i class="fas fa-school mr-2"></i>
+                        <div class="card-tools">
 
-                                Informations de l'établissement
+                            <a href="{% url 'ajout_ecole' %}"
+                               class="btn btn-ajouter-ecole btn-sm">
 
-                            </h3>
+                                <i class="fas fa-plus mr-1"></i>
 
+                                Insérer les infos de l'école
 
-                            <div class="card-tools">
-
-                                <a href="{% url 'ajout_ecole' %}"
-                                   class="btn btn-ajouter-ecole btn-sm">
-
-                                    <i class="fas fa-plus mr-1"></i>
-
-                                    Insérer les infos de l'école
-
-                                </a>
-
-                            </div>
+                            </a>
 
                         </div>
 
+                    </div>
 
 
-                        <!-- =================================================
-                             MESSAGES
-                        ================================================== -->
+                    <!-- =================================================
+                         MESSAGES
+                    ================================================== -->
 
-                        {% if messages %}
+                    {% if messages %}
 
-                            <div class="container-fluid mt-3">
+                        <div class="container-fluid mt-3">
 
-                                {% for message in messages %}
+                            {% for message in messages %}
 
-                                    <div class="alert
+                                <div class="alert
+                                    {% if message.tags == 'success' %}
+                                        alert-success
+                                    {% elif message.tags == 'error' %}
+                                        alert-danger
+                                    {% elif message.tags == 'warning' %}
+                                        alert-warning
+                                    {% else %}
+                                        alert-info
+                                    {% endif %}
+                                    alert-dismissible fade show shadow-sm"
+                                    role="alert">
+
+                                    <i class="fas
                                         {% if message.tags == 'success' %}
-                                            alert-success
+                                            fa-check-circle
                                         {% elif message.tags == 'error' %}
-                                            alert-danger
+                                            fa-times-circle
                                         {% elif message.tags == 'warning' %}
-                                            alert-warning
+                                            fa-exclamation-triangle
                                         {% else %}
-                                            alert-info
+                                            fa-info-circle
                                         {% endif %}
-                                        alert-dismissible fade show shadow-sm"
-                                        role="alert"
-                                        style="font-weight: 500;">
+                                        mr-2">
+                                    </i>
+
+                                    {{ message }}
+
+                                    <button type="button"
+                                            class="close"
+                                            data-dismiss="alert"
+                                            aria-label="Fermer">
+
+                                        <span aria-hidden="true">
+                                            &times;
+                                        </span>
+
+                                    </button>
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% endif %}
 
 
-                                        <i class="fas
-                                            {% if message.tags == 'success' %}
-                                                fa-check-circle
-                                            {% elif message.tags == 'error' %}
-                                                fa-times-circle
-                                            {% elif message.tags == 'warning' %}
-                                                fa-exclamation-triangle
-                                            {% else %}
-                                                fa-info-circle
-                                            {% endif %}
-                                            mr-2">
-                                        </i>
+                    <!-- =================================================
+                         TABLEAU
+                    ================================================== -->
+
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+
+                            <table id="example"
+                                   class="table table-bordered table-hover">
+
+                                <thead class="bg-primary text-white">
+
+                                    <tr>
+
+                                        <th>Etablissement</th>
+                                        <th>Devise</th>
+                                        <th>Date création</th>
+                                        <th>Directeur</th>
+
+                                        <th class="text-center">
+                                            Logo
+                                        </th>
+
+                                        <th class="text-center">
+                                            Actions
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
 
 
-                                        {{ message }}
+                                <tbody>
 
-
-                                        <button type="button"
-                                                class="close"
-                                                data-dismiss="alert"
-                                                aria-label="Fermer">
-
-                                            <span aria-hidden="true">
-                                                &times;
-                                            </span>
-
-                                        </button>
-
-                                    </div>
-
-                                {% endfor %}
-
-                            </div>
-
-                        {% endif %}
-
-
-
-                        <!-- =================================================
-                             TABLEAU
-                        ================================================== -->
-
-                        <div class="card-body">
-
-                            <div class="table-responsive">
-
-                                <table id="example"
-                                       class="table table-bordered table-hover">
-
-                                    <thead class="bg-primary text-white">
+                                    {% for ecole in etablissements %}
 
                                         <tr>
 
-                                            <th>
-                                                Etablissement
-                                            </th>
+                                            <td>
+                                                <strong>
+                                                    {{ ecole.nom_ecole }}
+                                                </strong>
+                                            </td>
 
-                                            <th>
-                                                Devise
-                                            </th>
+                                            <td>
+                                                {{ ecole.devise_ecole|default:"-" }}
+                                            </td>
 
-                                            <th>
-                                                Date création
-                                            </th>
+                                            <td>
 
-                                            <th>
-                                                Directeur
-                                            </th>
+                                                {% if ecole.date_creation %}
 
-                                            <th class="text-center">
-                                                Logo
-                                            </th>
+                                                    {{ ecole.date_creation|date:"d/m/Y" }}
 
-                                            <th class="text-center">
-                                                Actions
-                                            </th>
+                                                {% else %}
+
+                                                    -
+
+                                                {% endif %}
+
+                                            </td>
+
+                                            <td>
+                                                {{ ecole.responsable|default:"-" }}
+                                            </td>
+
+                                            <td class="text-center">
+
+                                                {% if ecole.logo %}
+
+                                                    <img src="{{ ecole.logo.url }}"
+                                                         alt="Logo de {{ ecole.nom_ecole }}"
+                                                         class="logo-table">
+
+                                                {% else %}
+
+                                                    <span class="text-muted">
+
+                                                        <i class="fas fa-image mr-1"></i>
+                                                        Aucune
+
+                                                    </span>
+
+                                                {% endif %}
+
+                                            </td>
+
+                                            <td class="text-center">
+
+                                                <!-- MODIFIER -->
+
+                                                <button type="button"
+                                                        class="btn btn-link action-btn"
+                                                        data-toggle="modal"
+                                                        data-target="#modalModifier{{ ecole.id }}"
+                                                        title="Modifier">
+
+                                                    <i class="fas fa-edit text-primary"></i>
+
+                                                </button>
+
+
+                                                <!-- SUPPRIMER -->
+
+                                                <button type="button"
+                                                        class="btn btn-link action-btn"
+                                                        data-toggle="modal"
+                                                        data-target="#modalSupprimer{{ ecole.id }}"
+                                                        title="Supprimer">
+
+                                                    <i class="fas fa-trash text-danger"></i>
+
+                                                </button>
+
+                                            </td>
 
                                         </tr>
 
-                                    </thead>
+                                    {% empty %}
 
+                                        <tr>
 
-                                    <tbody>
+                                            <td colspan="6"
+                                                class="text-center py-5">
 
-                                        {% for ecole in etablissements %}
+                                                <i class="fas fa-school text-muted"
+                                                   style="font-size: 2.5rem;">
+                                                </i>
 
-                                            <tr>
+                                                <p class="text-muted mt-3 mb-0">
 
+                                                    Aucune information
+                                                    d'établissement enregistrée.
 
-                                                <!-- NOM -->
+                                                </p>
 
-                                                <td>
+                                            </td>
 
-                                                    <strong>
-                                                        {{ ecole.nom_ecole }}
-                                                    </strong>
+                                        </tr>
 
-                                                </td>
+                                    {% endfor %}
 
+                                </tbody>
 
-
-                                                <!-- DEVISE -->
-
-                                                <td>
-
-                                                    {{ ecole.devise_ecole }}
-
-                                                </td>
-
-
-
-                                                <!-- DATE -->
-
-                                                <td>
-
-                                                    {% if ecole.date_creation %}
-
-                                                        {{ ecole.date_creation|date:"d/m/Y" }}
-
-                                                    {% else %}
-
-                                                        -
-
-                                                    {% endif %}
-
-                                                </td>
-
-
-
-                                                <!-- DIRECTEUR -->
-
-                                                <td>
-
-                                                    {{ ecole.responsable }}
-
-                                                </td>
-
-
-
-                                                <!-- LOGO -->
-
-                                                <td class="text-center">
-
-                                                    {% if ecole.logo %}
-
-                                                        <img src="{{ ecole.logo.url }}"
-                                                             alt="Logo de {{ ecole.nom_ecole }}"
-                                                             class="logo-table">
-
-                                                    {% else %}
-
-                                                        <span class="text-muted">
-
-                                                            <i class="fas fa-image mr-1"></i>
-
-                                                            Aucune
-
-                                                        </span>
-
-                                                    {% endif %}
-
-                                                </td>
-
-
-
-                                                <!-- ACTIONS -->
-
-                                                <td class="text-center">
-
-
-                                                    <!-- MODIFIER -->
-
-                                                    <a href="#"
-                                                       class="action-btn"
-                                                       data-toggle="modal"
-                                                       data-target="#modalModifier{{ ecole.id }}"
-                                                       title="Modifier">
-
-                                                        <i class="fas fa-edit text-primary"></i>
-
-                                                    </a>
-
-
-
-                                                    <!-- SUPPRIMER -->
-
-                                                    <a href="#"
-                                                       class="action-btn"
-                                                       data-toggle="modal"
-                                                       data-target="#modalSupprimer{{ ecole.id }}"
-                                                       title="Supprimer">
-
-                                                        <i class="fas fa-trash text-danger"></i>
-
-                                                    </a>
-
-
-
-                                                    <!-- =================================================
-                                                         MODALE MODIFICATION
-                                                    ================================================== -->
-
-                                                    <div class="modal fade"
-                                                         id="modalModifier{{ ecole.id }}"
-                                                         tabindex="-1"
-                                                         role="dialog"
-                                                         aria-labelledby="titreModifier{{ ecole.id }}"
-                                                         aria-hidden="true">
-
-
-                                                        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"
-                                                             role="document">
-
-
-                                                            <div class="modal-content">
-
-
-                                                                <!-- HEADER -->
-
-                                                                <div class="modal-header bg-primary text-white">
-
-                                                                    <h5 class="modal-title"
-                                                                        id="titreModifier{{ ecole.id }}">
-
-                                                                        <i class="fas fa-edit mr-2"></i>
-
-                                                                        Modifier les informations de l'école
-
-                                                                    </h5>
-
-
-                                                                    <button type="button"
-                                                                            class="close text-white"
-                                                                            data-dismiss="modal"
-                                                                            aria-label="Fermer">
-
-                                                                        <span aria-hidden="true">
-                                                                            &times;
-                                                                        </span>
-
-                                                                    </button>
-
-                                                                </div>
-
-
-
-                                                                <!-- FORMULAIRE -->
-
-                                                                <form action="{% url 'modifier_info_ecole' ecole.id %}"
-                                                                      method="post"
-                                                                      enctype="multipart/form-data">
-
-                                                                    {% csrf_token %}
-
-
-                                                                    <div class="modal-body">
-
-                                                                        <div class="row">
-
-
-                                                                            <!-- NOM -->
-
-                                                                            <div class="form-group col-md-6">
-
-                                                                                <label for="nom_{{ ecole.id }}">
-
-                                                                                    <i class="fas fa-school mr-1"></i>
-
-                                                                                    Etablissement
-
-                                                                                </label>
-
-
-                                                                                <input type="text"
-                                                                                       class="form-control"
-                                                                                       id="nom_{{ ecole.id }}"
-                                                                                       name="nom"
-                                                                                       value="{{ ecole.nom_ecole }}"
-                                                                                       required>
-
-                                                                            </div>
-
-
-
-                                                                            <!-- DEVISE -->
-
-                                                                            <div class="form-group col-md-6">
-
-                                                                                <label for="devise_{{ ecole.id }}">
-
-                                                                                    <i class="fas fa-quote-left mr-1"></i>
-
-                                                                                    Devise
-
-                                                                                </label>
-
-
-                                                                                <input type="text"
-                                                                                       class="form-control"
-                                                                                       id="devise_{{ ecole.id }}"
-                                                                                       name="devise"
-                                                                                       value="{{ ecole.devise_ecole }}"
-                                                                                       required>
-
-                                                                            </div>
-
-
-
-                                                                            <!-- DATE -->
-
-                                                                            <div class="form-group col-md-6">
-
-                                                                                <label for="date_{{ ecole.id }}">
-
-                                                                                    <i class="fas fa-calendar mr-1"></i>
-
-                                                                                    Date de création
-
-                                                                                </label>
-
-
-                                                                                <input type="date"
-                                                                                       class="form-control"
-                                                                                       id="date_{{ ecole.id }}"
-                                                                                       name="date"
-                                                                                       value="{{ ecole.date_creation|date:'Y-m-d' }}"
-                                                                                       required>
-
-                                                                            </div>
-
-
-
-                                                                            <!-- PAYS -->
-
-                                                                            <div class="form-group col-md-6">
-
-                                                                                <label for="pays_{{ ecole.id }}">
-
-                                                                                    <i class="fas fa-globe mr-1"></i>
-
-                                                                                    Pays
-
-                                                                                </label>
-
-
-                                                                                <input type="text"
-                                                                                       class="form-control"
-                                                                                       id="pays_{{ ecole.id }}"
-                                                                                       name="pays"
-                                                                                       value="{{ ecole.pays }}"
-                                                                                       required>
-
-                                                                            </div>
-
-
-
-                                                                            <!-- DEVISE PAYS -->
-
-                                                                            <div class="form-group col-md-6">
-
-                                                                                <label for="devise_pays_{{ ecole.id }}">
-
-                                                                                    <i class="fas fa-money-bill mr-1"></i>
-
-                                                                                    Devise du pays
-
-                                                                                </label>
-
-
-                                                                                <input type="text"
-                                                                                       class="form-control"
-                                                                                       id="devise_pays_{{ ecole.id }}"
-                                                                                       name="devise_pays"
-                                                                                       value="{{ ecole.devise_pays }}"
-                                                                                       required>
-
-                                                                            </div>
-
-
-
-                                                                            <!-- MEAPU -->
-
-                                                                            <div class="form-group col-md-6">
-
-                                                                                <label for="meapu_{{ ecole.id }}">
-
-                                                                                    MEAPU
-
-                                                                                </label>
-
-
-                                                                                <input type="text"
-                                                                                       class="form-control"
-                                                                                       id="meapu_{{ ecole.id }}"
-                                                                                       name="meapu"
-                                                                                       value="{{ ecole.meapu }}"
-                                                                                       required>
-
-                                                                            </div>
-
-
-
-                                                                            <!-- IRE -->
-
-                                                                            <div class="form-group col-md-6">
-
-                                                                                <label for="ire_{{ ecole.id }}">
-
-                                                                                    IRE
-
-                                                                                </label>
-
-
-                                                                                <input type="text"
-                                                                                       class="form-control"
-                                                                                       id="ire_{{ ecole.id }}"
-                                                                                       name="ire"
-                                                                                       value="{{ ecole.ire }}"
-                                                                                       required>
-
-                                                                            </div>
-
-
-
-                                                                            <!-- DPE -->
-
-                                                                            <div class="form-group col-md-6">
-
-                                                                                <label for="dpe_{{ ecole.id }}">
-
-                                                                                    DPE
-
-                                                                                </label>
-
-
-                                                                                <input type="text"
-                                                                                       class="form-control"
-                                                                                       id="dpe_{{ ecole.id }}"
-                                                                                       name="dpe"
-                                                                                       value="{{ ecole.dpe }}"
-                                                                                       required>
-
-                                                                            </div>
-
-
-
-                                                                            <!-- DSEE -->
-
-                                                                            <div class="form-group col-md-6">
-
-                                                                                <label for="dsee_{{ ecole.id }}">
-
-                                                                                    DSEE
-
-                                                                                </label>
-
-
-                                                                                <input type="text"
-                                                                                       class="form-control"
-                                                                                       id="dsee_{{ ecole.id }}"
-                                                                                       name="dsee"
-                                                                                       value="{{ ecole.dsee }}"
-                                                                                       required>
-
-                                                                            </div>
-
-
-
-                                                                            <!-- RESPONSABLE -->
-
-                                                                            <div class="form-group col-md-12">
-
-                                                                                <label for="respo_{{ ecole.id }}">
-
-                                                                                    <i class="fas fa-user-tie mr-1"></i>
-
-                                                                                    Responsable
-
-                                                                                </label>
-
-
-                                                                                <input type="text"
-                                                                                       class="form-control"
-                                                                                       id="respo_{{ ecole.id }}"
-                                                                                       name="respo"
-                                                                                       value="{{ ecole.responsable }}"
-                                                                                       required>
-
-                                                                            </div>
-
-
-
-                                                                            <!-- LOGO -->
-
-                                                                            <div class="form-group col-md-12">
-
-                                                                                <label for="logo_{{ ecole.id }}">
-
-                                                                                    <i class="fas fa-image mr-1"></i>
-
-                                                                                    Logo de l'école
-
-                                                                                </label>
-
-
-                                                                                <input type="file"
-                                                                                       class="form-control"
-                                                                                       id="logo_{{ ecole.id }}"
-                                                                                       name="logo"
-                                                                                       accept="image/*">
-
-
-                                                                                {% if ecole.logo %}
-
-                                                                                    <div class="mt-2">
-
-                                                                                        <small class="text-muted d-block mb-1">
-
-                                                                                            Logo actuel :
-
-                                                                                        </small>
-
-
-                                                                                        <img src="{{ ecole.logo.url }}"
-                                                                                             alt="Logo de {{ ecole.nom_ecole }}"
-                                                                                             class="logo-preview">
-
-                                                                                    </div>
-
-                                                                                {% else %}
-
-                                                                                    <small class="text-muted d-block mt-2">
-
-                                                                                        Aucun logo disponible.
-
-                                                                                    </small>
-
-                                                                                {% endif %}
-
-                                                                            </div>
-
-                                                                        </div>
-
-                                                                    </div>
-
-
-
-                                                                    <!-- FOOTER -->
-
-                                                                    <div class="modal-footer">
-
-
-                                                                        <button type="button"
-                                                                                class="btn btn-secondary"
-                                                                                data-dismiss="modal">
-
-                                                                            <i class="fas fa-times mr-1"></i>
-
-                                                                            Annuler
-
-                                                                        </button>
-
-
-                                                                        <button type="submit"
-                                                                                class="btn btn-primary">
-
-                                                                            <i class="fas fa-save mr-1"></i>
-
-                                                                            Enregistrer les modifications
-
-                                                                        </button>
-
-                                                                    </div>
-
-                                                                </form>
-
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-
-
-
-                                                    <!-- =================================================
-                                                         MODALE SUPPRESSION
-                                                    ================================================== -->
-
-                                                    <div class="modal fade"
-                                                         id="modalSupprimer{{ ecole.id }}"
-                                                         tabindex="-1"
-                                                         role="dialog"
-                                                         aria-labelledby="titreSupprimer{{ ecole.id }}"
-                                                         aria-hidden="true">
-
-
-                                                        <div class="modal-dialog modal-dialog-centered"
-                                                             role="document">
-
-
-                                                            <div class="modal-content">
-
-
-                                                                <!-- HEADER -->
-
-                                                                <div class="modal-header bg-danger text-white">
-
-                                                                    <h5 class="modal-title"
-                                                                        id="titreSupprimer{{ ecole.id }}">
-
-                                                                        <i class="fas fa-trash mr-2"></i>
-
-                                                                        Suppression des informations
-
-                                                                    </h5>
-
-
-                                                                    <button type="button"
-                                                                            class="close text-white"
-                                                                            data-dismiss="modal"
-                                                                            aria-label="Fermer">
-
-                                                                        <span aria-hidden="true">
-                                                                            &times;
-                                                                        </span>
-
-                                                                    </button>
-
-                                                                </div>
-
-
-
-                                                                <!-- FORMULAIRE -->
-
-                                                                <form action="{% url 'supprimer-ecole' ecole.id %}"
-                                                                      method="post">
-
-                                                                    {% csrf_token %}
-
-
-                                                                    <div class="modal-body text-center">
-
-
-                                                                        <i class="fas fa-exclamation-triangle text-warning"
-                                                                           style="font-size: 3rem;">
-                                                                        </i>
-
-
-                                                                        <h5 class="mt-3">
-
-                                                                            Voulez-vous vraiment supprimer
-                                                                            cette école ?
-
-                                                                        </h5>
-
-
-                                                                        <p class="mb-0">
-
-                                                                            <strong class="text-primary">
-
-                                                                                {{ ecole.nom_ecole }}
-
-                                                                            </strong>
-
-                                                                        </p>
-
-
-                                                                        <small class="text-muted">
-
-                                                                            Cette action est irréversible.
-
-                                                                        </small>
-
-                                                                    </div>
-
-
-
-                                                                    <!-- FOOTER -->
-
-                                                                    <div class="modal-footer">
-
-
-                                                                        <button type="button"
-                                                                                class="btn btn-secondary"
-                                                                                data-dismiss="modal">
-
-                                                                            <i class="fas fa-times mr-1"></i>
-
-                                                                            Non
-
-                                                                        </button>
-
-
-                                                                        <button type="submit"
-                                                                                class="btn btn-danger">
-
-                                                                            <i class="fas fa-trash mr-1"></i>
-
-                                                                            Oui, supprimer
-
-                                                                        </button>
-
-                                                                    </div>
-
-                                                                </form>
-
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-
-                                                </td>
-
-                                            </tr>
-
-                                        {% empty %}
-
-
-                                            <tr>
-
-                                                <td colspan="6"
-                                                    class="text-center py-4">
-
-                                                    <i class="fas fa-school text-muted"
-                                                       style="font-size: 2.5rem;">
-                                                    </i>
-
-
-                                                    <p class="text-muted mt-2 mb-0">
-
-                                                        Aucune information
-                                                        d'établissement enregistrée.
-
-                                                    </p>
-
-                                                </td>
-
-                                            </tr>
-
-
-                                        {% endfor %}
-
-                                    </tbody>
-
-                                </table>
-
-                            </div>
+                            </table>
 
                         </div>
 
@@ -1140,13 +636,478 @@
 
         </div>
 
-    </section>
+    </div>
+
+</section>
+
 
 </div>
 
+<!-- =============================================================
+     MODALES
+     IMPORTANT : HORS DU TABLEAU
+============================================================= -->
+
+{% for ecole in etablissements %}
+
+<!-- =============================================================
+     MODALE MODIFICATION
+============================================================= -->
+
+<div class="modal fade"
+     id="modalModifier{{ ecole.id }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="titreModifier{{ ecole.id }}"
+     aria-hidden="true">
+
+<div class="modal-dialog modal-ecole modal-dialog-centered modal-dialog-scrollable"
+     role="document">
+
+    <div class="modal-content">
+
+        <!-- HEADER -->
+        <div class="modal-header bg-primary text-white">
+
+            <h5 class="modal-title"
+                id="titreModifier{{ ecole.id }}">
+
+                <i class="fas fa-edit mr-2"></i>
+
+                Modifier l'établissement
+
+            </h5>
+
+            <button type="button"
+                    class="close text-white"
+                    data-dismiss="modal"
+                    aria-label="Fermer">
+
+                <span aria-hidden="true">
+                    &times;
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <!-- FORMULAIRE -->
+        <form action="{% url 'modifier_info_ecole' ecole.id %}"
+              method="POST"
+              enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+
+            <!-- BODY -->
+            <div class="modal-body">
+
+                <div class="row">
+
+
+                    <!-- =================================================
+                         LIGNE 1
+                    ================================================== -->
+
+                    <div class="form-group col-12 col-md-6">
+
+                        <label for="nom_{{ ecole.id }}">
+
+                            <i class="fas fa-school mr-1"></i>
+
+                            Etablissement
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="nom_{{ ecole.id }}"
+                               name="nom"
+                               value="{{ ecole.nom_ecole }}"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group col-12 col-md-6">
+
+                        <label for="devise_{{ ecole.id }}">
+
+                            <i class="fas fa-quote-left mr-1"></i>
+
+                            Devise
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="devise_{{ ecole.id }}"
+                               name="devise"
+                               value="{{ ecole.devise_ecole }}"
+                               required>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         LIGNE 2
+                    ================================================== -->
+
+                    <div class="form-group col-12 col-md-6">
+
+                        <label for="date_{{ ecole.id }}">
+
+                            <i class="fas fa-calendar mr-1"></i>
+
+                            Date de création
+
+                        </label>
+
+                        <input type="date"
+                               class="form-control"
+                               id="date_{{ ecole.id }}"
+                               name="date"
+                               value="{% if ecole.date_creation %}{{ ecole.date_creation|date:'Y-m-d' }}{% endif %}"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group col-12 col-md-6">
+
+                        <label for="pays_{{ ecole.id }}">
+
+                            <i class="fas fa-globe mr-1"></i>
+
+                            Pays
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="pays_{{ ecole.id }}"
+                               name="pays"
+                               value="{{ ecole.pays }}"
+                               required>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         LIGNE 3
+                    ================================================== -->
+
+                    <div class="form-group col-12 col-md-6">
+
+                        <label for="devise_pays_{{ ecole.id }}">
+
+                            <i class="fas fa-money-bill mr-1"></i>
+
+                            Devise du pays
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="devise_pays_{{ ecole.id }}"
+                               name="devise_pays"
+                               value="{{ ecole.devise_pays }}"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group col-12 col-md-6">
+
+                        <label for="meapu_{{ ecole.id }}">
+                            MEAPU
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="meapu_{{ ecole.id }}"
+                               name="meapu"
+                               value="{{ ecole.meapu }}"
+                               required>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         LIGNE 4
+                    ================================================== -->
+
+                    <div class="form-group col-12 col-md-6">
+
+                        <label for="ire_{{ ecole.id }}">
+                            IRE
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="ire_{{ ecole.id }}"
+                               name="ire"
+                               value="{{ ecole.ire }}"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group col-12 col-md-6">
+
+                        <label for="dpe_{{ ecole.id }}">
+                            DPE
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="dpe_{{ ecole.id }}"
+                               name="dpe"
+                               value="{{ ecole.dpe }}"
+                               required>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         LIGNE 5
+                    ================================================== -->
+
+                    <div class="form-group col-12 col-md-6">
+
+                        <label for="dsee_{{ ecole.id }}">
+                            DSEE
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="dsee_{{ ecole.id }}"
+                               name="dsee"
+                               value="{{ ecole.dsee }}"
+                               required>
+
+                    </div>
+
+
+                    <div class="form-group col-12 col-md-6">
+
+                        <label for="respo_{{ ecole.id }}">
+
+                            <i class="fas fa-user-tie mr-1"></i>
+
+                            Responsable
+
+                        </label>
+
+                        <input type="text"
+                               class="form-control"
+                               id="respo_{{ ecole.id }}"
+                               name="respo"
+                               value="{{ ecole.responsable }}"
+                               required>
+
+                    </div>
+
+
+                    <!-- =================================================
+                         LIGNE 6 : LOGO
+                    ================================================== -->
+
+                    <div class="form-group col-12">
+
+                        <label for="logo_{{ ecole.id }}">
+
+                            <i class="fas fa-image mr-1"></i>
+
+                            Logo de l'école
+
+                        </label>
+
+                        <input type="file"
+                               class="form-control"
+                               id="logo_{{ ecole.id }}"
+                               name="logo"
+                               accept="image/*">
+
+
+                        {% if ecole.logo %}
+
+                            <div class="mt-2">
+
+                                <small class="text-muted d-block">
+                                    Logo actuel :
+                                </small>
+
+                                <img src="{{ ecole.logo.url }}"
+                                     alt="Logo de {{ ecole.nom_ecole }}"
+                                     class="logo-preview">
+
+                            </div>
+
+                        {% else %}
+
+                            <small class="text-muted d-block mt-2">
+                                Aucun logo disponible.
+                            </small>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- FOOTER -->
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal">
+
+                    <i class="fas fa-times mr-1"></i>
+
+                    Annuler
+
+                </button>
+
+
+                <button type="submit"
+                        class="btn btn-primary">
+
+                    <i class="fas fa-save mr-1"></i>
+
+                    Enregistrer
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+</div>
+
+<!-- =============================================================
+     MODALE SUPPRESSION
+============================================================= -->
+
+<div class="modal fade"
+     id="modalSupprimer{{ ecole.id }}"
+     tabindex="-1"
+     role="dialog"
+     aria-labelledby="titreSupprimer{{ ecole.id }}"
+     aria-hidden="true">
+
+
+<div class="modal-dialog modal-suppression modal-dialog-centered"
+     role="document">
+
+    <div class="modal-content">
+
+        <div class="modal-header bg-danger text-white">
+
+            <h5 class="modal-title"
+                id="titreSupprimer{{ ecole.id }}">
+
+                <i class="fas fa-trash mr-2"></i>
+
+                Confirmation
+
+            </h5>
+
+            <button type="button"
+                    class="close text-white"
+                    data-dismiss="modal"
+                    aria-label="Fermer">
+
+                <span aria-hidden="true">
+                    &times;
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <form action="{% url 'supprimer-ecole' ecole.id %}"
+              method="POST">
+
+            {% csrf_token %}
+
+            <div class="modal-body text-center">
+
+                <i class="fas fa-exclamation-triangle text-warning"
+                   style="font-size: 2.8rem;">
+                </i>
+
+                <h5 class="mt-3">
+
+                    Voulez-vous vraiment supprimer cette école ?
+
+                </h5>
+
+                <p class="mb-1">
+
+                    <strong class="text-primary">
+
+                        {{ ecole.nom_ecole }}
+
+                    </strong>
+
+                </p>
+
+                <small class="text-muted">
+
+                    Cette action est irréversible.
+
+                </small>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        data-dismiss="modal">
+
+                    <i class="fas fa-times mr-1"></i>
+
+                    Non
+
+                </button>
+
+
+                <button type="submit"
+                        class="btn btn-danger">
+
+                    <i class="fas fa-trash mr-1"></i>
+
+                    Oui, supprimer
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+</div>
+
+{% endfor %}
+
 {% endblock contenu %}
-
-
 
 {% block scripte %}
 
@@ -1180,20 +1141,25 @@
 
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
 
-
 <script>
 
-$(function () {
+$(document).ready(function () {
 
-    $("#example").DataTable({
+    $('#example').DataTable({
 
         responsive: true,
 
-        lengthChange: true,
-
         autoWidth: false,
 
+        lengthChange: true,
+
         pageLength: 10,
+
+        ordering: true,
+
+        searching: true,
+
+        info: true,
 
         language: {
 
@@ -1204,6 +1170,8 @@ $(function () {
             info: "Affichage de _START_ à _END_ sur _TOTAL_ éléments",
 
             infoEmpty: "Aucun élément à afficher",
+
+            infoFiltered: "(filtré sur _MAX_ éléments)",
 
             zeroRecords: "Aucun résultat trouvé",
 
@@ -1221,9 +1189,53 @@ $(function () {
 
             }
 
-        },
+        }
 
-        buttons: []
+    });
+
+
+    /*
+     * Déplacer les modales directement dans body
+     * pour éviter les problèmes de z-index.
+     */
+
+    $(document).on('show.bs.modal', '.modal', function () {
+
+        $(this).appendTo('body');
+
+    });
+
+
+    /*
+     * Nettoyage après fermeture
+     */
+
+    $(document).on('hidden.bs.modal', '.modal', function () {
+
+        $('body').removeClass('modal-open');
+
+        $('.modal-backdrop').remove();
+
+        $('body').css('padding-right', '');
+
+    });
+
+
+    /*
+     * Z-index
+     */
+
+    $(document).on('shown.bs.modal', '.modal', function () {
+
+        $('.modal-backdrop').last().css(
+            'z-index',
+            '1040'
+        );
+
+        $(this).css(
+            'z-index',
+            '1050'
+        );
 
     });
 

@@ -1,211 +1,1000 @@
+
 {% extends "login/index.html" %}
 {% load static %}
- {% block styl_parent %}
-  <title>profil-etablissement | Accueil</title>
+
+{% block styl_parent %}
+
+<title>Profil établissement | Accueil</title>
+
+<!-- =========================================================
+     GOOGLE FONT
+========================================================= -->
+
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
 
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-  <!-- DataTables -->
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
-  <link rel="stylesheet" href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
-{% endblock %}
+<!-- =========================================================
+     FONT AWESOME
+========================================================= -->
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+
+
+<!-- =========================================================
+     DATATABLES
+========================================================= -->
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+
+
+<!-- =========================================================
+     ADMINLTE
+========================================================= -->
+
+<link rel="stylesheet"
+      href="{% static 'base/css/adminlte.min.css' %}">
+
+
+<style>
+
+/* =========================================================
+   STRUCTURE
+========================================================= */
+
+.content-wrapper {
+    min-height: calc(100vh - 57px) !important;
+
+    /*
+       On évite ici overflow-y:auto.
+       Cela peut créer des problèmes avec les éléments
+       positionnés au-dessus de la page.
+    */
+    overflow: visible !important;
+}
+
+
+/* =========================================================
+   TITRE
+========================================================= */
+
+.content-header h1 {
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.card {
+    border-radius: 6px;
+}
+
+.card-header {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.card-title {
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   FORMULAIRE
+========================================================= */
+
+.form-group {
+    margin-bottom: 1.2rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: #343a40;
+}
+
+.form-control {
+    border-radius: 4px;
+    min-height: 38px;
+}
+
+.form-control:focus {
+    border-color: #80bdff;
+
+    box-shadow:
+        0 0 0 0.1rem
+        rgba(0, 123, 255, 0.15);
+}
+
+
+/* =========================================================
+   INPUT FILE
+========================================================= */
+
+input[type="file"].form-control {
+    padding: 5px 8px;
+}
+
+
+/* =========================================================
+   BOUTONS
+========================================================= */
+
+.btn-primary {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+    background-color: #0069d9 !important;
+    border-color: #0062cc !important;
+}
+
+
+/* =========================================================
+   FOOTER FORMULAIRE
+========================================================= */
+
+.form-footer {
+    width: 100%;
+
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 10px;
+
+    padding-top: 20px;
+    margin-top: 10px;
+
+    border-top: 1px solid #dee2e6;
+}
+
+
+/* =========================================================
+   MESSAGES
+========================================================= */
+
+.alert {
+    border-left: 5px solid #007bff;
+}
+
+.alert-success {
+    border-left-color: #28a745;
+}
+
+.alert-danger {
+    border-left-color: #dc3545;
+}
+
+.alert-warning {
+    border-left-color: #ffc107;
+}
+
+.alert-info {
+    border-left-color: #17a2b8;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .content-wrapper {
+        padding: 15px !important;
+    }
+
+    .content-header {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .content-header h1 {
+        font-size: 1.4rem;
+    }
+
+    .breadcrumb {
+        float: none !important;
+        margin-top: 10px;
+    }
+
+    .form-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-footer .btn {
+        width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 576px) {
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+}
+
+</style>
+
+{% endblock styl_parent %}
 
 
 
+{% block body %}
 
- {% block body %}
 <body class="hold-transition sidebar-mini">
- {% endblock body %}
 
+{% endblock body %}
 
 
 
 {% block contenu %}
-  <!-- Content Wrapper. Contains page content -->
- <div class="content-wrapper p-4" style="max-height: calc(100vh - 150px); overflow-y: auto;">
-    <!-- Content Header (Page header) -->
+
+<!-- =========================================================
+     CONTENT WRAPPER
+========================================================= -->
+
+<div class="content-wrapper">
+
+
+    <!-- =====================================================
+         CONTENT HEADER
+    ====================================================== -->
+
     <section class="content-header">
-      <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1>PROFIL DE L'ETABLISSEMENT</h1>
-          </div>
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{% url 'home' %}">Accueil</a></li>
-              <li class="breadcrumb-item active">Profile</li>
-            </ol>
-          </div>
-        </div>
-      </div><!-- /.container-fluid -->
-    </section>
 
-    <!-- Main content -->
-    <section class="content">
-      <div class="container-fluid">
-        <div class="row">
-          <div class="col-12">
-            <div class="card">
-              <div class="card-header">
-                <!-- Formulaire d'ajout d'élève -->
-                <form action="{% url 'enregistrement' %}" method="post" class="row" enctype="multipart/form-data">
-                  {% csrf_token %}
+        <div class="container-fluid">
 
-                  <!-- Messages de succès et d'erreur -->
-                  {% if messages %}
-                    <div class="col-12">
-                      <div class="alert alert-info">
-                        {% for message in messages %}
-                          <p>{{ message }}</p>
-                        {% endfor %}
-                      </div>
-                    </div>
-                  {% endif %}
+            <div class="row mb-2">
 
-                  
-                  <div class="form-group col-md-6">
-                    <label for="nom">ETABLISSEMENT :</label>
-                    <input type="text" class="form-control" id="nom" name="nom" required placeholder="Entrer le nom de l'établissement">
-                  </div>
+                <!-- TITRE -->
 
-                  <div class="form-group col-md-6">
-                    <label for="devise">DEVISE  :</label>
-                    <input type="text" class="form-control" id="devise" name="devise" required placeholder="Entrer la dévise de l'etablissement">
-                  </div>
+                <div class="col-sm-6">
 
-                  <div class="form-group col-md-6">
-                    <label for="date">DATE DE CREATION :</label>
-                    <input type="date" class="form-control" id="date" name="date" required>
-                  </div>
+                    <h1>
 
-                  <div class="form-group col-md-6">
-                    <label for="lieu">PAYS :</label>
-                    <input type="text" class="form-control" id="pays" name="pays" required placeholder="Entrer le pays où se trouve.......... ">
-                  </div>
+                        <i class="fas fa-school mr-2"></i>
 
-                  <div class="form-group col-md-6">
-                    <label for="devise_pays">DEVISE DU PAYS :</label>
-                    <input type="text" class="form-control" id="devise_pays" name="devise_pays"  placeholder="Entrer la de vise de votre pays">
-                  </div>
+                        PROFIL DE L'ÉTABLISSEMENT
 
-                  <div class="form-group col-md-6">
-                    <label for="meapu">MEPU-A :</label>
-                    <input type="text" class="form-control" id="meapu" name="meapu" required placeholder="Entrer  MEAPU">
-                  </div>
+                    </h1>
 
-                  <div class="form-group col-md-6">
-                    <label for="ire">I-R-E :</label>
-                    <input type="text" class="form-control" id="ire" name="ire" required placeholder="Entrer l'iré conserner ">
-                  </div>
+                </div>
 
-                  <div class="form-group col-md-6">
-                    <label for="dpe">D-P-E :</label>
-                    <input type="text" class="form-control" id="dpe" name="dpe" required placeholder="Entrer dpe conserner">
-                  </div>
 
-                  <div class="form-group col-md-6">
-                    <label for="dsee">D-S-E-E:</label>
-                    <input type="text" class="form-control" id="dsee" name="dsee" required placeholder="Entrer la dsee conserner">
-                  </div>
+                <!-- BREADCRUMB -->
 
-                  <div class="form-group col-md-6">
-                    <label for="logo">LOGO DE L'ETABLISSEMENT :</label>
-                    <input type="file" class="form-control" id="logo" name="logo">
-                  </div>
+                <div class="col-sm-6">
 
-                  <div class="form-group col-md-12">
-                    <label for="respo">PREMIER RESPONSABLE :</label>
-                    <input type="text" class="form-control" id="respo" name="respo" required placeholder="Entrer le responsable de l'école">
-                  </div>
+                    <ol class="breadcrumb float-sm-right">
 
-                  <div class="modal-footer col-12">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                    <button type="submit" class="btn btn-primary">Enregistrer</button>
-                  </div>
-                </form>
-              </div>
+                        <li class="breadcrumb-item">
+
+                            <a href="{% url 'home' %}">
+                                Accueil
+                            </a>
+
+                        </li>
+
+                        <li class="breadcrumb-item active">
+
+                            Profil établissement
+
+                        </li>
+
+                    </ol>
+
+                </div>
+
             </div>
-          </div>
+
         </div>
-      </div>
+
     </section>
-  </div>
-{% endblock %}
 
-  
 
-  
+
+    <!-- =====================================================
+         MAIN CONTENT
+    ====================================================== -->
+
+    <section class="content">
+
+        <div class="container-fluid">
+
+            <div class="row">
+
+                <div class="col-12">
+
+                    <div class="card card-primary">
+
+
+                        <!-- =================================================
+                             CARD HEADER
+                        ================================================== -->
+
+                        <div class="card-header">
+
+                            <h3 class="card-title">
+
+                                <i class="fas fa-school mr-2"></i>
+
+                                Informations de l'établissement
+
+                            </h3>
+
+                        </div>
+
+
+
+                        <!-- =================================================
+                             CARD BODY
+                        ================================================== -->
+
+                        <div class="card-body">
+
+
+                            <!-- =================================================
+                                 MESSAGES
+                            ================================================== -->
+
+                            {% if messages %}
+
+                                <div class="row">
+
+                                    <div class="col-12">
+
+                                        {% for message in messages %}
+
+                                            <div class="alert
+
+                                                {% if message.tags == 'success' %}
+                                                    alert-success
+
+                                                {% elif message.tags == 'error' %}
+                                                    alert-danger
+
+                                                {% elif message.tags == 'warning' %}
+                                                    alert-warning
+
+                                                {% else %}
+                                                    alert-info
+
+                                                {% endif %}
+
+                                                alert-dismissible fade show"
+
+                                                role="alert">
+
+                                                <i class="fas
+
+                                                    {% if message.tags == 'success' %}
+                                                        fa-check-circle
+
+                                                    {% elif message.tags == 'error' %}
+                                                        fa-times-circle
+
+                                                    {% elif message.tags == 'warning' %}
+                                                        fa-exclamation-triangle
+
+                                                    {% else %}
+                                                        fa-info-circle
+
+                                                    {% endif %}
+
+                                                    mr-2">
+                                                </i>
+
+
+                                                {{ message }}
+
+
+                                                <button type="button"
+                                                        class="close"
+                                                        data-dismiss="alert"
+                                                        aria-label="Fermer">
+
+                                                    <span aria-hidden="true">
+                                                        &times;
+                                                    </span>
+
+                                                </button>
+
+                                            </div>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                </div>
+
+                            {% endif %}
+
+
+
+                            <!-- =================================================
+                                 FORMULAIRE
+                            ================================================== -->
+
+                            <form action="{% url 'enregistrement' %}"
+                                  method="POST"
+                                  enctype="multipart/form-data">
+
+                                {% csrf_token %}
+
+
+                                <div class="row">
+
+
+                                    <!-- =================================================
+                                         ETABLISSEMENT
+                                    ================================================== -->
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="nom">
+
+                                            <i class="fas fa-school mr-1"></i>
+
+                                            ETABLISSEMENT
+
+                                        </label>
+
+
+                                        <input type="text"
+                                               class="form-control"
+                                               id="nom"
+                                               name="nom"
+                                               required
+                                               placeholder="Entrer le nom de l'établissement">
+
+                                    </div>
+
+
+
+                                    <!-- =================================================
+                                         DEVISE
+                                    ================================================== -->
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="devise">
+
+                                            <i class="fas fa-quote-left mr-1"></i>
+
+                                            DEVISE
+
+                                        </label>
+
+
+                                        <input type="text"
+                                               class="form-control"
+                                               id="devise"
+                                               name="devise"
+                                               required
+                                               placeholder="Entrer la devise de l'établissement">
+
+                                    </div>
+
+
+
+                                    <!-- =================================================
+                                         DATE DE CREATION
+                                    ================================================== -->
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="date">
+
+                                            <i class="fas fa-calendar-alt mr-1"></i>
+
+                                            DATE DE CRÉATION
+
+                                        </label>
+
+
+                                        <input type="date"
+                                               class="form-control"
+                                               id="date"
+                                               name="date"
+                                               required>
+
+                                    </div>
+
+
+
+                                    <!-- =================================================
+                                         PAYS
+                                    ================================================== -->
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="pays">
+
+                                            <i class="fas fa-globe-africa mr-1"></i>
+
+                                            PAYS
+
+                                        </label>
+
+
+                                        <input type="text"
+                                               class="form-control"
+                                               id="pays"
+                                               name="pays"
+                                               required
+                                               placeholder="Entrer le pays où se trouve l'établissement">
+
+                                    </div>
+
+
+
+                                    <!-- =================================================
+                                         DEVISE DU PAYS
+                                    ================================================== -->
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="devise_pays">
+
+                                            <i class="fas fa-money-bill-wave mr-1"></i>
+
+                                            DEVISE DU PAYS
+
+                                        </label>
+
+
+                                        <input type="text"
+                                               class="form-control"
+                                               id="devise_pays"
+                                               name="devise_pays"
+                                               placeholder="Entrer la devise de votre pays">
+
+                                    </div>
+
+
+
+                                    <!-- =================================================
+                                         MEPU-A
+                                    ================================================== -->
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="meapu">
+
+                                            <i class="fas fa-building mr-1"></i>
+
+                                            MEPU-A
+
+                                        </label>
+
+
+                                        <input type="text"
+                                               class="form-control"
+                                               id="meapu"
+                                               name="meapu"
+                                               required
+                                               placeholder="Entrer le MEPU-A">
+
+                                    </div>
+
+
+
+                                    <!-- =================================================
+                                         IRE
+                                    ================================================== -->
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="ire">
+
+                                            <i class="fas fa-landmark mr-1"></i>
+
+                                            I-R-E
+
+                                        </label>
+
+
+                                        <input type="text"
+                                               class="form-control"
+                                               id="ire"
+                                               name="ire"
+                                               required
+                                               placeholder="Entrer l'IRE concernée">
+
+                                    </div>
+
+
+
+                                    <!-- =================================================
+                                         DPE
+                                    ================================================== -->
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="dpe">
+
+                                            <i class="fas fa-sitemap mr-1"></i>
+
+                                            D-P-E
+
+                                        </label>
+
+
+                                        <input type="text"
+                                               class="form-control"
+                                               id="dpe"
+                                               name="dpe"
+                                               required
+                                               placeholder="Entrer la DPE concernée">
+
+                                    </div>
+
+
+
+                                    <!-- =================================================
+                                         DSEE
+                                    ================================================== -->
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="dsee">
+
+                                            <i class="fas fa-university mr-1"></i>
+
+                                            D-S-E-E
+
+                                        </label>
+
+
+                                        <input type="text"
+                                               class="form-control"
+                                               id="dsee"
+                                               name="dsee"
+                                               required
+                                               placeholder="Entrer la DSEE concernée">
+
+                                    </div>
+
+
+
+                                    <!-- =================================================
+                                         LOGO
+                                    ================================================== -->
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="logo">
+
+                                            <i class="fas fa-image mr-1"></i>
+
+                                            LOGO DE L'ÉTABLISSEMENT
+
+                                        </label>
+
+
+                                        <input type="file"
+                                               class="form-control"
+                                               id="logo"
+                                               name="logo"
+                                               accept="image/*">
+
+
+                                        <small class="form-text text-muted">
+
+                                            Formats recommandés : JPG, JPEG ou PNG.
+
+                                        </small>
+
+                                    </div>
+
+
+
+                                    <!-- =================================================
+                                         RESPONSABLE
+                                    ================================================== -->
+
+                                    <div class="form-group col-md-6">
+
+                                        <label for="respo">
+
+                                            <i class="fas fa-user-tie mr-1"></i>
+
+                                            PREMIER RESPONSABLE
+
+                                        </label>
+
+
+                                        <input type="text"
+                                               class="form-control"
+                                               id="respo"
+                                               name="respo"
+                                               required
+                                               placeholder="Entrer le responsable de l'école">
+
+                                    </div>
+
+
+
+                                    <!-- =================================================
+                                         BOUTONS
+                                    ================================================== -->
+
+                                    <div class="form-footer">
+
+                                        <button type="reset"
+                                                class="btn btn-secondary">
+
+                                            <i class="fas fa-redo mr-1"></i>
+
+                                            Réinitialiser
+
+                                        </button>
+
+
+                                        <button type="submit"
+                                                class="btn btn-primary">
+
+                                            <i class="fas fa-save mr-1"></i>
+
+                                            Enregistrer
+
+                                        </button>
+
+                                    </div>
+
+
+                                </div>
+
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock contenu %}
+
+
+
 {% block scripte %}
 
+<!-- =========================================================
+     JQUERY
+========================================================= -->
 
-<!-- jQuery -->
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
-<!-- Bootstrap 4 -->
+
+
+<!-- =========================================================
+     BOOTSTRAP 4
+========================================================= -->
+
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- DataTables  & Plugins -->
+
+
+<!-- =========================================================
+     DATATABLES
+========================================================= -->
+
 <script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+
+
+<!-- =========================================================
+     DATATABLES BUTTONS
+========================================================= -->
+
 <script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
-<!-- AdminLTE App -->
+
+
+<!-- =========================================================
+     ADMINLTE
+========================================================= -->
+
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="{% static 'base/js/demo.js' %}"></script>
-<!-- Page specific script -->
+
+
 <script>
-$(document).ready(function() {
-    // DataTables existants
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
-    });
+$(document).ready(function () {
 
-    // 🔹 Filtre dynamique Niveau → Groupes
-    $("#nive").change(function() {
-        var niveau_id = $(this).val();
-        var group_select = $("#group");
+    /*
+    =========================================================
+    DATATABLES
+    =========================================================
 
-        if(niveau_id){
-            $.ajax({
-                url: "{% url 'get_groupes' %}",
-                data: {'niveau': niveau_id},
-                success: function(data){
-                    group_select.empty();
-                    group_select.append('<option value="">Sélectionner un groupe</option>');
-                    data.groupes.forEach(function(g){
-                        group_select.append('<option value="'+g.id+'">'+g.nom+'</option>');
-                    });
-                }
-            });
-        } else {
-            group_select.empty();
-            group_select.append('<option value="">Sélectionner un groupe</option>');
-        }
-    });
+    On initialise uniquement DataTables si les tableaux
+    existent réellement sur cette page.
+    */
+
+    if ($('#example1').length) {
+
+        $('#example1').DataTable({
+
+            responsive: true,
+
+            lengthChange: false,
+
+            autoWidth: false,
+
+            buttons: [
+                "copy",
+                "csv",
+                "excel",
+                "pdf",
+                "print",
+                "colvis"
+            ]
+
+        }).buttons().container()
+          .appendTo('#example1_wrapper .col-md-6:eq(0)');
+
+    }
+
+
+    if ($('#example2').length) {
+
+        $('#example2').DataTable({
+
+            paging: true,
+
+            lengthChange: false,
+
+            searching: false,
+
+            ordering: true,
+
+            info: true,
+
+            autoWidth: false,
+
+            responsive: true
+
+        });
+
+    }
+
+
+    /*
+    =========================================================
+    FILTRE NIVEAU → GROUPES
+    =========================================================
+
+    On conserve ton système existant si les champs
+    #nive et #group sont présents.
+    */
+
+    if ($('#nive').length && $('#group').length) {
+
+        $('#nive').on('change', function () {
+
+            var niveau_id = $(this).val();
+
+            var group_select = $('#group');
+
+
+            if (niveau_id) {
+
+                $.ajax({
+
+                    url: "{% url 'get_groupes' %}",
+
+                    data: {
+                        'niveau': niveau_id
+                    },
+
+                    success: function (data) {
+
+                        group_select.empty();
+
+                        group_select.append(
+                            '<option value="">Sélectionner un groupe</option>'
+                        );
+
+
+                        if (data.groupes) {
+
+                            data.groupes.forEach(function (g) {
+
+                                group_select.append(
+
+                                    '<option value="' +
+                                    g.id +
+                                    '">' +
+                                    g.nom +
+                                    '</option>'
+
+                                );
+
+                            });
+
+                        }
+
+                    },
+
+                    error: function () {
+
+                        group_select.empty();
+
+                        group_select.append(
+                            '<option value="">Erreur de chargement</option>'
+                        );
+
+                    }
+
+                });
+
+            } else {
+
+                group_select.empty();
+
+                group_select.append(
+                    '<option value="">Sélectionner un groupe</option>'
+                );
+
+            }
+
+        });
+
+    }
+
 });
+
 </script>
-{% endblock %}
+
+{% endblock scripte %}
+

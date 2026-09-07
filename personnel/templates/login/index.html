@@ -111,26 +111,22 @@
    Le bloc chat est prévu par base/index.html
 ========================================================== #}
 
-{% block chat %}
+{% block chat %} <a class="nav-link messagerie-nav-link"
+href="{% url 'boite_reception' %}"
+title="Messagerie">
 
-<a class="nav-link"
-   href="{% url 'boite_reception' %}"
-   title="Messagerie">
+<i class="fas fa-envelope"></i>
 
-    <i class="far fa-envelope"></i>
+  <span class="d-none d-md-inline ml-1">
+    Messagerie
+  </span>
 
-    {% if messages_non_lus and messages_non_lus > 0 %}
-
-        <span class="badge badge-danger message-badge">
-            {{ messages_non_lus }}
-        </span>
-
-    {% endif %}
+{% if messages_non_lus and messages_non_lus > 0 %} <span class="badge badge-danger message-badge">
+{{ messages_non_lus }} </span>
+{% endif %}
 
 </a>
-
 {% endblock chat %}
-
 
 {# ==========================================================
    MENU SIDEBAR

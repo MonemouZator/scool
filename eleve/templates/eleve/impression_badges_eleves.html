@@ -1,41 +1,28 @@
-
-{% extends "login/index.html" %}
 {% load static %}
 
-{% block styl_parent %}
+<!DOCTYPE html>
+<html lang="fr">
 
-<title>
-    Badges scolaires |
-    {% if etablissement %}
-        {{ etablissement.nom_ecole }}
-    {% else %}
-        Établissement scolaire
-    {% endif %}
-</title>
+<head>
 
-<link rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <meta charset="UTF-8">
 
-<link rel="stylesheet"
-      href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet"
-      href="{% static 'base/plugins/bootstrap/css/bootstrap.min.css' %}">
+    <title>Impression des badges</title>
 
-<link rel="stylesheet"
-      href="{% static 'base/dist/css/adminlte.min.css' %}">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700&display=fallback">
 
-<link rel="stylesheet"
-      href="{% static 'base/css/custom.css' %}">
-
-<link rel="stylesheet"
-      href="{% static 'eleve/css/detail_eleve.css' %}">
+    <link rel="stylesheet"
+          href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
 
 
 <style>
 
 /* =========================================================
-   RESET
+   CONFIGURATION GÉNÉRALE
 ========================================================= */
 
 * {
@@ -46,37 +33,140 @@ html,
 body {
     margin: 0;
     padding: 0;
-    width: 100%;
-    min-height: 100%;
-    font-family: Arial, sans-serif;
+
     background: #e9ecef;
+
+    font-family: "Source Sans Pro", Arial, sans-serif;
 }
 
 
 /* =========================================================
-   ÉCRAN
+   BARRE D'ACTIONS
 ========================================================= */
 
-.wrapper {
+.print-toolbar {
+
     width: 100%;
-    min-height: 100vh;
+
+    padding: 15px;
+
+    background: #343a40;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 10px;
+
+    position: sticky;
+
+    top: 0;
+
+    z-index: 9999;
 }
 
-.content-wrapper {
-    min-height: calc(100vh - 57px) !important;
-    margin-top: 57px;
-    overflow-x: hidden;
-    overflow-y: auto;
+
+.print-toolbar button {
+
+    border: 0;
+
+    border-radius: 6px;
+
+    padding: 10px 18px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.btn-print {
+
+    background: #007bff;
+
+    color: white;
+}
+
+
+.btn-close {
+
+    background: #6c757d;
+
+    color: white;
+}
+
+
+.print-toolbar button:hover {
+
+    opacity: .9;
 }
 
 
 /* =========================================================
-   CONTENU
+   FEUILLE A4
 ========================================================= */
 
-.preview-page {
-    width: 100%;
-    padding: 20px;
+.a4-sheet {
+
+    width: 210mm;
+
+    height: 297mm;
+
+    margin: 15px auto;
+
+    padding: 10mm;
+
+    background: white;
+
+    display: grid;
+
+    grid-template-columns: repeat(2, 91mm);
+
+    grid-template-rows: repeat(4, 51mm);
+
+    column-gap: 8mm;
+
+    row-gap: 5mm;
+
+    align-content: start;
+
+    overflow: hidden;
+
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .15);
+}
+
+
+/* =========================================================
+   BADGE ÉLÈVE
+========================================================= */
+
+.student-badge {
+
+    width: 91mm;
+
+    height: 51mm;
+
+    background: white;
+
+    border: .4mm solid #0d6efd;
+
+    border-radius: 3mm;
+
+    overflow: hidden;
+
+    display: flex;
+
+    flex-direction: column;
+
+    box-shadow: 0 1mm 3mm rgba(0, 0, 0, .15);
+
+    page-break-inside: avoid;
+
+    break-inside: avoid;
 }
 
 
@@ -84,192 +174,25 @@ body {
    EN-TÊTE
 ========================================================= */
 
-.preview-header {
-    width: 100%;
-    margin-bottom: 15px;
-    padding: 15px 20px;
-
-    background: linear-gradient(
-        135deg,
-        #007bff,
-        #0056b3
-    );
-
-    color: white;
-
-    border-radius: 8px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    box-shadow: 0 3px 10px rgba(0,0,0,.15);
-}
-
-.preview-header h2 {
-    margin: 0;
-    font-size: 22px;
-    font-weight: 700;
-}
-
-
-/* =========================================================
-   BOUTONS
-========================================================= */
-
-.action-bar {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.action-bar button,
-.action-bar a {
-    border-radius: 5px;
-    font-weight: 600;
-}
-
-
-/* =========================================================
-   ZONE IMPRESSION
-========================================================= */
-
-.badges-print-area {
-    width: 100%;
-}
-
-
-/* =========================================================
-   PAGE A4
-========================================================= */
-
-.a4-sheet {
-
-    width: 210mm;
-    height: 297mm;
-
-    min-width: 210mm;
-    max-width: 210mm;
-
-    min-height: 297mm;
-    max-height: 297mm;
-
-    margin: 0 auto 20px;
-
-    padding: 8mm;
-
-    background: white;
-
-    position: relative;
-
-    overflow: hidden;
-
-    box-shadow:
-        0 2px 12px rgba(0,0,0,.20);
-
-    /*
-       NOUVELLE PAGE APRÈS CHAQUE A4
-    */
-    page-break-after: always;
-    break-after: page;
-
-    page-break-inside: avoid;
-    break-inside: avoid;
-}
-
-
-/*
-   PAS DE PAGE BLANCHE APRÈS LA DERNIÈRE
-*/
-
-.a4-sheet:last-child {
-    page-break-after: auto;
-    break-after: auto;
-}
-
-
-/* =========================================================
-   GRILLE
-   10 BADGES = 2 COLONNES × 5 LIGNES
-========================================================= */
-
-.badges-grid {
-
-    width: 194mm;
-    height: 281mm;
-
-    display: grid;
-
-    grid-template-columns: 91mm 91mm;
-
-    grid-template-rows:
-        51mm
-        51mm
-        51mm
-        51mm
-        51mm;
-
-    column-gap: 4mm;
-    row-gap: 4mm;
-
-    justify-content: center;
-    align-content: start;
-
-    align-items: start;
-
-    margin: 0 auto;
-}
-
-
-/* =========================================================
-   BADGE
-========================================================= */
-
-.student-badge {
-
-    width: 91mm;
-    height: 51mm;
-
-    position: relative;
-
-    overflow: hidden;
-
-    background: #ffffff;
-
-    border: 1px solid #222;
-
-    border-radius: 3mm;
-
-    page-break-inside: avoid;
-    break-inside: avoid;
-
-    box-shadow:
-        0 1px 4px rgba(0,0,0,.18);
-}
-
-
-/* =========================================================
-   HEADER BADGE
-========================================================= */
-
 .badge-header {
 
-    width: 91mm;
     height: 14mm;
 
-    padding: 1.5mm 3mm;
+    min-height: 14mm;
 
     background: linear-gradient(
         135deg,
-        #007bff,
-        #0056b3
+        #0d6efd,
+        #084298
     );
 
     color: white;
 
     display: flex;
+
     align-items: center;
+
+    padding: 1.5mm 3mm;
 }
 
 
@@ -277,44 +200,75 @@ body {
    LOGO
 ========================================================= */
 
-.badge-logo {
+.school-logo {
 
     width: 11mm;
+
     height: 11mm;
 
-    margin-right: 2.5mm;
-
-    border-radius: 50%;
-
-    object-fit: cover;
+    object-fit: contain;
 
     background: white;
 
-    border: 1px solid rgba(255,255,255,.8);
+    border-radius: 2mm;
+
+    padding: .7mm;
+
+    margin-right: 2.5mm;
 
     flex-shrink: 0;
 }
 
 
-/* =========================================================
-   ÉTABLISSEMENT
-========================================================= */
+.school-logo-placeholder {
 
-.badge-school {
+    width: 11mm;
 
-    flex: 1;
-    min-width: 0;
+    height: 11mm;
+
+    background: white;
+
+    color: #0d6efd;
+
+    border-radius: 2mm;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-right: 2.5mm;
+
+    flex-shrink: 0;
+
+    font-size: 5mm;
 }
 
-.badge-school-name {
 
-    margin: 0;
+/* =========================================================
+   INFORMATIONS ÉTABLISSEMENT
+========================================================= */
 
-    font-size: 10px;
+.school-info {
+
+    min-width: 0;
+
+    flex: 1;
 
     line-height: 1.05;
 
+    overflow: hidden;
+}
+
+
+.school-name {
+
+    font-size: 3.8mm;
+
     font-weight: 700;
+
+    text-transform: uppercase;
 
     white-space: nowrap;
 
@@ -323,13 +277,20 @@ body {
     text-overflow: ellipsis;
 }
 
-.badge-school-title {
 
-    margin-top: 1mm;
+.school-motto {
 
-    font-size: 7px;
+    font-size: 2.2mm;
 
-    font-weight: 400;
+    margin-top: .8mm;
+
+    opacity: .9;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 }
 
 
@@ -339,14 +300,19 @@ body {
 
 .badge-body {
 
-    width: 91mm;
-    height: 33mm;
+    height: 32mm;
 
-    padding: 2mm 3mm;
+    min-height: 32mm;
+
+    padding: 2mm 2.5mm;
 
     display: flex;
 
-    align-items: center;
+    gap: 2.5mm;
+
+    background: #ffffff;
+
+    overflow: hidden;
 }
 
 
@@ -354,14 +320,51 @@ body {
    PHOTO
 ========================================================= */
 
-.badge-photo-container {
+.photo-container {
 
-    width: 23mm;
-    height: 28mm;
+    width: 22mm;
 
-    flex-shrink: 0;
+    min-width: 22mm;
 
-    margin-right: 3mm;
+    height: 27mm;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.student-photo {
+
+    width: 22mm;
+
+    height: 27mm;
+
+    object-fit: cover;
+
+    border-radius: 1.5mm;
+
+    border: .4mm solid #0d6efd;
+
+    background: #f1f3f5;
+}
+
+
+.no-photo {
+
+    width: 22mm;
+
+    height: 27mm;
+
+    border-radius: 1.5mm;
+
+    border: .4mm solid #adb5bd;
+
+    background: #f1f3f5;
+
+    color: #6c757d;
 
     display: flex;
 
@@ -369,79 +372,77 @@ body {
 
     justify-content: center;
 
-    border: 1px solid #aaa;
+    font-size: 6mm;
+}
 
-    background: #f5f5f5;
+
+/* =========================================================
+   INFORMATIONS ÉLÈVE
+========================================================= */
+
+.student-info {
+
+    flex: 1;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    padding-top: .3mm;
+}
+
+
+/* =========================================================
+   LIGNE D'INFORMATION
+========================================================= */
+
+.student-line {
+
+    display: flex;
+
+    align-items: center;
+
+    width: 100%;
+
+    margin-bottom: 1.15mm;
+
+    font-size: 2.7mm;
+
+    line-height: 1.05;
+
+    white-space: nowrap;
 
     overflow: hidden;
 }
 
-.badge-photo {
-
-    width: 23mm;
-    height: 28mm;
-
-    object-fit: cover;
-}
-
 
 /* =========================================================
-   INFORMATIONS
+   LIBELLÉ
 ========================================================= */
 
-.badge-info {
+.student-label {
 
-    flex: 1;
-
-    min-width: 0;
-
-    height: 28mm;
-
-    display: flex;
-
-    flex-direction: column;
-
-    justify-content: center;
-}
-
-
-/* =========================================================
-   LIGNE INFORMATION
-========================================================= */
-
-.badge-info-row {
-
-    display: flex;
-
-    width: 100%;
-
-    margin-bottom: 0.8mm;
-
-    font-size: 7.8px;
-
-    line-height: 1.1;
-}
-
-.badge-label {
-
-    width: 21mm;
-
-    flex-shrink: 0;
+    color: #6c757d;
 
     font-weight: 700;
 
-    color: #333;
+    flex-shrink: 0;
+
+    margin-right: 1mm;
 }
 
-.badge-value {
 
-    flex: 1;
+/* =========================================================
+   VALEUR
+========================================================= */
+
+.student-value {
+
+    color: #212529;
+
+    font-weight: 700;
 
     min-width: 0;
-
-    font-weight: 400;
-
-    color: #111;
 
     overflow: hidden;
 
@@ -455,31 +456,109 @@ body {
    MATRICULE
 ========================================================= */
 
-.badge-matricule {
+.matricule-line {
 
-    font-size: 8px;
+    background: #e7f1ff;
 
-    font-weight: 700;
+    border-left: .8mm solid #0d6efd;
 
-    color: #0056b3;
+    border-radius: .8mm;
+
+    padding: .9mm 1.5mm;
+
+    margin-bottom: 1.2mm;
+}
+
+
+.matricule-line .student-label {
+
+    color: #084298;
+}
+
+
+.matricule-line .student-value {
+
+    color: #084298;
+
+    font-size: 2.8mm;
 }
 
 
 /* =========================================================
-   FOOTER
+   NOM
+========================================================= */
+
+.nom-line .student-value {
+
+    text-transform: uppercase;
+
+    font-size: 3.1mm;
+}
+
+
+/* =========================================================
+   PRÉNOM
+========================================================= */
+
+.prenom-line .student-value {
+
+    font-size: 2.9mm;
+}
+
+
+/* =========================================================
+   NIVEAU / CLASSE
+========================================================= */
+
+.school-tags {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 1mm;
+
+    margin-top: .5mm;
+
+    overflow: hidden;
+}
+
+
+.school-tag {
+
+    background: #0d6efd;
+
+    color: white;
+
+    padding: .6mm 1.5mm;
+
+    border-radius: 1mm;
+
+    font-size: 1.9mm;
+
+    font-weight: 600;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   PIED DE BADGE
 ========================================================= */
 
 .badge-footer {
 
-    position: absolute;
+    height: 5mm;
 
-    left: 0;
+    min-height: 5mm;
 
-    bottom: 0;
+    background: #f8f9fa;
 
-    width: 91mm;
-
-    height: 4mm;
+    border-top: .3mm solid #dee2e6;
 
     display: flex;
 
@@ -487,775 +566,566 @@ body {
 
     justify-content: center;
 
-    background: #f1f1f1;
+    color: #495057;
 
-    border-top: 1px solid #ddd;
+    font-size: 1.9mm;
 
-    font-size: 6px;
+    font-weight: 600;
 
-    color: #555;
+    text-transform: uppercase;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    padding: 0 2mm;
 }
 
 
 /* =========================================================
-   RESPONSIVE ÉCRAN
+   MESSAGE VIDE
 ========================================================= */
 
-@media screen and (max-width: 1000px) {
+.empty-message {
 
-    .preview-page {
-        padding: 10px;
-    }
+    width: 100%;
 
-    .a4-sheet {
-        transform-origin: top center;
-    }
+    min-height: 200px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    flex-direction: column;
+
+    color: #6c757d;
+
+    font-size: 18px;
+
+    text-align: center;
 }
 
 
-@media screen and (max-width: 767px) {
+.empty-message i {
 
-    .preview-page {
-        padding: 5px;
-    }
+    font-size: 50px;
 
-    .preview-header h2 {
-        font-size: 17px;
-    }
-
-    .a4-sheet {
-        transform: scale(.80);
-        transform-origin: top center;
-        margin-bottom: -60px;
-    }
+    margin-bottom: 15px;
 }
 
 
 /* =========================================================
-   =========================================================
    IMPRESSION
-   =========================================================
 ========================================================= */
+
+@page {
+
+    size: A4 portrait;
+
+    margin: 0;
+}
+
 
 @media print {
-
-    /*
-       FORMAT PAPIER
-    */
-
-    @page {
-        size: A4 portrait;
-        margin: 0;
-    }
-
-
-    /*
-       MASQUER ADMINLTE
-    */
-
-    .main-header,
-    .main-sidebar,
-    .action-bar,
-    .preview-header,
-    .no-print,
-    .navbar,
-    .sidebar {
-        display: none !important;
-    }
-
-
-    /*
-       ANNULER LES BLOQUAGES ADMINLTE
-    */
 
     html,
     body {
 
-        width: 210mm !important;
+        width: 210mm;
 
-        height: auto !important;
+        height: 297mm;
 
-        min-height: 0 !important;
+        min-height: 297mm;
 
-        margin: 0 !important;
+        margin: 0;
 
-        padding: 0 !important;
-
-        overflow: visible !important;
+        padding: 0;
 
         background: white !important;
     }
 
 
-    .wrapper {
+    .print-toolbar {
 
-        width: 210mm !important;
-
-        height: auto !important;
-
-        min-height: 0 !important;
-
-        margin: 0 !important;
-
-        padding: 0 !important;
-
-        overflow: visible !important;
-
-        position: static !important;
+        display: none !important;
     }
 
-
-    .content-wrapper {
-
-        width: 210mm !important;
-
-        height: auto !important;
-
-        min-height: 0 !important;
-
-        margin: 0 !important;
-
-        padding: 0 !important;
-
-        overflow: visible !important;
-
-        position: static !important;
-
-        background: white !important;
-    }
-
-
-    .content {
-
-        width: 210mm !important;
-
-        height: auto !important;
-
-        min-height: 0 !important;
-
-        margin: 0 !important;
-
-        padding: 0 !important;
-
-        overflow: visible !important;
-
-        position: static !important;
-    }
-
-
-    .container-fluid {
-
-        width: 210mm !important;
-
-        height: auto !important;
-
-        min-height: 0 !important;
-
-        margin: 0 !important;
-
-        padding: 0 !important;
-
-        overflow: visible !important;
-
-        position: static !important;
-    }
-
-
-    .preview-page {
-
-        width: 210mm !important;
-
-        height: auto !important;
-
-        min-height: 0 !important;
-
-        margin: 0 !important;
-
-        padding: 0 !important;
-
-        overflow: visible !important;
-
-        position: static !important;
-    }
-
-
-    /*
-       ZONE D'IMPRESSION
-    */
-
-    .badges-print-area {
-
-        width: 210mm !important;
-
-        height: auto !important;
-
-        min-height: 0 !important;
-
-        margin: 0 !important;
-
-        padding: 0 !important;
-
-        overflow: visible !important;
-
-        position: static !important;
-
-        display: block !important;
-    }
-
-
-    /*
-       =====================================================
-       CHAQUE .a4-sheet = UNE PAGE
-       =====================================================
-    */
 
     .a4-sheet {
 
-        width: 210mm !important;
+        width: 210mm;
 
-        height: 297mm !important;
+        height: 297mm;
 
-        min-width: 210mm !important;
+        min-height: 297mm;
 
-        max-width: 210mm !important;
+        margin: 0;
 
-        min-height: 297mm !important;
+        padding: 10mm;
 
-        max-height: 297mm !important;
+        display: grid;
 
-        margin: 0 !important;
+        grid-template-columns: repeat(2, 91mm);
 
-        padding: 8mm !important;
+        grid-template-rows: repeat(4, 51mm);
 
-        overflow: hidden !important;
+        column-gap: 8mm;
 
-        position: relative !important;
+        row-gap: 5mm;
 
-        display: block !important;
+        align-content: start;
 
-        background: white !important;
+        overflow: hidden;
 
-        box-shadow: none !important;
-
-
-        /*
-           FORCE LE SAUT DE PAGE
-        */
-
-        page-break-before: auto !important;
-
-        page-break-after: always !important;
-
-        page-break-inside: avoid !important;
-
-        break-before: auto !important;
-
-        break-after: page !important;
-
-        break-inside: avoid !important;
+        box-shadow: none;
     }
 
-
-    /*
-       DERNIÈRE PAGE
-    */
-
-    .a4-sheet:last-child {
-
-        page-break-after: auto !important;
-
-        break-after: auto !important;
-    }
-
-
-    /*
-       =====================================================
-       GRILLE 10 BADGES
-       =====================================================
-    */
-
-    .badges-grid {
-
-        width: 194mm !important;
-
-        height: 281mm !important;
-
-        display: grid !important;
-
-        grid-template-columns: 91mm 91mm !important;
-
-        grid-template-rows:
-            51mm
-            51mm
-            51mm
-            51mm
-            51mm !important;
-
-        column-gap: 4mm !important;
-
-        row-gap: 4mm !important;
-
-        justify-content: center !important;
-
-        align-content: start !important;
-
-        align-items: start !important;
-
-        margin: 0 auto !important;
-
-        padding: 0 !important;
-
-        overflow: hidden !important;
-    }
-
-
-    /*
-       =====================================================
-       BADGE
-       =====================================================
-    */
 
     .student-badge {
 
-        width: 91mm !important;
+        width: 91mm;
 
-        height: 51mm !important;
+        height: 51mm;
 
-        min-width: 91mm !important;
+        box-shadow: none;
 
-        max-width: 91mm !important;
+        break-inside: avoid;
 
-        min-height: 51mm !important;
+        page-break-inside: avoid;
 
-        max-height: 51mm !important;
+        -webkit-print-color-adjust: exact;
 
-        margin: 0 !important;
-
-        padding: 0 !important;
-
-        overflow: hidden !important;
-
-        position: relative !important;
-
-        display: block !important;
-
-        background: white !important;
-
-        box-shadow: none !important;
-
-        page-break-inside: avoid !important;
-
-        break-inside: avoid !important;
+        print-color-adjust: exact;
     }
 
-
-    /*
-       DIMENSIONS INTERNES
-    */
 
     .badge-header {
 
-        width: 91mm !important;
+        -webkit-print-color-adjust: exact;
 
-        height: 14mm !important;
+        print-color-adjust: exact;
     }
 
 
-    .badge-body {
+    .matricule-line {
 
-        width: 91mm !important;
+        -webkit-print-color-adjust: exact;
 
-        height: 33mm !important;
+        print-color-adjust: exact;
+    }
+
+
+    .school-tag {
+
+        -webkit-print-color-adjust: exact;
+
+        print-color-adjust: exact;
     }
 
 
     .badge-footer {
 
-        width: 91mm !important;
+        -webkit-print-color-adjust: exact;
 
-        height: 4mm !important;
+        print-color-adjust: exact;
     }
-
-
-    .badge-photo-container {
-
-        width: 23mm !important;
-
-        height: 28mm !important;
-    }
-
-
-    .badge-photo {
-
-        width: 23mm !important;
-
-        height: 28mm !important;
-    }
-
 }
 
 
 /* =========================================================
-   FIN
+   APERÇU ÉCRAN
 ========================================================= */
+
+@media screen and (max-width: 900px) {
+
+    body {
+
+        overflow-x: auto;
+    }
+
+
+    .a4-sheet {
+
+        transform: scale(.85);
+
+        transform-origin: top center;
+
+        margin-bottom: -40mm;
+    }
+}
+
+
+@media screen and (max-width: 700px) {
+
+    .a4-sheet {
+
+        transform: scale(.70);
+
+        transform-origin: top center;
+
+        margin-bottom: -85mm;
+    }
+}
+
+
+@media screen and (max-width: 500px) {
+
+    .a4-sheet {
+
+        transform: scale(.55);
+
+        transform-origin: top center;
+
+        margin-bottom: -130mm;
+    }
+}
 
 </style>
 
-{% endblock styl_parent %}
+</head>
 
 
-{% block content %}
+<body>
 
-<div class="content-wrapper">
 
-    <section class="content">
+<!-- =====================================================
+     BARRE D'ACTIONS
+===================================================== -->
 
-        <div class="container-fluid">
+<div class="print-toolbar">
 
-            <div class="preview-page">
+    <button
+        type="button"
+        class="btn-print"
+        onclick="window.print()">
 
+        <i class="fas fa-print"></i>
 
-                <!-- =====================================================
-                     ZONE D'IMPRESSION
-                ====================================================== -->
+        Imprimer les badges
 
-                <div class="badges-print-area">
+    </button>
 
 
-                    {% for eleve in eleves %}
+    <button
+        type="button"
+        class="btn-close"
+        onclick="window.history.back()">
 
+        <i class="fas fa-arrow-left"></i>
 
-                        <!-- =================================================
-                             NOUVELLE PAGE TOUS LES 10 ÉLÈVES
-                        ================================================== -->
+        Retour
 
-                        {% if forloop.counter0|divisibleby:"10" %}
+    </button>
 
-                            {% if not forloop.first %}
+</div>
 
-                                    </div>
-                                </div>
 
-                            {% endif %}
+<!-- =====================================================
+     FEUILLE A4
+===================================================== -->
 
+{% if eleves %}
 
-                            <!-- =============================================
-                                 NOUVELLE FEUILLE A4
-                            ============================================== -->
+<div class="a4-sheet">
 
-                            <div class="a4-sheet">
 
-                                <div class="badges-grid">
+    {% for inscription in eleves %}
 
-                        {% endif %}
 
+    <!-- =================================================
+         BADGE ÉLÈVE
+    ================================================== -->
 
-                        <!-- =================================================
-                             BADGE
-                        ================================================== -->
+    <div class="student-badge">
 
-                        <div class="student-badge">
 
+        <!-- =================================================
+             EN-TÊTE
+        ================================================== -->
 
-                            <!-- =============================================
-                                 HEADER
-                            ============================================== -->
+        <div class="badge-header">
 
-                            <div class="badge-header">
 
+            {% if etablissement and etablissement.logo %}
 
-                                {% if etablissement.logo %}
+                <img
+                    src="{{ etablissement.logo.url }}"
+                    alt="Logo de l'établissement"
+                    class="school-logo">
 
-                                    <img
-                                        src="{{ etablissement.logo.url }}"
-                                        class="badge-logo"
-                                        alt="Logo">
+            {% else %}
 
-                                {% else %}
+                <div class="school-logo-placeholder">
 
-                                    <img
-                                        src="{% static 'base/img/default-school.png' %}"
-                                        class="badge-logo"
-                                        alt="Logo">
+                    <i class="fas fa-school"></i>
 
-                                {% endif %}
+                </div>
 
+            {% endif %}
 
-                                <div class="badge-school">
 
-                                    <div class="badge-school-name">
+            <div class="school-info">
 
-                                        {% if etablissement %}
 
-                                            {{ etablissement.nom_ecole }}
+                <div class="school-name">
 
-                                        {% else %}
+                    {% if etablissement %}
 
-                                            Établissement scolaire
+                        {{ etablissement.nom_ecole }}
 
-                                        {% endif %}
+                    {% else %}
 
-                                    </div>
+                        ÉTABLISSEMENT SCOLAIRE
 
-
-                                    <div class="badge-school-title">
-
-                                        BADGE SCOLAIRE
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- =============================================
-                                 CORPS
-                            ============================================== -->
-
-                            <div class="badge-body">
-
-
-                                <!-- PHOTO -->
-
-                                <div class="badge-photo-container">
-
-                                    {% if eleve.eleve.photo %}
-
-                                        <img
-                                            src="{{ eleve.eleve.photo.url }}"
-                                            class="badge-photo"
-                                            alt="Photo">
-
-                                    {% else %}
-
-                                        <img
-                                            src="{% static 'base/img/default-user.png' %}"
-                                            class="badge-photo"
-                                            alt="Photo">
-
-                                    {% endif %}
-
-                                </div>
-
-
-                                <!-- INFORMATIONS -->
-
-                                <div class="badge-info">
-
-
-                                    <!-- NOM -->
-
-                                    <div class="badge-info-row">
-
-                                        <div class="badge-label">
-                                            Nom :
-                                        </div>
-
-                                        <div class="badge-value">
-                                            {{ eleve.eleve.nom }}
-                                        </div>
-
-                                    </div>
-
-
-                                    <!-- PRÉNOM -->
-
-                                    <div class="badge-info-row">
-
-                                        <div class="badge-label">
-                                            Prénom :
-                                        </div>
-
-                                        <div class="badge-value">
-                                            {{ eleve.eleve.prenom }}
-                                        </div>
-
-                                    </div>
-
-
-                                    <!-- MATRICULE -->
-
-                                    <div class="badge-info-row">
-
-                                        <div class="badge-label">
-                                            Matricule :
-                                        </div>
-
-                                        <div class="badge-value badge-matricule">
-                                            {{ eleve.eleve.matricule }}
-                                        </div>
-
-                                    </div>
-
-
-                                    <!-- DATE NAISSANCE -->
-
-                                    <div class="badge-info-row">
-
-                                        <div class="badge-label">
-                                            Né(e) :
-                                        </div>
-
-                                        <div class="badge-value">
-
-                                            {% if eleve.eleve.date_naissance %}
-
-                                                {{ eleve.eleve.date_naissance|date:"d/m/Y" }}
-
-                                            {% else %}
-
-                                                -
-
-                                            {% endif %}
-
-                                        </div>
-
-                                    </div>
-
-
-                                    <!-- NIVEAU -->
-
-                                    <div class="badge-info-row">
-
-                                        <div class="badge-label">
-                                            Niveau :
-                                        </div>
-
-                                        <div class="badge-value">
-                                            {{ eleve.niveau }}
-                                        </div>
-
-                                    </div>
-
-
-                                    <!-- CONTACT -->
-
-                                    <div class="badge-info-row">
-
-                                        <div class="badge-label">
-                                            Contact :
-                                        </div>
-
-                                        <div class="badge-value">
-
-                                            {% if eleve.eleve.contact_parent %}
-
-                                                {{ eleve.eleve.contact_parent }}
-
-                                            {% else %}
-
-                                                -
-
-                                            {% endif %}
-
-                                        </div>
-
-                                    </div>
-
-
-                                </div>
-
-                            </div>
-
-
-                            <!-- =============================================
-                                 FOOTER
-                            ============================================== -->
-
-                            <div class="badge-footer">
-
-                                Année scolaire :
-                                {{ eleve.annee_scolaire }}
-
-                            </div>
-
-
-                        </div>
-
-
-                        <!-- =================================================
-                             FERMETURE DE LA DERNIÈRE PAGE
-                        ================================================== -->
-
-                        {% if forloop.last %}
-
-                                </div>
-                            </div>
-
-                        {% endif %}
-
-
-                    {% empty %}
-
-
-                        <!-- =================================================
-                             AUCUN ÉLÈVE
-                        ================================================== -->
-
-                        <div class="a4-sheet">
-
-                            <div style="
-                                width:100%;
-                                height:100%;
-                                display:flex;
-                                align-items:center;
-                                justify-content:center;
-                                font-size:20px;
-                                color:#777;
-                            ">
-
-                                Aucun élève trouvé.
-
-                            </div>
-
-                        </div>
-
-
-                    {% endfor %}
-
+                    {% endif %}
 
                 </div>
 
 
-                <!-- =====================================================
-                     BOUTONS
-                ====================================================== -->
+                {% if etablissement and etablissement.devise_ecole %}
 
-                <div class="action-bar no-print">
+                    <div class="school-motto">
 
-                    <button
-                        type="button"
-                        class="btn btn-primary"
-                        onclick="window.print();">
+                        {{ etablissement.devise_ecole }}
 
-                        <i class="fas fa-print"></i>
+                    </div>
 
-                        Imprimer les badges
-
-                    </button>
-
-
-                    <a
-                        href="javascript:history.back();"
-                        class="btn btn-secondary">
-
-                        <i class="fas fa-arrow-left"></i>
-
-                        Retour
-
-                    </a>
-
-                </div>
+                {% endif %}
 
 
             </div>
 
+
         </div>
 
-    </section>
+
+        <!-- =================================================
+             CORPS
+        ================================================== -->
+
+        <div class="badge-body">
+
+
+            <!-- =================================================
+                 PHOTO
+            ================================================== -->
+
+            <div class="photo-container">
+
+
+                {% if inscription.eleve.photo %}
+
+                    <img
+                        src="{{ inscription.eleve.photo.url }}"
+                        alt="Photo de {{ inscription.eleve.nom }} {{ inscription.eleve.prenom }}"
+                        class="student-photo">
+
+                {% else %}
+
+                    <div class="no-photo">
+
+                        <i class="fas fa-user"></i>
+
+                    </div>
+
+                {% endif %}
+
+
+            </div>
+
+
+            <!-- =================================================
+                 INFORMATIONS
+            ================================================== -->
+
+            <div class="student-info">
+
+
+                <!-- MATRICULE -->
+
+                {% if inscription.eleve.matricule %}
+
+                    <div class="student-line e">
+
+                        <span class="student-label">
+                            MATRICULE :
+                        </span>
+
+                        <span class="student-value">
+
+                            {{ inscription.eleve.matricule }}
+
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- NOM -->
+
+                <div class="student-line nom-line">
+
+                    <span class="student-label">
+                        NOM :
+                    </span>
+
+                    <span class="student-value">
+
+                        {{ inscription.eleve.nom }}
+
+                    </span>
+
+                </div>
+
+
+                <!-- PRÉNOM -->
+
+                <div class="student-line prenom-line">
+
+                    <span class="student-label">
+                        PRÉNOM :
+                    </span>
+
+                    <span class="student-value">
+
+                        {{ inscription.eleve.prenom }}
+
+                    </span>
+
+                </div>
+
+
+                <!-- NIVEAU -->
+
+                {% if inscription.niveau %}
+
+                    <div class="student-line">
+
+                        <span class="student-label">
+                            NIVEAU :
+                        </span>
+
+                        <span class="student-value">
+
+                            {{ inscription.niveau }}
+
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- CONTACT -->
+
+                {% if inscription.eleve.telephone %}
+
+                    <div class="student-line">
+
+                        <span class="student-label">
+                            CONTACT :
+                        </span>
+
+                        <span class="student-value">
+
+                            {{ inscription.eleve.telephone }}
+
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- =================================================
+                     CLASSE
+                ================================================== -->
+
+                {% if inscription.groupe_classe %}
+
+                    <div class="school-tags">
+
+                        <span class="school-tag">
+
+                            <i class="fas fa-users"></i>
+
+                            CLASSE :
+
+                            {{ inscription.groupe_classe }}
+
+                        </span>
+
+                    </div>
+
+                {% endif %}
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             PIED
+        ================================================== -->
+
+        <div class="badge-footer">
+
+            {% if inscription.annee_scolaire %}
+
+                ANNÉE SCOLAIRE :
+                {{ inscription.annee_scolaire }}
+
+            {% else %}
+
+                CARTE SCOLAIRE
+
+            {% endif %}
+
+        </div>
+
+
+    </div>
+
+
+    {% endfor %}
+
 
 </div>
 
-{% endblock content %}
 
+{% else %}
+
+
+<!-- =====================================================
+     AUCUN ÉLÈVE
+===================================================== -->
+
+<div class="empty-message">
+
+    <i class="fas fa-id-card"></i>
+
+    <strong>
+        Aucun élève sélectionné
+    </strong>
+
+    <span>
+
+        Veuillez retourner à la page précédente
+        et sélectionner les élèves.
+
+    </span>
+
+</div>
+
+
+{% endif %}
+
+
+</body>
+
+</html>
