@@ -66,7 +66,7 @@ urlpatterns = [
     ),
 
     # =====================================================
-    # LIRE
+    # LIRE UN MESSAGE
     # =====================================================
 
     path(
@@ -76,12 +76,22 @@ urlpatterns = [
     ),
 
     # =====================================================
-    # SUPPRIMER
+    # SUPPRIMER UN MESSAGE INDIVIDUEL
     # =====================================================
 
     path(
         'supprimer/<int:pk>/',
         views.supprimer_message,
         name='supprimer_message'
+    ),
+
+    # =====================================================
+    # SUPPRIMER UN MESSAGE DE GROUPE
+    # =====================================================
+
+    path(
+        'groupe/message/supprimer/<int:pk>/',
+        views.supprimer_message_groupe,
+        name='supprimer_message_groupe'
     ),
 ]

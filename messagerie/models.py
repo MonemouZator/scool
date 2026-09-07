@@ -1,3 +1,4 @@
+
 from django.conf import settings
 from django.db import models
 
@@ -24,7 +25,17 @@ class Message(models.Model):
         max_length=255
     )
 
-    contenu = models.TextField()
+    # Message texte facultatif
+    contenu = models.TextField(
+        blank=True
+    )
+
+    # Message vocal
+    audio = models.FileField(
+        upload_to='messages/audio/',
+        blank=True,
+        null=True
+    )
 
     date_envoi = models.DateTimeField(
         auto_now_add=True
@@ -145,16 +156,110 @@ class MessageGroupe(models.Model):
         related_name='messages_groupes_envoyes'
     )
 
-    contenu = models.TextField()
+    # Message texte facultatif
+    contenu = models.TextField(
+        blank=True
+    )
+
+    # Message vocal
+    audio = models.FileField(
+        upload_to='messages/audio/',
+        blank=True,
+        null=True
+    )
 
     date_envoi = models.DateTimeField(
         auto_now_add=True
     )
 
     def __str__(self):
-        return f"{self.expediteur} → {self.groupe}: {self.contenu[:40]}"
+
+        if self.contenu:
+
+            apercu = self.contenu[:40]
+
+        elif self.audio:
+
+            apercu = "Message vocal"
+
+        else:
+
+            apercu = "Message vide"
+
+        return f"{self.expediteur} → {self.groupe}: {apercu}"
 
     class Meta:
         ordering = ['date_envoi']
         verbose_name = "Message de groupe"
         verbose_name_plural = "Messages de groupe"
+
+
+# =========================================================
+# NOTIFICATION
+# =========================================================
+
+class Notification(models.Model):
+
+    # Utilisateur qui doit recevoir la notification
+    utilisateur = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='notifications'
+    )
+
+    # Personne qui a déclenché la notification
+    expediteur = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='notifications_envoyees',
+        null=True,
+        blank=True
+    )
+
+    # Message privé concerné
+    message = models.ForeignKey(
+        Message,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='notifications'
+    )
+
+    # Message de groupe concerné
+    message_groupe = models.ForeignKey(
+        MessageGroupe,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='notifications'
+    )
+
+    # Texte affiché dans la notification
+    texte = models.CharField(
+        max_length=255
+    )
+
+    # Date de création
+    date_creation = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    # Notification lue ou non
+    lue = models.BooleanField(
+        default=False
+    )
+
+    def __str__(self):
+
+        return (
+            f"{self.utilisateur} - "
+            f"{self.texte}"
+        )
+
+    class Meta:
+
+        ordering = ['-date_creation']
+
+        verbose_name = "Notification"
+        verbose_name_plural = "Notifications"
+

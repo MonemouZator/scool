@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = config('SECRET_KEY') #'django-insecure-52yfq))jd9r0uo*uq5p!j!4zccvrd13&hbd@3zq70$o^)+==%j'
 
-DEBUG =True
+DEBUG =False #config('DEBUG', default=False, cast=bool)  # Mettre à False en production
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ecole-bnb.onrender.com']
 
@@ -91,7 +91,7 @@ DATABASES={
     'default':dj_database_url.parse(config('DATABASE_URL'))
 }
 
-DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+# DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': config('CLOUDINARY_CLOUD_NAME'),
@@ -158,12 +158,12 @@ if DEBUG:
 
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  # Nom et chemin de la base SQLite
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),  # Nom et chemin de la base SQLite
+#     }
+# }
 
 
 
