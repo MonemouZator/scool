@@ -290,7 +290,7 @@ def obtenir_notifications_non_lues(user):
 # MESSAGERIE PRINCIPALE
 # =========================================================
 
-@login_required
+# @login_required
 def boite_reception(
     request,
     utilisateur_id=None,
@@ -919,7 +919,7 @@ def boite_reception(
 # COMPTEUR GLOBAL DES MESSAGES NON LUS
 # =========================================================
 
-@login_required
+# @login_required
 def compteur_messages_non_lus(request):
 
     # =====================================================
@@ -1010,7 +1010,7 @@ def compteur_messages_non_lus(request):
 # POUR LA SONNERIE
 # =========================================================
 
-@login_required
+# @login_required
 def verifier_nouveaux_messages(request):
 
     # =====================================================
@@ -1203,7 +1203,7 @@ def verifier_nouveaux_messages(request):
 # MESSAGES ENVOYÉS
 # =========================================================
 
-@login_required
+# @login_required
 def messages_envoyes(request):
 
     messages_env = (
@@ -1232,7 +1232,7 @@ def messages_envoyes(request):
 # NOUVELLE CONVERSATION
 # =========================================================
 
-@login_required
+# @login_required
 def nouveau_message(request):
 
     if request.method == "POST":
@@ -1351,7 +1351,7 @@ def nouveau_message(request):
 # LIRE UN MESSAGE INDIVIDUEL
 # =========================================================
 
-@login_required
+# @login_required
 def lire_message(request, pk):
 
     message = get_object_or_404(
@@ -1398,7 +1398,7 @@ def lire_message(request, pk):
 # SUPPRIMER MESSAGE PRIVÉ
 # =========================================================
 
-@login_required
+# @login_required
 def supprimer_message(request, pk):
 
     message = get_object_or_404(
@@ -1461,7 +1461,7 @@ def supprimer_message(request, pk):
 # SUPPRIMER MESSAGE GROUPE
 # =========================================================
 
-@login_required
+# @login_required
 def supprimer_message_groupe(request, pk):
 
     message = get_object_or_404(
@@ -1552,7 +1552,7 @@ def supprimer_message_groupe(request, pk):
 # CRÉER UN GROUPE
 # =========================================================
 
-@login_required
+# @login_required
 def creer_groupe(request):
 
     if request.method == "POST":
@@ -1674,7 +1674,7 @@ def creer_groupe(request):
 # CONVERSATION GROUPE
 # =========================================================
 
-@login_required
+# @login_required
 def groupe_conversation(
     request,
     groupe_id

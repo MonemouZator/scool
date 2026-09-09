@@ -150,6 +150,17 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'personnel.Administrateur'
 
+AUTH_USER_MODEL = 'personnel.Administrateur'
+
+
+# ==========================================================
+# AUTHENTIFICATION
+# ==========================================================
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'
+
 # Security (only in production)
 if DEBUG:
     SESSION_COOKIE_SECURE = False

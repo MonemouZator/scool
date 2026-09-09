@@ -12,16 +12,8 @@
 
 <title>Messagerie | WhatsApp</title>
 
-<!-- =====================================================
-     FONT
-===================================================== -->
-
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
-
-<!-- =====================================================
-     FONT AWESOME
-===================================================== -->
 
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -33,7 +25,6 @@
 ===================================================== */
 
 :root {
-
     --primary: #2563eb;
     --primary-dark: #1d4ed8;
     --primary-soft: #eff6ff;
@@ -46,7 +37,6 @@
 
     --surface: #ffffff;
     --page-bg: #f3f6fa;
-
     --chat-bg: #eef2f5;
 
     --received: #ffffff;
@@ -60,7 +50,6 @@
     --navbar-height: 56px;
 }
 
-
 /* =====================================================
    RESET
 ===================================================== */
@@ -69,13 +58,10 @@
     box-sizing: border-box;
 }
 
-
 html,
 body {
-
     width: 100%;
     height: 100%;
-
     margin: 0;
     padding: 0;
 
@@ -89,13 +75,17 @@ body {
     background: var(--page-bg);
 }
 
+button,
+input,
+textarea {
+    font-family: inherit;
+}
 
 /* =====================================================
    WRAPPER
 ===================================================== */
 
 .wrapper {
-
     width: 100%;
     height: 100dvh;
 
@@ -107,18 +97,15 @@ body {
     overflow: hidden;
 }
 
-
 /* =====================================================
    NAVBAR
 ===================================================== */
 
 .main-header {
-
     flex: 0 0 var(--navbar-height);
 
     width: 100%;
     height: var(--navbar-height);
-
     min-height: var(--navbar-height);
 
     padding: 0 14px;
@@ -138,9 +125,7 @@ body {
     z-index: 1000;
 }
 
-
 .navbar-messagerie {
-
     width: 100%;
     height: 100%;
 
@@ -150,9 +135,7 @@ body {
     gap: 10px;
 }
 
-
 .titre-messagerie {
-
     display: flex;
     align-items: center;
 
@@ -161,40 +144,31 @@ body {
     color: var(--text);
 
     font-size: 18px;
-
     font-weight: 600;
 
     flex: 1;
 }
 
-
 .titre-messagerie i {
-
     color: var(--primary);
 }
-
 
 /* =====================================================
    NOTIFICATIONS
 ===================================================== */
 
 .notification-wrapper {
-
     position: relative;
-
     margin-left: auto;
 }
 
-
 .notification-button {
-
     position: relative;
 
     width: 40px;
     height: 40px;
 
     border: 0;
-
     border-radius: 50%;
 
     display: flex;
@@ -202,31 +176,22 @@ body {
     justify-content: center;
 
     color: #374151;
-
     background: transparent;
 
     cursor: pointer;
-
     outline: none;
 }
 
-
 .notification-button:hover {
-
     color: var(--primary);
-
     background: var(--primary-soft);
 }
 
-
 .notification-button i {
-
     font-size: 18px;
 }
 
-
 .notification-count {
-
     position: absolute;
 
     top: 1px;
@@ -244,19 +209,15 @@ body {
     border-radius: 50%;
 
     color: #fff;
-
     background: #dc2626;
 
     border: 2px solid #fff;
 
     font-size: 9px;
-
     font-weight: 700;
 }
 
-
 .notification-panel {
-
     position: absolute;
 
     top: 47px;
@@ -281,15 +242,11 @@ body {
     z-index: 5000;
 }
 
-
 .notification-panel.active {
-
     display: block;
 }
 
-
 .notification-header {
-
     padding: 12px 14px;
 
     display: flex;
@@ -299,33 +256,22 @@ body {
     border-bottom: 1px solid var(--border);
 }
 
-
 .notification-header strong {
-
     font-size: 14px;
-
     color: var(--text);
 }
 
-
 .notification-header span {
-
     font-size: 11px;
-
     color: var(--muted);
 }
 
-
 .notification-list {
-
     max-height: 360px;
-
     overflow-y: auto;
 }
 
-
 .notification-item {
-
     display: flex;
 
     gap: 9px;
@@ -341,23 +287,16 @@ body {
     background: #fff;
 }
 
-
 .notification-item:hover {
-
     background: #f8fafc;
-
     text-decoration: none;
 }
 
-
 .notification-item.unread {
-
     background: #eff6ff;
 }
 
-
 .notification-avatar {
-
     width: 38px;
     height: 38px;
 
@@ -377,45 +316,30 @@ body {
     color: #6b7280;
 }
 
-
 .notification-avatar.group {
-
     color: var(--group);
-
     background: #ede9fe;
 }
 
-
 .notification-content {
-
     min-width: 0;
-
     flex: 1;
 }
 
-
 .notification-text {
-
     font-size: 12px;
-
     line-height: 1.35;
-
     color: #374151;
 }
 
-
 .notification-date {
-
     margin-top: 3px;
 
     font-size: 10px;
-
     color: var(--muted);
 }
 
-
 .notification-empty {
-
     padding: 25px 15px;
 
     text-align: center;
@@ -425,9 +349,7 @@ body {
     font-size: 12px;
 }
 
-
 .notification-empty i {
-
     display: block;
 
     margin-bottom: 8px;
@@ -437,13 +359,11 @@ body {
     color: #cbd5e1;
 }
 
-
 /* =====================================================
    CONTENT
 ===================================================== */
 
 .content-wrapper {
-
     width: 100%;
 
     margin: 0;
@@ -457,9 +377,7 @@ body {
     background: var(--page-bg);
 }
 
-
 .messagerie-container {
-
     width: 100%;
     height: 100%;
 
@@ -470,9 +388,7 @@ body {
     display: flex;
 }
 
-
 .whatsapp-container {
-
     width: 100%;
     height: 100%;
 
@@ -492,13 +408,11 @@ body {
         0 2px 8px rgba(0,0,0,.06);
 }
 
-
 /* =====================================================
    SIDEBAR
 ===================================================== */
 
 .conversation-sidebar {
-
     width: 320px;
     min-width: 320px;
 
@@ -517,9 +431,7 @@ body {
     border-right: 1px solid var(--border);
 }
 
-
 .sidebar-header {
-
     flex: 0 0 auto;
 
     padding: 14px;
@@ -527,35 +439,23 @@ body {
     border-bottom: 1px solid var(--border);
 }
 
-
 .sidebar-title {
-
     display: flex;
 
     align-items: center;
-
     justify-content: space-between;
 
     margin-bottom: 10px;
 }
 
-
 .sidebar-title h5 {
-
     margin: 0;
 
     font-size: 18px;
-
     font-weight: 600;
 }
 
-
-/* =====================================================
-   BADGE MESSAGES NON LUS
-===================================================== */
-
 .unread-badge {
-
     min-width: 22px;
     height: 22px;
 
@@ -564,7 +464,6 @@ body {
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     border-radius: 20px;
@@ -578,33 +477,13 @@ body {
     font-weight: 600;
 
     line-height: 1;
-
-    transition:
-        opacity .2s ease,
-        transform .2s ease;
 }
-
-
-.unread-badge[style*="display:none"] {
-
-    transform: scale(.8);
-
-    opacity: 0;
-}
-
-
-/* =====================================================
-   SEARCH
-===================================================== */
 
 .search-box {
-
     position: relative;
 }
 
-
 .search-box i {
-
     position: absolute;
 
     left: 12px;
@@ -617,9 +496,7 @@ body {
     pointer-events: none;
 }
 
-
 .search-box input {
-
     width: 100%;
     height: 38px;
 
@@ -638,35 +515,23 @@ body {
     font-size: 13px;
 }
 
-
 .search-box input:focus {
-
     border-color: var(--primary);
-
     background: #fff;
 }
 
-
-/* =====================================================
-   CONVERSATION LIST
-===================================================== */
-
 .conversation-list {
-
     flex: 1 1 auto;
 
     min-height: 0;
 
     overflow-y: auto;
-
     overflow-x: hidden;
 
     -webkit-overflow-scrolling: touch;
 }
 
-
 .conversation-item {
-
     min-height: 66px;
 
     padding: 9px 12px;
@@ -687,17 +552,12 @@ body {
         background .15s ease;
 }
 
-
 .conversation-item:hover {
-
     background: #f8fafc;
-
     text-decoration: none;
 }
 
-
 .conversation-avatar {
-
     width: 44px;
     height: 44px;
 
@@ -710,25 +570,19 @@ body {
     background: #e5e7eb;
 }
 
-
 .conversation-avatar-default {
-
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     color: #6b7280;
 }
 
-
 .conversation-avatar.group {
-
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     color: var(--group);
@@ -736,17 +590,12 @@ body {
     background: #ede9fe;
 }
 
-
 .conversation-info {
-
     min-width: 0;
-
     flex: 1;
 }
 
-
 .conversation-name {
-
     display: block;
 
     overflow: hidden;
@@ -760,9 +609,7 @@ body {
     font-weight: 600;
 }
 
-
 .conversation-preview {
-
     display: block;
 
     margin-top: 2px;
@@ -778,13 +625,7 @@ body {
     color: var(--muted);
 }
 
-
-/* =====================================================
-   FOOTER
-===================================================== */
-
 .sidebar-footer {
-
     flex: 0 0 auto;
 
     padding: 10px;
@@ -796,9 +637,7 @@ body {
     border-top: 1px solid var(--border);
 }
 
-
 .sidebar-footer a {
-
     flex: 1;
 
     min-height: 38px;
@@ -806,7 +645,6 @@ body {
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     gap: 5px;
@@ -820,45 +658,31 @@ body {
     text-decoration: none;
 }
 
-
 .btn-new {
-
     color: #fff;
-
     background: var(--primary);
 }
 
-
 .btn-new:hover {
-
     color: #fff;
-
     background: var(--primary-dark);
 }
 
-
 .btn-group {
-
     color: var(--group);
-
     background: #f5f3ff;
 }
 
-
 .btn-group:hover {
-
     color: var(--group);
-
     background: #ede9fe;
 }
-
 
 /* =====================================================
    CHAT
 ===================================================== */
 
 .chat-area {
-
     flex: 1 1 auto;
 
     width: 100%;
@@ -866,7 +690,6 @@ body {
     height: 100%;
 
     min-width: 0;
-
     min-height: 0;
 
     display: flex;
@@ -878,9 +701,7 @@ body {
     background: var(--chat-bg);
 }
 
-
 .chat-header {
-
     flex: 0 0 auto;
 
     min-height: 58px;
@@ -898,9 +719,7 @@ body {
     border-bottom: 1px solid var(--border);
 }
 
-
 .chat-back {
-
     display: none;
 
     width: 36px;
@@ -918,17 +737,12 @@ body {
     text-decoration: none;
 }
 
-
 .chat-back:hover {
-
     background: #f3f4f6;
-
     color: var(--primary);
 }
 
-
 .chat-avatar {
-
     width: 40px;
     height: 40px;
 
@@ -941,25 +755,19 @@ body {
     background: #e5e7eb;
 }
 
-
 .chat-avatar-default {
-
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     color: #6b7280;
 }
 
-
 .chat-avatar.group {
-
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     color: var(--group);
@@ -967,17 +775,12 @@ body {
     background: #ede9fe;
 }
 
-
 .chat-user-info {
-
     flex: 1;
-
     min-width: 0;
 }
 
-
 .chat-user-name {
-
     display: block;
 
     overflow: hidden;
@@ -991,9 +794,7 @@ body {
     font-weight: 600;
 }
 
-
 .chat-status {
-
     display: block;
 
     margin-top: 1px;
@@ -1003,13 +804,11 @@ body {
     color: var(--muted);
 }
 
-
 /* =====================================================
    MESSAGES
 ===================================================== */
 
 .messages-area {
-
     flex: 1 1 auto;
 
     min-height: 0;
@@ -1017,7 +816,6 @@ body {
     padding: 12px;
 
     overflow-y: auto;
-
     overflow-x: hidden;
 
     -webkit-overflow-scrolling: touch;
@@ -1025,9 +823,7 @@ body {
     overscroll-behavior: contain;
 }
 
-
 .message-row {
-
     width: 100%;
 
     display: flex;
@@ -1035,29 +831,21 @@ body {
     margin-bottom: 8px;
 }
 
-
 .message-row.sent {
-
     justify-content: flex-end;
 }
 
-
 .message-row.received {
-
     justify-content: flex-start;
 }
 
-
 .message-content-received {
-
     max-width: 65%;
 
     min-width: 0;
 }
 
-
 .message-sender {
-
     display: flex;
 
     align-items: center;
@@ -1069,9 +857,7 @@ body {
     padding-left: 3px;
 }
 
-
 .message-sender-avatar {
-
     width: 25px;
     height: 25px;
 
@@ -1084,13 +870,10 @@ body {
     background: #e5e7eb;
 }
 
-
 .message-sender-avatar-default {
-
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     color: #6b7280;
@@ -1098,9 +881,7 @@ body {
     font-size: 11px;
 }
 
-
 .message-sender-name {
-
     max-width: 220px;
 
     overflow: hidden;
@@ -1116,9 +897,7 @@ body {
     color: #374151;
 }
 
-
 .message-bubble {
-
     position: relative;
 
     width: fit-content;
@@ -1141,9 +920,7 @@ body {
         0 1px 1px rgba(0,0,0,.05);
 }
 
-
 .message-row.sent .message-bubble {
-
     max-width: 65%;
 
     background: var(--sent);
@@ -1151,9 +928,7 @@ body {
     border-top-right-radius: 3px;
 }
 
-
 .message-row.received .message-bubble {
-
     max-width: 100%;
 
     background: var(--received);
@@ -1161,15 +936,11 @@ body {
     border-top-left-radius: 3px;
 }
 
-
 .message-text {
-
     white-space: normal;
 }
 
-
 .message-meta {
-
     display: inline-flex;
 
     align-items: center;
@@ -1187,19 +958,15 @@ body {
     color: #7b8794;
 }
 
-
 .message-row.sent .message-meta i {
-
     color: #4f8b55;
 }
-
 
 /* =====================================================
    AUDIO
 ===================================================== */
 
 .message-audio {
-
     width: 240px;
 
     max-width: 100%;
@@ -1211,13 +978,11 @@ body {
     display: block;
 }
 
-
 /* =====================================================
    ACTIONS
 ===================================================== */
 
 .message-actions {
-
     position: absolute;
 
     top: 3px;
@@ -1229,22 +994,16 @@ body {
     z-index: 5;
 }
 
-
 .message-bubble:hover .message-actions {
-
     display: block;
 }
 
-
 .delete-message-form {
-
     margin: 0;
     padding: 0;
 }
 
-
 .btn-delete-message {
-
     width: 25px;
     height: 25px;
 
@@ -1269,19 +1028,15 @@ body {
         0 1px 4px rgba(0,0,0,.15);
 }
 
-
 .btn-delete-message i {
-
     font-size: 10px;
 }
-
 
 /* =====================================================
    FORM
 ===================================================== */
 
 .message-form {
-
     flex: 0 0 auto;
 
     width: 100%;
@@ -1302,9 +1057,11 @@ body {
     border-top: 1px solid var(--border);
 }
 
+/* =====================================================
+   BOUTON VOCAL
+===================================================== */
 
 .voice-button {
-
     width: 38px;
     height: 38px;
 
@@ -1328,15 +1085,11 @@ body {
     transition: .2s ease;
 }
 
-
 .voice-button:hover {
-
     background: #e5e7eb;
 }
 
-
 .voice-button.recording {
-
     color: #fff;
 
     background: #dc2626;
@@ -1344,34 +1097,35 @@ body {
     animation: pulse-record 1s infinite;
 }
 
+.voice-button.ready {
+    color: #fff;
+
+    background: #16a34a;
+}
 
 @keyframes pulse-record {
 
     0% {
-
         box-shadow:
             0 0 0 0 rgba(220,38,38,.4);
-
     }
 
     70% {
-
         box-shadow:
             0 0 0 9px rgba(220,38,38,0);
-
     }
 
     100% {
-
         box-shadow:
             0 0 0 0 rgba(220,38,38,0);
-
     }
 }
 
+/* =====================================================
+   ENREGISTREMENT
+===================================================== */
 
 .recording-info {
-
     display: none;
 
     align-items: center;
@@ -1385,15 +1139,15 @@ body {
     white-space: nowrap;
 }
 
-
 .recording-info.active {
-
     display: flex;
 }
 
+.recording-info.ready {
+    color: #16a34a;
+}
 
 .recording-dot {
-
     width: 7px;
     height: 7px;
 
@@ -1404,25 +1158,28 @@ body {
     animation: blink-record .8s infinite;
 }
 
+.recording-info.ready .recording-dot {
+    background: #16a34a;
+    animation: none;
+}
 
 @keyframes blink-record {
-
     50% {
         opacity: .25;
     }
 }
 
+/* =====================================================
+   INPUT
+===================================================== */
 
 .message-input-wrapper {
-
     flex: 1;
 
     min-width: 0;
 }
 
-
 .message-input {
-
     width: 100%;
 
     min-height: 38px;
@@ -1451,17 +1208,16 @@ body {
     background: #f9fafb;
 }
 
-
 .message-input:focus {
-
     border-color: var(--primary);
-
     background: #fff;
 }
 
+/* =====================================================
+   ENVOYER
+===================================================== */
 
 .send-button {
-
     width: 38px;
     height: 38px;
 
@@ -1483,25 +1239,19 @@ body {
     cursor: pointer;
 }
 
-
 .send-button:hover {
-
     background: var(--primary-dark);
 }
 
-
 .send-button:active {
-
     transform: scale(.93);
 }
-
 
 /* =====================================================
    EMPTY
 ===================================================== */
 
 .empty-chat {
-
     width: 100%;
     height: 100%;
 
@@ -1519,9 +1269,7 @@ body {
     color: var(--muted);
 }
 
-
 .empty-chat-icon {
-
     width: 70px;
     height: 70px;
 
@@ -1541,9 +1289,7 @@ body {
     font-size: 28px;
 }
 
-
 .empty-chat h4 {
-
     margin-bottom: 6px;
 
     font-size: 18px;
@@ -1551,14 +1297,11 @@ body {
     font-weight: 600;
 }
 
-
 .empty-chat p {
-
     margin: 0;
 
     font-size: 13px;
 }
-
 
 /* =====================================================
    MOBILE
@@ -1567,47 +1310,34 @@ body {
 @media (max-width: 767.98px) {
 
     :root {
-
         --navbar-height: 52px;
     }
 
-
     html,
     body {
-
         width: 100%;
         height: 100dvh;
     }
 
-
     .wrapper {
-
         height: 100dvh;
-
         min-height: 0;
     }
 
-
     .main-header {
-
         flex-basis: 52px;
 
         height: 52px;
-
         min-height: 52px;
 
         padding: 0 8px;
     }
 
-
     .titre-messagerie {
-
         font-size: 16px;
     }
 
-
     .notification-panel {
-
         position: fixed;
 
         top: 57px;
@@ -1618,9 +1348,7 @@ body {
         max-width: none;
     }
 
-
     .content-wrapper {
-
         flex: 1 1 auto;
 
         min-height: 0;
@@ -1628,9 +1356,7 @@ body {
         overflow: hidden;
     }
 
-
     .messagerie-container {
-
         height: 100%;
 
         min-height: 0;
@@ -1638,9 +1364,7 @@ body {
         padding: 0;
     }
 
-
     .whatsapp-container {
-
         height: 100%;
 
         min-height: 0;
@@ -1652,40 +1376,30 @@ body {
         box-shadow: none;
     }
 
-
     .conversation-sidebar {
-
         width: 100%;
 
         min-width: 100%;
     }
 
-
     .sidebar-header {
-
         padding: 10px;
     }
 
-
     .conversation-item {
-
         min-height: 62px;
 
         padding: 8px 10px;
     }
 
-
     .conversation-avatar {
-
         width: 42px;
         height: 42px;
 
         min-width: 42px;
     }
 
-
     .chat-header {
-
         height: 52px;
 
         min-height: 52px;
@@ -1693,36 +1407,26 @@ body {
         padding: 6px 7px;
     }
 
-
     .chat-back {
-
         display: flex;
     }
 
-
     .chat-avatar {
-
         width: 38px;
         height: 38px;
 
         min-width: 38px;
     }
 
-
     .chat-user-name {
-
         font-size: 14px;
     }
 
-
     .chat-status {
-
         font-size: 10px;
     }
 
-
     .messages-area {
-
         flex: 1 1 auto;
 
         min-height: 0;
@@ -1730,15 +1434,11 @@ body {
         padding: 8px 7px;
     }
 
-
     .message-content-received {
-
         max-width: 82%;
     }
 
-
     .message-bubble {
-
         max-width: 75%;
 
         padding: 4px 7px;
@@ -1748,46 +1448,34 @@ body {
         font-size: 12px;
     }
 
-
     .message-row.sent .message-bubble {
-
         max-width: 82%;
     }
 
-
     .message-sender {
-
         gap: 5px;
 
         margin-bottom: 2px;
     }
 
-
     .message-sender-avatar {
-
         width: 23px;
         height: 23px;
 
         min-width: 23px;
     }
 
-
     .message-sender-name {
-
         max-width: 180px;
 
         font-size: 10px;
     }
 
-
     .message-meta {
-
         font-size: 8px;
     }
 
-
     .message-audio {
-
         width: 220px;
 
         max-width: 100%;
@@ -1795,15 +1483,12 @@ body {
         height: 36px;
     }
 
-
     .message-actions {
-
         display: block;
 
         position: relative;
 
         top: auto;
-
         right: auto;
 
         margin-top: 4px;
@@ -1811,16 +1496,12 @@ body {
         text-align: right;
     }
 
-
     .btn-delete-message {
-
         width: 24px;
         height: 24px;
     }
 
-
     .message-form {
-
         padding: 6px 7px;
 
         padding-bottom:
@@ -1829,18 +1510,14 @@ body {
         gap: 4px;
     }
 
-
     .voice-button {
-
         width: 37px;
         height: 37px;
 
         min-width: 37px;
     }
 
-
     .message-input {
-
         min-height: 37px;
 
         max-height: 90px;
@@ -1850,83 +1527,58 @@ body {
         font-size: 13px;
     }
 
-
     .send-button {
-
         width: 37px;
         height: 37px;
 
         min-width: 37px;
     }
 
-
     .conversation-sidebar.mobile-hidden {
-
         display: none;
     }
-
 
     .conversation-sidebar.mobile-visible {
-
         display: flex;
     }
 
-
     .chat-area.mobile-hidden {
-
         display: none;
     }
 
-
     .chat-area.mobile-visible {
-
         display: flex;
     }
 
-
     .recording-info {
-
         font-size: 10px;
     }
-
 }
-
 
 @media (max-width: 380px) {
 
     .message-bubble {
-
         max-width: 78%;
 
         font-size: 11.5px;
     }
 
-
     .message-row.sent .message-bubble {
-
         max-width: 85%;
     }
-
 
     .message-content-received {
-
         max-width: 85%;
     }
 
-
     .message-audio {
-
         width: 200px;
     }
 
-
     .recording-info {
-
         display: none !important;
     }
-
 }
-
 
 /* =====================================================
    SCROLLBAR
@@ -1935,25 +1587,20 @@ body {
 .conversation-list::-webkit-scrollbar,
 .messages-area::-webkit-scrollbar,
 .notification-list::-webkit-scrollbar {
-
     width: 5px;
 }
-
 
 .conversation-list::-webkit-scrollbar-thumb,
 .messages-area::-webkit-scrollbar-thumb,
 .notification-list::-webkit-scrollbar-thumb {
-
     background: #cbd5e1;
 
     border-radius: 10px;
 }
 
-
 .conversation-list::-webkit-scrollbar-track,
 .messages-area::-webkit-scrollbar-track,
 .notification-list::-webkit-scrollbar-track {
-
     background: transparent;
 }
 
@@ -1961,11 +1608,9 @@ body {
 
 </head>
 
-
 <body>
 
 <div class="wrapper">
-
 
 <!-- =====================================================
      NAVBAR
@@ -1983,11 +1628,6 @@ body {
 
         </div>
 
-
-        <!-- =================================================
-             NOTIFICATIONS
-        ================================================== -->
-
         <div class="notification-wrapper"
              id="notificationWrapper">
 
@@ -2001,26 +1641,21 @@ body {
                 {% if notifications_non_lues %}
 
                     <span class="notification-count">
-
                         {{ notifications_non_lues }}
-
                     </span>
 
                 {% endif %}
 
             </button>
 
-
             <div class="notification-panel"
                  id="notificationPanel">
-
 
                 <div class="notification-header">
 
                     <strong>
                         Notifications
                     </strong>
-
 
                     <span>
 
@@ -2039,18 +1674,14 @@ body {
 
                 </div>
 
-
                 <div class="notification-list">
 
-
                     {% for notification in notifications %}
-
 
                         {% if notification.message %}
 
                             <a href="{% url 'conversation' notification.message.expediteur.id %}"
                                class="notification-item {% if not notification.lue %}unread{% endif %}">
-
 
                                 {% if notification.expediteur.photo %}
 
@@ -2061,60 +1692,42 @@ body {
                                 {% else %}
 
                                     <div class="notification-avatar">
-
                                         <i class="fas fa-user"></i>
-
                                     </div>
 
                                 {% endif %}
 
-
                                 <div class="notification-content">
 
                                     <div class="notification-text">
-
                                         {{ notification.texte }}
-
                                     </div>
 
-
                                     <div class="notification-date">
-
                                         {{ notification.date_creation|date:"d/m/Y H:i" }}
-
                                     </div>
 
                                 </div>
 
                             </a>
 
-
                         {% elif notification.message_groupe %}
 
                             <a href="{% url 'groupe_conversation' notification.message_groupe.groupe.id %}"
                                class="notification-item {% if not notification.lue %}unread{% endif %}">
 
-
                                 <div class="notification-avatar group">
-
                                     <i class="fas fa-users"></i>
-
                                 </div>
-
 
                                 <div class="notification-content">
 
                                     <div class="notification-text">
-
                                         {{ notification.texte }}
-
                                     </div>
 
-
                                     <div class="notification-date">
-
                                         {{ notification.date_creation|date:"d/m/Y H:i" }}
-
                                     </div>
 
                                 </div>
@@ -2122,7 +1735,6 @@ body {
                             </a>
 
                         {% endif %}
-
 
                     {% empty %}
 
@@ -2136,7 +1748,6 @@ body {
 
                     {% endfor %}
 
-
                 </div>
 
             </div>
@@ -2146,7 +1757,6 @@ body {
     </div>
 
 </nav>
-
 
 <!-- =====================================================
      CONTENU
@@ -2158,14 +1768,12 @@ body {
 
         <div class="whatsapp-container">
 
-
             <!-- =================================================
                  SIDEBAR
             ================================================== -->
 
             <aside class="conversation-sidebar"
                    id="conversationSidebar">
-
 
                 <div class="sidebar-header">
 
@@ -2175,12 +1783,6 @@ body {
                             Discussions
                         </h5>
 
-
-                        <!-- =================================================
-                             COMPTEUR TOTAL
-                             PRIVÉ + GROUPE
-                        ================================================== -->
-
                         <span class="unread-badge"
                               id="messagesNonLusBadge"
                               {% if not messages_non_lus %}
@@ -2188,15 +1790,12 @@ body {
                               {% endif %}>
 
                             {% if messages_non_lus %}
-
                                 {{ messages_non_lus }}
-
                             {% endif %}
 
                         </span>
 
                     </div>
-
 
                     <div class="search-box">
 
@@ -2211,20 +1810,13 @@ body {
 
                 </div>
 
-
                 <div class="conversation-list"
                      id="conversationList">
-
-
-                    <!-- =================================================
-                         CONVERSATIONS PRIVÉES
-                    ================================================== -->
 
                     {% for utilisateur in utilisateurs_conversations %}
 
                         <a href="{% url 'conversation' utilisateur.id %}"
                            class="conversation-item">
-
 
                             {% if utilisateur.photo %}
 
@@ -2242,7 +1834,6 @@ body {
 
                             {% endif %}
 
-
                             <div class="conversation-info">
 
                                 <span class="conversation-name">
@@ -2252,11 +1843,8 @@ body {
 
                                 </span>
 
-
                                 <span class="conversation-preview">
-
                                     Discussion privée
-
                                 </span>
 
                             </div>
@@ -2265,16 +1853,10 @@ body {
 
                     {% endfor %}
 
-
-                    <!-- =================================================
-                         GROUPES
-                    ================================================== -->
-
                     {% for groupe in groupes %}
 
                         <a href="{% url 'groupe_conversation' groupe.id %}"
                            class="conversation-item">
-
 
                             <div class="conversation-avatar group">
 
@@ -2282,20 +1864,14 @@ body {
 
                             </div>
 
-
                             <div class="conversation-info">
 
                                 <span class="conversation-name">
-
                                     {{ groupe.nom }}
-
                                 </span>
 
-
                                 <span class="conversation-preview">
-
                                     Groupe
-
                                 </span>
 
                             </div>
@@ -2304,12 +1880,9 @@ body {
 
                     {% endfor %}
 
-
                 </div>
 
-
                 <div class="sidebar-footer">
-
 
                     <a href="{% url 'nouveau_message' %}"
                        class="btn-new">
@@ -2319,7 +1892,6 @@ body {
                         <span>Nouveau</span>
 
                     </a>
-
 
                     <a href="{% url 'creer_groupe' %}"
                        class="btn-group">
@@ -2334,7 +1906,6 @@ body {
 
             </aside>
 
-
             <!-- =================================================
                  CHAT
             ================================================== -->
@@ -2342,12 +1913,9 @@ body {
             <main class="chat-area"
                   id="chatArea">
 
-
                 {% if utilisateur_selectionne %}
 
-
                     <div class="chat-header">
-
 
                         <a href="#"
                            class="chat-back"
@@ -2356,7 +1924,6 @@ body {
                             <i class="fas fa-arrow-left"></i>
 
                         </a>
-
 
                         {% if utilisateur_selectionne.photo %}
 
@@ -2367,13 +1934,10 @@ body {
                         {% else %}
 
                             <div class="chat-avatar chat-avatar-default">
-
                                 <i class="fas fa-user"></i>
-
                             </div>
 
                         {% endif %}
-
 
                         <div class="chat-user-info">
 
@@ -2384,43 +1948,32 @@ body {
 
                             </span>
 
-
                             <span class="chat-status">
-
                                 Discussion privée
-
                             </span>
 
                         </div>
 
                     </div>
 
-
                     <div class="messages-area"
                          id="messagesArea">
 
-
                         {% for msg in conversation %}
 
-
                             {% if msg.expediteur_id == request.user.id %}
-
 
                                 <div class="message-row sent">
 
                                     <div class="message-bubble">
 
-
                                         {% if msg.contenu %}
 
                                             <div class="message-text">
-
                                                 {{ msg.contenu|linebreaksbr }}
-
                                             </div>
 
                                         {% endif %}
-
 
                                         {% if msg.audio %}
 
@@ -2436,11 +1989,9 @@ body {
 
                                         {% endif %}
 
-
                                         <span class="message-meta">
 
                                             {{ msg.date_envoi|date:"H:i" }}
-
 
                                             {% if msg.lu %}
 
@@ -2453,7 +2004,6 @@ body {
                                             {% endif %}
 
                                         </span>
-
 
                                         <div class="message-actions">
 
@@ -2480,17 +2030,13 @@ body {
 
                                 </div>
 
-
                             {% else %}
-
 
                                 <div class="message-row received">
 
                                     <div class="message-content-received">
 
-
                                         <div class="message-sender">
-
 
                                             {% if msg.expediteur.photo %}
 
@@ -2508,7 +2054,6 @@ body {
 
                                             {% endif %}
 
-
                                             <span class="message-sender-name">
 
                                                 {{ msg.expediteur.nom }}
@@ -2518,20 +2063,15 @@ body {
 
                                         </div>
 
-
                                         <div class="message-bubble">
-
 
                                             {% if msg.contenu %}
 
                                                 <div class="message-text">
-
                                                     {{ msg.contenu|linebreaksbr }}
-
                                                 </div>
 
                                             {% endif %}
-
 
                                             {% if msg.audio %}
 
@@ -2547,7 +2087,6 @@ body {
 
                                             {% endif %}
 
-
                                             <span class="message-meta">
 
                                                 {{ msg.date_envoi|date:"H:i" }}
@@ -2560,28 +2099,21 @@ body {
 
                                 </div>
 
-
                             {% endif %}
 
-
                         {% empty %}
-
 
                             <div class="empty-chat">
 
                                 <div>
 
                                     <div class="empty-chat-icon">
-
                                         <i class="fas fa-comments"></i>
-
                                     </div>
-
 
                                     <h4>
                                         Aucun message
                                     </h4>
-
 
                                     <p>
                                         Commencez la conversation.
@@ -2591,12 +2123,13 @@ body {
 
                             </div>
 
-
                         {% endfor %}
-
 
                     </div>
 
+                    <!-- =================================================
+                         FORMULAIRE MESSAGE PRIVÉ
+                    ================================================== -->
 
                     <form method="POST"
                           enctype="multipart/form-data"
@@ -2620,7 +2153,6 @@ body {
                                accept="audio/*"
                                hidden>
 
-
                         <button type="button"
                                 class="voice-button"
                                 id="voiceButton"
@@ -2629,7 +2161,6 @@ body {
                             <i class="fas fa-microphone"></i>
 
                         </button>
-
 
                         <div class="recording-info"
                              id="recordingInfo">
@@ -2642,7 +2173,6 @@ body {
 
                         </div>
 
-
                         <div class="message-input-wrapper">
 
                             <textarea name="contenu"
@@ -2654,9 +2184,9 @@ body {
 
                         </div>
 
-
                         <button type="submit"
                                 class="send-button"
+                                id="sendButton"
                                 aria-label="Envoyer">
 
                             <i class="fas fa-paper-plane"></i>
@@ -2665,12 +2195,9 @@ body {
 
                     </form>
 
-
                 {% elif groupe_selectionne %}
 
-
                     <div class="chat-header">
-
 
                         <a href="#"
                            class="chat-back"
@@ -2680,59 +2207,44 @@ body {
 
                         </a>
 
-
                         <div class="chat-avatar group">
 
                             <i class="fas fa-users"></i>
 
                         </div>
 
-
                         <div class="chat-user-info">
 
                             <span class="chat-user-name">
-
                                 {{ groupe_selectionne.nom }}
-
                             </span>
 
-
                             <span class="chat-status">
-
                                 Discussion de groupe
-
                             </span>
 
                         </div>
 
                     </div>
 
-
                     <div class="messages-area"
                          id="messagesArea">
 
-
                         {% for msg in conversation_groupe %}
 
-
                             {% if msg.expediteur_id == request.user.id %}
-
 
                                 <div class="message-row sent">
 
                                     <div class="message-bubble">
 
-
                                         {% if msg.contenu %}
 
                                             <div class="message-text">
-
                                                 {{ msg.contenu|linebreaksbr }}
-
                                             </div>
 
                                         {% endif %}
-
 
                                         {% if msg.audio %}
 
@@ -2748,13 +2260,11 @@ body {
 
                                         {% endif %}
 
-
                                         <span class="message-meta">
 
                                             {{ msg.date_envoi|date:"H:i" }}
 
                                         </span>
-
 
                                         <div class="message-actions">
 
@@ -2781,17 +2291,13 @@ body {
 
                                 </div>
 
-
                             {% else %}
-
 
                                 <div class="message-row received">
 
                                     <div class="message-content-received">
 
-
                                         <div class="message-sender">
-
 
                                             {% if msg.expediteur.photo %}
 
@@ -2809,7 +2315,6 @@ body {
 
                                             {% endif %}
 
-
                                             <span class="message-sender-name">
 
                                                 {{ msg.expediteur.nom }}
@@ -2819,20 +2324,15 @@ body {
 
                                         </div>
 
-
                                         <div class="message-bubble">
-
 
                                             {% if msg.contenu %}
 
                                                 <div class="message-text">
-
                                                     {{ msg.contenu|linebreaksbr }}
-
                                                 </div>
 
                                             {% endif %}
-
 
                                             {% if msg.audio %}
 
@@ -2842,15 +2342,14 @@ body {
 
                                                     <source src="{{ msg.audio.url }}">
 
+                                                    Votre navigateur ne supporte pas l'audio.
+
                                                 </audio>
 
                                             {% endif %}
 
-
                                             <span class="message-meta">
-
                                                 {{ msg.date_envoi|date:"H:i" }}
-
                                             </span>
 
                                         </div>
@@ -2859,28 +2358,21 @@ body {
 
                                 </div>
 
-
                             {% endif %}
 
-
                         {% empty %}
-
 
                             <div class="empty-chat">
 
                                 <div>
 
                                     <div class="empty-chat-icon">
-
                                         <i class="fas fa-users"></i>
-
                                     </div>
-
 
                                     <h4>
                                         Aucun message
                                     </h4>
-
 
                                     <p>
                                         Commencez la conversation du groupe.
@@ -2890,12 +2382,13 @@ body {
 
                             </div>
 
-
                         {% endfor %}
-
 
                     </div>
 
+                    <!-- =================================================
+                         FORMULAIRE GROUPE
+                    ================================================== -->
 
                     <form method="POST"
                           enctype="multipart/form-data"
@@ -2919,7 +2412,6 @@ body {
                                accept="audio/*"
                                hidden>
 
-
                         <button type="button"
                                 class="voice-button"
                                 id="voiceButton"
@@ -2928,7 +2420,6 @@ body {
                             <i class="fas fa-microphone"></i>
 
                         </button>
-
 
                         <div class="recording-info"
                              id="recordingInfo">
@@ -2941,7 +2432,6 @@ body {
 
                         </div>
 
-
                         <div class="message-input-wrapper">
 
                             <textarea name="contenu"
@@ -2953,9 +2443,9 @@ body {
 
                         </div>
 
-
                         <button type="submit"
                                 class="send-button"
+                                id="sendButton"
                                 aria-label="Envoyer">
 
                             <i class="fas fa-paper-plane"></i>
@@ -2964,25 +2454,19 @@ body {
 
                     </form>
 
-
                 {% else %}
-
 
                     <div class="empty-chat">
 
                         <div>
 
                             <div class="empty-chat-icon">
-
                                 <i class="fas fa-comments"></i>
-
                             </div>
-
 
                             <h4>
                                 Bienvenue dans votre messagerie
                             </h4>
-
 
                             <p>
                                 Sélectionnez une conversation pour commencer.
@@ -2992,9 +2476,7 @@ body {
 
                     </div>
 
-
                 {% endif %}
-
 
             </main>
 
@@ -3004,9 +2486,8 @@ body {
 
 </div>
 
-
 <!-- =====================================================
-     SON DE NOTIFICATION
+     SON NOTIFICATION
 ===================================================== -->
 
 <audio id="messageNotificationSound"
@@ -3017,7 +2498,6 @@ body {
 
 </audio>
 
-
 <!-- =====================================================
      JAVASCRIPT
 ===================================================== -->
@@ -3026,18 +2506,77 @@ body {
 
 document.addEventListener("DOMContentLoaded", function () {
 
-
     /* =====================================================
-       ELEMENTS
-    ====================================================== */
+       ÉLÉMENTS
+    ===================================================== */
 
     const notificationSound =
-        document.getElementById(
-            "messageNotificationSound"
-        );
+        document.getElementById("messageNotificationSound");
+
+    const notificationButton =
+        document.getElementById("notificationButton");
+
+    const notificationPanel =
+        document.getElementById("notificationPanel");
+
+    const recherche =
+        document.getElementById("rechercheConversation");
+
+    const messageInput =
+        document.getElementById("messageInput");
+
+    const messageForm =
+        document.getElementById("messageForm");
+
+    const sendButton =
+        document.getElementById("sendButton");
+
+    const voiceButton =
+        document.getElementById("voiceButton");
+
+    const audioInput =
+        document.getElementById("audioInput");
+
+    const recordingInfo =
+        document.getElementById("recordingInfo");
+
+    const recordingTime =
+        document.getElementById("recordingTime");
 
 
-    let audioAutorise = false;
+    /* =====================================================
+       VARIABLES ENREGISTREMENT VOCAL
+    ===================================================== */
+
+    let mediaRecorderGlobal = null;
+
+    let microphoneStream = null;
+
+    let audioChunksGlobal = [];
+
+    let recordingIntervalGlobal = null;
+
+    let recordingSecondsGlobal = 0;
+
+    let vocalPret = false;
+
+    let arretEnCours = false;
+
+    /*
+     * TRUE lorsque l'utilisateur appuie sur Envoyer
+     * pendant l'enregistrement.
+     */
+    let envoyerApresArret = false;
+
+    /*
+     * Empêche les doubles soumissions.
+     */
+    let formulaireEnvoiEnCours = false;
+
+
+    /* =====================================================
+       VARIABLES POLLING
+    ===================================================== */
 
     let actualisationEnCours = false;
 
@@ -3045,12 +2584,130 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let compteurEnCours = false;
 
+    let pollingActif = true;
+
 
     /* =====================================================
-       AUTORISATION AUDIO
-    ====================================================== */
+       VARIABLES NOTIFICATION
+    ===================================================== */
 
-    function autoriserSonNotification() {
+    let audioAutorise = false;
+
+    let derniereLectureSon = 0;
+
+    const DELAI_MINIMUM_SON = 1200;
+
+
+    /* =====================================================
+       OUTIL : DÉTECTION REDIRECTION LOGIN
+    ===================================================== */
+
+    function estRedirige(response) {
+
+        if (!response) {
+            return true;
+        }
+
+        /*
+         * response.redirected = true signifie que fetch
+         * a suivi une redirection.
+         */
+        if (response.redirected) {
+
+            console.warn(
+                "⚠️ Requête redirigée vers :",
+                response.url
+            );
+
+            return true;
+        }
+
+        /*
+         * Vérification supplémentaire.
+         */
+        if (
+            response.url &&
+            (
+                response.url.includes("/dashbaord/") ||
+                response.url.includes("/accounts/login") ||
+                response.url.includes("/login/")
+            )
+        ) {
+
+            console.warn(
+                "⚠️ Session probablement expirée :",
+                response.url
+            );
+
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /* =====================================================
+       GESTION SESSION EXPIRÉE
+    ===================================================== */
+
+    function gererSessionExpiree() {
+
+        pollingActif = false;
+
+        console.warn(
+            "⚠️ Session utilisateur expirée."
+        );
+
+        /*
+         * On ne redirige pas brutalement pendant
+         * un enregistrement vocal.
+         */
+        if (
+            mediaRecorderGlobal &&
+            mediaRecorderGlobal.state === "recording"
+        ) {
+
+            return;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       SON : CHARGEMENT
+    ===================================================== */
+
+    if (notificationSound) {
+
+        notificationSound.preload = "auto";
+
+        notificationSound.volume = 1;
+
+        notificationSound.muted = false;
+
+        try {
+
+            notificationSound.load();
+
+        }
+        catch (erreur) {
+
+            console.warn(
+                "Erreur chargement son :",
+                erreur
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       AUTORISER LE SON
+    ===================================================== */
+
+    async function autoriserSonNotification() {
 
         if (
             !notificationSound ||
@@ -3061,68 +2718,58 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
-
-        notificationSound.volume = 0;
-
-        notificationSound.muted = true;
-
-
         try {
+
+            /*
+             * Une interaction utilisateur autorise
+             * la lecture audio dans la majorité
+             * des navigateurs.
+             */
+            notificationSound.muted = true;
+
+            notificationSound.volume = 0;
+
+            notificationSound.currentTime = 0;
 
             const promesse =
                 notificationSound.play();
 
-
             if (
-                promesse !== undefined
+                promesse &&
+                typeof promesse.then === "function"
             ) {
 
-                promesse
-                    .then(function () {
-
-                        notificationSound.pause();
-
-                        notificationSound.currentTime = 0;
-
-                        notificationSound.muted = false;
-
-                        notificationSound.volume = 1;
-
-                        audioAutorise = true;
-
-                        console.log(
-                            "Audio notification autorisé."
-                        );
-
-                    })
-                    .catch(function () {
-
-                        notificationSound.muted = false;
-
-                        notificationSound.volume = 1;
-
-                        console.log(
-                            "Interaction utilisateur nécessaire pour le son."
-                        );
-
-                    });
+                await promesse;
 
             }
-            else {
 
-                notificationSound.muted = false;
+            notificationSound.pause();
 
-                notificationSound.volume = 1;
+            notificationSound.currentTime = 0;
 
-                audioAutorise = true;
+            notificationSound.muted = false;
 
-            }
+            notificationSound.volume = 1;
+
+            audioAutorise = true;
+
+            console.log(
+                "🔊 Son de notification autorisé."
+            );
 
         }
         catch (erreur) {
 
-            console.log(
-                "Erreur autorisation audio :",
+            notificationSound.pause();
+
+            notificationSound.currentTime = 0;
+
+            notificationSound.muted = false;
+
+            notificationSound.volume = 1;
+
+            console.warn(
+                "🔊 Autorisation audio en attente :",
                 erreur
             );
 
@@ -3131,18 +2778,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    document.addEventListener(
-        "click",
-        autoriserSonNotification,
-        {
-            passive: true
-        }
-    );
-
+    /* =====================================================
+       PREMIÈRE INTERACTION UTILISATEUR
+    ===================================================== */
 
     document.addEventListener(
-        "touchstart",
-        autoriserSonNotification,
+        "pointerdown",
+        function () {
+
+            autoriserSonNotification();
+
+        },
         {
             passive: true
         }
@@ -3151,7 +2797,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.addEventListener(
         "keydown",
-        autoriserSonNotification,
+        function () {
+
+            autoriserSonNotification();
+
+        },
         {
             passive: true
         }
@@ -3159,32 +2809,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
-       SONNERIE
-    ====================================================== */
+       JOUER SON NOTIFICATION
+    ===================================================== */
 
-    function jouerSonnerie() {
+    async function jouerSonnerie() {
 
         if (!notificationSound) {
 
-            console.log(
-                "Élément audio introuvable."
+            console.warn(
+                "🔔 Élément audio introuvable."
             );
 
             return;
 
         }
 
+        const maintenant =
+            Date.now();
 
-        if (!audioAutorise) {
-
-            console.log(
-                "Son non autorisé par le navigateur."
-            );
+        /*
+         * Évite les doubles sons rapprochés.
+         */
+        if (
+            maintenant -
+            derniereLectureSon <
+            DELAI_MINIMUM_SON
+        ) {
 
             return;
 
         }
 
+        derniereLectureSon =
+            maintenant;
 
         try {
 
@@ -3196,31 +2853,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
             notificationSound.volume = 1;
 
-
             const promesse =
                 notificationSound.play();
 
-
             if (
-                promesse !== undefined
+                promesse &&
+                typeof promesse.then === "function"
             ) {
 
-                promesse.catch(function (erreur) {
-
-                    console.log(
-                        "Erreur lecture sonnerie :",
-                        erreur
-                    );
-
-                });
+                await promesse;
 
             }
+
+            console.log(
+                "🔔 Notification sonore jouée."
+            );
 
         }
         catch (erreur) {
 
-            console.log(
-                "Erreur son notification :",
+            console.warn(
+                "🔔 Lecture du son impossible :",
                 erreur
             );
 
@@ -3230,14 +2883,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
-       BADGE DISCUSSIONS
-       
-       Le badge représente :
-       
-       messages privés non lus
-       +
-       messages de groupes non lus
-    ====================================================== */
+       BADGE
+    ===================================================== */
 
     function mettreAJourBadge(nombre) {
 
@@ -3246,17 +2893,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 "messagesNonLusBadge"
             );
 
-
         if (!badge) {
-
             return;
-
         }
-
 
         nombre =
             Number(nombre || 0);
-
 
         if (nombre > 0) {
 
@@ -3265,12 +2907,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             badge.style.display =
                 "flex";
-
-            badge.style.transform =
-                "scale(1)";
-
-            badge.style.opacity =
-                "1";
 
         }
         else {
@@ -3287,8 +2923,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
-       ACTUALISER LA CONVERSATION
-    ====================================================== */
+       ACTUALISER CONVERSATION
+    ===================================================== */
 
     async function actualiserConversation() {
 
@@ -3297,16 +2933,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 "messagesArea"
             );
 
-
-        const messageForm =
+        const form =
             document.getElementById(
                 "messageForm"
             );
 
-
         if (
             !messagesArea ||
-            !messageForm ||
+            !form ||
             actualisationEnCours
         ) {
 
@@ -3314,17 +2948,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
         }
 
+        /*
+         * NE JAMAIS actualiser pendant l'enregistrement.
+         */
+        if (
+            mediaRecorderGlobal &&
+            mediaRecorderGlobal.state === "recording"
+        ) {
 
-        actualisationEnCours = true;
+            return;
 
+        }
+
+        actualisationEnCours =
+            true;
 
         const etaitEnBas =
             (
                 messagesArea.scrollHeight -
                 messagesArea.scrollTop -
                 messagesArea.clientHeight
-            ) < 100;
-
+            ) < 120;
 
         try {
 
@@ -3334,8 +2978,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     {
                         method: "GET",
 
-                        headers: {
+                        credentials: "same-origin",
 
+                        headers: {
                             "X-Requested-With":
                                 "XMLHttpRequest",
 
@@ -3343,28 +2988,39 @@ document.addEventListener("DOMContentLoaded", function () {
                                 "no-cache"
                         },
 
-                        cache: "no-store"
+                        cache:
+                            "no-store"
                     }
                 );
 
+            /*
+             * Ne pas analyser le dashboard
+             * comme du HTML de conversation.
+             */
+            if (
+                estRedirige(response)
+            ) {
+
+                gererSessionExpiree();
+
+                return;
+
+            }
 
             if (!response.ok) {
 
                 throw new Error(
-                    "Erreur HTTP " +
+                    "HTTP " +
                     response.status
                 );
 
             }
 
-
             const html =
                 await response.text();
 
-
             const parser =
                 new DOMParser();
-
 
             const documentTemporaire =
                 parser.parseFromString(
@@ -3372,48 +3028,60 @@ document.addEventListener("DOMContentLoaded", function () {
                     "text/html"
                 );
 
-
             const nouveauMessagesArea =
                 documentTemporaire.querySelector(
                     "#messagesArea"
                 );
 
-
             if (!nouveauMessagesArea) {
-
-                console.log(
-                    "Zone messages introuvable."
-                );
 
                 return;
 
             }
 
-
+            /*
+             * IMPORTANT :
+             * seulement messagesArea est remplacé.
+             * Le formulaire vocal reste donc intact.
+             */
             messagesArea.innerHTML =
                 nouveauMessagesArea.innerHTML;
 
+            /*
+             * Réinitialiser les lecteurs audio
+             * nouvellement ajoutés.
+             */
+            const audios =
+                messagesArea.querySelectorAll(
+                    "audio"
+                );
+
+            audios.forEach(
+                function (audio) {
+
+                    audio.preload =
+                        "metadata";
+
+                }
+            );
 
             if (etaitEnBas) {
 
-                requestAnimationFrame(function () {
+                requestAnimationFrame(
+                    function () {
 
-                    messagesArea.scrollTop =
-                        messagesArea.scrollHeight;
+                        messagesArea.scrollTop =
+                            messagesArea.scrollHeight;
 
-                });
+                    }
+                );
 
             }
-
-
-            console.log(
-                "Conversation actualisée."
-            );
 
         }
         catch (erreur) {
 
-            console.log(
+            console.warn(
                 "Erreur actualisation conversation :",
                 erreur
             );
@@ -3421,7 +3089,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         finally {
 
-            actualisationEnCours = false;
+            actualisationEnCours =
+                false;
 
         }
 
@@ -3429,20 +3098,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
-       NOUVEAUX MESSAGES
-    ====================================================== */
+       VÉRIFIER NOUVEAUX MESSAGES
+    ===================================================== */
 
     async function verifierNouveauxMessages() {
 
-        if (verificationEnCours) {
+        if (
+            verificationEnCours ||
+            !pollingActif
+        ) {
 
             return;
 
         }
 
-
-        verificationEnCours = true;
-
+        /*
+         * Ne pas faire de requête inutile pendant
+         * certaines étapes critiques de l'enregistrement.
+         */
+        verificationEnCours =
+            true;
 
         try {
 
@@ -3452,62 +3127,124 @@ document.addEventListener("DOMContentLoaded", function () {
                     {
                         method: "GET",
 
-                        headers: {
+                        credentials: "same-origin",
 
+                        headers: {
                             "X-Requested-With":
                                 "XMLHttpRequest",
 
                             "Cache-Control":
-                                "no-cache"
+                                "no-cache",
+
+                            "Accept":
+                                "application/json"
                         },
 
-                        cache: "no-store"
+                        cache:
+                            "no-store"
                     }
                 );
 
+            /*
+             * Le problème de tes logs :
+             *
+             * /messagerie/verifier-nouveaux-messages/ → 302
+             * /dashbaord/directeur/?next=...
+             *
+             * On détecte maintenant cette situation.
+             */
+            if (
+                estRedirige(response)
+            ) {
+
+                gererSessionExpiree();
+
+                return;
+
+            }
 
             if (!response.ok) {
 
                 throw new Error(
-                    "Erreur HTTP " +
+                    "HTTP " +
                     response.status
                 );
 
             }
 
+            /*
+             * Vérifier que le serveur renvoie bien du JSON.
+             */
+            const contentType =
+                response.headers.get(
+                    "content-type"
+                ) || "";
+
+            if (
+                !contentType.includes(
+                    "application/json"
+                )
+            ) {
+
+                console.warn(
+                    "Réponse non JSON reçue."
+                );
+
+                return;
+
+            }
 
             const data =
                 await response.json();
 
-
             console.log(
-                "Vérification message :",
+                "📨 Vérification messages :",
                 data
             );
 
+            const nouveauMessage =
+                data.nouveau_message === true ||
+                data.nouveau_message === 1 ||
+                data.nouveau_message === "true";
 
+            const nouvelleNotification =
+                data.nouvelle_notification === true ||
+                data.nouvelle_notification === 1 ||
+                data.nouvelle_notification === "true";
+
+            const messagePrive =
+                data.message_prive === true ||
+                data.message_prive === 1 ||
+                data.message_prive === "true";
+
+            const messageGroupe =
+                data.message_groupe === true ||
+                data.message_groupe === 1 ||
+                data.message_groupe === "true";
+
+            /*
+             * Si l'un des indicateurs est positif :
+             */
             if (
-                data.nouveau_message === true
+                nouveauMessage ||
+                nouvelleNotification ||
+                messagePrive ||
+                messageGroupe
             ) {
 
-                /* =========================================
-                   SON
-                ========================================== */
+                /*
+                 * Jouer le son.
+                 */
+                await jouerSonnerie();
 
-                jouerSonnerie();
-
-
-                /* =========================================
-                   ACTUALISATION
-                ========================================== */
-
+                /*
+                 * Actualiser la conversation.
+                 */
                 await actualiserConversation();
 
-
-                /* =========================================
-                   COMPTEUR
-                ========================================== */
-
+                /*
+                 * Actualiser le compteur.
+                 */
                 await actualiserCompteurMessages();
 
             }
@@ -3515,7 +3252,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         catch (erreur) {
 
-            console.log(
+            console.warn(
                 "Erreur vérification nouveaux messages :",
                 erreur
             );
@@ -3523,7 +3260,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         finally {
 
-            verificationEnCours = false;
+            verificationEnCours =
+                false;
 
         }
 
@@ -3531,20 +3269,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
-       COMPTEUR TOTAL
-    ====================================================== */
+       COMPTEUR MESSAGES
+    ===================================================== */
 
     async function actualiserCompteurMessages() {
 
-        if (compteurEnCours) {
+        if (
+            compteurEnCours ||
+            !pollingActif
+        ) {
 
             return;
 
         }
 
-
-        compteurEnCours = true;
-
+        compteurEnCours =
+            true;
 
         try {
 
@@ -3554,54 +3294,77 @@ document.addEventListener("DOMContentLoaded", function () {
                     {
                         method: "GET",
 
-                        headers: {
+                        credentials: "same-origin",
 
+                        headers: {
                             "X-Requested-With":
                                 "XMLHttpRequest",
 
                             "Cache-Control":
-                                "no-cache"
+                                "no-cache",
+
+                            "Accept":
+                                "application/json"
                         },
 
-                        cache: "no-store"
+                        cache:
+                            "no-store"
                     }
                 );
 
+            /*
+             * Gestion du 302.
+             */
+            if (
+                estRedirige(response)
+            ) {
+
+                gererSessionExpiree();
+
+                return;
+
+            }
 
             if (!response.ok) {
 
                 throw new Error(
-                    "Erreur HTTP " +
+                    "HTTP " +
                     response.status
                 );
 
             }
 
+            const contentType =
+                response.headers.get(
+                    "content-type"
+                ) || "";
+
+            if (
+                !contentType.includes(
+                    "application/json"
+                )
+            ) {
+
+                return;
+
+            }
 
             const data =
                 await response.json();
-
 
             const nombre =
                 Number(
                     data.messages_non_lus || 0
                 );
 
-
             mettreAJourBadge(
-                nombre
-            );
-
-
-            console.log(
-                "Total messages non lus :",
                 nombre
             );
 
         }
         catch (erreur) {
 
-            console.log(
+            console.warn(
                 "Erreur compteur messages :",
                 erreur
             );
@@ -3609,7 +3372,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         finally {
 
-            compteurEnCours = false;
+            compteurEnCours =
+                false;
 
         }
 
@@ -3618,13 +3382,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     /* =====================================================
        RECHERCHE CONVERSATIONS
-    ====================================================== */
-
-    const recherche =
-        document.getElementById(
-            "rechercheConversation"
-        );
-
+    ===================================================== */
 
     if (recherche) {
 
@@ -3637,37 +3395,36 @@ document.addEventListener("DOMContentLoaded", function () {
                         .toLowerCase()
                         .trim();
 
-
                 const conversations =
                     document.querySelectorAll(
                         ".conversation-item"
                     );
 
+                conversations.forEach(
+                    function (item) {
 
-                conversations.forEach(function (item) {
+                        const texte =
+                            item.textContent
+                                .toLowerCase();
 
-                    const texte =
-                        item.textContent
-                            .toLowerCase();
+                        if (
+                            !terme ||
+                            texte.includes(terme)
+                        ) {
 
+                            item.style.display =
+                                "flex";
 
-                    if (
-                        !terme ||
-                        texte.includes(terme)
-                    ) {
+                        }
+                        else {
 
-                        item.style.display =
-                            "flex";
+                            item.style.display =
+                                "none";
+
+                        }
 
                     }
-                    else {
-
-                        item.style.display =
-                            "none";
-
-                    }
-
-                });
+                );
 
             }
         );
@@ -3676,20 +3433,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
-       NOTIFICATION PANEL
-    ====================================================== */
-
-    const notificationButton =
-        document.getElementById(
-            "notificationButton"
-        );
-
-
-    const notificationPanel =
-        document.getElementById(
-            "notificationPanel"
-        );
-
+       NOTIFICATIONS
+    ===================================================== */
 
     if (
         notificationButton &&
@@ -3698,7 +3443,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         notificationButton.addEventListener(
             "click",
-            function (event) {
+            async function (event) {
 
                 event.stopPropagation();
 
@@ -3706,24 +3451,29 @@ document.addEventListener("DOMContentLoaded", function () {
                     "active"
                 );
 
+                await autoriserSonNotification();
+
+            }
+        );
+
+
+        notificationPanel.addEventListener(
+            "click",
+            function (event) {
+
+                event.stopPropagation();
+
             }
         );
 
 
         document.addEventListener(
             "click",
-            function (event) {
+            function () {
 
-                if (
-                    !notificationPanel.contains(event.target) &&
-                    !notificationButton.contains(event.target)
-                ) {
-
-                    notificationPanel.classList.remove(
-                        "active"
-                    );
-
-                }
+                notificationPanel.classList.remove(
+                    "active"
+                );
 
             }
         );
@@ -3732,14 +3482,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
-       TEXTAREA AUTO-GROW
-    ====================================================== */
-
-    const messageInput =
-        document.getElementById(
-            "messageInput"
-        );
-
+       TEXTAREA
+    ===================================================== */
 
     if (messageInput) {
 
@@ -3749,7 +3493,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 this.style.height =
                     "auto";
-
 
                 this.style.height =
                     Math.min(
@@ -3772,16 +3515,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                     event.preventDefault();
 
+                    if (messageForm) {
 
-                    const form =
-                        document.getElementById(
-                            "messageForm"
-                        );
-
-
-                    if (form) {
-
-                        form.requestSubmit();
+                        messageForm.requestSubmit();
 
                     }
 
@@ -3795,7 +3531,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     /* =====================================================
        SUPPRESSION
-    ====================================================== */
+    ===================================================== */
 
     window.confirmerSuppression =
         function (form) {
@@ -3809,7 +3545,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     /* =====================================================
        MOBILE
-    ====================================================== */
+    ===================================================== */
 
     window.retourConversations =
         function () {
@@ -3819,12 +3555,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     "conversationSidebar"
                 );
 
-
             const chat =
                 document.getElementById(
                     "chatArea"
                 );
-
 
             if (sidebar) {
 
@@ -3837,7 +3571,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 );
 
             }
-
 
             if (chat) {
 
@@ -3865,32 +3598,37 @@ document.addEventListener("DOMContentLoaded", function () {
                     "conversationSidebar"
                 );
 
-
             const chat =
                 document.getElementById(
                     "chatArea"
                 );
 
-
-            const messageForm =
+            const form =
                 document.getElementById(
                     "messageForm"
                 );
-
 
             if (
                 sidebar &&
                 chat
             ) {
 
-                if (messageForm) {
+                if (form) {
 
                     sidebar.classList.add(
                         "mobile-hidden"
                     );
 
+                    sidebar.classList.remove(
+                        "mobile-visible"
+                    );
+
                     chat.classList.add(
                         "mobile-visible"
+                    );
+
+                    chat.classList.remove(
+                        "mobile-hidden"
                     );
 
                 }
@@ -3900,11 +3638,50 @@ document.addEventListener("DOMContentLoaded", function () {
                         "mobile-visible"
                     );
 
+                    sidebar.classList.remove(
+                        "mobile-hidden"
+                    );
+
                     chat.classList.add(
                         "mobile-hidden"
                     );
 
+                    chat.classList.remove(
+                        "mobile-visible"
+                    );
+
                 }
+
+            }
+
+        }
+        else {
+
+            const sidebar =
+                document.getElementById(
+                    "conversationSidebar"
+                );
+
+            const chat =
+                document.getElementById(
+                    "chatArea"
+                );
+
+            if (sidebar) {
+
+                sidebar.classList.remove(
+                    "mobile-hidden",
+                    "mobile-visible"
+                );
+
+            }
+
+            if (chat) {
+
+                chat.classList.remove(
+                    "mobile-hidden",
+                    "mobile-visible"
+                );
 
             }
 
@@ -3917,41 +3694,1104 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
-       VOICE RECORDING
-    ====================================================== */
+       FORMAT AUDIO
+    ===================================================== */
 
-    const voiceButton =
-        document.getElementById(
-            "voiceButton"
+    function choisirFormatAudio() {
+
+        if (
+            typeof MediaRecorder ===
+            "undefined"
+        ) {
+
+            return null;
+
+        }
+
+        const formats = [
+
+            {
+                mime:
+                    "audio/webm;codecs=opus",
+
+                extension:
+                    "webm"
+            },
+
+            {
+                mime:
+                    "audio/webm",
+
+                extension:
+                    "webm"
+            },
+
+            {
+                mime:
+                    "audio/ogg;codecs=opus",
+
+                extension:
+                    "ogg"
+            },
+
+            {
+                mime:
+                    "audio/ogg",
+
+                extension:
+                    "ogg"
+            },
+
+            {
+                mime:
+                    "audio/mp4",
+
+                extension:
+                    "mp4"
+            }
+
+        ];
+
+        for (
+            const format of formats
+        ) {
+
+            try {
+
+                if (
+                    MediaRecorder.isTypeSupported(
+                        format.mime
+                    )
+                ) {
+
+                    return format;
+
+                }
+
+            }
+            catch (erreur) {
+
+                console.warn(
+                    "Format non supporté :",
+                    format.mime
+                );
+
+            }
+
+        }
+
+        /*
+         * Laisser le navigateur choisir.
+         */
+        return {
+            mime: "",
+            extension: "webm"
+        };
+
+    }
+
+
+    /* =====================================================
+       INTERFACE VOCAL
+    ===================================================== */
+
+    function resetInterfaceVocal() {
+
+        if (recordingInfo) {
+
+            recordingInfo.classList.remove(
+                "active",
+                "ready"
+            );
+
+        }
+
+        if (voiceButton) {
+
+            voiceButton.classList.remove(
+                "recording",
+                "ready"
+            );
+
+            voiceButton.innerHTML =
+                '<i class="fas fa-microphone"></i>';
+
+            voiceButton.title =
+                "Message vocal";
+
+        }
+
+        if (recordingTime) {
+
+            recordingTime.textContent =
+                "00:00";
+
+        }
+
+        clearInterval(
+            recordingIntervalGlobal
         );
 
+        recordingIntervalGlobal =
+            null;
 
-    const audioInput =
-        document.getElementById(
-            "audioInput"
+        recordingSecondsGlobal =
+            0;
+
+    }
+
+
+    function afficherVocalPret() {
+
+        vocalPret =
+            true;
+
+        if (recordingInfo) {
+
+            recordingInfo.classList.remove(
+                "active"
+            );
+
+            recordingInfo.classList.add(
+                "ready"
+            );
+
+        }
+
+        if (voiceButton) {
+
+            voiceButton.classList.remove(
+                "recording"
+            );
+
+            voiceButton.classList.add(
+                "ready"
+            );
+
+            voiceButton.innerHTML =
+                '<i class="fas fa-check"></i>';
+
+            voiceButton.title =
+                "Vocal prêt à être envoyé";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       ARRÊTER MICROPHONE
+    ===================================================== */
+
+    function arreterMicrophone() {
+
+        if (!microphoneStream) {
+
+            return;
+
+        }
+
+        microphoneStream
+            .getTracks()
+            .forEach(
+                function (track) {
+
+                    try {
+
+                        track.stop();
+
+                    }
+                    catch (erreur) {
+
+                        console.warn(
+                            "Erreur arrêt piste :",
+                            erreur
+                        );
+
+                    }
+
+                }
+            );
+
+        microphoneStream =
+            null;
+
+    }
+
+
+    /* =====================================================
+       CRÉER FICHIER VOCAL
+    ===================================================== */
+
+    function creerFichierVocal(
+        format,
+        recorder
+    ) {
+
+        if (
+            !audioChunksGlobal ||
+            !audioChunksGlobal.length
+        ) {
+
+            console.error(
+                "❌ Aucun morceau audio."
+            );
+
+            return false;
+
+        }
+
+        /*
+         * Le mimeType doit venir du recorder
+         * AVANT de mettre recorder à null.
+         */
+        const typeAudio =
+            (
+                recorder &&
+                recorder.mimeType
+            )
+            ||
+            (
+                format &&
+                format.mime
+            )
+            ||
+            "audio/webm";
+
+        const blob =
+            new Blob(
+                audioChunksGlobal,
+                {
+                    type:
+                        typeAudio
+                }
+            );
+
+        console.log(
+            "🎤 Blob audio :",
+            blob.size,
+            "octets"
         );
 
+        if (
+            !blob ||
+            blob.size <= 0
+        ) {
 
-    const recordingInfo =
-        document.getElementById(
-            "recordingInfo"
+            console.error(
+                "❌ Blob audio vide."
+            );
+
+            return false;
+
+        }
+
+        let extension =
+            "webm";
+
+        if (
+            typeAudio.includes("ogg")
+        ) {
+
+            extension =
+                "ogg";
+
+        }
+        else if (
+            typeAudio.includes("mp4")
+        ) {
+
+            extension =
+                "mp4";
+
+        }
+        else if (
+            typeAudio.includes("webm")
+        ) {
+
+            extension =
+                "webm";
+
+        }
+
+        const file =
+            new File(
+                [
+                    blob
+                ],
+                "message_vocal_" +
+                Date.now() +
+                "." +
+                extension,
+                {
+                    type:
+                        typeAudio,
+
+                    lastModified:
+                        Date.now()
+                }
+            );
+
+        if (!audioInput) {
+
+            console.error(
+                "❌ audioInput introuvable."
+            );
+
+            return false;
+
+        }
+
+        try {
+
+            const dataTransfer =
+                new DataTransfer();
+
+            dataTransfer.items.add(
+                file
+            );
+
+            audioInput.files =
+                dataTransfer.files;
+
+        }
+        catch (erreur) {
+
+            console.error(
+                "❌ Erreur DataTransfer :",
+                erreur
+            );
+
+            return false;
+
+        }
+
+        if (
+            !audioInput.files ||
+            !audioInput.files.length
+        ) {
+
+            console.error(
+                "❌ Fichier vocal non attaché."
+            );
+
+            return false;
+
+        }
+
+        console.log(
+            "================================"
         );
 
-
-    const recordingTime =
-        document.getElementById(
-            "recordingTime"
+        console.log(
+            "✅ VOCAL ATTACHÉ"
         );
 
+        console.log(
+            "Nom :",
+            audioInput.files[0].name
+        );
 
-    let mediaRecorder = null;
+        console.log(
+            "Type :",
+            audioInput.files[0].type
+        );
 
-    let audioChunks = [];
+        console.log(
+            "Taille :",
+            audioInput.files[0].size
+        );
 
-    let recordingInterval = null;
+        console.log(
+            "================================"
+        );
 
-    let recordingSeconds = 0;
+        return true;
 
+    }
+
+
+    /* =====================================================
+       DÉMARRER ENREGISTREMENT
+    ===================================================== */
+
+    async function demarrerEnregistrement() {
+
+        if (
+            !navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia
+        ) {
+
+            alert(
+                "Votre navigateur ne permet pas l'accès au microphone."
+            );
+
+            return;
+
+        }
+
+        if (
+            typeof MediaRecorder ===
+            "undefined"
+        ) {
+
+            alert(
+                "Votre navigateur ne supporte pas l'enregistrement vocal."
+            );
+
+            return;
+
+        }
+
+        /*
+         * Ne pas démarrer deux enregistrements.
+         */
+        if (
+            mediaRecorderGlobal &&
+            mediaRecorderGlobal.state === "recording"
+        ) {
+
+            return;
+
+        }
+
+        try {
+
+            microphoneStream =
+                await navigator.mediaDevices.getUserMedia(
+                    {
+                        audio: {
+                            echoCancellation:
+                                true,
+
+                            noiseSuppression:
+                                true,
+
+                            autoGainControl:
+                                true
+                        }
+                    }
+                );
+
+            audioChunksGlobal =
+                [];
+
+            vocalPret =
+                false;
+
+            arretEnCours =
+                false;
+
+            envoyerApresArret =
+                false;
+
+            formulaireEnvoiEnCours =
+                false;
+
+            if (audioInput) {
+
+                audioInput.value =
+                    "";
+
+            }
+
+            resetInterfaceVocal();
+
+            const format =
+                choisirFormatAudio();
+
+            if (!format) {
+
+                arreterMicrophone();
+
+                alert(
+                    "Aucun format audio compatible n'a été trouvé."
+                );
+
+                return;
+
+            }
+
+            let recorder;
+
+            if (format.mime) {
+
+                recorder =
+                    new MediaRecorder(
+                        microphoneStream,
+                        {
+                            mimeType:
+                                format.mime
+                        }
+                    );
+
+            }
+            else {
+
+                recorder =
+                    new MediaRecorder(
+                        microphoneStream
+                    );
+
+            }
+
+            mediaRecorderGlobal =
+                recorder;
+
+            /*
+             * Données audio.
+             */
+            recorder.ondataavailable =
+                function (event) {
+
+                    if (
+                        event.data &&
+                        event.data.size > 0
+                    ) {
+
+                        audioChunksGlobal.push(
+                            event.data
+                        );
+
+                        console.log(
+                            "🎤 Bloc audio :",
+                            event.data.size
+                        );
+
+                    }
+
+                };
+
+
+            /* =================================================
+               FIN ENREGISTREMENT
+            ================================================= */
+
+            recorder.onstop =
+                async function () {
+
+                    console.log(
+                        "🛑 MediaRecorder terminé."
+                    );
+
+                    clearInterval(
+                        recordingIntervalGlobal
+                    );
+
+                    recordingIntervalGlobal =
+                        null;
+
+                    /*
+                     * Garder cette valeur AVANT
+                     * de remettre mediaRecorderGlobal à null.
+                     */
+                    const recorderTermine =
+                        recorder;
+
+                    /*
+                     * Arrêter immédiatement le micro.
+                     */
+                    arreterMicrophone();
+
+                    /*
+                     * Le dernier dataavailable est normalement
+                     * déjà arrivé au moment du onstop.
+                     *
+                     * Petit délai de sécurité.
+                     */
+                    await new Promise(
+                        function (resolve) {
+
+                            setTimeout(
+                                resolve,
+                                80
+                            );
+
+                        }
+                    );
+
+                    /*
+                     * Vérifier les données.
+                     */
+                    if (
+                        !audioChunksGlobal.length
+                    ) {
+
+                        console.error(
+                            "❌ Aucun bloc audio."
+                        );
+
+                        mediaRecorderGlobal =
+                            null;
+
+                        arretEnCours =
+                            false;
+
+                        envoyerApresArret =
+                            false;
+
+                        resetInterfaceVocal();
+
+                        if (sendButton) {
+
+                            sendButton.disabled =
+                                false;
+
+                            sendButton.innerHTML =
+                                '<i class="fas fa-paper-plane"></i>';
+
+                        }
+
+                        alert(
+                            "Aucun son n'a été enregistré. Veuillez réessayer."
+                        );
+
+                        return;
+
+                    }
+
+                    /*
+                     * Créer et attacher le fichier.
+                     */
+                    const fichierCree =
+                        creerFichierVocal(
+                            format,
+                            recorderTermine
+                        );
+
+                    /*
+                     * Maintenant seulement :
+                     * recorder = null.
+                     */
+                    mediaRecorderGlobal =
+                        null;
+
+                    arretEnCours =
+                        false;
+
+                    if (!fichierCree) {
+
+                        envoyerApresArret =
+                            false;
+
+                        resetInterfaceVocal();
+
+                        if (sendButton) {
+
+                            sendButton.disabled =
+                                false;
+
+                            sendButton.innerHTML =
+                                '<i class="fas fa-paper-plane"></i>';
+
+                        }
+
+                        alert(
+                            "Impossible de préparer le message vocal."
+                        );
+
+                        return;
+
+                    }
+
+                    /*
+                     * Vocal prêt.
+                     */
+                    afficherVocalPret();
+
+                    /*
+                     * ==========================================
+                     * CAS IMPORTANT
+                     *
+                     * Envoyer a été pressé pendant l'enregistrement.
+                     * ==========================================
+                     */
+                    if (envoyerApresArret) {
+
+                        console.log(
+                            "📤 Envoi automatique du vocal..."
+                        );
+
+                        envoyerApresArret =
+                            false;
+
+                        /*
+                         * Vérifier une dernière fois que
+                         * le fichier existe.
+                         */
+                        if (
+                            audioInput &&
+                            audioInput.files &&
+                            audioInput.files.length
+                        ) {
+
+                            /*
+                             * requestSubmit déclenche le listener
+                             * submit une seule fois.
+                             */
+                            setTimeout(
+                                function () {
+
+                                    if (
+                                        messageForm &&
+                                        !formulaireEnvoiEnCours
+                                    ) {
+
+                                        messageForm.requestSubmit();
+
+                                    }
+
+                                },
+                                50
+                            );
+
+                        }
+                        else {
+
+                            console.error(
+                                "❌ Le fichier vocal a disparu avant l'envoi."
+                            );
+
+                            if (sendButton) {
+
+                                sendButton.disabled =
+                                    false;
+
+                                sendButton.innerHTML =
+                                    '<i class="fas fa-paper-plane"></i>';
+
+                            }
+
+                        }
+
+                    }
+
+                };
+
+
+            /* =================================================
+               ERREUR RECORDER
+            ================================================= */
+
+            recorder.onerror =
+                function (event) {
+
+                    console.error(
+                        "❌ Erreur MediaRecorder :",
+                        event
+                    );
+
+                    clearInterval(
+                        recordingIntervalGlobal
+                    );
+
+                    arreterMicrophone();
+
+                    mediaRecorderGlobal =
+                        null;
+
+                    arretEnCours =
+                        false;
+
+                    envoyerApresArret =
+                        false;
+
+                    resetInterfaceVocal();
+
+                    if (sendButton) {
+
+                        sendButton.disabled =
+                            false;
+
+                        sendButton.innerHTML =
+                            '<i class="fas fa-paper-plane"></i>';
+
+                    }
+
+                    alert(
+                        "Une erreur est survenue pendant l'enregistrement vocal."
+                    );
+
+                };
+
+
+            /*
+             * Démarrer.
+             */
+            recorder.start(
+                250
+            );
+
+            /*
+             * Interface rouge.
+             */
+            if (voiceButton) {
+
+                voiceButton.classList.add(
+                    "recording"
+                );
+
+                voiceButton.classList.remove(
+                    "ready"
+                );
+
+                voiceButton.innerHTML =
+                    '<i class="fas fa-stop"></i>';
+
+                voiceButton.title =
+                    "Arrêter l'enregistrement";
+
+            }
+
+            if (recordingInfo) {
+
+                recordingInfo.classList.add(
+                    "active"
+                );
+
+                recordingInfo.classList.remove(
+                    "ready"
+                );
+
+            }
+
+            recordingSecondsGlobal =
+                0;
+
+            if (recordingTime) {
+
+                recordingTime.textContent =
+                    "00:00";
+
+            }
+
+            recordingIntervalGlobal =
+                setInterval(
+                    function () {
+
+                        recordingSecondsGlobal++;
+
+                        const minutes =
+                            Math.floor(
+                                recordingSecondsGlobal /
+                                60
+                            );
+
+                        const seconds =
+                            recordingSecondsGlobal %
+                            60;
+
+                        if (recordingTime) {
+
+                            recordingTime.textContent =
+                                String(
+                                    minutes
+                                ).padStart(
+                                    2,
+                                    "0"
+                                )
+                                +
+                                ":"
+                                +
+                                String(
+                                    seconds
+                                ).padStart(
+                                    2,
+                                    "0"
+                                );
+
+                        }
+
+                    },
+                    1000
+                );
+
+            console.log(
+                "🎤 Enregistrement démarré."
+            );
+
+        }
+        catch (erreur) {
+
+            console.error(
+                "❌ Erreur microphone :",
+                erreur
+            );
+
+            arreterMicrophone();
+
+            mediaRecorderGlobal =
+                null;
+
+            arretEnCours =
+                false;
+
+            envoyerApresArret =
+                false;
+
+            resetInterfaceVocal();
+
+            if (
+                erreur.name ===
+                "NotAllowedError"
+            ) {
+
+                alert(
+                    "L'accès au microphone a été refusé. Autorisez le microphone dans votre navigateur."
+                );
+
+            }
+            else if (
+                erreur.name ===
+                "NotFoundError"
+            ) {
+
+                alert(
+                    "Aucun microphone n'a été trouvé sur cet appareil."
+                );
+
+            }
+            else if (
+                erreur.name ===
+                "NotReadableError"
+            ) {
+
+                alert(
+                    "Le microphone est déjà utilisé par une autre application."
+                );
+
+            }
+            else {
+
+                alert(
+                    "Impossible d'accéder au microphone."
+                );
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       ARRÊTER ENREGISTREMENT
+    ===================================================== */
+
+    function arreterEnregistrement(
+        pourEnvoyer = false
+    ) {
+
+        const recorder =
+            mediaRecorderGlobal;
+
+        if (!recorder) {
+
+            return;
+
+        }
+
+        if (
+            recorder.state !==
+            "recording"
+        ) {
+
+            return;
+
+        }
+
+        if (arretEnCours) {
+
+            /*
+             * Si un arrêt est déjà en cours mais que
+             * l'utilisateur vient maintenant d'appuyer
+             * sur Envoyer, on mémorise quand même.
+             */
+            if (pourEnvoyer) {
+
+                envoyerApresArret =
+                    true;
+
+            }
+
+            return;
+
+        }
+
+        arretEnCours =
+            true;
+
+        /*
+         * IMPORTANT :
+         * mémoriser AVANT stop().
+         */
+        if (pourEnvoyer) {
+
+            envoyerApresArret =
+                true;
+
+        }
+
+        clearInterval(
+            recordingIntervalGlobal
+        );
+
+        recordingIntervalGlobal =
+            null;
+
+        /*
+         * Ne PAS utiliser requestData().
+         *
+         * stop() provoque automatiquement le dernier
+         * dataavailable puis onstop.
+         */
+        try {
+
+            recorder.stop();
+
+            console.log(
+                "🛑 Arrêt demandé au MediaRecorder."
+            );
+
+        }
+        catch (erreur) {
+
+            console.error(
+                "❌ Erreur arrêt recorder :",
+                erreur
+            );
+
+            arretEnCours =
+                false;
+
+            envoyerApresArret =
+                false;
+
+            arreterMicrophone();
+
+            mediaRecorderGlobal =
+                null;
+
+            resetInterfaceVocal();
+
+            if (sendButton) {
+
+                sendButton.disabled =
+                    false;
+
+                sendButton.innerHTML =
+                    '<i class="fas fa-paper-plane"></i>';
+
+            }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       BOUTON MICROPHONE
+    ===================================================== */
 
     if (
         voiceButton &&
@@ -3962,287 +4802,303 @@ document.addEventListener("DOMContentLoaded", function () {
             "click",
             async function () {
 
+                await autoriserSonNotification();
+
+                /*
+                 * ENREGISTREMENT EN COURS :
+                 * clic = arrêter sans envoyer.
+                 */
                 if (
-                    mediaRecorder &&
-                    mediaRecorder.state === "recording"
-                ) {
-
-                    mediaRecorder.stop();
-
-                    return;
-
-                }
-
-
-                if (
-                    !navigator.mediaDevices ||
-                    !navigator.mediaDevices.getUserMedia
-                ) {
-
-                    alert(
-                        "Votre navigateur ne supporte pas l'enregistrement vocal."
-                    );
-
-                    return;
-
-                }
-
-
-                try {
-
-                    const stream =
-                        await navigator.mediaDevices.getUserMedia(
-                            {
-                                audio: true
-                            }
-                        );
-
-
-                    audioChunks = [];
-
-
-                    let mimeType =
-                        "audio/webm";
-
-
-                    if (
-                        !MediaRecorder.isTypeSupported(
-                            "audio/webm"
-                        )
-                    ) {
-
-                        mimeType = "";
-
-                    }
-
-
-                    mediaRecorder =
-                        mimeType
-                            ? new MediaRecorder(
-                                stream,
-                                {
-                                    mimeType:
-                                        mimeType
-                                }
-                              )
-                            : new MediaRecorder(
-                                stream
-                              );
-
-
-                    mediaRecorder.ondataavailable =
-                        function (event) {
-
-                            if (
-                                event.data &&
-                                event.data.size > 0
-                            ) {
-
-                                audioChunks.push(
-                                    event.data
-                                );
-
-                            }
-
-                        };
-
-
-                    mediaRecorder.onstop =
-                        function () {
-
-                            stream
-                                .getTracks()
-                                .forEach(
-                                    function (track) {
-
-                                        track.stop();
-
-                                    }
-                                );
-
-
-                            const blob =
-                                new Blob(
-                                    audioChunks,
-                                    {
-                                        type:
-                                            mediaRecorder.mimeType ||
-                                            "audio/webm"
-                                    }
-                                );
-
-
-                            const file =
-                                new File(
-                                    [
-                                        blob
-                                    ],
-                                    "message_vocal.webm",
-                                    {
-                                        type:
-                                            blob.type
-                                    }
-                                );
-
-
-                            const dataTransfer =
-                                new DataTransfer();
-
-
-                            dataTransfer.items.add(
-                                file
-                            );
-
-
-                            audioInput.files =
-                                dataTransfer.files;
-
-
-                            if (
-                                recordingInfo
-                            ) {
-
-                                recordingInfo.classList.remove(
-                                    "active"
-                                );
-
-                            }
-
-
-                            voiceButton.classList.remove(
-                                "recording"
-                            );
-
-
-                            voiceButton.innerHTML =
-                                '<i class="fas fa-microphone"></i>';
-
-
-                            clearInterval(
-                                recordingInterval
-                            );
-
-
-                            recordingSeconds = 0;
-
-
-                            if (
-                                recordingTime
-                            ) {
-
-                                recordingTime.textContent =
-                                    "00:00";
-
-                            }
-
-
-                            console.log(
-                                "Message vocal prêt à être envoyé."
-                            );
-
-                        };
-
-
-                    mediaRecorder.start();
-
-
-                    voiceButton.classList.add(
+                    mediaRecorderGlobal &&
+                    mediaRecorderGlobal.state ===
                         "recording"
+                ) {
+
+                    arreterEnregistrement(
+                        false
                     );
 
+                    return;
 
-                    voiceButton.innerHTML =
-                        '<i class="fas fa-stop"></i>';
+                }
 
+                /*
+                 * Vocal déjà prêt :
+                 * clic = supprimer.
+                 */
+                if (
+                    vocalPret &&
+                    audioInput.files &&
+                    audioInput.files.length
+                ) {
 
-                    if (
-                        recordingInfo
-                    ) {
-
-                        recordingInfo.classList.add(
-                            "active"
+                    const confirmer =
+                        confirm(
+                            "Supprimer le message vocal enregistré ?"
                         );
+
+                    if (confirmer) {
+
+                        audioInput.value =
+                            "";
+
+                        vocalPret =
+                            false;
+
+                        audioChunksGlobal =
+                            [];
+
+                        resetInterfaceVocal();
 
                     }
 
-
-                    recordingSeconds = 0;
-
-
-                    recordingInterval =
-                        setInterval(
-                            function () {
-
-                                recordingSeconds++;
-
-
-                                const minutes =
-                                    Math.floor(
-                                        recordingSeconds / 60
-                                    );
-
-
-                                const seconds =
-                                    recordingSeconds % 60;
-
-
-                                if (
-                                    recordingTime
-                                ) {
-
-                                    recordingTime.textContent =
-                                        String(minutes)
-                                            .padStart(2, "0") +
-                                        ":" +
-                                        String(seconds)
-                                            .padStart(2, "0");
-
-                                }
-
-                            },
-                            1000
-                        );
-
-                }
-                catch (erreur) {
-
-                    console.error(
-                        "Erreur microphone :",
-                        erreur
-                    );
-
-
-                    alert(
-                        "Impossible d'accéder au microphone. Vérifiez l'autorisation du navigateur."
-                    );
+                    return;
 
                 }
 
-            });
+                /*
+                 * Démarrer nouvel enregistrement.
+                 */
+                await demarrerEnregistrement();
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SOUMISSION FORMULAIRE
+    ===================================================== */
+
+    if (messageForm) {
+
+        messageForm.addEventListener(
+            "submit",
+            function (event) {
+
+                /*
+                 * ==========================================
+                 * DOUBLE ENVOI
+                 * ==========================================
+                 */
+                if (
+                    formulaireEnvoiEnCours
+                ) {
+
+                    event.preventDefault();
+
+                    return;
+
+                }
+
+
+                /*
+                 * ==========================================
+                 * ENVOYER PENDANT L'ENREGISTREMENT
+                 * ==========================================
+                 */
+                if (
+                    mediaRecorderGlobal &&
+                    mediaRecorderGlobal.state ===
+                        "recording"
+                ) {
+
+                    event.preventDefault();
+
+                    console.log(
+                        "📤 Envoyer pressé pendant l'enregistrement."
+                    );
+
+                    /*
+                     * Mémoriser l'intention.
+                     */
+                    envoyerApresArret =
+                        true;
+
+                    /*
+                     * Bloquer le bouton pendant la
+                     * finalisation du fichier.
+                     */
+                    if (sendButton) {
+
+                        sendButton.disabled =
+                            true;
+
+                        sendButton.innerHTML =
+                            '<i class="fas fa-spinner fa-spin"></i>';
+
+                    }
+
+                    /*
+                     * Arrêt automatique.
+                     */
+                    arreterEnregistrement(
+                        true
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                 * ==========================================
+                 * VÉRIFIER TEXTE
+                 * ==========================================
+                 */
+                const texte =
+                    messageInput
+                        ? messageInput.value.trim()
+                        : "";
+
+
+                /*
+                 * ==========================================
+                 * VÉRIFIER AUDIO
+                 * ==========================================
+                 */
+                const audioExiste =
+                    audioInput &&
+                    audioInput.files &&
+                    audioInput.files.length > 0;
+
+
+                /*
+                 * ==========================================
+                 * RIEN À ENVOYER
+                 * ==========================================
+                 */
+                if (
+                    !texte &&
+                    !audioExiste
+                ) {
+
+                    event.preventDefault();
+
+                    if (messageInput) {
+
+                        messageInput.focus();
+
+                    }
+
+                    return;
+
+                }
+
+
+                /*
+                 * ==========================================
+                 * ENVOI NORMAL
+                 * ==========================================
+                 */
+                formulaireEnvoiEnCours =
+                    true;
+
+                if (sendButton) {
+
+                    sendButton.disabled =
+                        true;
+
+                    sendButton.innerHTML =
+                        '<i class="fas fa-spinner fa-spin"></i>';
+
+                }
+
+                console.log(
+                    "📤 Envoi du formulaire..."
+                );
+
+                if (audioExiste) {
+
+                    console.log(
+                        "🎤 Audio présent :",
+                        audioInput.files[0].name
+                    );
+
+                    console.log(
+                        "🎤 Taille :",
+                        audioInput.files[0].size
+                    );
+
+                }
+
+                /*
+                 * NE PAS appeler preventDefault().
+                 *
+                 * Django reçoit normalement le POST
+                 * multipart/form-data.
+                 */
+
+            }
+        );
 
     }
 
 
     /* =====================================================
        INITIALISATION
-       
-       Le premier appel initialise l'état serveur.
-       Il ne déclenche pas de sonnerie.
-    ====================================================== */
+    ===================================================== */
 
-    verifierNouveauxMessages();
+    if (notificationSound) {
 
+        try {
+
+            notificationSound.load();
+
+        }
+        catch (erreur) {
+
+            console.warn(
+                "Erreur chargement notification :",
+                erreur
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Compteur initial.
+     */
     actualiserCompteurMessages();
+
+
+    /*
+     * Vérification initiale.
+     */
+    verifierNouveauxMessages();
 
 
     /* =====================================================
        POLLING
-       
-       Vérification toutes les 3 secondes.
-    ====================================================== */
+    ===================================================== */
 
     setInterval(
         async function () {
+
+            if (!pollingActif) {
+
+                return;
+
+            }
+
+            /*
+             * Pendant l'enregistrement :
+             * ne pas actualiser la conversation.
+             */
+            if (
+                mediaRecorderGlobal &&
+                mediaRecorderGlobal.state ===
+                    "recording"
+            ) {
+
+                await actualiserCompteurMessages();
+
+                return;
+
+            }
 
             await verifierNouveauxMessages();
 
@@ -4254,14 +5110,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
-       RETOUR SUR L'ONGLET
-    ====================================================== */
+       RETOUR SUR LA PAGE
+    ===================================================== */
 
     document.addEventListener(
         "visibilitychange",
         function () {
 
-            if (!document.hidden) {
+            if (
+                !document.hidden
+            ) {
+
+                autoriserSonNotification();
 
                 verifierNouveauxMessages();
 
@@ -4273,10 +5133,81 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
 
+    /* =====================================================
+       REDIMENSIONNEMENT
+    ===================================================== */
+
+    window.addEventListener(
+        "resize",
+        function () {
+
+            if (
+                !mediaRecorderGlobal ||
+                mediaRecorderGlobal.state !==
+                    "recording"
+            ) {
+
+                initialiserMobile();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       NETTOYAGE
+    ===================================================== */
+
+    window.addEventListener(
+        "beforeunload",
+        function () {
+
+            pollingActif =
+                false;
+
+            clearInterval(
+                recordingIntervalGlobal
+            );
+
+            if (
+                mediaRecorderGlobal &&
+                mediaRecorderGlobal.state ===
+                    "recording"
+            ) {
+
+                try {
+
+                    mediaRecorderGlobal.stop();
+
+                }
+                catch (erreur) {
+
+                    console.warn(
+                        erreur
+                    );
+
+                }
+
+            }
+
+            arreterMicrophone();
+
+        }
+    );
+
+
+    /* =====================================================
+       FIN
+    ===================================================== */
+
+    console.log(
+        "✅ Messagerie initialisée correctement."
+    );
+
 });
 
 </script>
-
 </body>
 
 </html>
