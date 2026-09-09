@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 
 <html lang="fr">
@@ -7,15 +9,20 @@
 <meta charset="UTF-8">
 
 <meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
 <meta name="description"
-      content="Connexion à la plateforme de gestion scolaire GSP/BNB">
+      content="Connexion sécurisée à la plateforme de gestion scolaire GSP/BNB">
+
+<meta name="theme-color"
+      content="#0b2338">
 
 <title>Connexion | GSP/BNB</title>
 
 
-<!-- Google Fonts -->
+<!-- =====================================================
+     GOOGLE FONTS
+====================================================== -->
 
 <link rel="preconnect"
       href="https://fonts.googleapis.com">
@@ -24,17 +31,21 @@
       href="https://fonts.gstatic.com"
       crossorigin>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet">
 
 
-<!-- Bootstrap -->
+<!-- =====================================================
+     BOOTSTRAP
+====================================================== -->
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
       rel="stylesheet">
 
 
-<!-- Font Awesome -->
+<!-- =====================================================
+     FONT AWESOME
+====================================================== -->
 
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -42,10 +53,13 @@
 
 <style>
 
+    /* =====================================================
+       RESET
+    ====================================================== */
+
     * {
         box-sizing: border-box;
     }
-
 
     html,
     body {
@@ -55,15 +69,13 @@
     }
 
 
+    /* =====================================================
+       BODY
+    ====================================================== */
+
     body {
-        font-family: 'Poppins', sans-serif;
-        background:
-            linear-gradient(
-                135deg,
-                #0b1f33 0%,
-                #123d5a 50%,
-                #0d6b68 100%
-            );
+
+        font-family: "Inter", sans-serif;
 
         min-height: 100vh;
 
@@ -71,62 +83,193 @@
         align-items: center;
         justify-content: center;
 
-        padding: 30px 15px;
+        padding: 30px 18px;
 
-        color: #1f2937;
+        color: #172033;
+
+        background:
+
+            radial-gradient(
+                circle at 10% 10%,
+                rgba(25, 138, 151, 0.22),
+                transparent 32%
+            ),
+
+            radial-gradient(
+                circle at 90% 90%,
+                rgba(13, 139, 130, 0.18),
+                transparent 30%
+            ),
+
+            linear-gradient(
+                135deg,
+                #071827 0%,
+                #0b2b43 48%,
+                #073f47 100%
+            );
+
+        position: relative;
+
+        overflow-x: hidden;
     }
 
 
-    /* =========================
-       CONTAINER PRINCIPAL
-    ========================== */
+    /* =====================================================
+       DÉCORATIONS DE FOND
+    ====================================================== */
+
+    body::before,
+    body::after {
+
+        content: "";
+
+        position: fixed;
+
+        border-radius: 50%;
+
+        pointer-events: none;
+
+        filter: blur(2px);
+    }
+
+    body::before {
+
+        width: 420px;
+        height: 420px;
+
+        top: -210px;
+        right: -160px;
+
+        background: rgba(255, 255, 255, 0.035);
+    }
+
+    body::after {
+
+        width: 350px;
+        height: 350px;
+
+        bottom: -180px;
+        left: -140px;
+
+        background: rgba(255, 255, 255, 0.025);
+    }
+
+
+    /* =====================================================
+       CONTENEUR PRINCIPAL
+    ====================================================== */
 
     .login-container {
+
         width: 100%;
-        max-width: 1050px;
 
-        background: #ffffff;
+        max-width: 1080px;
 
-        border-radius: 24px;
+        min-height: 650px;
+
+        display: flex;
 
         overflow: hidden;
 
-        box-shadow:
-            0 25px 60px rgba(0, 0, 0, 0.25);
+        background: rgba(255, 255, 255, 0.98);
 
-        display: flex;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+
+        border-radius: 28px;
+
+        box-shadow:
+
+            0 35px 90px rgba(0, 0, 0, 0.30),
+
+            0 10px 30px rgba(0, 0, 0, 0.12);
+
+        position: relative;
+
+        z-index: 2;
+
+        animation: containerAppear 0.55s ease;
     }
 
 
-    /* =========================
+    @keyframes containerAppear {
+
+        from {
+
+            opacity: 0;
+
+            transform: translateY(18px) scale(0.985);
+        }
+
+        to {
+
+            opacity: 1;
+
+            transform: translateY(0) scale(1);
+        }
+    }
+
+
+    /* =====================================================
        PARTIE GAUCHE
-    ========================== */
+    ====================================================== */
 
     .login-brand {
-        width: 45%;
 
-        background:
-            linear-gradient(
-                145deg,
-                #0b1f33,
-                #125b70
-            );
+        width: 46%;
+
+        min-height: 650px;
+
+        padding: 58px 50px;
 
         color: white;
 
-        padding: 55px 45px;
-
         display: flex;
-        flex-direction: column;
-        justify-content: center;
+
+        align-items: center;
 
         position: relative;
 
         overflow: hidden;
+
+        background:
+
+            linear-gradient(
+                145deg,
+                #081d31 0%,
+                #0c4058 52%,
+                #08756f 100%
+            );
     }
 
 
+    /* Cercles décoratifs */
+
     .login-brand::before {
+
+        content: "";
+
+        position: absolute;
+
+        width: 420px;
+        height: 420px;
+
+        border-radius: 50%;
+
+        top: -220px;
+        right: -200px;
+
+        border: 1px solid rgba(255,255,255,0.08);
+
+        box-shadow:
+
+            0 0 0 45px rgba(255,255,255,0.018),
+
+            0 0 0 90px rgba(255,255,255,0.012);
+    }
+
+
+    .login-brand::after {
+
         content: "";
 
         position: absolute;
@@ -136,288 +279,517 @@
 
         border-radius: 50%;
 
-        background: rgba(255, 255, 255, 0.06);
+        bottom: -150px;
+        left: -130px;
 
-        top: -100px;
-        right: -100px;
-    }
-
-
-    .login-brand::after {
-        content: "";
-
-        position: absolute;
-
-        width: 220px;
-        height: 220px;
-
-        border-radius: 50%;
-
-        background: rgba(255, 255, 255, 0.05);
-
-        bottom: -100px;
-        left: -80px;
+        background: rgba(255,255,255,0.035);
     }
 
 
     .brand-content {
+
         position: relative;
-        z-index: 2;
+
+        z-index: 3;
+
+        width: 100%;
     }
 
 
-    .brand-icon {
-        width: 78px;
-        height: 78px;
+    /* =====================================================
+       BADGE
+    ====================================================== */
 
-        border-radius: 20px;
+    .brand-badge {
 
-        background: rgba(255, 255, 255, 0.12);
+        display: inline-flex;
 
-        border: 1px solid rgba(255, 255, 255, 0.18);
-
-        display: flex;
         align-items: center;
-        justify-content: center;
+
+        gap: 8px;
+
+        padding: 8px 13px;
 
         margin-bottom: 28px;
 
-        font-size: 34px;
+        border-radius: 50px;
+
+        background: rgba(255,255,255,0.08);
+
+        border: 1px solid rgba(255,255,255,0.13);
+
+        color: rgba(255,255,255,0.86);
+
+        font-size: 11px;
+
+        font-weight: 600;
+
+        letter-spacing: 0.4px;
+
+        text-transform: uppercase;
     }
 
 
+    .brand-badge i {
+
+        font-size: 10px;
+
+        color: #7ee7dc;
+    }
+
+
+    /* =====================================================
+       ICÔNE
+    ====================================================== */
+
+    .brand-icon {
+
+        width: 82px;
+        height: 82px;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
+        margin-bottom: 27px;
+
+        border-radius: 23px;
+
+        background:
+
+            linear-gradient(
+                145deg,
+                rgba(255,255,255,0.17),
+                rgba(255,255,255,0.06)
+            );
+
+        border: 1px solid rgba(255,255,255,0.18);
+
+        box-shadow:
+
+            0 15px 35px rgba(0,0,0,0.15),
+
+            inset 0 1px 0 rgba(255,255,255,0.12);
+
+        font-size: 35px;
+    }
+
+
+    /* =====================================================
+       TITRE
+    ====================================================== */
+
     .brand-title {
-        font-size: 38px;
 
-        font-weight: 700;
+        font-size: 42px;
 
-        letter-spacing: -1px;
+        line-height: 1.1;
 
-        margin-bottom: 15px;
+        font-weight: 800;
+
+        letter-spacing: -1.5px;
+
+        margin-bottom: 17px;
+    }
+
+
+    .brand-title span {
+
+        color: #75e1d6;
     }
 
 
     .brand-subtitle {
-        font-size: 16px;
 
-        line-height: 1.8;
+        max-width: 400px;
 
-        color: rgba(255, 255, 255, 0.82);
+        margin-bottom: 38px;
 
-        max-width: 390px;
+        color: rgba(255,255,255,0.76);
 
-        margin-bottom: 35px;
+        font-size: 14px;
+
+        line-height: 1.85;
     }
 
 
+    /* =====================================================
+       FONCTIONNALITÉS
+    ====================================================== */
+
     .brand-features {
-        list-style: none;
 
         padding: 0;
 
         margin: 0;
+
+        list-style: none;
     }
 
 
     .brand-features li {
+
         display: flex;
 
         align-items: center;
 
-        gap: 12px;
+        gap: 13px;
 
         margin-bottom: 17px;
 
-        font-size: 14px;
+        color: rgba(255,255,255,0.90);
 
-        color: rgba(255, 255, 255, 0.9);
+        font-size: 13px;
+
+        font-weight: 500;
     }
 
 
-    .brand-features i {
-        width: 25px;
-        height: 25px;
+    .feature-icon {
 
-        border-radius: 50%;
+        width: 28px;
+        height: 28px;
 
-        background: rgba(255, 255, 255, 0.13);
+        flex: 0 0 28px;
 
         display: flex;
 
         align-items: center;
         justify-content: center;
 
-        font-size: 11px;
+        border-radius: 9px;
+
+        background: rgba(255,255,255,0.10);
+
+        border: 1px solid rgba(255,255,255,0.08);
+
+        font-size: 10px;
+
+        color: #8ce9df;
     }
 
 
-    /* =========================
-       FORMULAIRE
-    ========================== */
+    /* =====================================================
+       SECTION FORMULAIRE
+    ====================================================== */
 
     .login-form-section {
-        width: 55%;
 
-        padding: 55px 60px;
+        width: 54%;
+
+        padding: 55px 65px;
 
         display: flex;
 
         align-items: center;
+
+        background: #ffffff;
     }
 
 
     .login-form {
+
         width: 100%;
 
-        max-width: 450px;
+        max-width: 430px;
 
         margin: auto;
     }
 
 
-    .welcome-title {
-        font-size: 29px;
+    /* =====================================================
+       EN-TÊTE
+    ====================================================== */
+
+    .form-top {
+
+        margin-bottom: 34px;
+    }
+
+
+    .welcome-label {
+
+        display: inline-flex;
+
+        align-items: center;
+
+        gap: 7px;
+
+        color: #0d7b7b;
+
+        font-size: 11px;
 
         font-weight: 700;
 
-        color: #172033;
+        text-transform: uppercase;
 
-        margin-bottom: 8px;
+        letter-spacing: 0.8px;
+
+        margin-bottom: 10px;
+    }
+
+
+    .welcome-label i {
+
+        font-size: 9px;
+    }
+
+
+    .welcome-title {
+
+        margin: 0 0 9px;
+
+        color: #111827;
+
+        font-size: 30px;
+
+        line-height: 1.2;
+
+        font-weight: 800;
+
+        letter-spacing: -0.8px;
     }
 
 
     .welcome-text {
-        color: #7a8495;
 
-        font-size: 14px;
+        margin: 0;
 
-        margin-bottom: 35px;
+        color: #7b8494;
+
+        font-size: 13px;
+
+        line-height: 1.7;
     }
 
 
-    /* =========================
-       CHAMPS
-    ========================== */
+    /* =====================================================
+       MESSAGES DJANGO
+    ====================================================== */
+
+    .alert-login {
+
+        display: flex;
+
+        flex-direction: column;
+
+        gap: 7px;
+
+        margin-bottom: 23px;
+
+        padding: 13px 15px;
+
+        border-radius: 13px;
+
+        border: 1px solid #fecdd3;
+
+        background: #fff5f6;
+
+        color: #be123c;
+
+        font-size: 12px;
+    }
+
+
+    .alert-login p {
+
+        margin: 0;
+
+        display: flex;
+
+        align-items: center;
+    }
+
+
+    /* =====================================================
+       FORM GROUP
+    ====================================================== */
 
     .form-group {
-        margin-bottom: 22px;
+
+        margin-bottom: 21px;
     }
 
 
     .form-label {
+
         display: block;
 
-        font-size: 13px;
-
-        font-weight: 600;
-
-        color: #374151;
-
         margin-bottom: 9px;
+
+        color: #344054;
+
+        font-size: 12px;
+
+        font-weight: 700;
     }
 
 
+    /* =====================================================
+       INPUT
+    ====================================================== */
+
     .input-wrapper {
+
         position: relative;
     }
 
 
     .input-icon {
+
         position: absolute;
 
-        left: 16px;
+        left: 17px;
 
         top: 50%;
 
         transform: translateY(-50%);
 
-        color: #8b95a5;
+        color: #98a2b3;
 
-        font-size: 15px;
+        font-size: 14px;
 
         z-index: 2;
+
+        transition: color 0.2s ease;
     }
 
 
     .form-control {
-        height: 54px;
 
-        border-radius: 12px;
+        width: 100%;
 
-        border: 1px solid #dce2e9;
+        height: 55px;
 
-        background: #f9fafb;
+        padding-left: 47px;
 
-        padding-left: 46px;
+        padding-right: 47px;
 
-        padding-right: 45px;
+        border: 1px solid #e1e5ea;
 
-        font-size: 14px;
+        border-radius: 13px;
 
-        color: #1f2937;
+        background: #f8fafc;
+
+        color: #172033;
+
+        font-family: inherit;
+
+        font-size: 13px;
+
+        font-weight: 500;
+
+        outline: none;
+
+        box-shadow: none;
 
         transition:
+
             border-color 0.2s ease,
+
+            background 0.2s ease,
+
             box-shadow 0.2s ease,
-            background 0.2s ease;
+
+            transform 0.2s ease;
+    }
+
+
+    .form-control:hover {
+
+        border-color: #cbd5df;
+
+        background: #fbfcfd;
     }
 
 
     .form-control:focus {
+
         background: #ffffff;
 
-        border-color: #126782;
+        border-color: #148486;
 
         box-shadow:
-            0 0 0 4px rgba(18, 103, 130, 0.10);
 
-        outline: none;
+            0 0 0 4px rgba(20,132,134,0.09);
+    }
+
+
+    .input-wrapper:focus-within .input-icon {
+
+        color: #148486;
     }
 
 
     .form-control::placeholder {
-        color: #a1a9b5;
+
+        color: #a8b0bb;
+
+        font-weight: 400;
     }
 
 
+    /* =====================================================
+       TOGGLE MOT DE PASSE
+    ====================================================== */
+
     .password-toggle {
+
         position: absolute;
 
-        right: 15px;
-
         top: 50%;
+        right: 14px;
 
         transform: translateY(-50%);
 
+        width: 32px;
+        height: 32px;
+
+        padding: 0;
+
+        display: flex;
+
+        align-items: center;
+        justify-content: center;
+
         border: none;
+
+        border-radius: 8px;
 
         background: transparent;
 
-        color: #8b95a5;
+        color: #98a2b3;
 
         cursor: pointer;
 
-        padding: 5px;
+        transition:
 
-        z-index: 3;
+            color 0.2s ease,
+
+            background 0.2s ease;
     }
 
 
     .password-toggle:hover {
-        color: #126782;
+
+        color: #087575;
+
+        background: #eef8f7;
     }
 
 
-    /* =========================
+    /* =====================================================
        MOT DE PASSE OUBLIÉ
-    ========================== */
+    ====================================================== */
 
     .forgot-link {
-        color: #126782;
 
-        font-size: 13px;
+        color: #087575;
 
-        font-weight: 600;
+        font-size: 12px;
+
+        font-weight: 700;
 
         text-decoration: none;
 
@@ -426,39 +798,22 @@
 
 
     .forgot-link:hover {
-        color: #0b4b60;
+
+        color: #064f50;
 
         text-decoration: underline;
     }
 
 
-    /* =========================
-       BOUTON
-    ========================== */
+    /* =====================================================
+       BOUTON CONNEXION
+    ====================================================== */
 
     .login-button {
+
         width: 100%;
 
-        height: 54px;
-
-        border: none;
-
-        border-radius: 12px;
-
-        background:
-            linear-gradient(
-                135deg,
-                #126782,
-                #0d8b82
-            );
-
-        color: white;
-
-        font-size: 14px;
-
-        font-weight: 600;
-
-        letter-spacing: 0.2px;
+        height: 55px;
 
         display: flex;
 
@@ -468,140 +823,284 @@
 
         gap: 10px;
 
+        border: none;
+
+        border-radius: 13px;
+
+        background:
+
+            linear-gradient(
+                135deg,
+                #106c7c 0%,
+                #07877e 100%
+            );
+
+        color: #ffffff;
+
+        font-family: inherit;
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+        letter-spacing: 0.1px;
+
+        cursor: pointer;
+
+        box-shadow:
+
+            0 8px 20px rgba(7,135,126,0.18);
+
         transition:
+
             transform 0.2s ease,
-            box-shadow 0.2s ease;
+
+            box-shadow 0.2s ease,
+
+            filter 0.2s ease;
     }
 
 
     .login-button:hover {
+
+        color: #ffffff;
+
         transform: translateY(-2px);
 
-        box-shadow:
-            0 10px 22px rgba(13, 107, 104, 0.25);
+        filter: brightness(1.04);
 
-        color: white;
+        box-shadow:
+
+            0 13px 28px rgba(7,135,126,0.25);
     }
 
 
     .login-button:active {
+
         transform: translateY(0);
+
+        box-shadow:
+
+            0 6px 14px rgba(7,135,126,0.18);
     }
 
 
-    /* =========================
-       MESSAGES
-    ========================== */
-
-    .alert-login {
-        border: none;
-
-        border-radius: 12px;
-
-        background: #fff1f2;
-
-        color: #be123c;
+    .login-button i {
 
         font-size: 13px;
-
-        padding: 13px 15px;
-
-        margin-bottom: 22px;
     }
 
 
-    .alert-login p {
-        margin: 0;
-    }
+    /* =====================================================
+       SÉCURITÉ
+    ====================================================== */
 
+    .security-info {
 
-    .alert-login p + p {
-        margin-top: 5px;
-    }
+        display: flex;
 
+        align-items: center;
 
-    /* =========================
-       PIED FORMULAIRE
-    ========================== */
+        justify-content: center;
 
-    .login-footer {
-        text-align: center;
+        gap: 7px;
 
-        margin-top: 30px;
-
-        padding-top: 20px;
-
-        border-top: 1px solid #edf0f3;
+        margin-top: 24px;
 
         color: #9aa3af;
+
+        font-size: 10px;
+
+        font-weight: 500;
+    }
+
+
+    .security-info i {
+
+        color: #0b8a7f;
 
         font-size: 11px;
     }
 
 
-    /* =========================
-       RESPONSIVE TABLETTE
-    ========================== */
+    /* =====================================================
+       FOOTER
+    ====================================================== */
 
-    @media (max-width: 850px) {
+    .login-footer {
 
-        .login-container {
-            max-width: 650px;
-        }
+        margin-top: 18px;
 
+        padding-top: 18px;
 
-        .login-brand {
-            display: none;
-        }
+        border-top: 1px solid #eef0f3;
 
+        text-align: center;
 
-        .login-form-section {
-            width: 100%;
+        color: #a0a7b2;
 
-            padding: 50px 45px;
-        }
+        font-size: 10px;
 
+        line-height: 1.6;
     }
 
 
-    /* =========================
-       RESPONSIVE MOBILE
-    ========================== */
+    /* =====================================================
+       TABLETTE
+    ====================================================== */
+
+    @media (max-width: 900px) {
+
+        .login-container {
+
+            max-width: 650px;
+
+            min-height: auto;
+        }
+
+        .login-brand {
+
+            display: none;
+        }
+
+        .login-form-section {
+
+            width: 100%;
+
+            padding: 55px 50px;
+        }
+
+        .login-form {
+
+            max-width: 430px;
+        }
+    }
+
+
+    /* =====================================================
+       MOBILE
+    ====================================================== */
 
     @media (max-width: 576px) {
 
         body {
-            padding: 15px;
+
+            padding: 14px;
+
+            align-items: center;
         }
 
 
         .login-container {
-            border-radius: 18px;
+
+            width: 100%;
+
+            border-radius: 20px;
+
+            min-height: auto;
+
+            box-shadow:
+
+                0 20px 50px rgba(0,0,0,0.25);
         }
 
 
         .login-form-section {
-            padding: 35px 23px;
+
+            padding: 38px 22px;
         }
 
 
-        .welcome-title {
-            font-size: 24px;
-        }
-
-
-        .welcome-text {
-            font-size: 13px;
+        .form-top {
 
             margin-bottom: 28px;
         }
 
 
-        .form-control,
-        .login-button {
-            height: 52px;
+        .welcome-title {
+
+            font-size: 25px;
         }
 
+
+        .welcome-text {
+
+            font-size: 12px;
+        }
+
+
+        .form-control,
+        .login-button {
+
+            height: 53px;
+        }
+
+
+        .form-group {
+
+            margin-bottom: 18px;
+        }
+
+
+        .forgot-link {
+
+            font-size: 11px;
+        }
+
+
+        .security-info {
+
+            margin-top: 21px;
+        }
+    }
+
+
+    /* =====================================================
+       PETITS ÉCRANS
+    ====================================================== */
+
+    @media (max-width: 360px) {
+
+        body {
+
+            padding: 10px;
+        }
+
+
+        .login-form-section {
+
+            padding: 32px 17px;
+        }
+
+
+        .welcome-title {
+
+            font-size: 23px;
+        }
+
+
+        .form-control,
+        .login-button {
+
+            height: 51px;
+        }
+    }
+
+
+    /* =====================================================
+       ACCESSIBILITÉ
+    ====================================================== */
+
+    @media (prefers-reduced-motion: reduce) {
+
+        * {
+
+            animation-duration: 0.01ms !important;
+
+            animation-iteration-count: 1 !important;
+
+            transition-duration: 0.01ms !important;
+        }
     }
 
 </style>
@@ -611,291 +1110,414 @@
 
 <body>
 
+
+<!-- =====================================================
+     CONTENEUR PRINCIPAL
+====================================================== -->
+
 <div class="login-container">
 
-<!-- =========================
-     PARTIE PRÉSENTATION
-========================== -->
 
-<div class="login-brand">
+    <!-- =================================================
+         PRÉSENTATION GSP/BNB
+    ================================================== -->
 
-    <div class="brand-content">
+    <section class="login-brand">
 
-        <div class="brand-icon">
-            <i class="fas fa-graduation-cap"></i>
-        </div>
+        <div class="brand-content">
 
 
-        <div class="brand-title">
-            GSP/BNB
-        </div>
+            <div class="brand-badge">
 
+                <i class="fas fa-circle"></i>
 
-        <div class="brand-subtitle">
-
-            Plateforme professionnelle de gestion
-            scolaire permettant de centraliser
-            efficacement les activités de votre
-            établissement.
-
-        </div>
-
-
-        <ul class="brand-features">
-
-            <li>
-                <i class="fas fa-check"></i>
-                Gestion des élèves
-            </li>
-
-            <li>
-                <i class="fas fa-check"></i>
-                Gestion des enseignants
-            </li>
-
-            <li>
-                <i class="fas fa-check"></i>
-                Suivi des paiements
-            </li>
-
-            <li>
-                <i class="fas fa-check"></i>
-                Gestion des résultats scolaires
-            </li>
-
-        </ul>
-
-    </div>
-
-</div>
-
-
-<!-- =========================
-     FORMULAIRE
-========================== -->
-
-<div class="login-form-section">
-
-    <div class="login-form">
-
-
-        <h1 class="welcome-title">
-            Bienvenue
-        </h1>
-
-
-        <p class="welcome-text">
-            Connectez-vous à votre espace de gestion scolaire.
-        </p>
-
-
-        <!-- Messages Django -->
-
-        {% if messages %}
-
-            <div class="alert-login">
-
-                {% for message in messages %}
-
-                    <p>
-                        <i class="fas fa-circle-exclamation me-2"></i>
-                        {{ message }}
-                    </p>
-
-                {% endfor %}
+                Plateforme scolaire professionnelle
 
             </div>
 
-        {% endif %}
+
+            <div class="brand-icon">
+
+                <i class="fas fa-graduation-cap"></i>
+
+            </div>
 
 
-        <!-- Formulaire -->
+            <div class="brand-title">
 
-        <form method="POST"
-              action="{% url 'login' %}">
+                GSP/<span>BNB</span>
 
-            {% csrf_token %}
-
-
-            <!-- Nom utilisateur -->
-
-            <div class="form-group">
-
-                <label class="form-label"
-                       for="username">
-
-                    Nom utilisateur
-
-                </label>
+            </div>
 
 
-                <div class="input-wrapper">
+            <p class="brand-subtitle">
 
-                    <i class="fas fa-user input-icon"></i>
+                Une solution moderne et centralisée pour
+                simplifier la gestion administrative,
+                pédagogique et financière de votre
+                établissement scolaire.
 
-                    <input
-                        type="text"
-                        id="username"
-                        name="username"
-                        class="form-control"
-                        placeholder="Entrez votre nom utilisateur"
-                        autocomplete="username"
-                        required>
+            </p>
+
+
+            <ul class="brand-features">
+
+
+                <li>
+
+                    <span class="feature-icon">
+
+                        <i class="fas fa-user-graduate"></i>
+
+                    </span>
+
+                    Gestion complète des élèves
+
+                </li>
+
+
+                <li>
+
+                    <span class="feature-icon">
+
+                        <i class="fas fa-chalkboard-user"></i>
+
+                    </span>
+
+                    Gestion des enseignants
+
+                </li>
+
+
+                <li>
+
+                    <span class="feature-icon">
+
+                        <i class="fas fa-wallet"></i>
+
+                    </span>
+
+                    Suivi des paiements et scolarités
+
+                </li>
+
+
+                <li>
+
+                    <span class="feature-icon">
+
+                        <i class="fas fa-chart-line"></i>
+
+                    </span>
+
+                    Suivi des résultats scolaires
+
+                </li>
+
+
+            </ul>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =================================================
+         FORMULAIRE DE CONNEXION
+    ================================================== -->
+
+    <section class="login-form-section">
+
+        <div class="login-form">
+
+
+            <!-- EN-TÊTE -->
+
+            <div class="form-top">
+
+                <div class="welcome-label">
+
+                    <i class="fas fa-sparkles"></i>
+
+                    Espace sécurisé
 
                 </div>
 
+
+                <h1 class="welcome-title">
+
+                    Bienvenue
+
+                </h1>
+
+
+                <p class="welcome-text">
+
+                    Connectez-vous à votre espace de gestion
+                    pour continuer.
+
+                </p>
+
             </div>
 
 
-            <!-- Mot de passe -->
 
-            <div class="form-group">
+            <!-- =================================================
+                 MESSAGES DJANGO
+            ================================================== -->
 
-                <label class="form-label"
-                       for="password">
+            {% if messages %}
 
-                    Mot de passe
+                <div class="alert-login">
 
-                </label>
+                    {% for message in messages %}
 
+                        <p>
 
-                <div class="input-wrapper">
+                            <i class="fas fa-circle-exclamation"></i>
 
-                    <i class="fas fa-lock input-icon"></i>
+                            <span class="ms-2">
+                                {{ message }}
+                            </span>
 
+                        </p>
 
-                    <input
-                        type="password"
-                        id="password"
-                        name="password"
-                        class="form-control"
-                        placeholder="Entrez votre mot de passe"
-                        autocomplete="current-password"
-                        required>
-
-
-                    <button
-                        type="button"
-                        class="password-toggle"
-                        id="togglePassword"
-                        aria-label="Afficher le mot de passe">
-
-                        <i class="fas fa-eye"
-                           id="passwordIcon"></i>
-
-                    </button>
+                    {% endfor %}
 
                 </div>
 
+            {% endif %}
+
+
+
+            <!-- =================================================
+                 FORMULAIRE
+            ================================================== -->
+
+            <form method="POST"
+                  action="{% url 'login' %}">
+
+                {% csrf_token %}
+
+
+
+                <!-- NOM UTILISATEUR -->
+
+                <div class="form-group">
+
+                    <label class="form-label"
+                           for="username">
+
+                        Nom utilisateur
+
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <i class="fas fa-user input-icon"></i>
+
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            class="form-control"
+                            placeholder="Entrez votre nom utilisateur"
+                            autocomplete="username"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- MOT DE PASSE -->
+
+                <div class="form-group">
+
+                    <label class="form-label"
+                           for="password">
+
+                        Mot de passe
+
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <i class="fas fa-lock input-icon"></i>
+
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="Entrez votre mot de passe"
+                            autocomplete="current-password"
+                            required>
+
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="togglePassword"
+                            aria-label="Afficher le mot de passe">
+
+                            <i class="fas fa-eye"
+                               id="passwordIcon"></i>
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- MOT DE PASSE OUBLIÉ -->
+
+                <div class="d-flex justify-content-end mb-4">
+
+                    <a
+                        class="forgot-link"
+                        href="{% url 'forgot' %}">
+
+                        Mot de passe oublié ?
+
+                    </a>
+
+                </div>
+
+
+
+                <!-- BOUTON -->
+
+                <button
+                    type="submit"
+                    class="login-button">
+
+                    <i class="fas fa-right-to-bracket"></i>
+
+                    Se connecter
+
+                </button>
+
+
+            </form>
+
+
+
+            <!-- SÉCURITÉ -->
+
+            <div class="security-info">
+
+                <i class="fas fa-shield-halved"></i>
+
+                Connexion protégée et sécurisée
+
             </div>
 
 
-            <!-- Mot de passe oublié -->
 
-            <div class="d-flex justify-content-end mb-4">
+            <!-- FOOTER -->
 
-                <a
-                    class="forgot-link"
-                    href="{% url 'forgot' %}">
+            <div class="login-footer">
 
-                    Mot de passe oublié ?
+                GSP/BNB — Plateforme de gestion scolaire
 
-                </a>
+                <br>
+
+                Accès réservé aux utilisateurs autorisés
 
             </div>
 
-
-            <!-- Bouton connexion -->
-
-            <button
-                type="submit"
-                class="login-button">
-
-                <i class="fas fa-right-to-bracket"></i>
-
-                Se connecter
-
-            </button>
-
-
-        </form>
-
-
-        <!-- Footer -->
-
-        <div class="login-footer">
-
-            <i class="fas fa-shield-halved me-1"></i>
-
-            Accès sécurisé — GSP/BNB
 
         </div>
 
-
-    </div>
-
-</div>
+    </section>
 
 
 </div>
 
-<!-- =========================
+
+
+<!-- =====================================================
      JAVASCRIPT
-========================== -->
+====================================================== -->
 
 <script>
 
-    const passwordInput =
-        document.getElementById('password');
-
-    const togglePassword =
-        document.getElementById('togglePassword');
-
-    const passwordIcon =
-        document.getElementById('passwordIcon');
+    document.addEventListener("DOMContentLoaded", function () {
 
 
-    if (togglePassword) {
-
-        togglePassword.addEventListener(
-            'click',
-            function () {
-
-                const isPassword =
-                    passwordInput.type === 'password';
+        const passwordInput =
+            document.getElementById("password");
 
 
-                passwordInput.type =
-                    isPassword
-                        ? 'text'
-                        : 'password';
+        const togglePassword =
+            document.getElementById("togglePassword");
 
 
-                passwordIcon.classList.toggle(
-                    'fa-eye',
-                    !isPassword
-                );
+        const passwordIcon =
+            document.getElementById("passwordIcon");
 
 
-                passwordIcon.classList.toggle(
-                    'fa-eye-slash',
-                    isPassword
-                );
+        if (
+            passwordInput &&
+            togglePassword &&
+            passwordIcon
+        ) {
+
+            togglePassword.addEventListener(
+                "click",
+                function () {
 
 
-                togglePassword.setAttribute(
-                    'aria-label',
-                    isPassword
-                        ? 'Masquer le mot de passe'
-                        : 'Afficher le mot de passe'
-                );
+                    const isPassword =
+                        passwordInput.type === "password";
 
-            }
-        );
 
-    }
+                    passwordInput.type =
+                        isPassword
+                            ? "text"
+                            : "password";
+
+
+                    passwordIcon.classList.toggle(
+                        "fa-eye",
+                        !isPassword
+                    );
+
+
+                    passwordIcon.classList.toggle(
+                        "fa-eye-slash",
+                        isPassword
+                    );
+
+
+                    togglePassword.setAttribute(
+                        "aria-label",
+                        isPassword
+                            ? "Masquer le mot de passe"
+                            : "Afficher le mot de passe"
+                    );
+
+
+                }
+            );
+
+        }
+
+
+    });
 
 </script>
+
 
 </body>
 

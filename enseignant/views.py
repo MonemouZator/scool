@@ -1981,6 +1981,8 @@ def bulletin_trimestriel_enseignant(request):
         context
     )
 
+
+
 from django.db.models import Q
 @login_required
 def gestion_badges_enseignants(request):
@@ -2053,14 +2055,22 @@ def badge_enseignant(request, enseignant_id):
         context
     )
 
-
 @login_required
 def badges_enseignants_impression(request):
 
-    if request.method != 'POST':
-        return redirect('gestion_badges_enseignants')
+    # =========================================================
+    # UNIQUEMENT EN POST
+    # =========================================================
 
-    enseignants_ids = request.POST.getlist('enseignants')
+    if request.method != "POST":
+        return redirect("gestion_badges_enseignants")
+
+
+    # =========================================================
+    # RECUPERER LES ENSEIGNANTS SELECTIONNES
+    # =========================================================
+
+    enseignants_ids = request.POST.getlist("enseignants")
 
     enseignants_ids = [
         identifiant
@@ -2068,37 +2078,75 @@ def badges_enseignants_impression(request):
         if identifiant
     ]
 
+
+    # =========================================================
+    # AUCUNE SELECTION
+    # =========================================================
+
     if not enseignants_ids:
+
         messages.warning(
             request,
             "Veuillez sélectionner au moins un enseignant."
         )
-        return redirect('gestion_badges_enseignants')
+
+        return redirect("gestion_badges_enseignants")
+
+
+    # =========================================================
+    # RECUPERATION DES ENSEIGNANTS
+    # =========================================================
 
     enseignants = (
         Enseignant.objects
         .filter(id__in=enseignants_ids)
-        .select_related('user')
-        .order_by('nom', 'prenom')
+        .select_related("user")
+        .order_by("nom", "prenom")
     )
 
+
+    # =========================================================
+    # VERIFICATION
+    # =========================================================
+
     if not enseignants.exists():
+
         messages.error(
             request,
             "Aucun enseignant correspondant."
         )
-        return redirect('gestion_badges_enseignants')
+
+        return redirect("gestion_badges_enseignants")
+
+
+    # =========================================================
+    # ETABLISSEMENT
+    # =========================================================
 
     etablissement = Etablissement.objects.first()
 
+
+    # =========================================================
+    # CONTEXTE
+    # =========================================================
+
     context = {
-        'enseignants': enseignants,
-        'etablissement': etablissement,
-        'nombre_enseignants': enseignants.count(),
+
+        "enseignants": enseignants,
+
+        "etablissement": etablissement,
+
+        "nombre_enseignants": enseignants.count(),
+
     }
+
+
+    # =========================================================
+    # PAGE D'IMPRESSION
+    # =========================================================
 
     return render(
         request,
-        'enseignant/impression_badges_enseignants.html',
+        "enseignant/impression_badges_enseignants.html",
         context
     )

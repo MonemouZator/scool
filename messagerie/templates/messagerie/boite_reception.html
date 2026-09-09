@@ -1,11 +1,9 @@
 {% load static %}
 
 <!DOCTYPE html>
-
 <html lang="fr">
 
 <head>
-
 
 <meta charset="utf-8">
 
@@ -14,50 +12,1563 @@
 
 <title>Messagerie | WhatsApp</title>
 
+<!-- =====================================================
+     FONT
+===================================================== -->
+
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
 
-<link rel="stylesheet"
-      href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+<!-- =====================================================
+     FONT AWESOME
+===================================================== -->
 
 <link rel="stylesheet"
-      href="{% static 'base/plugins/bootstrap/css/bootstrap.min.css' %}">
-
-<link rel="stylesheet"
-      href="{% static 'base/dist/css/adminlte.min.css' %}">
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
 <style>
 
-    :root {
-        --primary: #2563eb;
-        --primary-dark: #1d4ed8;
-        --primary-soft: #eff6ff;
+/* =====================================================
+   VARIABLES
+===================================================== */
 
-        --text: #1f2937;
-        --muted: #6b7280;
-        --light-muted: #9ca3af;
+:root {
 
-        --border: #e5e7eb;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --primary-soft: #eff6ff;
 
-        --surface: #ffffff;
-        --page-bg: #f3f6fa;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --light-muted: #9ca3af;
 
-        --chat-bg: #eef2f5;
+    --border: #e5e7eb;
 
-        --received: #ffffff;
-        --sent: #dcf8d2;
+    --surface: #ffffff;
+    --page-bg: #f3f6fa;
 
-        --danger: #dc2626;
-        --danger-soft: #fef2f2;
+    --chat-bg: #eef2f5;
 
-        --group: #7c3aed;
+    --received: #ffffff;
+    --sent: #dcf8d2;
 
-        --navbar-height: 56px;
+    --danger: #dc2626;
+    --danger-soft: #fef2f2;
+
+    --group: #7c3aed;
+
+    --navbar-height: 56px;
+}
+
+
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+    box-sizing: border-box;
+}
+
+
+html,
+body {
+
+    width: 100%;
+    height: 100%;
+
+    margin: 0;
+    padding: 0;
+
+    overflow: hidden;
+
+    font-family:
+        "Source Sans Pro",
+        Arial,
+        sans-serif;
+
+    background: var(--page-bg);
+}
+
+
+/* =====================================================
+   WRAPPER
+===================================================== */
+
+.wrapper {
+
+    width: 100%;
+    height: 100dvh;
+
+    min-height: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+}
+
+
+/* =====================================================
+   NAVBAR
+===================================================== */
+
+.main-header {
+
+    flex: 0 0 var(--navbar-height);
+
+    width: 100%;
+    height: var(--navbar-height);
+
+    min-height: var(--navbar-height);
+
+    padding: 0 14px;
+
+    display: flex;
+    align-items: center;
+
+    background: #fff;
+
+    border-bottom: 1px solid var(--border);
+
+    box-shadow:
+        0 1px 4px rgba(0,0,0,.06);
+
+    position: relative;
+
+    z-index: 1000;
+}
+
+
+.navbar-messagerie {
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+.titre-messagerie {
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: var(--text);
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+    flex: 1;
+}
+
+
+.titre-messagerie i {
+
+    color: var(--primary);
+}
+
+
+/* =====================================================
+   NOTIFICATIONS
+===================================================== */
+
+.notification-wrapper {
+
+    position: relative;
+
+    margin-left: auto;
+}
+
+
+.notification-button {
+
+    position: relative;
+
+    width: 40px;
+    height: 40px;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    color: #374151;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    outline: none;
+}
+
+
+.notification-button:hover {
+
+    color: var(--primary);
+
+    background: var(--primary-soft);
+}
+
+
+.notification-button i {
+
+    font-size: 18px;
+}
+
+
+.notification-count {
+
+    position: absolute;
+
+    top: 1px;
+    right: 0;
+
+    min-width: 18px;
+    height: 18px;
+
+    padding: 0 4px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #fff;
+
+    background: #dc2626;
+
+    border: 2px solid #fff;
+
+    font-size: 9px;
+
+    font-weight: 700;
+}
+
+
+.notification-panel {
+
+    position: absolute;
+
+    top: 47px;
+    right: 0;
+
+    width: 340px;
+    max-width: calc(100vw - 20px);
+
+    background: #fff;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 10px 30px rgba(0,0,0,.15);
+
+    overflow: hidden;
+
+    display: none;
+
+    z-index: 5000;
+}
+
+
+.notification-panel.active {
+
+    display: block;
+}
+
+
+.notification-header {
+
+    padding: 12px 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.notification-header strong {
+
+    font-size: 14px;
+
+    color: var(--text);
+}
+
+
+.notification-header span {
+
+    font-size: 11px;
+
+    color: var(--muted);
+}
+
+
+.notification-list {
+
+    max-height: 360px;
+
+    overflow-y: auto;
+}
+
+
+.notification-item {
+
+    display: flex;
+
+    gap: 9px;
+
+    padding: 10px 12px;
+
+    color: var(--text);
+
+    text-decoration: none;
+
+    border-bottom: 1px solid #f3f4f6;
+
+    background: #fff;
+}
+
+
+.notification-item:hover {
+
+    background: #f8fafc;
+
+    text-decoration: none;
+}
+
+
+.notification-item.unread {
+
+    background: #eff6ff;
+}
+
+
+.notification-avatar {
+
+    width: 38px;
+    height: 38px;
+
+    min-width: 38px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    background: #e5e7eb;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #6b7280;
+}
+
+
+.notification-avatar.group {
+
+    color: var(--group);
+
+    background: #ede9fe;
+}
+
+
+.notification-content {
+
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.notification-text {
+
+    font-size: 12px;
+
+    line-height: 1.35;
+
+    color: #374151;
+}
+
+
+.notification-date {
+
+    margin-top: 3px;
+
+    font-size: 10px;
+
+    color: var(--muted);
+}
+
+
+.notification-empty {
+
+    padding: 25px 15px;
+
+    text-align: center;
+
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+
+.notification-empty i {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    font-size: 25px;
+
+    color: #cbd5e1;
+}
+
+
+/* =====================================================
+   CONTENT
+===================================================== */
+
+.content-wrapper {
+
+    width: 100%;
+
+    margin: 0;
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    overflow: hidden;
+
+    background: var(--page-bg);
+}
+
+
+.messagerie-container {
+
+    width: 100%;
+    height: 100%;
+
+    min-height: 0;
+
+    padding: 12px;
+
+    display: flex;
+}
+
+
+.whatsapp-container {
+
+    width: 100%;
+    height: 100%;
+
+    min-height: 0;
+
+    display: flex;
+
+    overflow: hidden;
+
+    background: #fff;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.06);
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+.conversation-sidebar {
+
+    width: 320px;
+    min-width: 320px;
+
+    height: 100%;
+
+    min-height: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: #fff;
+
+    border-right: 1px solid var(--border);
+}
+
+
+.sidebar-header {
+
+    flex: 0 0 auto;
+
+    padding: 14px;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.sidebar-title {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+}
+
+
+.sidebar-title h5 {
+
+    margin: 0;
+
+    font-size: 18px;
+
+    font-weight: 600;
+}
+
+
+/* =====================================================
+   BADGE MESSAGES NON LUS
+===================================================== */
+
+.unread-badge {
+
+    min-width: 22px;
+    height: 22px;
+
+    padding: 0 6px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 20px;
+
+    background: var(--primary);
+
+    color: #fff;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+    transition:
+        opacity .2s ease,
+        transform .2s ease;
+}
+
+
+.unread-badge[style*="display:none"] {
+
+    transform: scale(.8);
+
+    opacity: 0;
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+.search-box {
+
+    position: relative;
+}
+
+
+.search-box i {
+
+    position: absolute;
+
+    left: 12px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: var(--light-muted);
+
+    pointer-events: none;
+}
+
+
+.search-box input {
+
+    width: 100%;
+    height: 38px;
+
+    padding:
+        0 12px 0 34px;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 20px;
+
+    outline: none;
+
+    background: #f9fafb;
+
+    font-size: 13px;
+}
+
+
+.search-box input:focus {
+
+    border-color: var(--primary);
+
+    background: #fff;
+}
+
+
+/* =====================================================
+   CONVERSATION LIST
+===================================================== */
+
+.conversation-list {
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+
+.conversation-item {
+
+    min-height: 66px;
+
+    padding: 9px 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    color: var(--text);
+
+    text-decoration: none;
+
+    border-bottom: 1px solid #f1f1f1;
+
+    transition:
+        background .15s ease;
+}
+
+
+.conversation-item:hover {
+
+    background: #f8fafc;
+
+    text-decoration: none;
+}
+
+
+.conversation-avatar {
+
+    width: 44px;
+    height: 44px;
+
+    min-width: 44px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    background: #e5e7eb;
+}
+
+
+.conversation-avatar-default {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #6b7280;
+}
+
+
+.conversation-avatar.group {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: var(--group);
+
+    background: #ede9fe;
+}
+
+
+.conversation-info {
+
+    min-width: 0;
+
+    flex: 1;
+}
+
+
+.conversation-name {
+
+    display: block;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    font-size: 14px;
+
+    font-weight: 600;
+}
+
+
+.conversation-preview {
+
+    display: block;
+
+    margin-top: 2px;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    font-size: 12px;
+
+    color: var(--muted);
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.sidebar-footer {
+
+    flex: 0 0 auto;
+
+    padding: 10px;
+
+    display: flex;
+
+    gap: 8px;
+
+    border-top: 1px solid var(--border);
+}
+
+
+.sidebar-footer a {
+
+    flex: 1;
+
+    min-height: 38px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 5px;
+
+    border-radius: 7px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+    text-decoration: none;
+}
+
+
+.btn-new {
+
+    color: #fff;
+
+    background: var(--primary);
+}
+
+
+.btn-new:hover {
+
+    color: #fff;
+
+    background: var(--primary-dark);
+}
+
+
+.btn-group {
+
+    color: var(--group);
+
+    background: #f5f3ff;
+}
+
+
+.btn-group:hover {
+
+    color: var(--group);
+
+    background: #ede9fe;
+}
+
+
+/* =====================================================
+   CHAT
+===================================================== */
+
+.chat-area {
+
+    flex: 1 1 auto;
+
+    width: 100%;
+
+    height: 100%;
+
+    min-width: 0;
+
+    min-height: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    overflow: hidden;
+
+    background: var(--chat-bg);
+}
+
+
+.chat-header {
+
+    flex: 0 0 auto;
+
+    min-height: 58px;
+
+    padding: 7px 12px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 9px;
+
+    background: #fff;
+
+    border-bottom: 1px solid var(--border);
+}
+
+
+.chat-back {
+
+    display: none;
+
+    width: 36px;
+    height: 36px;
+
+    min-width: 36px;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    color: #374151;
+
+    text-decoration: none;
+}
+
+
+.chat-back:hover {
+
+    background: #f3f4f6;
+
+    color: var(--primary);
+}
+
+
+.chat-avatar {
+
+    width: 40px;
+    height: 40px;
+
+    min-width: 40px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    background: #e5e7eb;
+}
+
+
+.chat-avatar-default {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #6b7280;
+}
+
+
+.chat-avatar.group {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: var(--group);
+
+    background: #ede9fe;
+}
+
+
+.chat-user-info {
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+.chat-user-name {
+
+    display: block;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    font-size: 15px;
+
+    font-weight: 600;
+}
+
+
+.chat-status {
+
+    display: block;
+
+    margin-top: 1px;
+
+    font-size: 11px;
+
+    color: var(--muted);
+}
+
+
+/* =====================================================
+   MESSAGES
+===================================================== */
+
+.messages-area {
+
+    flex: 1 1 auto;
+
+    min-height: 0;
+
+    padding: 12px;
+
+    overflow-y: auto;
+
+    overflow-x: hidden;
+
+    -webkit-overflow-scrolling: touch;
+
+    overscroll-behavior: contain;
+}
+
+
+.message-row {
+
+    width: 100%;
+
+    display: flex;
+
+    margin-bottom: 8px;
+}
+
+
+.message-row.sent {
+
+    justify-content: flex-end;
+}
+
+
+.message-row.received {
+
+    justify-content: flex-start;
+}
+
+
+.message-content-received {
+
+    max-width: 65%;
+
+    min-width: 0;
+}
+
+
+.message-sender {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-bottom: 3px;
+
+    padding-left: 3px;
+}
+
+
+.message-sender-avatar {
+
+    width: 25px;
+    height: 25px;
+
+    min-width: 25px;
+
+    border-radius: 50%;
+
+    object-fit: cover;
+
+    background: #e5e7eb;
+}
+
+
+.message-sender-avatar-default {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #6b7280;
+
+    font-size: 11px;
+}
+
+
+.message-sender-name {
+
+    max-width: 220px;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+    font-size: 11px;
+
+    font-weight: 600;
+
+    color: #374151;
+}
+
+
+.message-bubble {
+
+    position: relative;
+
+    width: fit-content;
+
+    max-width: 58%;
+
+    padding: 6px 8px;
+
+    border-radius: 8px;
+
+    font-size: 13px;
+
+    line-height: 1.3;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+
+    box-shadow:
+        0 1px 1px rgba(0,0,0,.05);
+}
+
+
+.message-row.sent .message-bubble {
+
+    max-width: 65%;
+
+    background: var(--sent);
+
+    border-top-right-radius: 3px;
+}
+
+
+.message-row.received .message-bubble {
+
+    max-width: 100%;
+
+    background: var(--received);
+
+    border-top-left-radius: 3px;
+}
+
+
+.message-text {
+
+    white-space: normal;
+}
+
+
+.message-meta {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 3px;
+
+    margin-left: 5px;
+
+    white-space: nowrap;
+
+    vertical-align: baseline;
+
+    font-size: 9px;
+
+    color: #7b8794;
+}
+
+
+.message-row.sent .message-meta i {
+
+    color: #4f8b55;
+}
+
+
+/* =====================================================
+   AUDIO
+===================================================== */
+
+.message-audio {
+
+    width: 240px;
+
+    max-width: 100%;
+
+    height: 38px;
+
+    margin-top: 4px;
+
+    display: block;
+}
+
+
+/* =====================================================
+   ACTIONS
+===================================================== */
+
+.message-actions {
+
+    position: absolute;
+
+    top: 3px;
+
+    right: 3px;
+
+    display: none;
+
+    z-index: 5;
+}
+
+
+.message-bubble:hover .message-actions {
+
+    display: block;
+}
+
+
+.delete-message-form {
+
+    margin: 0;
+    padding: 0;
+}
+
+
+.btn-delete-message {
+
+    width: 25px;
+    height: 25px;
+
+    padding: 0;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--danger);
+
+    background: rgba(255,255,255,.9);
+
+    cursor: pointer;
+
+    box-shadow:
+        0 1px 4px rgba(0,0,0,.15);
+}
+
+
+.btn-delete-message i {
+
+    font-size: 10px;
+}
+
+
+/* =====================================================
+   FORM
+===================================================== */
+
+.message-form {
+
+    flex: 0 0 auto;
+
+    width: 100%;
+
+    padding: 7px 9px;
+
+    padding-bottom:
+        calc(7px + env(safe-area-inset-bottom));
+
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 5px;
+
+    background: #fff;
+
+    border-top: 1px solid var(--border);
+}
+
+
+.voice-button {
+
+    width: 38px;
+    height: 38px;
+
+    min-width: 38px;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #374151;
+
+    background: #f3f4f6;
+
+    cursor: pointer;
+
+    transition: .2s ease;
+}
+
+
+.voice-button:hover {
+
+    background: #e5e7eb;
+}
+
+
+.voice-button.recording {
+
+    color: #fff;
+
+    background: #dc2626;
+
+    animation: pulse-record 1s infinite;
+}
+
+
+@keyframes pulse-record {
+
+    0% {
+
+        box-shadow:
+            0 0 0 0 rgba(220,38,38,.4);
+
     }
 
+    70% {
 
-    * {
-        box-sizing: border-box;
+        box-shadow:
+            0 0 0 9px rgba(220,38,38,0);
+
+    }
+
+    100% {
+
+        box-shadow:
+            0 0 0 0 rgba(220,38,38,0);
+
+    }
+}
+
+
+.recording-info {
+
+    display: none;
+
+    align-items: center;
+
+    gap: 5px;
+
+    color: #dc2626;
+
+    font-size: 11px;
+
+    white-space: nowrap;
+}
+
+
+.recording-info.active {
+
+    display: flex;
+}
+
+
+.recording-dot {
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: #dc2626;
+
+    animation: blink-record .8s infinite;
+}
+
+
+@keyframes blink-record {
+
+    50% {
+        opacity: .25;
+    }
+}
+
+
+.message-input-wrapper {
+
+    flex: 1;
+
+    min-width: 0;
+}
+
+
+.message-input {
+
+    width: 100%;
+
+    min-height: 38px;
+
+    max-height: 90px;
+
+    padding: 9px 12px;
+
+    resize: none;
+
+    overflow-y: auto;
+
+    border:
+        1px solid var(--border);
+
+    border-radius: 20px;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    line-height: 1.3;
+
+    background: #f9fafb;
+}
+
+
+.message-input:focus {
+
+    border-color: var(--primary);
+
+    background: #fff;
+}
+
+
+.send-button {
+
+    width: 38px;
+    height: 38px;
+
+    min-width: 38px;
+
+    border: 0;
+
+    border-radius: 50%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color: #fff;
+
+    background: var(--primary);
+
+    cursor: pointer;
+}
+
+
+.send-button:hover {
+
+    background: var(--primary-dark);
+}
+
+
+.send-button:active {
+
+    transform: scale(.93);
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.empty-chat {
+
+    width: 100%;
+    height: 100%;
+
+    min-height: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 30px;
+
+    text-align: center;
+
+    color: var(--muted);
+}
+
+
+.empty-chat-icon {
+
+    width: 70px;
+    height: 70px;
+
+    margin: 0 auto 15px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: var(--primary-soft);
+
+    color: var(--primary);
+
+    font-size: 28px;
+}
+
+
+.empty-chat h4 {
+
+    margin-bottom: 6px;
+
+    font-size: 18px;
+
+    font-weight: 600;
+}
+
+
+.empty-chat p {
+
+    margin: 0;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 767.98px) {
+
+    :root {
+
+        --navbar-height: 52px;
     }
 
 
@@ -65,931 +1576,150 @@
     body {
 
         width: 100%;
-        height: 100%;
-
-        margin: 0;
-        padding: 0;
-
-        overflow: hidden;
-
-        font-family:
-            "Source Sans Pro",
-            Arial,
-            sans-serif;
-
-        background: var(--page-bg);
+        height: 100dvh;
     }
 
 
     .wrapper {
 
-        width: 100%;
         height: 100dvh;
 
         min-height: 0;
-
-        display: flex;
-        flex-direction: column;
-
-        overflow: hidden;
     }
 
-
-    /* =====================================================
-       NAVBAR
-    ====================================================== */
 
     .main-header {
 
-        flex: 0 0 var(--navbar-height);
+        flex-basis: 52px;
 
-        width: 100%;
-        height: var(--navbar-height);
+        height: 52px;
 
-        min-height: var(--navbar-height);
+        min-height: 52px;
 
-        margin-left: 0 !important;
-
-        padding: 0 14px !important;
-
-        display: flex;
-        align-items: center;
-
-        background: #fff !important;
-
-        border-bottom: 1px solid var(--border);
-
-        box-shadow:
-            0 1px 4px rgba(0,0,0,.06);
-
-        position: relative;
-
-        z-index: 1000;
-    }
-
-
-    .navbar-messagerie {
-
-        width: 100%;
-        height: 100%;
-
-        display: flex;
-        align-items: center;
-
-        gap: 10px;
-    }
-
-
-    .btn-retour {
-
-        width: 38px;
-        height: 38px;
-
-        min-width: 38px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        border-radius: 50%;
-
-        color: #374151;
-
-        background: transparent;
-
-        text-decoration: none;
-    }
-
-
-    .btn-retour:hover {
-
-        color: var(--primary);
-
-        background: var(--primary-soft);
-
-        text-decoration: none;
+        padding: 0 8px;
     }
 
 
     .titre-messagerie {
 
-        display: flex;
-        align-items: center;
-
-        gap: 8px;
-
-        color: var(--text);
-
-        font-size: 18px;
-
-        font-weight: 600;
-
-        flex: 1;
-    }
-
-
-    .titre-messagerie i {
-
-        color: var(--primary);
-    }
-
-
-    /* =====================================================
-       NOTIFICATIONS
-    ====================================================== */
-
-    .notification-wrapper {
-
-        position: relative;
-
-        margin-left: auto;
-    }
-
-
-    .notification-button {
-
-        position: relative;
-
-        width: 40px;
-        height: 40px;
-
-        border: 0;
-
-        border-radius: 50%;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        color: #374151;
-
-        background: transparent;
-
-        cursor: pointer;
-
-        outline: none;
-    }
-
-
-    .notification-button:hover {
-
-        color: var(--primary);
-
-        background: var(--primary-soft);
-    }
-
-
-    .notification-button i {
-
-        font-size: 18px;
-    }
-
-
-    .notification-count {
-
-        position: absolute;
-
-        top: 1px;
-        right: 0;
-
-        min-width: 18px;
-        height: 18px;
-
-        padding: 0 4px;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        border-radius: 50%;
-
-        color: #fff;
-
-        background: #dc2626;
-
-        border: 2px solid #fff;
-
-        font-size: 9px;
-
-        font-weight: 700;
+        font-size: 16px;
     }
 
 
     .notification-panel {
 
-        position: absolute;
+        position: fixed;
 
-        top: 47px;
-        right: 0;
+        top: 57px;
+        right: 8px;
 
-        width: 340px;
-        max-width: calc(100vw - 20px);
+        width: calc(100vw - 16px);
 
-        background: #fff;
-
-        border: 1px solid var(--border);
-
-        border-radius: 10px;
-
-        box-shadow:
-            0 10px 30px rgba(0,0,0,.15);
-
-        overflow: hidden;
-
-        display: none;
-
-        z-index: 5000;
+        max-width: none;
     }
 
-
-    .notification-panel.active {
-
-        display: block;
-    }
-
-
-    .notification-header {
-
-        padding: 12px 14px;
-
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-
-        border-bottom: 1px solid var(--border);
-    }
-
-
-    .notification-header strong {
-
-        font-size: 14px;
-
-        color: var(--text);
-    }
-
-
-    .notification-header span {
-
-        font-size: 11px;
-
-        color: var(--muted);
-    }
-
-
-    .notification-list {
-
-        max-height: 360px;
-
-        overflow-y: auto;
-    }
-
-
-    .notification-item {
-
-        display: flex;
-
-        gap: 9px;
-
-        padding: 10px 12px;
-
-        color: var(--text);
-
-        text-decoration: none;
-
-        border-bottom: 1px solid #f3f4f6;
-
-        background: #fff;
-    }
-
-
-    .notification-item:hover {
-
-        background: #f8fafc;
-
-        text-decoration: none;
-    }
-
-
-    .notification-item.unread {
-
-        background: #eff6ff;
-    }
-
-
-    .notification-avatar {
-
-        width: 38px;
-        height: 38px;
-
-        min-width: 38px;
-
-        border-radius: 50%;
-
-        object-fit: cover;
-
-        background: #e5e7eb;
-
-        display: flex;
-
-        align-items: center;
-        justify-content: center;
-
-        color: #6b7280;
-    }
-
-
-    .notification-avatar.group {
-
-        color: var(--group);
-
-        background: #ede9fe;
-    }
-
-
-    .notification-content {
-
-        min-width: 0;
-
-        flex: 1;
-    }
-
-
-    .notification-text {
-
-        font-size: 12px;
-
-        line-height: 1.35;
-
-        color: #374151;
-    }
-
-
-    .notification-date {
-
-        margin-top: 3px;
-
-        font-size: 10px;
-
-        color: var(--muted);
-    }
-
-
-    .notification-empty {
-
-        padding: 25px 15px;
-
-        text-align: center;
-
-        color: var(--muted);
-
-        font-size: 12px;
-    }
-
-
-    .notification-empty i {
-
-        display: block;
-
-        margin-bottom: 8px;
-
-        font-size: 25px;
-
-        color: #cbd5e1;
-    }
-
-
-    /* =====================================================
-       CONTENT
-    ====================================================== */
 
     .content-wrapper {
-
-        width: 100%;
-
-        margin-left: 0 !important;
 
         flex: 1 1 auto;
 
         min-height: 0;
 
         overflow: hidden;
-
-        background: var(--page-bg);
     }
 
 
     .messagerie-container {
 
-        width: 100%;
         height: 100%;
 
         min-height: 0;
 
-        padding: 12px;
-
-        display: flex;
+        padding: 0;
     }
 
 
     .whatsapp-container {
 
-        width: 100%;
         height: 100%;
 
         min-height: 0;
 
-        display: flex;
+        border: 0;
 
-        overflow: hidden;
+        border-radius: 0;
 
-        background: #fff;
-
-        border: 1px solid var(--border);
-
-        border-radius: 10px;
-
-        box-shadow:
-            0 2px 8px rgba(0,0,0,.06);
+        box-shadow: none;
     }
 
 
-    /* =====================================================
-       SIDEBAR
-    ====================================================== */
-
     .conversation-sidebar {
 
-        width: 320px;
-        min-width: 320px;
+        width: 100%;
 
-        height: 100%;
-
-        min-height: 0;
-
-        display: flex;
-
-        flex-direction: column;
-
-        overflow: hidden;
-
-        background: #fff;
-
-        border-right: 1px solid var(--border);
+        min-width: 100%;
     }
 
 
     .sidebar-header {
 
-        flex: 0 0 auto;
-
-        padding: 14px;
-
-        border-bottom: 1px solid var(--border);
-    }
-
-
-    .sidebar-title {
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: space-between;
-
-        margin-bottom: 10px;
-    }
-
-
-    .sidebar-title h5 {
-
-        margin: 0;
-
-        font-size: 18px;
-
-        font-weight: 600;
-    }
-
-
-    .unread-badge {
-
-        min-width: 22px;
-        height: 22px;
-
-        padding: 0 6px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        border-radius: 20px;
-
-        background: var(--primary);
-
-        color: #fff;
-
-        font-size: 11px;
-
-        font-weight: 600;
-    }
-
-
-    /* =====================================================
-       RECHERCHE
-    ====================================================== */
-
-    .search-box {
-
-        position: relative;
-    }
-
-
-    .search-box i {
-
-        position: absolute;
-
-        left: 12px;
-        top: 50%;
-
-        transform: translateY(-50%);
-
-        color: var(--light-muted);
-
-        pointer-events: none;
-    }
-
-
-    .search-box input {
-
-        width: 100%;
-        height: 38px;
-
-        padding:
-            0 12px 0 34px;
-
-        border:
-            1px solid var(--border);
-
-        border-radius: 20px;
-
-        outline: none;
-
-        background: #f9fafb;
-
-        font-size: 13px;
-    }
-
-
-    .search-box input:focus {
-
-        border-color: var(--primary);
-
-        background: #fff;
-    }
-
-
-    /* =====================================================
-       LISTE CONVERSATIONS
-    ====================================================== */
-
-    .conversation-list {
-
-        flex: 1 1 auto;
-
-        min-height: 0;
-
-        overflow-y: auto;
-
-        overflow-x: hidden;
-
-        -webkit-overflow-scrolling: touch;
+        padding: 10px;
     }
 
 
     .conversation-item {
 
-        min-height: 66px;
+        min-height: 62px;
 
-        padding: 9px 12px;
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 10px;
-
-        color: var(--text);
-
-        text-decoration: none;
-
-        border-bottom: 1px solid #f1f1f1;
-    }
-
-
-    .conversation-item:hover {
-
-        background: #f8fafc;
-
-        text-decoration: none;
+        padding: 8px 10px;
     }
 
 
     .conversation-avatar {
 
-        width: 44px;
-        height: 44px;
+        width: 42px;
+        height: 42px;
 
-        min-width: 44px;
-
-        border-radius: 50%;
-
-        object-fit: cover;
-
-        background: #e5e7eb;
-    }
-
-
-    .conversation-avatar-default {
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        color: #6b7280;
-    }
-
-
-    .conversation-avatar.group {
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        color: var(--group);
-
-        background: #ede9fe;
-    }
-
-
-    .conversation-info {
-
-        min-width: 0;
-
-        flex: 1;
-    }
-
-
-    .conversation-name {
-
-        display: block;
-
-        overflow: hidden;
-
-        white-space: nowrap;
-
-        text-overflow: ellipsis;
-
-        font-size: 14px;
-
-        font-weight: 600;
-    }
-
-
-    .conversation-preview {
-
-        display: block;
-
-        margin-top: 2px;
-
-        overflow: hidden;
-
-        white-space: nowrap;
-
-        text-overflow: ellipsis;
-
-        font-size: 12px;
-
-        color: var(--muted);
-    }
-
-
-    /* =====================================================
-       FOOTER
-    ====================================================== */
-
-    .sidebar-footer {
-
-        flex: 0 0 auto;
-
-        padding: 10px;
-
-        display: flex;
-
-        gap: 8px;
-
-        border-top: 1px solid var(--border);
-    }
-
-
-    .sidebar-footer a {
-
-        flex: 1;
-
-        min-height: 38px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        gap: 5px;
-
-        border-radius: 7px;
-
-        font-size: 12px;
-
-        font-weight: 600;
-
-        text-decoration: none;
-    }
-
-
-    .btn-new {
-
-        color: #fff;
-
-        background: var(--primary);
-    }
-
-
-    .btn-group {
-
-        color: var(--group);
-
-        background: #f5f3ff;
-    }
-
-
-    /* =====================================================
-       CHAT
-    ====================================================== */
-
-    .chat-area {
-
-        flex: 1 1 auto;
-
-        width: 100%;
-
-        height: 100%;
-
-        min-width: 0;
-
-        min-height: 0;
-
-        display: flex;
-
-        flex-direction: column;
-
-        overflow: hidden;
-
-        background: var(--chat-bg);
+        min-width: 42px;
     }
 
 
     .chat-header {
 
-        flex: 0 0 auto;
+        height: 52px;
 
-        min-height: 58px;
+        min-height: 52px;
 
-        padding: 7px 12px;
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 9px;
-
-        background: #fff;
-
-        border-bottom: 1px solid var(--border);
+        padding: 6px 7px;
     }
 
 
     .chat-back {
 
-        display: none;
-
-        width: 36px;
-        height: 36px;
-
-        min-width: 36px;
-
-        align-items: center;
-        justify-content: center;
-
-        border-radius: 50%;
-
-        color: #374151;
-
-        text-decoration: none;
-    }
-
-
-    .chat-back:hover {
-
-        background: #f3f4f6;
-
-        color: var(--primary);
+        display: flex;
     }
 
 
     .chat-avatar {
 
-        width: 40px;
-        height: 40px;
+        width: 38px;
+        height: 38px;
 
-        min-width: 40px;
-
-        border-radius: 50%;
-
-        object-fit: cover;
-
-        background: #e5e7eb;
-    }
-
-
-    .chat-avatar-default {
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        color: #6b7280;
-    }
-
-
-    .chat-avatar.group {
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        color: var(--group);
-
-        background: #ede9fe;
-    }
-
-
-    .chat-user-info {
-
-        flex: 1;
-
-        min-width: 0;
+        min-width: 38px;
     }
 
 
     .chat-user-name {
 
-        display: block;
-
-        overflow: hidden;
-
-        white-space: nowrap;
-
-        text-overflow: ellipsis;
-
-        font-size: 15px;
-
-        font-weight: 600;
+        font-size: 14px;
     }
 
 
     .chat-status {
 
-        display: block;
-
-        margin-top: 1px;
-
-        font-size: 11px;
-
-        color: var(--muted);
+        font-size: 10px;
     }
 
-
-    /* =====================================================
-       MESSAGES
-    ====================================================== */
 
     .messages-area {
 
@@ -997,948 +1727,240 @@
 
         min-height: 0;
 
-        padding: 12px;
-
-        overflow-y: auto;
-
-        overflow-x: hidden;
-
-        -webkit-overflow-scrolling: touch;
-
-        overscroll-behavior: contain;
-    }
-
-
-    .message-row {
-
-        width: 100%;
-
-        display: flex;
-
-        margin-bottom: 8px;
-    }
-
-
-    .message-row.sent {
-
-        justify-content: flex-end;
-    }
-
-
-    .message-row.received {
-
-        justify-content: flex-start;
+        padding: 8px 7px;
     }
 
 
     .message-content-received {
 
-        max-width: 65%;
-
-        min-width: 0;
-    }
-
-
-    .message-sender {
-
-        display: flex;
-
-        align-items: center;
-
-        gap: 6px;
-
-        margin-bottom: 3px;
-
-        padding-left: 3px;
-    }
-
-
-    .message-sender-avatar {
-
-        width: 25px;
-        height: 25px;
-
-        min-width: 25px;
-
-        border-radius: 50%;
-
-        object-fit: cover;
-
-        background: #e5e7eb;
-    }
-
-
-    .message-sender-avatar-default {
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        color: #6b7280;
-
-        font-size: 11px;
-    }
-
-
-    .message-sender-name {
-
-        max-width: 220px;
-
-        overflow: hidden;
-
-        white-space: nowrap;
-
-        text-overflow: ellipsis;
-
-        font-size: 11px;
-
-        font-weight: 600;
-
-        color: #374151;
+        max-width: 82%;
     }
 
 
     .message-bubble {
 
-        position: relative;
+        max-width: 75%;
 
-        width: fit-content;
+        padding: 4px 7px;
 
-        max-width: 58%;
+        border-radius: 7px;
 
-        padding: 6px 8px;
-
-        border-radius: 8px;
-
-        font-size: 13px;
-
-        line-height: 1.3;
-
-        overflow-wrap: anywhere;
-
-        word-break: break-word;
-
-        box-shadow:
-            0 1px 1px rgba(0,0,0,.05);
+        font-size: 12px;
     }
 
 
     .message-row.sent .message-bubble {
 
-        max-width: 65%;
-
-        background: var(--sent);
-
-        border-top-right-radius: 3px;
+        max-width: 82%;
     }
 
 
-    .message-row.received .message-bubble {
+    .message-sender {
 
-        max-width: 100%;
+        gap: 5px;
 
-        background: var(--received);
-
-        border-top-left-radius: 3px;
+        margin-bottom: 2px;
     }
 
 
-    .message-text {
+    .message-sender-avatar {
 
-        white-space: normal;
+        width: 23px;
+        height: 23px;
+
+        min-width: 23px;
     }
 
 
-    .message-meta {
+    .message-sender-name {
 
-        display: inline-flex;
-
-        align-items: center;
-
-        gap: 3px;
-
-        margin-left: 5px;
-
-        white-space: nowrap;
-
-        vertical-align: baseline;
-
-        font-size: 9px;
-
-        color: #7b8794;
-    }
-
-
-    .message-row.sent .message-meta i {
-
-        color: #4f8b55;
-    }
-
-
-    /* =====================================================
-       AUDIO
-    ====================================================== */
-
-    .message-audio {
-
-        width: 240px;
-
-        max-width: 100%;
-
-        height: 38px;
-
-        margin-top: 4px;
-
-        display: block;
-    }
-
-
-    /* =====================================================
-       ACTIONS
-    ====================================================== */
-
-    .message-actions {
-
-        position: absolute;
-
-        top: 3px;
-
-        right: 3px;
-
-        display: none;
-
-        z-index: 5;
-    }
-
-
-    .message-bubble:hover .message-actions {
-
-        display: block;
-    }
-
-
-    .delete-message-form {
-
-        margin: 0;
-        padding: 0;
-    }
-
-
-    .btn-delete-message {
-
-        width: 25px;
-        height: 25px;
-
-        padding: 0;
-
-        border: 0;
-
-        border-radius: 50%;
-
-        display: flex;
-
-        align-items: center;
-        justify-content: center;
-
-        color: var(--danger);
-
-        background: rgba(255,255,255,.9);
-
-        cursor: pointer;
-
-        box-shadow:
-            0 1px 4px rgba(0,0,0,.15);
-    }
-
-
-    .btn-delete-message i {
+        max-width: 180px;
 
         font-size: 10px;
     }
 
 
-    /* =====================================================
-       FORMULAIRE
-    ====================================================== */
+    .message-meta {
+
+        font-size: 8px;
+    }
+
+
+    .message-audio {
+
+        width: 220px;
+
+        max-width: 100%;
+
+        height: 36px;
+    }
+
+
+    .message-actions {
+
+        display: block;
+
+        position: relative;
+
+        top: auto;
+
+        right: auto;
+
+        margin-top: 4px;
+
+        text-align: right;
+    }
+
+
+    .btn-delete-message {
+
+        width: 24px;
+        height: 24px;
+    }
+
 
     .message-form {
 
-        flex: 0 0 auto;
-
-        width: 100%;
-
-        padding: 7px 9px;
+        padding: 6px 7px;
 
         padding-bottom:
-            calc(7px + env(safe-area-inset-bottom));
+            calc(6px + env(safe-area-inset-bottom));
 
-        display: flex;
-
-        align-items: flex-end;
-
-        gap: 5px;
-
-        background: #fff;
-
-        border-top: 1px solid var(--border);
+        gap: 4px;
     }
 
 
     .voice-button {
 
-        width: 38px;
-        height: 38px;
+        width: 37px;
+        height: 37px;
 
-        min-width: 38px;
-
-        border: 0;
-
-        border-radius: 50%;
-
-        display: flex;
-
-        align-items: center;
-        justify-content: center;
-
-        color: #374151;
-
-        background: #f3f4f6;
-
-        cursor: pointer;
-
-        transition: .2s ease;
-    }
-
-
-    .voice-button:hover {
-
-        background: #e5e7eb;
-    }
-
-
-    .voice-button.recording {
-
-        color: #fff;
-
-        background: #dc2626;
-
-        animation: pulse-record 1s infinite;
-    }
-
-
-    @keyframes pulse-record {
-
-        0% {
-            box-shadow:
-                0 0 0 0 rgba(220,38,38,.4);
-        }
-
-        70% {
-            box-shadow:
-                0 0 0 9px rgba(220,38,38,0);
-        }
-
-        100% {
-            box-shadow:
-                0 0 0 0 rgba(220,38,38,0);
-        }
-    }
-
-
-    .recording-info {
-
-        display: none;
-
-        align-items: center;
-
-        gap: 5px;
-
-        color: #dc2626;
-
-        font-size: 11px;
-
-        white-space: nowrap;
-    }
-
-
-    .recording-info.active {
-
-        display: flex;
-    }
-
-
-    .recording-dot {
-
-        width: 7px;
-        height: 7px;
-
-        border-radius: 50%;
-
-        background: #dc2626;
-
-        animation: blink-record .8s infinite;
-    }
-
-
-    @keyframes blink-record {
-
-        50% {
-            opacity: .25;
-        }
-    }
-
-
-    .message-input-wrapper {
-
-        flex: 1;
-
-        min-width: 0;
+        min-width: 37px;
     }
 
 
     .message-input {
 
-        width: 100%;
-
-        min-height: 38px;
+        min-height: 37px;
 
         max-height: 90px;
 
-        padding: 9px 12px;
-
-        resize: none;
-
-        overflow-y: auto;
-
-        border:
-            1px solid var(--border);
-
-        border-radius: 20px;
-
-        outline: none;
-
-        font-family: inherit;
+        padding: 8px 11px;
 
         font-size: 13px;
-
-        line-height: 1.3;
-
-        background: #f9fafb;
-    }
-
-
-    .message-input:focus {
-
-        border-color: var(--primary);
-
-        background: #fff;
     }
 
 
     .send-button {
 
-        width: 38px;
-        height: 38px;
+        width: 37px;
+        height: 37px;
 
-        min-width: 38px;
+        min-width: 37px;
+    }
 
-        border: 0;
 
-        border-radius: 50%;
+    .conversation-sidebar.mobile-hidden {
+
+        display: none;
+    }
+
+
+    .conversation-sidebar.mobile-visible {
 
         display: flex;
-
-        align-items: center;
-        justify-content: center;
-
-        color: #fff;
-
-        background: var(--primary);
-
-        cursor: pointer;
     }
 
 
-    .send-button:active {
+    .chat-area.mobile-hidden {
 
-        transform: scale(.93);
+        display: none;
     }
 
 
-    /* =====================================================
-       EMPTY
-    ====================================================== */
-
-    .empty-chat {
-
-        width: 100%;
-        height: 100%;
-
-        min-height: 0;
+    .chat-area.mobile-visible {
 
         display: flex;
-
-        align-items: center;
-        justify-content: center;
-
-        padding: 30px;
-
-        text-align: center;
-
-        color: var(--muted);
     }
 
 
-    .empty-chat-icon {
+    .recording-info {
 
-        width: 70px;
-        height: 70px;
+        font-size: 10px;
+    }
 
-        margin: 0 auto 15px;
+}
 
-        display: flex;
 
-        align-items: center;
-        justify-content: center;
+@media (max-width: 380px) {
 
-        border-radius: 50%;
+    .message-bubble {
 
-        background: var(--primary-soft);
+        max-width: 78%;
 
-        color: var(--primary);
-
-        font-size: 28px;
+        font-size: 11.5px;
     }
 
 
-    .empty-chat h4 {
+    .message-row.sent .message-bubble {
 
-        margin-bottom: 6px;
-
-        font-size: 18px;
-
-        font-weight: 600;
+        max-width: 85%;
     }
 
 
-    .empty-chat p {
+    .message-content-received {
 
-        margin: 0;
-
-        font-size: 13px;
+        max-width: 85%;
     }
 
 
-    /* =====================================================
-       MOBILE
-    ====================================================== */
+    .message-audio {
 
-    @media (max-width: 767.98px) {
-
-        :root {
-            --navbar-height: 52px;
-        }
-
-
-        html,
-        body {
-
-            width: 100%;
-            height: 100dvh;
-        }
-
-
-        .wrapper {
-
-            height: 100dvh;
-
-            min-height: 0;
-        }
-
-
-        .main-header {
-
-            flex-basis: 52px;
-
-            height: 52px;
-
-            min-height: 52px;
-
-            padding: 0 8px !important;
-
-            padding-top:
-                env(safe-area-inset-top);
-        }
-
-
-        .btn-retour {
-
-            width: 40px;
-            height: 40px;
-
-            min-width: 40px;
-        }
-
-
-        .titre-messagerie {
-
-            font-size: 16px;
-        }
-
-
-        .notification-panel {
-
-            position: fixed;
-
-            top: 57px;
-            right: 8px;
-
-            width: calc(100vw - 16px);
-
-            max-width: none;
-        }
-
-
-        .content-wrapper {
-
-            flex: 1 1 auto;
-
-            min-height: 0;
-
-            overflow: hidden;
-        }
-
-
-        .messagerie-container {
-
-            height: 100%;
-
-            min-height: 0;
-
-            padding: 0;
-        }
-
-
-        .whatsapp-container {
-
-            height: 100%;
-
-            min-height: 0;
-
-            border: 0;
-
-            border-radius: 0;
-
-            box-shadow: none;
-        }
-
-
-        .conversation-sidebar {
-
-            width: 100%;
-
-            min-width: 100%;
-        }
-
-
-        .sidebar-header {
-
-            padding: 10px;
-        }
-
-
-        .conversation-item {
-
-            min-height: 62px;
-
-            padding: 8px 10px;
-        }
-
-
-        .conversation-avatar {
-
-            width: 42px;
-            height: 42px;
-
-            min-width: 42px;
-        }
-
-
-        .chat-header {
-
-            height: 52px;
-
-            min-height: 52px;
-
-            padding: 6px 7px;
-        }
-
-
-        .chat-back {
-
-            display: flex;
-        }
-
-
-        .chat-avatar {
-
-            width: 38px;
-            height: 38px;
-
-            min-width: 38px;
-        }
-
-
-        .chat-user-name {
-
-            font-size: 14px;
-        }
-
-
-        .chat-status {
-
-            font-size: 10px;
-        }
-
-
-        .messages-area {
-
-            flex: 1 1 auto;
-
-            min-height: 0;
-
-            padding: 8px 7px;
-        }
-
-
-        .message-content-received {
-
-            max-width: 82%;
-        }
-
-
-        .message-bubble {
-
-            max-width: 75%;
-
-            padding: 4px 7px;
-
-            border-radius: 7px;
-
-            font-size: 12px;
-        }
-
-
-        .message-row.sent .message-bubble {
-
-            max-width: 82%;
-        }
-
-
-        .message-sender {
-
-            gap: 5px;
-
-            margin-bottom: 2px;
-        }
-
-
-        .message-sender-avatar {
-
-            width: 23px;
-            height: 23px;
-
-            min-width: 23px;
-        }
-
-
-        .message-sender-name {
-
-            max-width: 180px;
-
-            font-size: 10px;
-        }
-
-
-        .message-meta {
-
-            font-size: 8px;
-        }
-
-
-        .message-audio {
-
-            width: 220px;
-
-            max-width: 100%;
-
-            height: 36px;
-        }
-
-
-        .message-actions {
-
-            display: block;
-
-            position: relative;
-
-            top: auto;
-
-            right: auto;
-
-            margin-top: 4px;
-
-            text-align: right;
-        }
-
-
-        .btn-delete-message {
-
-            width: 24px;
-            height: 24px;
-        }
-
-
-        .message-form {
-
-            padding: 6px 7px;
-
-            padding-bottom:
-                calc(6px + env(safe-area-inset-bottom));
-
-            gap: 4px;
-        }
-
-
-        .voice-button {
-
-            width: 37px;
-            height: 37px;
-
-            min-width: 37px;
-        }
-
-
-        .message-input {
-
-            min-height: 37px;
-
-            max-height: 90px;
-
-            padding: 8px 11px;
-
-            font-size: 13px;
-        }
-
-
-        .send-button {
-
-            width: 37px;
-            height: 37px;
-
-            min-width: 37px;
-        }
-
-
-        .conversation-sidebar.mobile-hidden {
-
-            display: none;
-        }
-
-
-        .conversation-sidebar.mobile-visible {
-
-            display: flex;
-        }
-
-
-        .chat-area.mobile-hidden {
-
-            display: none;
-        }
-
-
-        .chat-area.mobile-visible {
-
-            display: flex;
-        }
-
-
-        .recording-info {
-
-            font-size: 10px;
-        }
-
+        width: 200px;
     }
 
 
-    @media (max-width: 380px) {
+    .recording-info {
 
-        .message-bubble {
-
-            max-width: 78%;
-
-            font-size: 11.5px;
-        }
-
-
-        .message-row.sent .message-bubble {
-
-            max-width: 85%;
-        }
-
-
-        .message-content-received {
-
-            max-width: 85%;
-        }
-
-
-        .message-audio {
-
-            width: 200px;
-        }
-
-
-        .recording-info {
-
-            display: none !important;
-        }
-
+        display: none !important;
     }
 
-
-    .conversation-list::-webkit-scrollbar,
-    .messages-area::-webkit-scrollbar,
-    .notification-list::-webkit-scrollbar {
-
-        width: 5px;
-    }
+}
 
 
-    .conversation-list::-webkit-scrollbar-thumb,
-    .messages-area::-webkit-scrollbar-thumb,
-    .notification-list::-webkit-scrollbar-thumb {
+/* =====================================================
+   SCROLLBAR
+===================================================== */
 
-        background: #cbd5e1;
+.conversation-list::-webkit-scrollbar,
+.messages-area::-webkit-scrollbar,
+.notification-list::-webkit-scrollbar {
 
-        border-radius: 10px;
-    }
+    width: 5px;
+}
 
 
-    .conversation-list::-webkit-scrollbar-track,
-    .messages-area::-webkit-scrollbar-track,
-    .notification-list::-webkit-scrollbar-track {
+.conversation-list::-webkit-scrollbar-thumb,
+.messages-area::-webkit-scrollbar-thumb,
+.notification-list::-webkit-scrollbar-thumb {
 
-        background: transparent;
-    }
+    background: #cbd5e1;
+
+    border-radius: 10px;
+}
+
+
+.conversation-list::-webkit-scrollbar-track,
+.messages-area::-webkit-scrollbar-track,
+.notification-list::-webkit-scrollbar-track {
+
+    background: transparent;
+}
 
 </style>
 
-
 </head>
+
 
 <body>
 
@@ -1947,21 +1969,11 @@
 
 <!-- =====================================================
      NAVBAR
-====================================================== -->
+===================================================== -->
 
-<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+<nav class="main-header">
 
     <div class="navbar-messagerie">
-
-
-        {% comment %} <a href="{% url 'retour_dashboard' %}"
-        class="btn-retour"
-        aria-label="Retour">
-
-            <i class="fas fa-arrow-left"></i>
-
-        </a> {% endcomment %}
-
 
         <div class="titre-messagerie">
 
@@ -1979,7 +1991,6 @@
         <div class="notification-wrapper"
              id="notificationWrapper">
 
-
             <button type="button"
                     class="notification-button"
                     id="notificationButton"
@@ -1987,11 +1998,12 @@
 
                 <i class="fas fa-bell"></i>
 
-
                 {% if notifications_non_lues %}
 
                     <span class="notification-count">
+
                         {{ notifications_non_lues }}
+
                     </span>
 
                 {% endif %}
@@ -2014,7 +2026,8 @@
 
                         {% if notifications_non_lues %}
 
-                            {{ notifications_non_lues }} non lue{{ notifications_non_lues|pluralize }}
+                            {{ notifications_non_lues }}
+                            non lue{{ notifications_non_lues|pluralize }}
 
                         {% else %}
 
@@ -2113,7 +2126,6 @@
 
                     {% empty %}
 
-
                         <div class="notification-empty">
 
                             <i class="far fa-bell-slash"></i>
@@ -2121,7 +2133,6 @@
                             Aucune notification.
 
                         </div>
-
 
                     {% endfor %}
 
@@ -2139,7 +2150,7 @@
 
 <!-- =====================================================
      CONTENU
-====================================================== -->
+===================================================== -->
 
 <div class="content-wrapper">
 
@@ -2165,13 +2176,24 @@
                         </h5>
 
 
-                        {% if messages_non_lus %}
+                        <!-- =================================================
+                             COMPTEUR TOTAL
+                             PRIVÉ + GROUPE
+                        ================================================== -->
 
-                            <span class="unread-badge">
+                        <span class="unread-badge"
+                              id="messagesNonLusBadge"
+                              {% if not messages_non_lus %}
+                                  style="display:none;"
+                              {% endif %}>
+
+                            {% if messages_non_lus %}
+
                                 {{ messages_non_lus }}
-                            </span>
 
-                        {% endif %}
+                            {% endif %}
+
+                        </span>
 
                     </div>
 
@@ -2239,7 +2261,6 @@
 
                             </div>
 
-
                         </a>
 
                     {% endfor %}
@@ -2279,7 +2300,6 @@
 
                             </div>
 
-
                         </a>
 
                     {% endfor %}
@@ -2309,7 +2329,6 @@
                         <span>Groupe</span>
 
                     </a>
-
 
                 </div>
 
@@ -2497,7 +2516,6 @@
 
                                             </span>
 
-
                                         </div>
 
 
@@ -2601,6 +2619,7 @@
                                name="audio"
                                accept="audio/*"
                                hidden>
+
 
                         <button type="button"
                                 class="voice-button"
@@ -2798,7 +2817,6 @@
 
                                             </span>
 
-
                                         </div>
 
 
@@ -2824,8 +2842,6 @@
 
                                                     <source src="{{ msg.audio.url }}">
 
-                                                    Votre navigateur ne supporte pas l'audio.
-
                                                 </audio>
 
                                             {% endif %}
@@ -2836,7 +2852,6 @@
                                                 {{ msg.date_envoi|date:"H:i" }}
 
                                             </span>
-
 
                                         </div>
 
@@ -2903,6 +2918,7 @@
                                name="audio"
                                accept="audio/*"
                                hidden>
+
 
                         <button type="button"
                                 class="voice-button"
@@ -2989,7 +3005,22 @@
 </div>
 
 
-</div>
+<!-- =====================================================
+     SON DE NOTIFICATION
+===================================================== -->
+
+<audio id="messageNotificationSound"
+       preload="auto">
+
+    <source src="{% static 'sounds/notification.mp3' %}"
+            type="audio/mpeg">
+
+</audio>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
 
 <script>
 
@@ -3000,52 +3031,670 @@ document.addEventListener("DOMContentLoaded", function () {
        ELEMENTS
     ====================================================== */
 
-    const sidebar =
-        document.getElementById("conversationSidebar");
+    const notificationSound =
+        document.getElementById(
+            "messageNotificationSound"
+        );
 
-    const chatArea =
-        document.getElementById("chatArea");
 
-    const messagesArea =
-        document.getElementById("messagesArea");
+    let audioAutorise = false;
 
-    const messageInput =
-        document.getElementById("messageInput");
+    let actualisationEnCours = false;
 
-    const recherche =
-        document.getElementById("rechercheConversation");
+    let verificationEnCours = false;
 
-    const messageForm =
-        document.getElementById("messageForm");
-
-    const voiceButton =
-        document.getElementById("voiceButton");
-
-    const audioInput =
-        document.getElementById("audioInput");
-
-    const recordingInfo =
-        document.getElementById("recordingInfo");
-
-    const recordingTime =
-        document.getElementById("recordingTime");
+    let compteurEnCours = false;
 
 
     /* =====================================================
-       NOTIFICATIONS
+       AUTORISATION AUDIO
+    ====================================================== */
+
+    function autoriserSonNotification() {
+
+        if (
+            !notificationSound ||
+            audioAutorise
+        ) {
+
+            return;
+
+        }
+
+
+        notificationSound.volume = 0;
+
+        notificationSound.muted = true;
+
+
+        try {
+
+            const promesse =
+                notificationSound.play();
+
+
+            if (
+                promesse !== undefined
+            ) {
+
+                promesse
+                    .then(function () {
+
+                        notificationSound.pause();
+
+                        notificationSound.currentTime = 0;
+
+                        notificationSound.muted = false;
+
+                        notificationSound.volume = 1;
+
+                        audioAutorise = true;
+
+                        console.log(
+                            "Audio notification autorisé."
+                        );
+
+                    })
+                    .catch(function () {
+
+                        notificationSound.muted = false;
+
+                        notificationSound.volume = 1;
+
+                        console.log(
+                            "Interaction utilisateur nécessaire pour le son."
+                        );
+
+                    });
+
+            }
+            else {
+
+                notificationSound.muted = false;
+
+                notificationSound.volume = 1;
+
+                audioAutorise = true;
+
+            }
+
+        }
+        catch (erreur) {
+
+            console.log(
+                "Erreur autorisation audio :",
+                erreur
+            );
+
+        }
+
+    }
+
+
+    document.addEventListener(
+        "click",
+        autoriserSonNotification,
+        {
+            passive: true
+        }
+    );
+
+
+    document.addEventListener(
+        "touchstart",
+        autoriserSonNotification,
+        {
+            passive: true
+        }
+    );
+
+
+    document.addEventListener(
+        "keydown",
+        autoriserSonNotification,
+        {
+            passive: true
+        }
+    );
+
+
+    /* =====================================================
+       SONNERIE
+    ====================================================== */
+
+    function jouerSonnerie() {
+
+        if (!notificationSound) {
+
+            console.log(
+                "Élément audio introuvable."
+            );
+
+            return;
+
+        }
+
+
+        if (!audioAutorise) {
+
+            console.log(
+                "Son non autorisé par le navigateur."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            notificationSound.pause();
+
+            notificationSound.currentTime = 0;
+
+            notificationSound.muted = false;
+
+            notificationSound.volume = 1;
+
+
+            const promesse =
+                notificationSound.play();
+
+
+            if (
+                promesse !== undefined
+            ) {
+
+                promesse.catch(function (erreur) {
+
+                    console.log(
+                        "Erreur lecture sonnerie :",
+                        erreur
+                    );
+
+                });
+
+            }
+
+        }
+        catch (erreur) {
+
+            console.log(
+                "Erreur son notification :",
+                erreur
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       BADGE DISCUSSIONS
+       
+       Le badge représente :
+       
+       messages privés non lus
+       +
+       messages de groupes non lus
+    ====================================================== */
+
+    function mettreAJourBadge(nombre) {
+
+        const badge =
+            document.getElementById(
+                "messagesNonLusBadge"
+            );
+
+
+        if (!badge) {
+
+            return;
+
+        }
+
+
+        nombre =
+            Number(nombre || 0);
+
+
+        if (nombre > 0) {
+
+            badge.textContent =
+                nombre;
+
+            badge.style.display =
+                "flex";
+
+            badge.style.transform =
+                "scale(1)";
+
+            badge.style.opacity =
+                "1";
+
+        }
+        else {
+
+            badge.textContent =
+                "";
+
+            badge.style.display =
+                "none";
+
+        }
+
+    }
+
+
+    /* =====================================================
+       ACTUALISER LA CONVERSATION
+    ====================================================== */
+
+    async function actualiserConversation() {
+
+        const messagesArea =
+            document.getElementById(
+                "messagesArea"
+            );
+
+
+        const messageForm =
+            document.getElementById(
+                "messageForm"
+            );
+
+
+        if (
+            !messagesArea ||
+            !messageForm ||
+            actualisationEnCours
+        ) {
+
+            return;
+
+        }
+
+
+        actualisationEnCours = true;
+
+
+        const etaitEnBas =
+            (
+                messagesArea.scrollHeight -
+                messagesArea.scrollTop -
+                messagesArea.clientHeight
+            ) < 100;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    window.location.href,
+                    {
+                        method: "GET",
+
+                        headers: {
+
+                            "X-Requested-With":
+                                "XMLHttpRequest",
+
+                            "Cache-Control":
+                                "no-cache"
+                        },
+
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Erreur HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            const html =
+                await response.text();
+
+
+            const parser =
+                new DOMParser();
+
+
+            const documentTemporaire =
+                parser.parseFromString(
+                    html,
+                    "text/html"
+                );
+
+
+            const nouveauMessagesArea =
+                documentTemporaire.querySelector(
+                    "#messagesArea"
+                );
+
+
+            if (!nouveauMessagesArea) {
+
+                console.log(
+                    "Zone messages introuvable."
+                );
+
+                return;
+
+            }
+
+
+            messagesArea.innerHTML =
+                nouveauMessagesArea.innerHTML;
+
+
+            if (etaitEnBas) {
+
+                requestAnimationFrame(function () {
+
+                    messagesArea.scrollTop =
+                        messagesArea.scrollHeight;
+
+                });
+
+            }
+
+
+            console.log(
+                "Conversation actualisée."
+            );
+
+        }
+        catch (erreur) {
+
+            console.log(
+                "Erreur actualisation conversation :",
+                erreur
+            );
+
+        }
+        finally {
+
+            actualisationEnCours = false;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       NOUVEAUX MESSAGES
+    ====================================================== */
+
+    async function verifierNouveauxMessages() {
+
+        if (verificationEnCours) {
+
+            return;
+
+        }
+
+
+        verificationEnCours = true;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "{% url 'verifier_nouveaux_messages' %}",
+                    {
+                        method: "GET",
+
+                        headers: {
+
+                            "X-Requested-With":
+                                "XMLHttpRequest",
+
+                            "Cache-Control":
+                                "no-cache"
+                        },
+
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Erreur HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            console.log(
+                "Vérification message :",
+                data
+            );
+
+
+            if (
+                data.nouveau_message === true
+            ) {
+
+                /* =========================================
+                   SON
+                ========================================== */
+
+                jouerSonnerie();
+
+
+                /* =========================================
+                   ACTUALISATION
+                ========================================== */
+
+                await actualiserConversation();
+
+
+                /* =========================================
+                   COMPTEUR
+                ========================================== */
+
+                await actualiserCompteurMessages();
+
+            }
+
+        }
+        catch (erreur) {
+
+            console.log(
+                "Erreur vérification nouveaux messages :",
+                erreur
+            );
+
+        }
+        finally {
+
+            verificationEnCours = false;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       COMPTEUR TOTAL
+    ====================================================== */
+
+    async function actualiserCompteurMessages() {
+
+        if (compteurEnCours) {
+
+            return;
+
+        }
+
+
+        compteurEnCours = true;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "{% url 'compteur_messages_non_lus' %}",
+                    {
+                        method: "GET",
+
+                        headers: {
+
+                            "X-Requested-With":
+                                "XMLHttpRequest",
+
+                            "Cache-Control":
+                                "no-cache"
+                        },
+
+                        cache: "no-store"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Erreur HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            const nombre =
+                Number(
+                    data.messages_non_lus || 0
+                );
+
+
+            mettreAJourBadge(
+                nombre
+            );
+
+
+            console.log(
+                "Total messages non lus :",
+                nombre
+            );
+
+        }
+        catch (erreur) {
+
+            console.log(
+                "Erreur compteur messages :",
+                erreur
+            );
+
+        }
+        finally {
+
+            compteurEnCours = false;
+
+        }
+
+    }
+
+
+    /* =====================================================
+       RECHERCHE CONVERSATIONS
+    ====================================================== */
+
+    const recherche =
+        document.getElementById(
+            "rechercheConversation"
+        );
+
+
+    if (recherche) {
+
+        recherche.addEventListener(
+            "input",
+            function () {
+
+                const terme =
+                    this.value
+                        .toLowerCase()
+                        .trim();
+
+
+                const conversations =
+                    document.querySelectorAll(
+                        ".conversation-item"
+                    );
+
+
+                conversations.forEach(function (item) {
+
+                    const texte =
+                        item.textContent
+                            .toLowerCase();
+
+
+                    if (
+                        !terme ||
+                        texte.includes(terme)
+                    ) {
+
+                        item.style.display =
+                            "flex";
+
+                    }
+                    else {
+
+                        item.style.display =
+                            "none";
+
+                    }
+
+                });
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       NOTIFICATION PANEL
     ====================================================== */
 
     const notificationButton =
-        document.getElementById("notificationButton");
+        document.getElementById(
+            "notificationButton"
+        );
+
 
     const notificationPanel =
-        document.getElementById("notificationPanel");
+        document.getElementById(
+            "notificationPanel"
+        );
 
-    const notificationWrapper =
-        document.getElementById("notificationWrapper");
 
-
-    if (notificationButton && notificationPanel) {
+    if (
+        notificationButton &&
+        notificationPanel
+    ) {
 
         notificationButton.addEventListener(
             "click",
@@ -3060,226 +3709,21 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         );
 
-    }
 
+        document.addEventListener(
+            "click",
+            function (event) {
 
-    document.addEventListener(
-        "click",
-        function (event) {
+                if (
+                    !notificationPanel.contains(event.target) &&
+                    !notificationButton.contains(event.target)
+                ) {
 
-            if (
-                notificationWrapper &&
-                notificationPanel &&
-                !notificationWrapper.contains(event.target)
-            ) {
-
-                notificationPanel.classList.remove(
-                    "active"
-                );
-
-            }
-
-        }
-    );
-
-
-    /* =====================================================
-       HAUTEUR MOBILE
-    ====================================================== */
-
-    function ajusterHauteurViewport() {
-
-        let hauteur =
-            window.innerHeight;
-
-
-        if (
-            window.visualViewport &&
-            window.visualViewport.height
-        ) {
-
-            hauteur =
-                window.visualViewport.height;
-
-        }
-
-
-        document.documentElement.style
-            .setProperty(
-                "--app-height",
-                hauteur + "px"
-            );
-
-    }
-
-
-    ajusterHauteurViewport();
-
-
-    window.addEventListener(
-        "resize",
-        ajusterHauteurViewport
-    );
-
-
-    if (window.visualViewport) {
-
-        window.visualViewport.addEventListener(
-            "resize",
-            ajusterHauteurViewport
-        );
-
-    }
-
-
-    /* =====================================================
-       SCROLL EN BAS
-    ====================================================== */
-
-    function scrollMessages() {
-
-        if (!messagesArea) {
-            return;
-        }
-
-
-        requestAnimationFrame(
-            function () {
-
-                messagesArea.scrollTop =
-                    messagesArea.scrollHeight;
-
-            }
-        );
-
-    }
-
-
-    scrollMessages();
-
-
-    setTimeout(
-        scrollMessages,
-        250
-    );
-
-
-    /* =====================================================
-       NAVIGATION MOBILE
-    ====================================================== */
-
-    window.afficherChatMobile =
-        function () {
-
-            if (window.innerWidth <= 767.98) {
-
-                if (sidebar) {
-
-                    sidebar.classList.add(
-                        "mobile-hidden"
-                    );
-
-                    sidebar.classList.remove(
-                        "mobile-visible"
+                    notificationPanel.classList.remove(
+                        "active"
                     );
 
                 }
-
-
-                if (chatArea) {
-
-                    chatArea.classList.remove(
-                        "mobile-hidden"
-                    );
-
-                    chatArea.classList.add(
-                        "mobile-visible"
-                    );
-
-                }
-
-            }
-
-        };
-
-
-    window.retourConversations =
-        function () {
-
-            if (window.innerWidth <= 767.98) {
-
-                if (sidebar) {
-
-                    sidebar.classList.remove(
-                        "mobile-hidden"
-                    );
-
-                    sidebar.classList.add(
-                        "mobile-visible"
-                    );
-
-                }
-
-
-                if (chatArea) {
-
-                    chatArea.classList.add(
-                        "mobile-hidden"
-                    );
-
-                    chatArea.classList.remove(
-                        "mobile-visible"
-                    );
-
-                }
-
-            }
-
-        };
-
-
-    {% if utilisateur_selectionne or groupe_selectionne %}
-
-        afficherChatMobile();
-
-    {% endif %}
-
-
-    /* =====================================================
-       RECHERCHE
-    ====================================================== */
-
-    if (recherche) {
-
-        recherche.addEventListener(
-            "input",
-            function () {
-
-                const terme =
-                    this.value
-                        .toLowerCase()
-                        .trim();
-
-
-                document
-                    .querySelectorAll(
-                        ".conversation-item"
-                    )
-                    .forEach(
-                        function (item) {
-
-                            const texte =
-                                item.textContent
-                                    .toLowerCase();
-
-
-                            item.style.display =
-                                texte.includes(terme)
-                                ? "flex"
-                                : "none";
-
-                        }
-                    );
 
             }
         );
@@ -3288,33 +3732,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
-       TEXTAREA
+       TEXTAREA AUTO-GROW
     ====================================================== */
+
+    const messageInput =
+        document.getElementById(
+            "messageInput"
+        );
+
 
     if (messageInput) {
 
-        function ajusterTextarea() {
-
-            messageInput.style.height =
-                "auto";
-
-
-            const hauteur =
-                Math.min(
-                    messageInput.scrollHeight,
-                    90
-                );
-
-
-            messageInput.style.height =
-                hauteur + "px";
-
-        }
-
-
         messageInput.addEventListener(
             "input",
-            ajusterTextarea
+            function () {
+
+                this.style.height =
+                    "auto";
+
+
+                this.style.height =
+                    Math.min(
+                        this.scrollHeight,
+                        90
+                    ) + "px";
+
+            }
         );
 
 
@@ -3330,480 +3773,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     event.preventDefault();
 
 
-                    if (messageForm) {
-
-                        messageForm.requestSubmit();
-
-                    }
-
-                }
-
-            }
-        );
-
-
-        messageInput.addEventListener(
-            "focus",
-            function () {
-
-                setTimeout(
-                    function () {
-
-                        ajusterHauteurViewport();
-
-                        scrollMessages();
-
-                    },
-                    250
-                );
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       ENREGISTREMENT VOCAL
-    ====================================================== */
-
-    let mediaRecorder = null;
-
-    let audioChunks = [];
-
-    let recordingStart = null;
-
-    let recordingTimer = null;
-
-
-    function afficherTempsEnregistrement() {
-
-        if (!recordingStart) {
-            return;
-        }
-
-
-        const maintenant =
-            Date.now();
-
-
-        const secondes =
-            Math.floor(
-                (
-                    maintenant -
-                    recordingStart
-                ) / 1000
-            );
-
-
-        const minutes =
-            Math.floor(
-                secondes / 60
-            );
-
-
-        const reste =
-            secondes % 60;
-
-
-        if (recordingTime) {
-
-            recordingTime.textContent =
-                String(minutes).padStart(2, "0")
-                +
-                ":"
-                +
-                String(reste).padStart(2, "0");
-
-        }
-
-    }
-
-
-    function demarrerInterfaceEnregistrement() {
-
-        if (voiceButton) {
-
-            voiceButton.classList.add(
-                "recording"
-            );
-
-
-            voiceButton.innerHTML =
-                '<i class="fas fa-stop"></i>';
-
-        }
-
-
-        if (recordingInfo) {
-
-            recordingInfo.classList.add(
-                "active"
-            );
-
-        }
-
-
-        recordingStart =
-            Date.now();
-
-
-        recordingTimer =
-            setInterval(
-                afficherTempsEnregistrement,
-                500
-            );
-
-    }
-
-
-    function arreterInterfaceEnregistrement() {
-
-        if (voiceButton) {
-
-            voiceButton.classList.remove(
-                "recording"
-            );
-
-
-            voiceButton.innerHTML =
-                '<i class="fas fa-microphone"></i>';
-
-        }
-
-
-        if (recordingInfo) {
-
-            recordingInfo.classList.remove(
-                "active"
-            );
-
-        }
-
-
-        if (recordingTimer) {
-
-            clearInterval(
-                recordingTimer
-            );
-
-            recordingTimer = null;
-
-        }
-
-
-        recordingStart = null;
-
-
-        if (recordingTime) {
-
-            recordingTime.textContent =
-                "00:00";
-
-        }
-
-    }
-
-
-    async function demarrerEnregistrement() {
-
-        if (
-            !navigator.mediaDevices ||
-            !navigator.mediaDevices.getUserMedia
-        ) {
-
-            alert(
-                "Votre navigateur ne permet pas l'enregistrement vocal."
-            );
-
-            return;
-
-        }
-
-
-        try {
-
-            const stream =
-                await navigator.mediaDevices
-                    .getUserMedia({
-                        audio: true
-                    });
-
-
-            audioChunks = [];
-
-
-            let options = {};
-
-
-            if (
-                MediaRecorder.isTypeSupported(
-                    "audio/webm;codecs=opus"
-                )
-            ) {
-
-                options.mimeType =
-                    "audio/webm;codecs=opus";
-
-            }
-            else if (
-                MediaRecorder.isTypeSupported(
-                    "audio/webm"
-                )
-            ) {
-
-                options.mimeType =
-                    "audio/webm";
-
-            }
-
-
-            mediaRecorder =
-                new MediaRecorder(
-                    stream,
-                    options
-                );
-
-
-            mediaRecorder.ondataavailable =
-                function (event) {
-
-                    if (
-                        event.data &&
-                        event.data.size > 0
-                    ) {
-
-                        audioChunks.push(
-                            event.data
-                        );
-
-                    }
-
-                };
-
-
-            mediaRecorder.onstop =
-                function () {
-
-                    const mimeType =
-                        mediaRecorder.mimeType
-                        ||
-                        "audio/webm";
-
-
-                    const audioBlob =
-                        new Blob(
-                            audioChunks,
-                            {
-                                type: mimeType
-                            }
+                    const form =
+                        document.getElementById(
+                            "messageForm"
                         );
 
 
-                    if (
-                        audioBlob.size > 0 &&
-                        audioInput
-                    ) {
+                    if (form) {
 
-                        try {
-
-                            const fichier =
-                                new File(
-                                    [
-                                        audioBlob
-                                    ],
-                                    "message_vocal.webm",
-                                    {
-                                        type: mimeType
-                                    }
-                                );
-
-
-                            const dataTransfer =
-                                new DataTransfer();
-
-
-                            dataTransfer.items.add(
-                                fichier
-                            );
-
-
-                            audioInput.files =
-                                dataTransfer.files;
-
-
-                            if (messageInput) {
-
-                                messageInput.value =
-                                    "";
-
-                            }
-
-
-                            if (voiceButton) {
-
-                                voiceButton.innerHTML =
-                                    '<i class="fas fa-check"></i>';
-
-                                setTimeout(
-                                    function () {
-
-                                        voiceButton.innerHTML =
-                                            '<i class="fas fa-microphone"></i>';
-
-                                    },
-                                    1200
-                                );
-
-                            }
-
-                        }
-                        catch (error) {
-
-                            console.error(
-                                "Erreur fichier audio :",
-                                error
-                            );
-
-                            alert(
-                                "Impossible de préparer le message vocal."
-                            );
-
-                        }
+                        form.requestSubmit();
 
                     }
-
-
-                    stream
-                        .getTracks()
-                        .forEach(
-                            function (track) {
-
-                                track.stop();
-
-                            }
-                        );
-
-                };
-
-
-            mediaRecorder.start();
-
-
-            demarrerInterfaceEnregistrement();
-
-        }
-        catch (error) {
-
-            console.error(
-                "Erreur microphone :",
-                error
-            );
-
-
-            alert(
-                "L'accès au microphone a été refusé ou n'est pas disponible."
-            );
-
-        }
-
-    }
-
-
-    function arreterEnregistrement() {
-
-        if (
-            mediaRecorder &&
-            mediaRecorder.state === "recording"
-        ) {
-
-            mediaRecorder.stop();
-
-        }
-
-
-        arreterInterfaceEnregistrement();
-
-    }
-
-
-    if (voiceButton) {
-
-        voiceButton.addEventListener(
-            "click",
-            function () {
-
-                if (
-                    mediaRecorder &&
-                    mediaRecorder.state === "recording"
-                ) {
-
-                    arreterEnregistrement();
-
-                }
-                else {
-
-                    demarrerEnregistrement();
-
-                }
-
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       ENVOI VOCAL
-    ====================================================== */
-
-    if (messageForm) {
-
-        messageForm.addEventListener(
-            "submit",
-            function (event) {
-
-                if (
-                    mediaRecorder &&
-                    mediaRecorder.state === "recording"
-                ) {
-
-                    event.preventDefault();
-
-
-                    const recorder =
-                        mediaRecorder;
-
-
-                    const ancienOnStop =
-                        recorder.onstop;
-
-
-                    recorder.onstop =
-                        function () {
-
-                            if (ancienOnStop) {
-
-                                ancienOnStop.call(
-                                    recorder
-                                );
-
-                            }
-
-
-                            setTimeout(
-                                function () {
-
-                                    messageForm.submit();
-
-                                },
-                                200
-                            );
-
-                        };
-
-
-                    arreterEnregistrement();
 
                 }
 
@@ -3828,30 +3808,453 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     /* =====================================================
-       ORIENTATION
+       MOBILE
     ====================================================== */
 
-    window.addEventListener(
-        "orientationchange",
+    window.retourConversations =
         function () {
 
-            setTimeout(
-                function () {
+            const sidebar =
+                document.getElementById(
+                    "conversationSidebar"
+                );
 
-                    ajusterHauteurViewport();
 
-                    scrollMessages();
+            const chat =
+                document.getElementById(
+                    "chatArea"
+                );
 
-                },
-                250
-            );
+
+            if (sidebar) {
+
+                sidebar.classList.remove(
+                    "mobile-hidden"
+                );
+
+                sidebar.classList.add(
+                    "mobile-visible"
+                );
+
+            }
+
+
+            if (chat) {
+
+                chat.classList.remove(
+                    "mobile-visible"
+                );
+
+                chat.classList.add(
+                    "mobile-hidden"
+                );
+
+            }
+
+        };
+
+
+    function initialiserMobile() {
+
+        if (
+            window.innerWidth <= 767
+        ) {
+
+            const sidebar =
+                document.getElementById(
+                    "conversationSidebar"
+                );
+
+
+            const chat =
+                document.getElementById(
+                    "chatArea"
+                );
+
+
+            const messageForm =
+                document.getElementById(
+                    "messageForm"
+                );
+
+
+            if (
+                sidebar &&
+                chat
+            ) {
+
+                if (messageForm) {
+
+                    sidebar.classList.add(
+                        "mobile-hidden"
+                    );
+
+                    chat.classList.add(
+                        "mobile-visible"
+                    );
+
+                }
+                else {
+
+                    sidebar.classList.add(
+                        "mobile-visible"
+                    );
+
+                    chat.classList.add(
+                        "mobile-hidden"
+                    );
+
+                }
+
+            }
 
         }
+
+    }
+
+
+    initialiserMobile();
+
+
+    /* =====================================================
+       VOICE RECORDING
+    ====================================================== */
+
+    const voiceButton =
+        document.getElementById(
+            "voiceButton"
+        );
+
+
+    const audioInput =
+        document.getElementById(
+            "audioInput"
+        );
+
+
+    const recordingInfo =
+        document.getElementById(
+            "recordingInfo"
+        );
+
+
+    const recordingTime =
+        document.getElementById(
+            "recordingTime"
+        );
+
+
+    let mediaRecorder = null;
+
+    let audioChunks = [];
+
+    let recordingInterval = null;
+
+    let recordingSeconds = 0;
+
+
+    if (
+        voiceButton &&
+        audioInput
+    ) {
+
+        voiceButton.addEventListener(
+            "click",
+            async function () {
+
+                if (
+                    mediaRecorder &&
+                    mediaRecorder.state === "recording"
+                ) {
+
+                    mediaRecorder.stop();
+
+                    return;
+
+                }
+
+
+                if (
+                    !navigator.mediaDevices ||
+                    !navigator.mediaDevices.getUserMedia
+                ) {
+
+                    alert(
+                        "Votre navigateur ne supporte pas l'enregistrement vocal."
+                    );
+
+                    return;
+
+                }
+
+
+                try {
+
+                    const stream =
+                        await navigator.mediaDevices.getUserMedia(
+                            {
+                                audio: true
+                            }
+                        );
+
+
+                    audioChunks = [];
+
+
+                    let mimeType =
+                        "audio/webm";
+
+
+                    if (
+                        !MediaRecorder.isTypeSupported(
+                            "audio/webm"
+                        )
+                    ) {
+
+                        mimeType = "";
+
+                    }
+
+
+                    mediaRecorder =
+                        mimeType
+                            ? new MediaRecorder(
+                                stream,
+                                {
+                                    mimeType:
+                                        mimeType
+                                }
+                              )
+                            : new MediaRecorder(
+                                stream
+                              );
+
+
+                    mediaRecorder.ondataavailable =
+                        function (event) {
+
+                            if (
+                                event.data &&
+                                event.data.size > 0
+                            ) {
+
+                                audioChunks.push(
+                                    event.data
+                                );
+
+                            }
+
+                        };
+
+
+                    mediaRecorder.onstop =
+                        function () {
+
+                            stream
+                                .getTracks()
+                                .forEach(
+                                    function (track) {
+
+                                        track.stop();
+
+                                    }
+                                );
+
+
+                            const blob =
+                                new Blob(
+                                    audioChunks,
+                                    {
+                                        type:
+                                            mediaRecorder.mimeType ||
+                                            "audio/webm"
+                                    }
+                                );
+
+
+                            const file =
+                                new File(
+                                    [
+                                        blob
+                                    ],
+                                    "message_vocal.webm",
+                                    {
+                                        type:
+                                            blob.type
+                                    }
+                                );
+
+
+                            const dataTransfer =
+                                new DataTransfer();
+
+
+                            dataTransfer.items.add(
+                                file
+                            );
+
+
+                            audioInput.files =
+                                dataTransfer.files;
+
+
+                            if (
+                                recordingInfo
+                            ) {
+
+                                recordingInfo.classList.remove(
+                                    "active"
+                                );
+
+                            }
+
+
+                            voiceButton.classList.remove(
+                                "recording"
+                            );
+
+
+                            voiceButton.innerHTML =
+                                '<i class="fas fa-microphone"></i>';
+
+
+                            clearInterval(
+                                recordingInterval
+                            );
+
+
+                            recordingSeconds = 0;
+
+
+                            if (
+                                recordingTime
+                            ) {
+
+                                recordingTime.textContent =
+                                    "00:00";
+
+                            }
+
+
+                            console.log(
+                                "Message vocal prêt à être envoyé."
+                            );
+
+                        };
+
+
+                    mediaRecorder.start();
+
+
+                    voiceButton.classList.add(
+                        "recording"
+                    );
+
+
+                    voiceButton.innerHTML =
+                        '<i class="fas fa-stop"></i>';
+
+
+                    if (
+                        recordingInfo
+                    ) {
+
+                        recordingInfo.classList.add(
+                            "active"
+                        );
+
+                    }
+
+
+                    recordingSeconds = 0;
+
+
+                    recordingInterval =
+                        setInterval(
+                            function () {
+
+                                recordingSeconds++;
+
+
+                                const minutes =
+                                    Math.floor(
+                                        recordingSeconds / 60
+                                    );
+
+
+                                const seconds =
+                                    recordingSeconds % 60;
+
+
+                                if (
+                                    recordingTime
+                                ) {
+
+                                    recordingTime.textContent =
+                                        String(minutes)
+                                            .padStart(2, "0") +
+                                        ":" +
+                                        String(seconds)
+                                            .padStart(2, "0");
+
+                                }
+
+                            },
+                            1000
+                        );
+
+                }
+                catch (erreur) {
+
+                    console.error(
+                        "Erreur microphone :",
+                        erreur
+                    );
+
+
+                    alert(
+                        "Impossible d'accéder au microphone. Vérifiez l'autorisation du navigateur."
+                    );
+
+                }
+
+            });
+
+    }
+
+
+    /* =====================================================
+       INITIALISATION
+       
+       Le premier appel initialise l'état serveur.
+       Il ne déclenche pas de sonnerie.
+    ====================================================== */
+
+    verifierNouveauxMessages();
+
+    actualiserCompteurMessages();
+
+
+    /* =====================================================
+       POLLING
+       
+       Vérification toutes les 3 secondes.
+    ====================================================== */
+
+    setInterval(
+        async function () {
+
+            await verifierNouveauxMessages();
+
+            await actualiserCompteurMessages();
+
+        },
+        3000
     );
 
 
     /* =====================================================
-       VISIBILITY
+       RETOUR SUR L'ONGLET
     ====================================================== */
 
     document.addEventListener(
@@ -3860,14 +4263,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (!document.hidden) {
 
-                ajusterHauteurViewport();
+                verifierNouveauxMessages();
 
-                scrollMessages();
+                actualiserCompteurMessages();
 
             }
 
         }
     );
+
 
 });
 

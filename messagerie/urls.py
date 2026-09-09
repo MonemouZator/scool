@@ -1,3 +1,4 @@
+
 from django.urls import path
 
 from . import views
@@ -86,12 +87,32 @@ urlpatterns = [
     ),
 
     # =====================================================
-    # SUPPRIMER UN MESSAGE DE GROUPE
+    # SUPPRIMER UN MESSAGE GROUPE
     # =====================================================
 
     path(
         'groupe/message/supprimer/<int:pk>/',
         views.supprimer_message_groupe,
         name='supprimer_message_groupe'
+    ),
+
+    # =====================================================
+    # COMPTEUR DES MESSAGES NON LUS
+    # =====================================================
+
+    path(
+        'compteur-messages/',
+        views.compteur_messages_non_lus,
+        name='compteur_messages_non_lus'
+    ),
+
+    # =====================================================
+    # VÉRIFIER LES NOUVEAUX MESSAGES
+    # =====================================================
+
+    path(
+        'verifier-nouveaux-messages/',
+        views.verifier_nouveaux_messages,
+        name='verifier_nouveaux_messages'
     ),
 ]

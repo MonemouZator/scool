@@ -54,52 +54,164 @@ def home(request):
 #FONCTION DE REDIRECTION VERS LES PAGES D'ACCUEILS DES UTILISATEURS 
 
 def login_view(request):
+
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
 
-        if not username or not password:
-            messages.error(request, "Veuillez entrer votre login et mot de passe.")
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
+
+        # =====================================================
+        # VÉRIFICATION DES CHAMPS
+        # =====================================================
+
+        if not username and not password:
+
+            messages.error(
+                request,
+                "Veuillez entrer votre nom d'utilisateur et votre mot de passe."
+            )
+
             return redirect('login')
 
-        user = authenticate(request, username=username, password=password)
 
-        if user is not None:
-            login(request, user)
-            # messages.success(request, "Bienvenue, vous êtes connecté avec succès.")
+        if not username:
 
-            fonction = user.fonction
-            if fonction == 'COMPTABLE':
+            messages.error(
+                request,
+                "Veuillez entrer votre nom d'utilisateur."
+            )
 
-                return redirect('comptable_dashboard')
-            
-            elif fonction == 'ENSEIGNANT':
+            return redirect('login')
 
-                return redirect('enseignant_dashboard')
-            
-            elif fonction in 'FONDATEUR':
 
-                return redirect('dashbaord.directeur')
-            
-            elif fonction in 'DG':
-                
-                return redirect('fondateur.dashbord')
-                
-            else:
-                messages.error(request, "Votre fonction est incorrecte ou manquante.")
-                return redirect('login')
+        if not password:
+
+            messages.error(
+                request,
+                "Veuillez entrer votre mot de passe."
+            )
+
+            return redirect('login')
+
+
+        # =====================================================
+        # VÉRIFICATION DU NOM D'UTILISATEUR
+        # =====================================================
+
+        try:
+
+            utilisateur = User.objects.get(username=username)
+
+        except User.DoesNotExist:
+
+            messages.error(
+                request,
+                "Nom d'utilisateur incorrect."
+            )
+
+            return redirect('login')
+
+
+        # =====================================================
+        # AUTHENTIFICATION
+        # =====================================================
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+
+        # =====================================================
+        # MOT DE PASSE INCORRECT
+        # =====================================================
+
+        if user is None:
+
+            messages.error(
+                request,
+                "Mot de passe incorrect."
+            )
+
+            return redirect('login')
+
+
+        # =====================================================
+        # CONNEXION
+        # =====================================================
+
+        login(request, user)
+
+
+        # =====================================================
+        # VÉRIFICATION DE LA FONCTION
+        # =====================================================
+
+        fonction = getattr(user, 'fonction', None)
+
+
+        if fonction == 'COMPTABLE':
+
+            return redirect('comptable_dashboard')
+
+
+        elif fonction == 'ENSEIGNANT':
+
+            return redirect('enseignant_dashboard')
+
+
+        elif fonction == 'FONDATEUR':
+
+            return redirect('dashbaord.directeur')
+
+
+        elif fonction == 'DG':
+
+            return redirect('fondateur.dashbord')
+
+
         else:
-            messages.error(request, "Login ou mot de passe incorrect.")
+
+            # Si la fonction est absente ou incorrecte,
+            # on déconnecte l'utilisateur.
+
+            from django.contrib.auth import logout
+
+            logout(request)
+
+            messages.error(
+                request,
+                "Votre fonction est incorrecte ou manquante. "
+                "Veuillez contacter l'administration."
+            )
+
             return redirect('login')
 
-    return render(request, 'login/login.html')
+
+            # =========================================================
+            # AFFICHAGE DE LA PAGE
+            # =========================================================
+
+    return render(
+        request,
+        'login/login.html'
+    )
+
 
 #################################################################
 
 #DECONNEXION LORSQU'UN UTILISATEUR EST CONNECTER
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+
 def logout_view(request):
+
     logout(request)
-    return redirect('login')  # Redirige vers la page de connexion après la déconnexion
+
+    return redirect('login')
+
 
 #################################################################
 #FONCTION D'ENREGISTREMENT DES UTILISATEURS

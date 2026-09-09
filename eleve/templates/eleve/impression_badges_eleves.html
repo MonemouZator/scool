@@ -18,7 +18,6 @@
     <link rel="stylesheet"
           href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
 
-
 <style>
 
 /* =========================================================
@@ -88,7 +87,7 @@ body {
 
     background: #007bff;
 
-    color: white;
+    color: #ffffff;
 }
 
 
@@ -96,7 +95,7 @@ body {
 
     background: #6c757d;
 
-    color: white;
+    color: #ffffff;
 }
 
 
@@ -108,6 +107,8 @@ body {
 
 /* =========================================================
    FEUILLE A4
+   EXACTEMENT 8 BADGES
+   2 COLONNES × 4 LIGNES
 ========================================================= */
 
 .a4-sheet {
@@ -116,17 +117,29 @@ body {
 
     height: 297mm;
 
+    min-width: 210mm;
+
+    max-width: 210mm;
+
+    min-height: 297mm;
+
+    max-height: 297mm;
+
     margin: 15px auto;
 
     padding: 10mm;
 
-    background: white;
+    background: #ffffff;
 
     display: grid;
 
-    grid-template-columns: repeat(2, 91mm);
+    grid-template-columns: 91mm 91mm;
 
-    grid-template-rows: repeat(4, 51mm);
+    grid-template-rows:
+        51mm
+        51mm
+        51mm
+        51mm;
 
     column-gap: 8mm;
 
@@ -137,6 +150,20 @@ body {
     overflow: hidden;
 
     box-shadow: 0 2px 10px rgba(0, 0, 0, .15);
+
+    page-break-after: always;
+
+    break-after: page;
+}
+
+
+/* Dernière page */
+
+.a4-sheet:last-child {
+
+    page-break-after: auto;
+
+    break-after: auto;
 }
 
 
@@ -150,7 +177,15 @@ body {
 
     height: 51mm;
 
-    background: white;
+    min-width: 91mm;
+
+    max-width: 91mm;
+
+    min-height: 51mm;
+
+    max-height: 51mm;
+
+    background: #ffffff;
 
     border: .4mm solid #0d6efd;
 
@@ -186,7 +221,7 @@ body {
         #084298
     );
 
-    color: white;
+    color: #ffffff;
 
     display: flex;
 
@@ -208,7 +243,7 @@ body {
 
     object-fit: contain;
 
-    background: white;
+    background: #ffffff;
 
     border-radius: 2mm;
 
@@ -226,7 +261,7 @@ body {
 
     height: 11mm;
 
-    background: white;
+    background: #ffffff;
 
     color: #0d6efd;
 
@@ -528,7 +563,7 @@ body {
 
     background: #0d6efd;
 
-    color: white;
+    color: #ffffff;
 
     padding: .6mm 1.5mm;
 
@@ -635,7 +670,7 @@ body {
 
         width: 210mm;
 
-        height: 297mm;
+        height: auto;
 
         min-height: 297mm;
 
@@ -643,7 +678,7 @@ body {
 
         padding: 0;
 
-        background: white !important;
+        background: #ffffff !important;
     }
 
 
@@ -653,83 +688,123 @@ body {
     }
 
 
+    /* ================================================
+       CHAQUE .a4-sheet = UNE PAGE
+    ================================================ */
+
     .a4-sheet {
 
-        width: 210mm;
+        width: 210mm !important;
 
-        height: 297mm;
+        height: 297mm !important;
 
-        min-height: 297mm;
+        min-width: 210mm !important;
 
-        margin: 0;
+        max-width: 210mm !important;
 
-        padding: 10mm;
+        min-height: 297mm !important;
 
-        display: grid;
+        max-height: 297mm !important;
 
-        grid-template-columns: repeat(2, 91mm);
+        margin: 0 !important;
 
-        grid-template-rows: repeat(4, 51mm);
+        padding: 10mm !important;
 
-        column-gap: 8mm;
+        background: #ffffff !important;
 
-        row-gap: 5mm;
+        display: grid !important;
 
-        align-content: start;
+        grid-template-columns: 91mm 91mm !important;
 
-        overflow: hidden;
+        grid-template-rows:
+            51mm
+            51mm
+            51mm
+            51mm !important;
 
-        box-shadow: none;
+        column-gap: 8mm !important;
+
+        row-gap: 5mm !important;
+
+        align-content: start !important;
+
+        overflow: hidden !important;
+
+        box-shadow: none !important;
+
+        page-break-after: always !important;
+
+        break-after: page !important;
     }
 
 
+    .a4-sheet:last-child {
+
+        page-break-after: auto !important;
+
+        break-after: auto !important;
+    }
+
+
+    /* ================================================
+       BADGE
+    ================================================ */
+
     .student-badge {
 
-        width: 91mm;
+        width: 91mm !important;
 
-        height: 51mm;
+        height: 51mm !important;
 
-        box-shadow: none;
+        min-width: 91mm !important;
 
-        break-inside: avoid;
+        max-width: 91mm !important;
 
-        page-break-inside: avoid;
+        min-height: 51mm !important;
 
-        -webkit-print-color-adjust: exact;
+        max-height: 51mm !important;
 
-        print-color-adjust: exact;
+        box-shadow: none !important;
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+
+        -webkit-print-color-adjust: exact !important;
+
+        print-color-adjust: exact !important;
     }
 
 
     .badge-header {
 
-        -webkit-print-color-adjust: exact;
+        -webkit-print-color-adjust: exact !important;
 
-        print-color-adjust: exact;
+        print-color-adjust: exact !important;
     }
 
 
     .matricule-line {
 
-        -webkit-print-color-adjust: exact;
+        -webkit-print-color-adjust: exact !important;
 
-        print-color-adjust: exact;
+        print-color-adjust: exact !important;
     }
 
 
     .school-tag {
 
-        -webkit-print-color-adjust: exact;
+        -webkit-print-color-adjust: exact !important;
 
-        print-color-adjust: exact;
+        print-color-adjust: exact !important;
     }
 
 
     .badge-footer {
 
-        -webkit-print-color-adjust: exact;
+        -webkit-print-color-adjust: exact !important;
 
-        print-color-adjust: exact;
+        print-color-adjust: exact !important;
     }
 }
 
@@ -744,7 +819,6 @@ body {
 
         overflow-x: auto;
     }
-
 
     .a4-sheet {
 
@@ -823,245 +897,288 @@ body {
 
 
 <!-- =====================================================
-     FEUILLE A4
+     BADGES
+     IMPORTANT :
+     UNE FEUILLE A4 POUR CHAQUE GROUPE DE 8
 ===================================================== -->
 
 {% if eleves %}
-
-<div class="a4-sheet">
 
 
     {% for inscription in eleves %}
 
 
-    <!-- =================================================
-         BADGE ÉLÈVE
-    ================================================== -->
+        <!-- =================================================
+             OUVERTURE D'UNE NOUVELLE FEUILLE TOUS LES 8
+        ================================================== -->
 
-    <div class="student-badge">
+        {% if forloop.counter0|divisibleby:8 %}
+
+            <div class="a4-sheet">
+
+        {% endif %}
 
 
         <!-- =================================================
-             EN-TÊTE
+             BADGE ÉLÈVE
         ================================================== -->
 
-        <div class="badge-header">
-
-
-            {% if etablissement and etablissement.logo %}
-
-                <img
-                    src="{{ etablissement.logo.url }}"
-                    alt="Logo de l'établissement"
-                    class="school-logo">
-
-            {% else %}
-
-                <div class="school-logo-placeholder">
-
-                    <i class="fas fa-school"></i>
-
-                </div>
-
-            {% endif %}
-
-
-            <div class="school-info">
-
-
-                <div class="school-name">
-
-                    {% if etablissement %}
-
-                        {{ etablissement.nom_ecole }}
-
-                    {% else %}
-
-                        ÉTABLISSEMENT SCOLAIRE
-
-                    {% endif %}
-
-                </div>
-
-
-                {% if etablissement and etablissement.devise_ecole %}
-
-                    <div class="school-motto">
-
-                        {{ etablissement.devise_ecole }}
-
-                    </div>
-
-                {% endif %}
-
-
-            </div>
-
-
-        </div>
-
-
-        <!-- =================================================
-             CORPS
-        ================================================== -->
-
-        <div class="badge-body">
+        <div class="student-badge">
 
 
             <!-- =================================================
-                 PHOTO
+                 EN-TÊTE
             ================================================== -->
 
-            <div class="photo-container">
+            <div class="badge-header">
 
 
-                {% if inscription.eleve.photo %}
+                {% if etablissement and etablissement.logo %}
 
                     <img
-                        src="{{ inscription.eleve.photo.url }}"
-                        alt="Photo de {{ inscription.eleve.nom }} {{ inscription.eleve.prenom }}"
-                        class="student-photo">
+                        src="{{ etablissement.logo.url }}"
+                        alt="Logo de l'établissement"
+                        class="school-logo">
 
                 {% else %}
 
-                    <div class="no-photo">
+                    <div class="school-logo-placeholder">
 
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-school"></i>
 
                     </div>
 
                 {% endif %}
+
+
+                <div class="school-info">
+
+
+                    <div class="school-name">
+
+                        {% if etablissement %}
+
+                            {{ etablissement.nom_ecole }}
+
+                        {% else %}
+
+                            ÉTABLISSEMENT SCOLAIRE
+
+                        {% endif %}
+
+                    </div>
+
+
+                    {% if etablissement and etablissement.devise_ecole %}
+
+                        <div class="school-motto">
+
+                            {{ etablissement.devise_ecole }}
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
 
 
             </div>
 
 
             <!-- =================================================
-                 INFORMATIONS
+                 CORPS
             ================================================== -->
 
-            <div class="student-info">
-
-
-                <!-- MATRICULE -->
-
-                {% if inscription.eleve.matricule %}
-
-                    <div class="student-line e">
-
-                        <span class="student-label">
-                            MATRICULE :
-                        </span>
-
-                        <span class="student-value">
-
-                            {{ inscription.eleve.matricule }}
-
-                        </span>
-
-                    </div>
-
-                {% endif %}
-
-
-                <!-- NOM -->
-
-                <div class="student-line nom-line">
-
-                    <span class="student-label">
-                        NOM :
-                    </span>
-
-                    <span class="student-value">
-
-                        {{ inscription.eleve.nom }}
-
-                    </span>
-
-                </div>
-
-
-                <!-- PRÉNOM -->
-
-                <div class="student-line prenom-line">
-
-                    <span class="student-label">
-                        PRÉNOM :
-                    </span>
-
-                    <span class="student-value">
-
-                        {{ inscription.eleve.prenom }}
-
-                    </span>
-
-                </div>
-
-
-                <!-- NIVEAU -->
-
-                {% if inscription.niveau %}
-
-                    <div class="student-line">
-
-                        <span class="student-label">
-                            NIVEAU :
-                        </span>
-
-                        <span class="student-value">
-
-                            {{ inscription.niveau }}
-
-                        </span>
-
-                    </div>
-
-                {% endif %}
-
-
-                <!-- CONTACT -->
-
-                {% if inscription.eleve.telephone %}
-
-                    <div class="student-line">
-
-                        <span class="student-label">
-                            CONTACT :
-                        </span>
-
-                        <span class="student-value">
-
-                            {{ inscription.eleve.telephone }}
-
-                        </span>
-
-                    </div>
-
-                {% endif %}
+            <div class="badge-body">
 
 
                 <!-- =================================================
-                     CLASSE
+                     PHOTO
                 ================================================== -->
 
-                {% if inscription.groupe_classe %}
+                <div class="photo-container">
 
-                    <div class="school-tags">
 
-                        <span class="school-tag">
+                    {% if inscription.eleve.photo %}
 
-                            <i class="fas fa-users"></i>
+                        <img
+                            src="{{ inscription.eleve.photo.url }}"
+                            alt="Photo de {{ inscription.eleve.nom }} {{ inscription.eleve.prenom }}"
+                            class="student-photo">
 
-                            CLASSE :
+                    {% else %}
 
-                            {{ inscription.groupe_classe }}
+                        <div class="no-photo">
+
+                            <i class="fas fa-user"></i>
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+                <!-- =================================================
+                     INFORMATIONS
+                ================================================== -->
+
+                <div class="student-info">
+
+
+                    <!-- MATRICULE -->
+
+                    {% if inscription.eleve.matricule %}
+
+                        <div class="student-line matricule-line">
+
+                            <span class="student-label">
+
+                                MATRICULE :
+
+                            </span>
+
+                            <span class="student-value">
+
+                                {{ inscription.eleve.matricule }}
+
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- NOM -->
+
+                    <div class="student-line nom-line">
+
+                        <span class="student-label">
+
+                            NOM :
+
+                        </span>
+
+                        <span class="student-value">
+
+                            {{ inscription.eleve.nom }}
 
                         </span>
 
                     </div>
 
-                {% endif %}
 
+                    <!-- PRÉNOM -->
+
+                    <div class="student-line prenom-line">
+
+                        <span class="student-label">
+
+                            PRÉNOM :
+
+                        </span>
+
+                        <span class="student-value">
+
+                            {{ inscription.eleve.prenom }}
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- NIVEAU -->
+
+                    {% if inscription.niveau %}
+
+                        <div class="student-line">
+
+                            <span class="student-label">
+
+                                NIVEAU :
+
+                            </span>
+
+                            <span class="student-value">
+
+                                {{ inscription.niveau }}
+
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- CONTACT -->
+
+                    {% if inscription.eleve.telephone %}
+
+                        <div class="student-line">
+
+                            <span class="student-label">
+
+                                CONTACT :
+
+                            </span>
+
+                            <span class="student-value">
+
+                                {{ inscription.eleve.telephone }}
+
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+
+                    <!-- CLASSE -->
+
+                    {% if inscription.groupe_classe %}
+
+                        <div class="school-tags">
+
+                            <span class="school-tag">
+
+                                <i class="fas fa-users"></i>
+
+                                CLASSE :
+
+                                {{ inscription.groupe_classe }}
+
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 PIED
+            ================================================== -->
+
+            <div class="badge-footer">
+
+                {% if inscription.annee_scolaire %}
+
+                    ANNÉE SCOLAIRE :
+
+                    {{ inscription.annee_scolaire }}
+
+                {% else %}
+
+                    CARTE SCOLAIRE
+
+                {% endif %}
 
             </div>
 
@@ -1070,32 +1187,18 @@ body {
 
 
         <!-- =================================================
-             PIED
+             FERMETURE DE LA FEUILLE
+             après le 8e ou au dernier élève
         ================================================== -->
 
-        <div class="badge-footer">
+        {% if forloop.counter|divisibleby:8 or forloop.last %}
 
-            {% if inscription.annee_scolaire %}
+            </div>
 
-                ANNÉE SCOLAIRE :
-                {{ inscription.annee_scolaire }}
-
-            {% else %}
-
-                CARTE SCOLAIRE
-
-            {% endif %}
-
-        </div>
-
-
-    </div>
+        {% endif %}
 
 
     {% endfor %}
-
-
-</div>
 
 
 {% else %}
