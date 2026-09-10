@@ -41,7 +41,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # SECURITY WARNING: don't run with debug turned on in production!
 SECRET_KEY = config('SECRET_KEY') #'django-insecure-52yfq))jd9r0uo*uq5p!j!4zccvrd13&hbd@3zq70$o^)+==%j'
 
-DEBUG =False #config('DEBUG', default=False, cast=bool)  # Mettre à False en production
+DEBUG =True #config('DEBUG', default=False, cast=bool)  # Mettre à False en production
 
 ALLOWED_HOSTS = [
     'localhost',
