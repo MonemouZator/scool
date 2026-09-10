@@ -43,7 +43,11 @@ SECRET_KEY = config('SECRET_KEY') #'django-insecure-52yfq))jd9r0uo*uq5p!j!4zccvr
 
 DEBUG =False #config('DEBUG', default=False, cast=bool)  # Mettre à False en production
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ecole-bnb.onrender.com']
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'ecole-x7bp.onrender.com',
+]
 
 # Application definition
 
