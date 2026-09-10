@@ -1212,78 +1212,227 @@ def change_password(request):
             messages.success(request, "Mot de passe changé, veuillez vous reconnecter.")
             return redirect('login')
     return render(request, 'login/recover_password.html')
+#################################################################
+# FONCTION DE CHANGEMENT DE MOT DE PASSE PAR MAIL
+#################################################################
 
-#################################################################
-#FONCTION DE CHANGEMENT DE MOT DE PASSE PAR MAIL
-#################################################################
+from django.conf import settings
+from django.contrib.auth import get_user_model, logout
+from django.core.mail import EmailMessage
+from django.shortcuts import render
+from django.urls import reverse
+import secrets
 
 User = get_user_model()
 
+
 def forgot_pwd(request):
+
     if request.method == 'POST':
-        email = request.POST.get('email')
+
+        email = request.POST.get('email', '').strip()
 
         try:
+
+            # =====================================================
+            # RECHERCHER L'UTILISATEUR
+            # =====================================================
+
             user = User.objects.get(email=email)
 
-            # Générer le token
+
+            # =====================================================
+            # SUPPRIMER LES ANCIENS TOKENS
+            # =====================================================
+
+            Token.objects.filter(user=user).delete()
+
+
+            # =====================================================
+            # GÉNÉRER UN NOUVEAU TOKEN
+            # =====================================================
+
             token = secrets.token_urlsafe(32)
-            Token.objects.create(user=user, token=token)
 
-            # Construire l'URL de réinitialisation
-            # url = f"http://localhost:8000/xoauth/{token}/change-pwd/"
-            url = f"https://ecole-bnb.onrender.com/xoauth/{token}/change-pwd/"
 
-            # Préparer et envoyer l'email
+            # =====================================================
+            # ENREGISTRER LE TOKEN
+            # =====================================================
+
+            Token.objects.create(
+                user=user,
+                token=token
+            )
+
+
+            # =====================================================
+            # CONSTRUIRE L'URL CORRECTE
+            # =====================================================
+
+            url = request.build_absolute_uri(
+                reverse(
+                    'change-pwd-email',
+                    kwargs={
+                        'token': token
+                    }
+                )
+            )
+
+
+            # =====================================================
+            # PRÉPARER L'EMAIL
+            # =====================================================
+
             subject = "Changement de mot de passe"
-            message = f"Bonjour {user.get_full_name()},\n\nCliquez sur ce lien pour changer votre mot de passe :\n{url}\n\nSi vous n'avez pas fait cette demande, ignorez cet e-mail."
+
+
+            message = f"""
+Bonjour {user.get_full_name()},
+
+Vous avez demandé un changement de mot de passe pour votre compte G.scolaire.
+
+Cliquez sur le lien ci-dessous pour définir un nouveau mot de passe :
+
+{url}
+
+Si vous n'êtes pas à l'origine de cette demande, ignorez simplement cet e-mail.
+
+Cordialement,
+
+G.scolaire
+"""
+
+
+            # =====================================================
+            # ENVOYER L'EMAIL
+            # =====================================================
 
             email_from = settings.EMAIL_HOST_USER
-            email_msg = EmailMessage(subject, message, email_from, [email])
-            email_msg.send()
+
+
+            email_msg = EmailMessage(
+                subject=subject,
+                body=message,
+                from_email=email_from,
+                to=[email]
+            )
+
+
+            email_msg.send(
+                fail_silently=False
+            )
+
+
+            # =====================================================
+            # MESSAGE DE SUCCÈS
+            # =====================================================
 
             context = {
-                "message": "Un lien de changement de mot de passe a été envoyé à votre adresse e-mail."
+                "message":
+                    "Un lien de changement de mot de passe "
+                    "a été envoyé à votre adresse e-mail."
             }
-            return render(request, 'login/forgot_pwd.html', context)
+
+
+            return render(
+                request,
+                'login/forgot_pwd.html',
+                context
+            )
+
 
         except User.DoesNotExist:
-            # Aucun utilisateur trouvé avec cet email
+
+            # =====================================================
+            # EMAIL INEXISTANT
+            # =====================================================
+
             context = {
-                "error": "L'adresse e-mail saisie n'existe pas dans notre système."
+                "error":
+                    "L'adresse e-mail saisie n'existe pas "
+                    "dans notre système."
             }
-            return render(request, 'login/forgot_pwd.html', context)
 
-    return render(request, 'login/forgot_pwd.html')
 
+            return render(
+                request,
+                'login/forgot_pwd.html',
+                context
+            )
+
+
+    # =========================================================
+    # AFFICHAGE INITIAL
+    # =========================================================
+
+    return render(
+        request,
+        'login/forgot_pwd.html'
+    )
 #################################################################
+# CHANGEMENT DU MOT DE PASSE
+#################################################################
+
 def recover_pwd(request, token):
-    token_obj = Token.objects.filter(token=token).first()
+
+    token_obj = Token.objects.filter(
+        token=token
+    ).first()
+
     if not token_obj:
-        return render(request, 'login/change_pwd.html', {"error": "Ce lien n'est plus valable"})
+
+        return render(
+            request,
+            'login/change_pwd.html',
+            {
+                "error": "Ce lien n'est plus valable."
+            }
+        )
 
     if request.method == "POST":
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
+
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
 
         if not password or not confirm_password:
-            return render(request, 'login/change_pwd.html', {"error": "Veuillez remplir tous les champs."})
+
+            return render(
+                request,
+                'login/change_pwd.html',
+                {
+                    "error": "Veuillez remplir tous les champs."
+                }
+            )
 
         if password != confirm_password:
-            return render(request, 'login/change_pwd.html', {"error": "Les mots de passe ne correspondent pas."})
 
-        user = get_object_or_404(User, id=token_obj.user.id)
+            return render(
+                request,
+                'login/change_pwd.html',
+                {
+                    "error": "Les mots de passe ne correspondent pas."
+                }
+            )
+
+        user = get_object_or_404(
+            User,
+            id=token_obj.user.id
+        )
+
         user.set_password(password)
         user.save()
 
+        # Supprimer le token après utilisation
         token_obj.delete()
 
         logout(request)
 
         return redirect('login')
 
-    # GET request : affichage du formulaire
-    return render(request, 'login/change_pwd.html')
+    return render(
+        request,
+        'login/change_pwd.html'
+    )
 
 #################################################################
 

@@ -1,72 +1,1303 @@
-{% extends "login/index.html" %}
 {% load static %}
 
-{% block content_wrapper %}
-<div class="container mx-4 row justify-content-center text-center mt-4">
-  <div class="login-box">
-    <div class="card">
-      <div class="card-body login-card-body">
-        <p class="login-box-msg">Changer votre mot de passe ici</p>
+<!DOCTYPE html>
 
-        <form action="" method="post" id="frm">
-          {% csrf_token %}
-          
-          {% if error %}
-            <div class="alert alert-danger">{{ error }}</div>
-          {% endif %}
-          {% if success %}
-            <div class="alert alert-success">{{ success }}</div>
-          {% endif %}
+<html lang="fr">
 
-          <p class="text-danger" id="msg-error" style="display:none;"></p>
+<head>
 
-          <div class="input-group mb-3">
-            <input type="password" class="form-control" placeholder="Mot de passe" name="password" required id="pwd">
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-lock"></span>
-              </div>
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Changer le mot de passe | G.scolaire</title>
+
+
+<!-- =====================================================
+     FONT AWESOME
+====================================================== -->
+
+<link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+
+<style>
+
+    * {
+        box-sizing: border-box;
+    }
+
+
+    body {
+        margin: 0;
+        padding: 0;
+
+        min-height: 100vh;
+
+        font-family:
+            "Source Sans Pro",
+            Arial,
+            sans-serif;
+
+        background: #f4f6f9;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+
+    /* =====================================================
+       PAGE
+    ====================================================== */
+
+    .password-page {
+
+        width: 100%;
+
+        min-height: 100vh;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        padding: 25px 15px;
+    }
+
+
+    .password-card-wrapper {
+
+        width: 100%;
+
+        max-width: 460px;
+    }
+
+
+    /* =====================================================
+       CARTE
+    ====================================================== */
+
+    .password-card {
+
+        width: 100%;
+
+        background: #ffffff;
+
+        border-radius: 18px;
+
+        overflow: hidden;
+
+        box-shadow:
+            0 10px 35px rgba(0, 0, 0, 0.12);
+    }
+
+
+    /* =====================================================
+       HEADER
+    ====================================================== */
+
+    .password-header {
+
+        text-align: center;
+
+        padding: 30px 25px 20px;
+    }
+
+
+    .password-icon {
+
+        width: 72px;
+
+        height: 72px;
+
+        margin: 0 auto 18px;
+
+        border-radius: 50%;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        background: rgba(37, 99, 235, 0.10);
+
+        color: #2563eb;
+
+        font-size: 30px;
+    }
+
+
+    .password-title {
+
+        margin: 0;
+
+        font-size: 24px;
+
+        font-weight: 700;
+
+        color: #1f2937;
+    }
+
+
+    .password-subtitle {
+
+        margin: 8px 0 0;
+
+        color: #6b7280;
+
+        font-size: 14px;
+
+        line-height: 1.6;
+    }
+
+
+    /* =====================================================
+       BODY
+    ====================================================== */
+
+    .password-body {
+
+        padding: 10px 30px 30px;
+    }
+
+
+    /* =====================================================
+       ALERT
+    ====================================================== */
+
+    .alert {
+
+        padding: 12px 14px;
+
+        margin-bottom: 18px;
+
+        border-radius: 10px;
+
+        font-size: 13px;
+
+        line-height: 1.5;
+    }
+
+
+    .alert-danger {
+
+        background: #fef2f2;
+
+        border: 1px solid #fecaca;
+
+        color: #b91c1c;
+    }
+
+
+    .alert-success {
+
+        background: #f0fdf4;
+
+        border: 1px solid #bbf7d0;
+
+        color: #15803d;
+    }
+
+
+    /* =====================================================
+       ERREUR JAVASCRIPT
+    ====================================================== */
+
+    .custom-error {
+
+        display: none;
+
+        margin-bottom: 18px;
+
+        padding: 12px 14px;
+
+        border-radius: 10px;
+
+        background: #fef2f2;
+
+        border: 1px solid #fecaca;
+
+        color: #b91c1c;
+
+        font-size: 13px;
+
+        line-height: 1.5;
+    }
+
+
+    /* =====================================================
+       LABEL
+    ====================================================== */
+
+    .password-label {
+
+        display: block;
+
+        margin-bottom: 7px;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        color: #374151;
+    }
+
+
+    /* =====================================================
+       GROUPE INPUT
+    ====================================================== */
+
+    .password-input-group {
+
+        position: relative;
+
+        width: 100%;
+
+        margin-bottom: 20px;
+    }
+
+
+    /* =====================================================
+       INPUT
+    ====================================================== */
+
+    .password-input {
+
+        display: block;
+
+        width: 100%;
+
+        height: 48px;
+
+        padding: 10px 52px 10px 45px;
+
+        border: 1px solid #d1d5db;
+
+        border-radius: 10px;
+
+        outline: none;
+
+        font-size: 15px;
+
+        color: #1f2937;
+
+        background: #ffffff;
+
+        transition: 0.2s ease;
+    }
+
+
+    .password-input:focus {
+
+        border-color: #2563eb;
+
+        box-shadow:
+            0 0 0 3px rgba(37, 99, 235, 0.10);
+    }
+
+
+    /* =====================================================
+       ICONE GAUCHE
+    ====================================================== */
+
+    .input-icon {
+
+        position: absolute;
+
+        left: 15px;
+
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        color: #9ca3af;
+
+        font-size: 15px;
+
+        pointer-events: none;
+
+        z-index: 2;
+    }
+
+
+    /* =====================================================
+       BOUTON OEIL
+    ====================================================== */
+
+    .toggle-password {
+
+        position: absolute;
+
+        right: 7px;
+
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        width: 38px;
+
+        height: 38px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        padding: 0;
+
+        margin: 0;
+
+        border: none;
+
+        border-radius: 7px;
+
+        background: transparent;
+
+        color: #6b7280;
+
+        cursor: pointer;
+
+        z-index: 10;
+
+        font-size: 17px;
+
+        outline: none;
+    }
+
+
+    .toggle-password:hover {
+
+        background: #f1f5f9;
+
+        color: #2563eb;
+    }
+
+
+    .toggle-password:active {
+
+        background: #e2e8f0;
+    }
+
+
+    .toggle-password i {
+
+        pointer-events: none;
+    }
+
+
+    /* =====================================================
+       FORCE MOT DE PASSE
+    ====================================================== */
+
+    .password-strength {
+
+        margin-top: -8px;
+
+        margin-bottom: 18px;
+    }
+
+
+    .strength-bar {
+
+        width: 100%;
+
+        height: 5px;
+
+        background: #e5e7eb;
+
+        border-radius: 20px;
+
+        overflow: hidden;
+    }
+
+
+    .strength-progress {
+
+        width: 0%;
+
+        height: 100%;
+
+        border-radius: 20px;
+
+        transition: width 0.25s ease;
+    }
+
+
+    .strength-text {
+
+        display: block;
+
+        margin-top: 6px;
+
+        font-size: 12px;
+
+        color: #6b7280;
+    }
+
+
+    /* =====================================================
+       RÈGLES
+    ====================================================== */
+
+    .password-rules {
+
+        margin: -3px 0 20px;
+
+        padding: 12px 14px;
+
+        background: #f8fafc;
+
+        border: 1px solid #e5e7eb;
+
+        border-radius: 10px;
+    }
+
+
+    .password-rules-title {
+
+        margin-bottom: 7px;
+
+        font-size: 12px;
+
+        font-weight: 700;
+
+        color: #374151;
+    }
+
+
+    .password-rule {
+
+        margin: 5px 0;
+
+        font-size: 12px;
+
+        color: #9ca3af;
+    }
+
+
+    .password-rule.valid {
+
+        color: #16a34a;
+    }
+
+
+    .password-rule i {
+
+        width: 16px;
+    }
+
+
+    /* =====================================================
+       BOUTON VALIDATION
+    ====================================================== */
+
+    .btn-password {
+
+        width: 100%;
+
+        height: 48px;
+
+        border: none;
+
+        border-radius: 10px;
+
+        background: #2563eb;
+
+        color: #ffffff;
+
+        font-size: 15px;
+
+        font-weight: 600;
+
+        cursor: pointer;
+
+        transition: 0.2s ease;
+    }
+
+
+    .btn-password:hover {
+
+        background: #1d4ed8;
+
+        transform: translateY(-1px);
+    }
+
+
+    .btn-password:active {
+
+        transform: translateY(0);
+    }
+
+
+    .btn-password:disabled {
+
+        opacity: 0.65;
+
+        cursor: not-allowed;
+
+        transform: none;
+    }
+
+
+    /* =====================================================
+       RETOUR
+    ====================================================== */
+
+    .back-login {
+
+        display: block;
+
+        margin-top: 20px;
+
+        text-align: center;
+
+        color: #2563eb;
+
+        font-size: 14px;
+
+        font-weight: 600;
+
+        text-decoration: none;
+    }
+
+
+    .back-login:hover {
+
+        text-decoration: underline;
+    }
+
+
+    /* =====================================================
+       MOBILE
+    ====================================================== */
+
+    @media (max-width: 576px) {
+
+        body {
+
+            align-items: flex-start;
+        }
+
+
+        .password-page {
+
+            min-height: 100vh;
+
+            padding: 20px 10px;
+        }
+
+
+        .password-header {
+
+            padding: 25px 20px 15px;
+        }
+
+
+        .password-body {
+
+            padding: 10px 20px 25px;
+        }
+
+
+        .password-icon {
+
+            width: 62px;
+
+            height: 62px;
+
+            font-size: 26px;
+        }
+
+
+        .password-title {
+
+            font-size: 21px;
+        }
+
+
+        .password-subtitle {
+
+            font-size: 13px;
+        }
+
+
+        .password-input {
+
+            height: 46px;
+        }
+
+
+        .btn-password {
+
+            height: 46px;
+        }
+    }
+
+</style>
+
+
+</head>
+
+<body>
+
+<div class="password-page">
+
+<div class="password-card-wrapper">
+
+    <div class="password-card">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <div class="password-header">
+
+            <div class="password-icon">
+
+                <i class="fas fa-lock"></i>
+
             </div>
-          </div>
-          <div class="input-group mb-3">
-            <input type="password" class="form-control" placeholder="Confirmer ..." name="confirm_password" required id="cpwd">
-            <div class="input-group-append">
-              <div class="input-group-text">
-                <span class="fas fa-lock"></span>
-              </div>
+
+
+            <h1 class="password-title">
+
+                Nouveau mot de passe
+
+            </h1>
+
+
+            <p class="password-subtitle">
+
+                Choisissez un nouveau mot de passe sécurisé
+                pour protéger votre compte.
+
+            </p>
+
+        </div>
+
+
+        <!-- =================================================
+             BODY
+        ================================================== -->
+
+        <div class="password-body">
+
+
+            {% if error %}
+
+                <div class="alert alert-danger">
+
+                    <i class="fas fa-exclamation-circle"></i>
+
+                    {{ error }}
+
+                </div>
+
+            {% endif %}
+
+
+            {% if success %}
+
+                <div class="alert alert-success">
+
+                    <i class="fas fa-check-circle"></i>
+
+                    {{ success }}
+
+                </div>
+
+            {% endif %}
+
+
+            <div
+                class="custom-error"
+                id="msg-error">
             </div>
-          </div>
-          <div class="row">
-            <div class="col-12">
-              <button type="submit" class="btn btn-primary btn-block">Changer</button>
-            </div>
-          </div>
-        </form>
-      </div>
+
+
+            <!-- =================================================
+                 FORMULAIRE
+            ================================================== -->
+
+            <form
+                action=""
+                method="POST"
+                id="frm"
+                autocomplete="off">
+
+                {% csrf_token %}
+
+
+                <!-- =============================================
+                     NOUVEAU MOT DE PASSE
+                ============================================== -->
+
+                <div class="password-input-group">
+
+                    <label
+                        for="pwd"
+                        class="password-label">
+
+                        Nouveau mot de passe
+
+                    </label>
+
+
+                    <i
+                        class="fas fa-lock input-icon">
+                    </i>
+
+
+                    <input
+                        type="password"
+                        class="password-input"
+                        id="pwd"
+                        name="password"
+                        placeholder="Entrez votre nouveau mot de passe"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required>
+
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        data-target="pwd"
+                        aria-label="Afficher le mot de passe"
+                        title="Afficher le mot de passe">
+
+                        <i class="fas fa-eye"></i>
+
+                    </button>
+
+                </div>
+
+
+                <!-- =============================================
+                     FORCE
+                ============================================== -->
+
+                <div class="password-strength">
+
+                    <div class="strength-bar">
+
+                        <div
+                            class="strength-progress"
+                            id="strength-progress">
+                        </div>
+
+                    </div>
+
+
+                    <span
+                        class="strength-text"
+                        id="strength-text">
+
+                        Force du mot de passe
+
+                    </span>
+
+                </div>
+
+
+                <!-- =============================================
+                     RÈGLES
+                ============================================== -->
+
+                <div class="password-rules">
+
+                    <div class="password-rules-title">
+
+                        Votre mot de passe doit contenir :
+
+                    </div>
+
+
+                    <div
+                        class="password-rule"
+                        id="rule-length">
+
+                        <i class="fas fa-circle"></i>
+
+                        Au moins 8 caractères
+
+                    </div>
+
+
+                    <div
+                        class="password-rule"
+                        id="rule-letter">
+
+                        <i class="fas fa-circle"></i>
+
+                        Au moins une lettre
+
+                    </div>
+
+
+                    <div
+                        class="password-rule"
+                        id="rule-number">
+
+                        <i class="fas fa-circle"></i>
+
+                        Au moins un chiffre
+
+                    </div>
+
+                </div>
+
+
+                <!-- =============================================
+                     CONFIRMATION
+                ============================================== -->
+
+                <div class="password-input-group">
+
+                    <label
+                        for="cpwd"
+                        class="password-label">
+
+                        Confirmer le mot de passe
+
+                    </label>
+
+
+                    <i
+                        class="fas fa-shield-alt input-icon">
+                    </i>
+
+
+                    <input
+                        type="password"
+                        class="password-input"
+                        id="cpwd"
+                        name="confirm_password"
+                        placeholder="Confirmez votre mot de passe"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required>
+
+
+                    <button
+                        type="button"
+                        class="toggle-password"
+                        data-target="cpwd"
+                        aria-label="Afficher le mot de passe"
+                        title="Afficher le mot de passe">
+
+                        <i class="fas fa-eye"></i>
+
+                    </button>
+
+                </div>
+
+
+                <!-- =============================================
+                     BOUTON
+                ============================================== -->
+
+                <button
+                    type="submit"
+                    class="btn-password"
+                    id="submit-btn">
+
+                    <i class="fas fa-key"></i>
+
+                    &nbsp;
+
+                    Changer le mot de passe
+
+                </button>
+
+            </form>
+
+
+            <!-- =============================================
+                 RETOUR
+            ============================================== -->
+
+            <a
+                href="{% url 'login' %}"
+                class="back-login">
+
+                <i class="fas fa-arrow-left"></i>
+
+                &nbsp;
+
+                Retour à la connexion
+
+            </a>
+
+        </div>
+
     </div>
-  </div>
+
 </div>
-{% endblock %}
 
-{% block script_fils %}
+
+</div>
+
 <script>
-  const frm = document.getElementById('frm');
-  const pwd = document.getElementById('pwd');
-  const cpwd = document.getElementById('cpwd');
-  const errorMsg = document.getElementById('msg-error');
 
-  frm.addEventListener('submit', function(e) {
-    let valid = true;
+/* =========================================================
+   AFFICHER / MASQUER LE MOT DE PASSE
+========================================================= */
 
-    if (pwd.value !== cpwd.value) {
-      valid = false;
-      errorMsg.textContent = "Les mots de passe ne sont pas identiques";
-      errorMsg.style.display = "block";
-    }
+document.addEventListener("DOMContentLoaded", function () {
 
-    if (!valid) {
-      e.preventDefault();
-    }
-  });
+
+    const toggleButtons =
+        document.querySelectorAll(".toggle-password");
+
+
+    toggleButtons.forEach(function (button) {
+
+
+        button.addEventListener("click", function (event) {
+
+
+            event.preventDefault();
+
+
+            const targetId =
+                button.getAttribute("data-target");
+
+
+            const input =
+                document.getElementById(targetId);
+
+
+            const icon =
+                button.querySelector("i");
+
+
+            if (!input) {
+
+                return;
+
+            }
+
+
+            if (input.type === "password") {
+
+
+                input.type = "text";
+
+
+                icon.classList.remove("fa-eye");
+
+                icon.classList.add("fa-eye-slash");
+
+
+                button.setAttribute(
+                    "aria-label",
+                    "Masquer le mot de passe"
+                );
+
+
+                button.setAttribute(
+                    "title",
+                    "Masquer le mot de passe"
+                );
+
+
+            } else {
+
+
+                input.type = "password";
+
+
+                icon.classList.remove("fa-eye-slash");
+
+                icon.classList.add("fa-eye");
+
+
+                button.setAttribute(
+                    "aria-label",
+                    "Afficher le mot de passe"
+                );
+
+
+                button.setAttribute(
+                    "title",
+                    "Afficher le mot de passe"
+                );
+
+            }
+
+        });
+
+    });
+
+
+    /* =========================================================
+       VARIABLES
+    ========================================================= */
+
+    const form =
+        document.getElementById("frm");
+
+
+    const password =
+        document.getElementById("pwd");
+
+
+    const confirmPassword =
+        document.getElementById("cpwd");
+
+
+    const errorMessage =
+        document.getElementById("msg-error");
+
+
+    const progress =
+        document.getElementById("strength-progress");
+
+
+    const strengthText =
+        document.getElementById("strength-text");
+
+
+    const submitButton =
+        document.getElementById("submit-btn");
+
+
+    /* =========================================================
+       FORCE DU MOT DE PASSE
+    ========================================================= */
+
+    password.addEventListener(
+        "input",
+        function () {
+
+
+            const value =
+                this.value;
+
+
+            let score = 0;
+
+
+            const lengthRule =
+                document.getElementById("rule-length");
+
+
+            const letterRule =
+                document.getElementById("rule-letter");
+
+
+            const numberRule =
+                document.getElementById("rule-number");
+
+
+            /* LONGUEUR */
+
+            if (value.length >= 8) {
+
+                score++;
+
+                lengthRule.classList.add("valid");
+
+                lengthRule.innerHTML =
+                    '<i class="fas fa-check-circle"></i> ' +
+                    'Au moins 8 caractères';
+
+            } else {
+
+                lengthRule.classList.remove("valid");
+
+                lengthRule.innerHTML =
+                    '<i class="fas fa-circle"></i> ' +
+                    'Au moins 8 caractères';
+            }
+
+
+            /* LETTRE */
+
+            if (/[A-Za-z]/.test(value)) {
+
+                score++;
+
+                letterRule.classList.add("valid");
+
+                letterRule.innerHTML =
+                    '<i class="fas fa-check-circle"></i> ' +
+                    'Au moins une lettre';
+
+            } else {
+
+                letterRule.classList.remove("valid");
+
+                letterRule.innerHTML =
+                    '<i class="fas fa-circle"></i> ' +
+                    'Au moins une lettre';
+            }
+
+
+            /* CHIFFRE */
+
+            if (/[0-9]/.test(value)) {
+
+                score++;
+
+                numberRule.classList.add("valid");
+
+                numberRule.innerHTML =
+                    '<i class="fas fa-check-circle"></i> ' +
+                    'Au moins un chiffre';
+
+            } else {
+
+                numberRule.classList.remove("valid");
+
+                numberRule.innerHTML =
+                    '<i class="fas fa-circle"></i> ' +
+                    'Au moins un chiffre';
+            }
+
+
+            /* BARRE */
+
+            progress.style.width =
+                ((score / 3) * 100) + "%";
+
+
+            /* TEXTE */
+
+            if (value.length === 0) {
+
+                strengthText.textContent =
+                    "Force du mot de passe";
+
+            } else if (score === 1) {
+
+                strengthText.textContent =
+                    "Mot de passe faible";
+
+            } else if (score === 2) {
+
+                strengthText.textContent =
+                    "Mot de passe moyen";
+
+            } else {
+
+                strengthText.textContent =
+                    "Mot de passe sécurisé";
+
+            }
+
+        }
+    );
+
+
+    /* =========================================================
+       VALIDATION
+    ========================================================= */
+
+    form.addEventListener(
+        "submit",
+        function (event) {
+
+
+            errorMessage.style.display =
+                "none";
+
+
+            const pwd =
+                password.value;
+
+
+            const cpwd =
+                confirmPassword.value;
+
+
+            if (pwd.length < 8) {
+
+                event.preventDefault();
+
+                errorMessage.textContent =
+                    "Le mot de passe doit contenir au moins 8 caractères.";
+
+                errorMessage.style.display =
+                    "block";
+
+                password.focus();
+
+                return;
+            }
+
+
+            if (!/[A-Za-z]/.test(pwd)) {
+
+                event.preventDefault();
+
+                errorMessage.textContent =
+                    "Le mot de passe doit contenir au moins une lettre.";
+
+                errorMessage.style.display =
+                    "block";
+
+                password.focus();
+
+                return;
+            }
+
+
+            if (!/[0-9]/.test(pwd)) {
+
+                event.preventDefault();
+
+                errorMessage.textContent =
+                    "Le mot de passe doit contenir au moins un chiffre.";
+
+                errorMessage.style.display =
+                    "block";
+
+                password.focus();
+
+                return;
+            }
+
+
+            if (pwd !== cpwd) {
+
+                event.preventDefault();
+
+                errorMessage.textContent =
+                    "Les deux mots de passe ne correspondent pas.";
+
+                errorMessage.style.display =
+                    "block";
+
+                confirmPassword.focus();
+
+                return;
+            }
+
+
+            submitButton.disabled = true;
+
+
+            submitButton.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i> ' +
+                '&nbsp; Modification en cours...';
+
+        }
+    );
+
+});
+
 </script>
-{% endblock %}
+
+</body>
+
+</html>
