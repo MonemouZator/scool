@@ -47,6 +47,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'ecole-x7bp.onrender.com',
+    'ecole-bnb.onrender.com',
 ]
 
 # Application definition
