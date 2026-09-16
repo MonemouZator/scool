@@ -2,236 +2,2581 @@
 {% load static %}
 
 {% block styl_parent %}
+
 <title>Bulletins des Élèves</title>
-<link rel="stylesheet" href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-<link rel="stylesheet" href="{% static 'base/css/adminlte.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
+
+<link rel="stylesheet"
+      href="{% static 'base/css/adminlte.min.css' %}">
 
 <style>
-  body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9fafc; color: #003366; }
-  .content-wrapper { padding: 20px; }
-  h1 { font-size: 28px; margin-bottom: 20px; }
-  form { background: #fff; padding: 15px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
-  form select, form button { margin: 10px 0; }
-  select { padding: 8px; font-size: 16px; width: 100%; border-radius: 4px; }
-  button { padding: 8px 16px; }
-  .table { margin-bottom: 10px; font-size: 15px; }
-  .student-container { margin-bottom: 15px; }
-  .student-header { background-color: #fff; color: none; padding: 15px; border-radius: 6px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-  .student-header img { width: 100px; height: 100px; object-fit: cover; border: 2px solid #fff; border-radius: 8px; }
-  .student-header .text-center { flex-grow: 1; text-align: center; }
-  .student-header .text-right { font-size: 13px; text-align: right; }
-  .section { margin-bottom: 10px; }
-  .section table { margin-bottom: 0; }
-  .remarque-zone hr { margin: 5px 0; }
+
+/* =========================================================
+   GLOBAL
+========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+body {
+    font-family: "Source Sans Pro", Arial, sans-serif;
+    background: #f4f6f9;
+    color: #003366;
+}
+
+.content-wrapper {
+    min-height: calc(100vh - 80px);
+    padding: 15px;
+    background: #f4f6f9;
+    overflow-x: hidden;
+}
 
 
-   /* Chaque bulletin */
-  .eleve-section {
-    margin-bottom: 40px;
+/* =========================================================
+   TITRE
+========================================================= */
+
+.content-header h1,
+form h1 {
+    font-size: 28px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   FORMULAIRE FILTRE
+========================================================= */
+
+.filter-card {
+    background: #fff;
     padding: 20px;
-    border: 4px solid #000;
-  }
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    margin-bottom: 25px;
+}
 
-  @media print {
-    body { margin: 0; padding: 10px; }
-    form, button, .btn, footer, .copyright { display: none !important; }
-    .student-container { margin-bottom: 10px; page-break-before: always; }
-    .student-container:first-child { page-break-before: auto; }
-    .section-wrapper { margin-top: 10px; }
-    .section { margin-bottom: 8px; padding: 8px; }
-    .table, .table th, .table td   { border: 1px solid #000 !important; border-collapse: collapse !important; color: #000 !important; font-size: 18px; }
-      /* Chaque bulletin */
-  .eleve-section {
-    margin-bottom: 40px;
-    padding: 20px;
-    border: 2px solid #000;
-  }
-  }
+.filter-title {
+    background: #007bff;
+    color: #fff;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin: -20px -20px 20px -20px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.filter-group {
+    margin-bottom: 15px;
+}
+
+.filter-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 16px;
+    margin-bottom: 7px;
+    color: #343a40;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.filter-actions .btn {
+    min-height: 44px;
+    font-size: 16px;
+    padding: 8px 18px;
+}
+
+
+/* =========================================================
+   SELECT PERSONNALISÉ AVEC LISTE DÉFILANTE
+========================================================= */
+
+.custom-select-container {
+    position: relative;
+    width: 100%;
+}
+
+.native-select-hidden {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0, 0, 0, 0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+    opacity: 0 !important;
+}
+
+.custom-select-display {
+    width: 100%;
+    min-height: 44px;
+
+    padding: 8px 42px 8px 12px;
+
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+
+    background: #fff;
+    color: #495057;
+
+    font-size: 16px;
+    text-align: left;
+
+    cursor: pointer;
+
+    position: relative;
+
+    transition:
+        border-color .15s,
+        box-shadow .15s;
+}
+
+.custom-select-display:hover,
+.custom-select-container.open .custom-select-display {
+    border-color: #80bdff;
+    outline: 0;
+
+    box-shadow:
+        0 0 0 .2rem rgba(0,123,255,.15);
+}
+
+.custom-select-display .arrow {
+    position: absolute;
+
+    right: 14px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    transition:
+        transform .2s ease;
+}
+
+.custom-select-container.open
+.custom-select-display
+.arrow {
+    transform:
+        translateY(-50%)
+        rotate(180deg);
+}
+
+.custom-select-options {
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    top: calc(100% + 4px);
+
+    z-index: 99999;
+
+    display: none;
+
+    max-height: 230px;
+
+    overflow-y: auto;
+
+    background: #fff;
+
+    border: 1px solid #80bdff;
+
+    border-radius: .25rem;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.18);
+
+    padding: 4px 0;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+.custom-select-container.open
+.custom-select-options {
+    display: block;
+}
+
+.custom-select-option {
+    padding: 10px 12px;
+
+    min-height: 42px;
+
+    font-size: 16px;
+    line-height: 1.4;
+
+    cursor: pointer;
+
+    background: #fff;
+    color: #212529;
+}
+
+.custom-select-option:hover {
+    background: #f1f5f9;
+}
+
+.custom-select-option.selected {
+    background: #007bff;
+    color: #fff;
+    font-weight: 600;
+}
+
+.custom-select-option.placeholder-option {
+    color: #6c757d;
+}
+
+.custom-select-options::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-select-options::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.custom-select-options::-webkit-scrollbar-thumb {
+    background: #a7a7a7;
+    border-radius: 10px;
+}
+
+.custom-select-options::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+
+/* =========================================================
+   BULLETIN
+========================================================= */
+
+.student-container {
+    margin-bottom: 30px;
+}
+
+.eleve-section {
+    width: 100%;
+    max-width: 1200px;
+
+    margin: 0 auto 40px auto;
+
+    padding: 25px;
+
+    background: #fff;
+
+    border: 2px solid #222;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.08);
+}
+
+.student-header {
+    width: 100%;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    gap: 20px;
+
+    background: #fff;
+
+    padding: 15px;
+
+    border-radius: 6px;
+
+    margin-bottom: 20px;
+}
+
+.student-header img {
+    width: 100px;
+    height: 100px;
+
+    object-fit: cover;
+
+    border: 2px solid #222;
+
+    border-radius: 8px;
+}
+
+.student-header > div:first-child {
+    flex: 0 0 110px;
+}
+
+.student-header .text-center {
+    flex: 1;
+
+    text-align: center;
+}
+
+.student-header .text-center h1 {
+    font-size: 28px;
+
+    font-weight: 700;
+
+    margin: 0 0 5px 0;
+}
+
+.student-header .text-center h2 {
+    font-size: 26px;
+
+    font-weight: 700;
+
+    margin: 8px 0 5px 0;
+}
+
+.student-header .text-center h3 {
+    font-size: 19px;
+
+    font-weight: 600;
+
+    margin: 10px 0 5px 0;
+}
+
+.student-header .text-center h4 {
+    font-size: 17px;
+
+    font-weight: 600;
+
+    margin: 5px 0;
+}
+
+.student-header .devise {
+    font-size: 19px;
+
+    font-weight: 600;
+
+    margin: 2px 0;
+}
+
+.student-header .text-right {
+    flex: 0 0 160px;
+
+    font-size: 16px;
+
+    text-align: right;
+
+    line-height: 1.4;
+}
+
+.student-header .text-right p {
+    margin: 3px 0;
+}
+
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.section-wrapper {
+    width: 100%;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.section h6 {
+    font-size: 18px;
+
+    font-weight: 700;
+
+    margin-bottom: 8px;
+
+    color: #003366;
+}
+
+
+/* =========================================================
+   TABLEAUX
+========================================================= */
+
+.table {
+    width: 100%;
+
+    margin-bottom: 10px;
+
+    border-collapse: collapse !important;
+
+    table-layout: fixed;
+
+    font-size: 17px;
+
+    color: #000;
+}
+
+.table th,
+.table td {
+    border: 1px solid #222 !important;
+
+    padding: 8px;
+
+    vertical-align: middle;
+}
+
+.table th {
+    font-weight: 700;
+
+    text-align: center;
+
+    background: #f8f9fa;
+}
+
+.table td {
+    text-align: center;
+}
+
+
+/* =========================================================
+   TABLE NOTES
+========================================================= */
+
+.section:nth-child(2) .table {
+    font-size: 18px;
+}
+
+.section:nth-child(2) .table th:first-child,
+.section:nth-child(2) .table td:first-child {
+    width: 70%;
+
+    text-align: left;
+}
+
+.section:nth-child(2) .table th:last-child,
+.section:nth-child(2) .table td:last-child {
+    width: 30%;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   RESULTATS
+========================================================= */
+
+.section:nth-child(3) .table {
+    font-size: 18px;
+}
+
+.section:nth-child(3) .table th,
+.section:nth-child(3) .table td {
+    text-align: center;
+}
+
+
+/* =========================================================
+   SIGNATURE
+========================================================= */
+
+.mt-4.text-center {
+    margin-top: 35px !important;
+
+    text-align: center;
+}
+
+.mt-4.text-center h4 {
+    font-size: 19px;
+
+    font-weight: 600;
+
+    margin: 5px 0;
+}
+
+
+/* =========================================================
+   MESSAGE AUCUN RESULTAT
+========================================================= */
+
+.no-result {
+    max-width: 900px;
+
+    margin: 25px auto;
+
+    padding: 14px;
+
+    border-radius: 6px;
+
+    font-size: 17px;
+}
+
+
+/* =========================================================
+   TABLETTE
+========================================================= */
+
+@media screen and (max-width: 900px) {
+
+    .content-wrapper {
+        padding: 10px;
+    }
+
+    .eleve-section {
+        padding: 18px;
+    }
+
+    .student-header {
+        gap: 12px;
+    }
+
+    .student-header img {
+        width: 85px;
+        height: 85px;
+    }
+
+    .student-header > div:first-child {
+        flex: 0 0 90px;
+    }
+
+    .student-header .text-center h1 {
+        font-size: 24px;
+    }
+
+    .student-header .text-center h2 {
+        font-size: 22px;
+    }
+
+    .student-header .text-center h3 {
+        font-size: 17px;
+    }
+
+    .student-header .devise {
+        font-size: 16px;
+    }
+
+    .student-header .text-right {
+        flex: 0 0 130px;
+
+        font-size: 14px;
+    }
+
+    .table {
+        font-size: 16px;
+    }
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media screen and (max-width: 600px) {
+
+    .content-wrapper {
+        padding: 8px;
+    }
+
+    .filter-card {
+        padding: 15px;
+    }
+
+    .filter-title {
+        margin:
+            -15px
+            -15px
+            15px
+            -15px;
+
+        font-size: 21px;
+    }
+
+    .filter-actions {
+        display: block;
+    }
+
+    .filter-actions .btn {
+        display: block;
+
+        width: 100%;
+
+        margin-bottom: 8px;
+    }
+
+    .custom-select-display {
+        min-height: 45px;
+
+        font-size: 15px;
+    }
+
+    .custom-select-options {
+        max-height: 200px;
+    }
+
+    .custom-select-option {
+        font-size: 15px;
+
+        padding: 10px;
+    }
+
+    .eleve-section {
+        padding: 12px;
+
+        border-width: 2px;
+
+        border-radius: 6px;
+    }
+
+    .student-header {
+        display: flex;
+
+        flex-direction: column;
+
+        text-align: center;
+
+        padding: 10px;
+    }
+
+    .student-header > div:first-child {
+        flex: none;
+    }
+
+    .student-header img {
+        width: 100px;
+        height: 100px;
+    }
+
+    .student-header .text-center {
+        width: 100%;
+    }
+
+    .student-header .text-center h1 {
+        font-size: 23px;
+    }
+
+    .student-header .text-center h2 {
+        font-size: 21px;
+    }
+
+    .student-header .text-center h3 {
+        font-size: 17px;
+    }
+
+    .student-header .text-center h4 {
+        font-size: 16px;
+    }
+
+    .student-header .devise {
+        font-size: 16px;
+    }
+
+    .student-header .text-right {
+        width: 100%;
+
+        flex: none;
+
+        text-align: center;
+
+        font-size: 14px;
+    }
+
+    .table {
+        font-size: 15px;
+    }
+
+    .table th,
+    .table td {
+        padding: 6px 4px;
+
+        word-break: break-word;
+    }
+
+    .section:nth-child(2) .table {
+        font-size: 16px;
+    }
+
+    .section:nth-child(3) .table {
+        font-size: 16px;
+    }
+
+    .section h6 {
+        font-size: 16px;
+    }
+}
+
+
+/* =========================================================
+   PETIT MOBILE
+========================================================= */
+
+@media screen and (max-width: 380px) {
+
+    .custom-select-display {
+        min-height: 44px;
+
+        font-size: 14px;
+    }
+
+    .custom-select-options {
+        max-height: 190px;
+    }
+
+    .custom-select-option {
+        font-size: 14px;
+
+        padding: 9px 10px;
+    }
+
+    .student-header .text-center h1 {
+        font-size: 20px;
+    }
+
+    .student-header .text-center h2 {
+        font-size: 19px;
+    }
+
+    .student-header .text-center h3 {
+        font-size: 15px;
+    }
+
+    .table {
+        font-size: 14px;
+    }
+
+    .table th,
+    .table td {
+        padding: 5px 3px;
+    }
+}
+
+
+/* =========================================================
+   IMPRESSION A4
+========================================================= */
+
+@page {
+    size: A4 portrait;
+
+    margin: 6mm;
+}
+
+@media print {
+
+    /* -----------------------------------------------------
+       PAGE
+    ----------------------------------------------------- */
+
+    html,
+    body {
+        width: 100% !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        background: #fff !important;
+
+        color: #000 !important;
+
+        font-family:
+            "Source Sans Pro",
+            Arial,
+            sans-serif !important;
+    }
+
+    .content-wrapper {
+        width: 100% !important;
+
+        min-height: auto !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        background: #fff !important;
+
+        overflow: visible !important;
+    }
+
+    .content-wrapper > section,
+    .container-fluid,
+    .content {
+        width: 100% !important;
+
+        max-width: none !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+
+    /* -----------------------------------------------------
+       CACHER FILTRES / MENU
+    ----------------------------------------------------- */
+
+    form,
+    .filter-card,
+    .filter-actions,
+    button,
+    .btn,
+    footer,
+    .copyright,
+    .main-header,
+    .main-sidebar,
+    .content-header,
+    .breadcrumb {
+        display: none !important;
+    }
+
+
+    /* -----------------------------------------------------
+       UN ELEVE = UNE PAGE
+    ----------------------------------------------------- */
+
+    .student-container {
+        width: 100% !important;
+
+        margin: 0 !important;
+        padding: 0 !important;
+
+        page-break-before: always;
+
+        break-before: page;
+    }
+
+    .student-container:first-child {
+        page-break-before: auto;
+
+        break-before: auto;
+    }
+
+
+    /* -----------------------------------------------------
+       CADRE PRINCIPAL
+    ----------------------------------------------------- */
+
+    .eleve-section {
+        width: 100% !important;
+
+        max-width: none !important;
+
+        margin: 0 !important;
+
+        padding: 12px !important;
+
+        background: #fff !important;
+
+        border: 3px solid #000 !important;
+
+        border-radius: 0 !important;
+
+        box-shadow: none !important;
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+    }
+
+
+    /* -----------------------------------------------------
+       ENTETE
+    ----------------------------------------------------- */
+
+    .student-header {
+        width: 100% !important;
+
+        display: flex !important;
+
+        flex-direction: row !important;
+
+        justify-content: space-between !important;
+
+        align-items: center !important;
+
+        gap: 8px !important;
+
+        padding: 6px !important;
+
+        margin: 0 0 12px 0 !important;
+
+        background: #fff !important;
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+    }
+
+
+    /* -----------------------------------------------------
+       PHOTO
+    ----------------------------------------------------- */
+
+    .student-header > div:first-child {
+        flex: 0 0 90px !important;
+
+        width: 90px !important;
+    }
+
+    .student-header img {
+        width: 82px !important;
+
+        height: 82px !important;
+
+        object-fit: cover !important;
+
+        border: 2px solid #000 !important;
+
+        border-radius: 5px !important;
+    }
+
+
+    /* -----------------------------------------------------
+       CENTRE
+    ----------------------------------------------------- */
+
+    .student-header .text-center {
+        flex: 1 !important;
+
+        width: auto !important;
+
+        text-align: center !important;
+    }
+
+
+    /* PAYS */
+
+    .student-header .text-center h1 {
+        font-size: 27px !important;
+
+        line-height: 1.05 !important;
+
+        font-weight: 700 !important;
+
+        color: #000 !important;
+
+        margin: 0 0 3px 0 !important;
+
+        padding: 0 !important;
+    }
+
+
+    /* DEVISE */
+
+    .student-header .devise {
+        font-size: 18px !important;
+
+        line-height: 1.05 !important;
+
+        font-weight: 600 !important;
+
+        color: #000 !important;
+
+        margin: 2px 0 !important;
+    }
+
+
+    /* ECOLE */
+
+    .student-header .text-center h2 {
+        font-size: 25px !important;
+
+        line-height: 1.05 !important;
+
+        font-weight: 700 !important;
+
+        color: #000 !important;
+
+        margin: 4px 0 !important;
+
+        padding: 0 !important;
+    }
+
+
+    /* BULLETIN */
+
+    .student-header .text-center h3 {
+        font-size: 19px !important;
+
+        line-height: 1.15 !important;
+
+        font-weight: 700 !important;
+
+        color: #000 !important;
+
+        margin: 6px 0 4px 0 !important;
+
+        padding: 0 !important;
+    }
+
+
+    /* CYCLE / NIVEAU */
+
+    .student-header .text-center h4 {
+        font-size: 17px !important;
+
+        line-height: 1.15 !important;
+
+        font-weight: 700 !important;
+
+        color: #000 !important;
+
+        margin: 3px 0 !important;
+
+        padding: 0 !important;
+    }
+
+
+    /* -----------------------------------------------------
+       INFORMATIONS ECOLE
+    ----------------------------------------------------- */
+
+    .student-header .text-right {
+        flex: 0 0 140px !important;
+
+        width: 140px !important;
+
+        text-align: right !important;
+
+        font-size: 16px !important;
+
+        line-height: 1.3 !important;
+
+        color: #000 !important;
+    }
+
+    .student-header .text-right p {
+        margin: 2px 0 !important;
+
+        padding: 0 !important;
+
+        font-size: 16px !important;
+
+        font-weight: 600 !important;
+
+        color: #000 !important;
+    }
+
+
+    /* -----------------------------------------------------
+       SECTIONS
+    ----------------------------------------------------- */
+
+    .section-wrapper {
+        width: 100% !important;
+
+        margin-top: 4px !important;
+
+        padding: 0 !important;
+    }
+
+    .section {
+        width: 100% !important;
+
+        margin-bottom: 11px !important;
+
+        padding: 0 !important;
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+    }
+
+
+    /* -----------------------------------------------------
+       TITRES SECTIONS
+    ----------------------------------------------------- */
+
+    .section h6 {
+        font-size: 18px !important;
+
+        line-height: 1.15 !important;
+
+        font-weight: 700 !important;
+
+        color: #000 !important;
+
+        margin: 4px 0 6px 0 !important;
+
+        padding: 0 !important;
+    }
+
+
+    /* -----------------------------------------------------
+       TABLEAUX
+    ----------------------------------------------------- */
+
+    .table {
+        width: 100% !important;
+
+        margin: 0 0 7px 0 !important;
+
+        padding: 0 !important;
+
+        table-layout: fixed !important;
+
+        border-collapse: collapse !important;
+
+        font-size: 18px !important;
+
+        color: #000 !important;
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+    }
+
+    .table thead,
+    .table tbody,
+    .table tr {
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+    }
+
+
+    /* CELLULES */
+
+    .table th,
+    .table td {
+        border: 2px solid #000 !important;
+
+        padding: 7px 6px !important;
+
+        vertical-align: middle !important;
+
+        color: #000 !important;
+
+        font-size: 18px !important;
+
+        line-height: 1.15 !important;
+
+        word-break: break-word !important;
+
+        overflow-wrap: break-word !important;
+    }
+
+
+    /* ENTETE TABLEAU */
+
+    .table th {
+        font-size: 18px !important;
+
+        font-weight: 700 !important;
+
+        text-align: center !important;
+
+        color: #000 !important;
+
+        background: #f2f2f2 !important;
+    }
+
+
+    /* -----------------------------------------------------
+       INFORMATIONS ELEVE
+    ----------------------------------------------------- */
+
+    .section:first-child .table,
+    .section:first-child .table th,
+    .section:first-child .table td {
+        font-size: 18px !important;
+    }
+
+    .section:first-child .table th,
+    .section:first-child .table td {
+        text-align: center !important;
+    }
+
+
+    /* -----------------------------------------------------
+       MATIERES / NOTES
+    ----------------------------------------------------- */
+
+    .section:nth-child(2) .table {
+        font-size: 19px !important;
+    }
+
+    .section:nth-child(2) .table th,
+    .section:nth-child(2) .table td {
+        font-size: 19px !important;
+    }
+
+    .section:nth-child(2) .table th:first-child,
+    .section:nth-child(2) .table td:first-child {
+        width: 70% !important;
+
+        text-align: left !important;
+    }
+
+    .section:nth-child(2) .table th:last-child,
+    .section:nth-child(2) .table td:last-child {
+        width: 30% !important;
+
+        text-align: center !important;
+    }
+
+
+    /* -----------------------------------------------------
+       RESULTATS
+    ----------------------------------------------------- */
+
+    .section:nth-child(3) .table {
+        font-size: 19px !important;
+    }
+
+    .section:nth-child(3) .table th,
+    .section:nth-child(3) .table td {
+        font-size: 19px !important;
+
+        text-align: center !important;
+    }
+
+    .section:nth-child(3) .table td {
+        font-weight: 600 !important;
+    }
+
+
+    /* -----------------------------------------------------
+       SIGNATURE
+    ----------------------------------------------------- */
+
+    .mt-4.text-center {
+        width: 100% !important;
+
+        margin-top: 28px !important;
+
+        text-align: center !important;
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+    }
+
+    .mt-4.text-center h4 {
+        font-size: 20px !important;
+
+        line-height: 1.2 !important;
+
+        font-weight: 700 !important;
+
+        color: #000 !important;
+
+        margin: 4px 0 !important;
+    }
+
+
+    /* -----------------------------------------------------
+       EVITER LES COUPURES
+    ----------------------------------------------------- */
+
+    .eleve-section,
+    .student-header,
+    .section,
+    .table,
+    .table tr {
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+    }
+
+
+    /* -----------------------------------------------------
+       COULEURS IMPRESSION
+    ----------------------------------------------------- */
+
+    * {
+        -webkit-print-color-adjust: exact !important;
+
+        print-color-adjust: exact !important;
+    }
+
+}
+
 </style>
+
 {% endblock %}
 
 {% block contenu %}
+
 <div class="content-wrapper">
-  <section class="content">
-    <div class="container-fluid">
-      <form method="get">
-        <h1 class="text-center bg-primary text-white">Filtrer les Bulletins</h1>
 
-        <label for="cycle">Cycle :</label>
-        <select name="cycle" id="cycle">
-          <option value="" selected>Tout le cycle</option>
-          {% for c in cycles %}
-            <option value="{{ c.id }}" {% if c.id|stringformat:"s" == cycle_id %}selected{% endif %}>{{ c.nom }}</option>
-          {% endfor %}
-        </select>
+<section class="content">
 
-        <label for="niveau">Niveau :</label>
-        <select name="niveau" id="niveau" required>
-          <option value="" disabled selected>Choisir un niveau</option>
-          {% for n in niveaux %}
-            <option value="{{ n.id }}" {% if n.id|stringformat:"s" == niveau_id %}selected{% endif %}>{{ n.nom }}</option>
-          {% endfor %}
-        </select>
+<div class="container-fluid">
 
-        <label for="annee_scolaire">Année scolaire :</label>
-        <select name="annee_scolaire" id="annee_scolaire" required>
-          <option value="" disabled selected>Choisir une année scolaire</option>
-          {% for annee in annees_scolaires %}
-            <option value="{{ annee.id }}" {% if annee.id|stringformat:"s" == annee_id %}selected{% endif %}>{{ annee.nom }}</option>
-          {% endfor %}
-        </select>
+<!-- =====================================================
+     FILTRE
+====================================================== -->
 
-        <label for="trimestre">Trimestre :</label>
-        <select name="trimestre" id="trimestre" required>
-          <option value="" disabled selected>Choisir un trimestre</option>
-          <option value="1" {% if trimestre == '1' %}selected{% endif %}>1er Trimestre</option>
-          <option value="2" {% if trimestre == '2' %}selected{% endif %}>2ème Trimestre</option>
-          <option value="3" {% if trimestre == '3' %}selected{% endif %}>3ème Trimestre</option>
-        </select>
+<form method="get"
+      class="filter-card">
 
-        <button type="submit" class="btn btn-primary">Filtrer</button>
-        <a href="javascript:void(0);" class="btn btn-secondary" onclick="window.print();">Imprimer</a>
-      </form>
- 
-      {% if bulletins_trimestriels %}
+<div class="filter-title">
 
+    <i class="fas fa-filter mr-2"></i>
 
-        {% for b in bulletins_trimestriels %}
+    Filtrer les Bulletins
 
-
-        <div class="student-container">
-         <div class="card mb-4 eleve-section">
-          <div class="student-header">
-
-
-          {% for ecole in ecoles %}
-          
-         
-            <div><img src="{{ b.bulletin.eleve.photo.url|default:'https://via.placeholder.com/100' }}" alt="Photo élève"></div>
-            <div class="text-center">
-              <h1>{{ecole.pays}}</h1>
-              <div class="devise">{{ecole.devise_pays}}</div>
-              <h2>{{ecole.nom_ecole}}</h2>
-              <div class="devise">{{ecole.devise_ecole}}</div>
-              <h3>Bulletin du {{ trimestre }}ᵉ Trimestre - {{ annee_scolaire_obj.nom|default:"—" }}</h3>
-              <h4>Cycle : {{ cycle_obj.nom|default:"—" }}</h4>
-              <h4>Niveau : {{ niveau_obj.nom|default:"—" }}</h4>
-            </div>
-            <div class="text-right">
-            <p>{{ecole.meapu}}</p>
-              <p>IRE/{{ecole.ire}}</p>
-              <p>DPE/{{ecole.dpe}}</p>
-              <p>DSEE/{{ecole.dsee}}</p>
-            </div>
-             {% endfor %}
-          </div>
-
-          <div class="section-wrapper">
-            <div class="section">
-              <h6 class="text-center">Informations de l'Élève</h6>
-              <table class="table table-bordered">
-                <tr><th>Matricule</th><th>Nom</th><th>Prénom</th><th>Date de naissance</th></tr>
-                <tr>
-                  <td>{{ b.bulletin.eleve.matricule }}</td>
-                  <td>{{ b.bulletin.eleve.nom }}</td>
-                  <td>{{ b.bulletin.eleve.prenom }}</td>
-                  <td>{{ b.bulletin.eleve.date_naissance }}</td>
-                </tr>
-              </table>
-            </div>
-
-            <div class="section">
-              <h6 class="text-center">Matières et Notes du Trimestre {{ trimestre }}</h6>
-              <table class="table table-bordered table-striped">
-                <tr><th>Matière</th><th>Note</th></tr>
-                {% for note in b.notes %}
-                <tr>
-                  <td>{{ note.matiere__nom }}</td>
-                  <td>{{ note.moyenne_matiere }}</td>
-                </tr>
-                {% endfor %}
-              </table>
-            </div>
-
-            <div class="section">
-              <h6 class="text-center">Résultats</h6>
-              <table class="table table-bordered">
-                <tr><th>Rang</th><th>Moyenne</th><th>Observation</th></tr>
-                <tr>
-                  <td>{{ b.rang_formate }}</td>
-                  <td>{{ b.moyenne_totale }}</td>
-                  <td>{{ b.observation }}</td>
-                </tr>
-              </table>
-            </div>
-
-                     {% for ecole in ecoles %}
-                        
-                      
-                      <!-- Remarque et signature -->
-                      <div class="mt-4 text-center">
-                     
-                        <h4>Directeur:</h4><br><br>
-                        <h4>{{ecole.responsable}}</h4>
-                      </div>
-                        {% endfor %}
-          </div>
-        </div>
-        </div>
-        {% endfor %}
-      {% else %}
-        <p class="text-center bg-danger text-white p-2">
-          Aucun résultat disponible. Veuillez sélectionner un niveau, une année scolaire et un trimestre.
-        </p>
-      {% endif %}
-    </div>
-  </section>
 </div>
+
+
+<!-- =================================================
+     CYCLE
+================================================== -->
+
+<div class="filter-group">
+
+    <label for="cycle">
+
+        <i class="fas fa-layer-group mr-1"></i>
+
+        Cycle :
+
+    </label>
+
+
+    <div class="custom-select-container">
+
+        <select name="cycle"
+                id="cycle"
+                class="native-select-hidden">
+
+            <option value="">
+                Tout le cycle
+            </option>
+
+
+            {% for c in cycles %}
+
+                <option value="{{ c.id }}"
+                    {% if c.id|stringformat:"s" == cycle_id %}
+                        selected
+                    {% endif %}>
+
+                    {{ c.nom }}
+
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <button type="button"
+                class="custom-select-display"
+                aria-haspopup="listbox"
+                aria-expanded="false">
+
+            <span class="selected-text">
+                Tout le cycle
+            </span>
+
+            <i class="fas fa-chevron-down arrow"></i>
+
+        </button>
+
+
+        <div class="custom-select-options"
+             role="listbox">
+
+            <div class="custom-select-option placeholder-option"
+                 data-value="">
+
+                Tout le cycle
+
+            </div>
+
+
+            {% for c in cycles %}
+
+                <div class="custom-select-option"
+                     data-value="{{ c.id }}">
+
+                    {{ c.nom }}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     NIVEAU
+================================================== -->
+
+<div class="filter-group">
+
+    <label for="niveau">
+
+        <i class="fas fa-graduation-cap mr-1"></i>
+
+        Niveau :
+
+    </label>
+
+
+    <div class="custom-select-container">
+
+        <select name="niveau"
+                id="niveau"
+                class="native-select-hidden"
+                required>
+
+            <option value=""
+                    disabled>
+
+                Choisir un niveau
+
+            </option>
+
+
+            {% for n in niveaux %}
+
+                <option value="{{ n.id }}"
+                    {% if n.id|stringformat:"s" == niveau_id %}
+                        selected
+                    {% endif %}>
+
+                    {{ n.nom }}
+
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <button type="button"
+                class="custom-select-display"
+                aria-haspopup="listbox"
+                aria-expanded="false">
+
+            <span class="selected-text">
+                Choisir un niveau
+            </span>
+
+            <i class="fas fa-chevron-down arrow"></i>
+
+        </button>
+
+
+        <div class="custom-select-options"
+             role="listbox">
+
+            <div class="custom-select-option placeholder-option"
+                 data-value="">
+
+                Choisir un niveau
+
+            </div>
+
+
+            {% for n in niveaux %}
+
+                <div class="custom-select-option"
+                     data-value="{{ n.id }}">
+
+                    {{ n.nom }}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     ANNEE SCOLAIRE
+================================================== -->
+
+<div class="filter-group">
+
+    <label for="annee_scolaire">
+
+        <i class="fas fa-calendar-alt mr-1"></i>
+
+        Année scolaire :
+
+    </label>
+
+
+    <div class="custom-select-container">
+
+        <select name="annee_scolaire"
+                id="annee_scolaire"
+                class="native-select-hidden"
+                required>
+
+            <option value=""
+                    disabled>
+
+                Choisir une année scolaire
+
+            </option>
+
+
+            {% for annee in annees_scolaires %}
+
+                <option value="{{ annee.id }}"
+                    {% if annee.id|stringformat:"s" == annee_id %}
+                        selected
+                    {% endif %}>
+
+                    {{ annee.nom }}
+
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <button type="button"
+                class="custom-select-display"
+                aria-haspopup="listbox"
+                aria-expanded="false">
+
+            <span class="selected-text">
+                Choisir une année scolaire
+            </span>
+
+            <i class="fas fa-chevron-down arrow"></i>
+
+        </button>
+
+
+        <div class="custom-select-options"
+             role="listbox">
+
+            <div class="custom-select-option placeholder-option"
+                 data-value="">
+
+                Choisir une année scolaire
+
+            </div>
+
+
+            {% for annee in annees_scolaires %}
+
+                <div class="custom-select-option"
+                     data-value="{{ annee.id }}">
+
+                    {{ annee.nom }}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     TRIMESTRE
+================================================== -->
+
+<div class="filter-group">
+
+    <label for="trimestre">
+
+        <i class="fas fa-calendar-check mr-1"></i>
+
+        Trimestre :
+
+    </label>
+
+
+    <div class="custom-select-container">
+
+        <select name="trimestre"
+                id="trimestre"
+                class="native-select-hidden"
+                required>
+
+            <option value=""
+                    disabled>
+
+                Choisir un trimestre
+
+            </option>
+
+
+            <option value="1"
+                {% if trimestre == '1' %}
+                    selected
+                {% endif %}>
+
+                1er Trimestre
+
+            </option>
+
+
+            <option value="2"
+                {% if trimestre == '2' %}
+                    selected
+                {% endif %}>
+
+                2ème Trimestre
+
+            </option>
+
+
+            <option value="3"
+                {% if trimestre == '3' %}
+                    selected
+                {% endif %}>
+
+                3ème Trimestre
+
+            </option>
+
+        </select>
+
+
+        <button type="button"
+                class="custom-select-display"
+                aria-haspopup="listbox"
+                aria-expanded="false">
+
+            <span class="selected-text">
+                Choisir un trimestre
+            </span>
+
+            <i class="fas fa-chevron-down arrow"></i>
+
+        </button>
+
+
+        <div class="custom-select-options"
+             role="listbox">
+
+            <div class="custom-select-option placeholder-option"
+                 data-value="">
+
+                Choisir un trimestre
+
+            </div>
+
+
+            <div class="custom-select-option"
+                 data-value="1">
+
+                1er Trimestre
+
+            </div>
+
+
+            <div class="custom-select-option"
+                 data-value="2">
+
+                2ème Trimestre
+
+            </div>
+
+
+            <div class="custom-select-option"
+                 data-value="3">
+
+                3ème Trimestre
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =================================================
+     BOUTONS
+================================================== -->
+
+<div class="filter-actions">
+
+    <button type="submit"
+            class="btn btn-primary">
+
+        <i class="fas fa-search mr-1"></i>
+
+        Filtrer
+
+    </button>
+
+
+    <a href="javascript:void(0);"
+       class="btn btn-secondary"
+       onclick="window.print();">
+
+        <i class="fas fa-print mr-1"></i>
+
+        Imprimer
+
+    </a>
+
+</div>
+
+
+</form>
+
+<!-- =====================================================
+     BULLETINS
+====================================================== -->
+
+{% if bulletins_trimestriels %}
+
+
+{% for b in bulletins_trimestriels %}
+
+    <div class="student-container">
+
+        <div class="card mb-4 eleve-section">
+
+
+            <!-- =========================================
+                 ENTETE
+            ========================================== -->
+
+            <div class="student-header">
+
+                {% for ecole in ecoles %}
+
+
+                    <!-- PHOTO -->
+
+                    <div>
+
+                        {% if b.bulletin.eleve.photo %}
+
+                            <img src="{{ b.bulletin.eleve.photo.url }}"
+                                 alt="Photo élève">
+
+                        {% else %}
+
+                            <img src="{% static 'images/default-avatar.png' %}"
+                                 alt="Photo par défaut">
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- CENTRE -->
+
+                    <div class="text-center">
+
+                        <h1>
+                            {{ ecole.pays }}
+                        </h1>
+
+                        <div class="devise">
+                            {{ ecole.devise_pays }}
+                        </div>
+
+                        <h2>
+                            {{ ecole.nom_ecole }}
+                        </h2>
+
+                        <div class="devise">
+                            {{ ecole.devise_ecole }}
+                        </div>
+
+                        <h3>
+
+                            Bulletin du
+                            {{ trimestre }}ᵉ Trimestre -
+
+                            {{ annee_scolaire_obj.nom|default:"—" }}
+
+                        </h3>
+
+                        <h4>
+
+                            Cycle :
+                            {{ cycle_obj.nom|default:"—" }}
+
+                        </h4>
+
+                        <h4>
+
+                            Niveau :
+                            {{ niveau_obj.nom|default:"—" }}
+
+                        </h4>
+
+                    </div>
+
+
+                    <!-- INFORMATIONS ECOLE -->
+
+                    <div class="text-right">
+
+                        <p>
+                            {{ ecole.meapu }}
+                        </p>
+
+                        <p>
+                            IRE/{{ ecole.ire }}
+                        </p>
+
+                        <p>
+                            DPE/{{ ecole.dpe }}
+                        </p>
+
+                        <p>
+                            DSEE/{{ ecole.dsee }}
+                        </p>
+
+                    </div>
+
+
+                {% endfor %}
+
+            </div>
+
+
+            <div class="section-wrapper">
+
+
+                <!-- =====================================
+                     INFORMATIONS ELEVE
+                ====================================== -->
+
+                <div class="section">
+
+                    <h6 class="text-center">
+
+                        Informations de l'Élève
+
+                    </h6>
+
+
+                    <table class="table table-bordered">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Matricule
+                                </th>
+
+                                <th>
+                                    Nom
+                                </th>
+
+                                <th>
+                                    Prénom
+                                </th>
+
+                                <th>
+                                    Date de naissance
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    {{ b.bulletin.eleve.matricule }}
+                                </td>
+
+                                <td>
+                                    {{ b.bulletin.eleve.nom }}
+                                </td>
+
+                                <td>
+                                    {{ b.bulletin.eleve.prenom }}
+                                </td>
+
+                                <td>
+                                    {{ b.bulletin.eleve.date_naissance }}
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- =====================================
+                     MATIERES ET NOTES
+                ====================================== -->
+
+                <div class="section">
+
+                    <h6 class="text-center">
+
+                        Matières et Notes du Trimestre
+                        {{ trimestre }}
+
+                    </h6>
+
+
+                    <table class="table table-bordered table-striped">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Matière
+                                </th>
+
+                                <th>
+                                    Note
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for note in b.notes %}
+
+                                <tr>
+
+                                    <td>
+                                        {{ note.matiere__nom }}
+                                    </td>
+
+                                    <td>
+                                        {{ note.moyenne_matiere }}
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- =====================================
+                     RESULTATS
+                ====================================== -->
+
+                <div class="section">
+
+                    <h6 class="text-center">
+                        Résultats
+                    </h6>
+
+
+                    <table class="table table-bordered">
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Rang
+                                </th>
+
+                                <th>
+                                    Moyenne
+                                </th>
+
+                                <th>
+                                    Observation
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            <tr>
+
+                                <td>
+                                    {{ b.rang_formate }}
+                                </td>
+
+                                <td>
+                                    {{ b.moyenne_totale }}
+                                </td>
+
+                                <td>
+                                    {{ b.observation }}
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+                <!-- =====================================
+                     SIGNATURE
+                ====================================== -->
+
+                {% for ecole in ecoles %}
+
+                    <div class="mt-4 text-center">
+
+                        <h4>
+                            Directeur :
+                        </h4>
+
+                        <br>
+                        <br>
+
+                        <h4>
+                            {{ ecole.responsable }}
+                        </h4>
+
+                    </div>
+
+                {% endfor %}
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+{% endfor %}
+
+
+{% else %}
+
+
+<p class="text-center bg-danger text-white p-2 no-result">
+
+    Aucun résultat disponible.
+
+    Veuillez sélectionner un niveau,
+    une année scolaire et un trimestre.
+
+</p>
+
+
+{% endif %}
+
+</div>
+
+</section>
+
+</div>
+
 {% endblock %}
 
 {% block scripte %}
+
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}"></script>
+
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
 
 <script>
-  // Stocker les niveaux par cycle
-  const niveauxParCycle = {
+
+/* =========================================================
+   NIVEAUX PAR CYCLE
+========================================================= */
+
+const niveauxParCycle = {
+
     {% for c in cycles %}
-      "{{ c.id }}": [
-        {% for n in niveaux %}
-          {% if n.cycle.id == c.id %}
-            {id: "{{ n.id }}", nom: "{{ n.nom }}"},
-          {% endif %}
-        {% endfor %}
-      ],
+
+        "{{ c.id }}": [
+
+            {% for n in niveaux %}
+
+                {% if n.cycle.id == c.id %}
+
+                    {
+                        id: "{{ n.id }}",
+                        nom: "{{ n.nom|escapejs }}"
+                    },
+
+                {% endif %}
+
+            {% endfor %}
+
+        ],
+
     {% endfor %}
-  };
 
-  const cycleSelect = document.getElementById('cycle');
-  const niveauSelect = document.getElementById('niveau');
+};
 
-  function updateNiveaux() {
-    const selectedCycle = cycleSelect.value;
-    // Supprimer tous les niveaux existants
-    niveauSelect.innerHTML = '<option value="" disabled selected>Choisir un niveau</option>';
 
-    if (selectedCycle && niveauxParCycle[selectedCycle]) {
-      niveauxParCycle[selectedCycle].forEach(n => {
-        const opt = document.createElement('option');
-        opt.value = n.id;
-        opt.text = n.nom;
-        if (n.id == "{{ niveau_id }}") opt.selected = true;
-        niveauSelect.appendChild(opt);
-      });
+/* =========================================================
+   ELEMENTS
+========================================================= */
+
+const cycleSelect =
+    document.getElementById("cycle");
+
+const niveauSelect =
+    document.getElementById("niveau");
+
+
+/* =========================================================
+   MISE A JOUR DES NIVEAUX
+========================================================= */
+
+function updateNiveaux() {
+
+    const selectedCycle =
+        cycleSelect.value;
+
+    const niveauActuel =
+        "{{ niveau_id }}";
+
+
+    niveauSelect.innerHTML =
+        '<option value="" disabled>Choisir un niveau</option>';
+
+
+    if (
+        selectedCycle &&
+        niveauxParCycle[selectedCycle]
+    ) {
+
+        niveauxParCycle[selectedCycle].forEach(
+            function(n) {
+
+                const opt =
+                    document.createElement("option");
+
+
+                opt.value =
+                    n.id;
+
+
+                opt.textContent =
+                    n.nom;
+
+
+                if (
+                    String(n.id) ===
+                    String(niveauActuel)
+                ) {
+
+                    opt.selected = true;
+
+                }
+
+
+                niveauSelect.appendChild(opt);
+
+            }
+        );
+
     }
-  }
 
-  cycleSelect.addEventListener('change', updateNiveaux);
-  // Initialiser au chargement
-  updateNiveaux();
+}
+
+
+/* =========================================================
+   EVENEMENT CYCLE
+========================================================= */
+
+cycleSelect.addEventListener(
+    "change",
+    function() {
+
+        updateNiveaux();
+
+
+        const container =
+            niveauSelect.closest(
+                ".custom-select-container"
+            );
+
+
+        if (container) {
+
+            const customOptions =
+                container.querySelectorAll(
+                    ".custom-select-option"
+                );
+
+
+            customOptions.forEach(
+                function(option) {
+
+                    option.classList.remove(
+                        "selected"
+                    );
+
+                }
+            );
+
+
+            const selectedValue =
+                niveauSelect.value;
+
+
+            const selectedCustom =
+                container.querySelector(
+                    '.custom-select-option[data-value="' +
+                    selectedValue +
+                    '"]'
+                );
+
+
+            if (selectedCustom) {
+
+                selectedCustom.classList.add(
+                    "selected"
+                );
+
+
+                const text =
+                    container.querySelector(
+                        ".selected-text"
+                    );
+
+
+                if (text) {
+
+                    text.textContent =
+                        selectedCustom
+                        .textContent
+                        .trim();
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INITIALISATION
+========================================================= */
+
+updateNiveaux();
+
+
+/* =========================================================
+   SELECTS PERSONNALISES
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        const containers =
+            document.querySelectorAll(
+                ".custom-select-container"
+            );
+
+
+        /* -----------------------------------------------
+           FERMER LES MENUS
+        ------------------------------------------------ */
+
+        function closeAll(except = null) {
+
+            containers.forEach(
+                function(container) {
+
+                    if (container !== except) {
+
+                        container.classList.remove(
+                            "open"
+                        );
+
+
+                        const button =
+                            container.querySelector(
+                                ".custom-select-display"
+                            );
+
+
+                        if (button) {
+
+                            button.setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+
+                        }
+
+                    }
+
+                }
+            );
+
+        }
+
+
+        /* -----------------------------------------------
+           CHAQUE SELECT
+        ------------------------------------------------ */
+
+        containers.forEach(
+            function(container) {
+
+                const select =
+                    container.querySelector(
+                        "select"
+                    );
+
+
+                const button =
+                    container.querySelector(
+                        ".custom-select-display"
+                    );
+
+
+                const text =
+                    container.querySelector(
+                        ".selected-text"
+                    );
+
+
+                const options =
+                    container.querySelectorAll(
+                        ".custom-select-option"
+                    );
+
+
+                /* ---------------------------------------
+                   SYNCHRONISATION
+                ---------------------------------------- */
+
+                function syncFromSelect() {
+
+                    const selectedOption =
+                        select.options[
+                            select.selectedIndex
+                        ];
+
+
+                    if (!selectedOption) {
+
+                        return;
+
+                    }
+
+
+                    text.textContent =
+                        selectedOption
+                        .textContent
+                        .trim();
+
+
+                    options.forEach(
+                        function(option) {
+
+                            option.classList.toggle(
+                                "selected",
+                                option.dataset.value ===
+                                select.value
+                            );
+
+                        }
+                    );
+
+                }
+
+
+                /* ---------------------------------------
+                   OUVERTURE
+                ---------------------------------------- */
+
+                button.addEventListener(
+                    "click",
+                    function(event) {
+
+                        event.preventDefault();
+
+
+                        const isOpen =
+                            container.classList
+                            .contains("open");
+
+
+                        closeAll(container);
+
+
+                        container.classList.toggle(
+                            "open",
+                            !isOpen
+                        );
+
+
+                        button.setAttribute(
+                            "aria-expanded",
+                            String(!isOpen)
+                        );
+
+
+                        if (!isOpen) {
+
+                            const selected =
+                                container.querySelector(
+                                    ".custom-select-option.selected"
+                                );
+
+
+                            if (selected) {
+
+                                setTimeout(
+                                    function() {
+
+                                        selected
+                                            .scrollIntoView({
+                                                block:
+                                                    "nearest"
+                                            });
+
+                                    },
+                                    50
+                                );
+
+                            }
+
+                        }
+
+                    }
+                );
+
+
+                /* ---------------------------------------
+                   CHOIX OPTION
+                ---------------------------------------- */
+
+                options.forEach(
+                    function(option) {
+
+                        option.addEventListener(
+                            "click",
+                            function() {
+
+                                const value =
+                                    option.dataset.value;
+
+
+                                select.value =
+                                    value;
+
+
+                                syncFromSelect();
+
+
+                                select.dispatchEvent(
+                                    new Event(
+                                        "change",
+                                        {
+                                            bubbles: true
+                                        }
+                                    )
+                                );
+
+
+                                closeAll();
+
+
+                                button.focus();
+
+                            }
+                        );
+
+                    }
+                );
+
+
+                /* ---------------------------------------
+                   CHANGEMENT NATIF
+                ---------------------------------------- */
+
+                select.addEventListener(
+                    "change",
+                    syncFromSelect
+                );
+
+
+                /* ---------------------------------------
+                   INITIALISATION
+                ---------------------------------------- */
+
+                syncFromSelect();
+
+            }
+        );
+
+
+        /* -----------------------------------------------
+           CLIC EXTERIEUR
+        ------------------------------------------------ */
+
+        document.addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    !event.target.closest(
+                        ".custom-select-container"
+                    )
+                ) {
+
+                    closeAll();
+
+                }
+
+            }
+        );
+
+
+        /* -----------------------------------------------
+           TOUCHE ECHAP
+        ------------------------------------------------ */
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Escape") {
+
+                    closeAll();
+
+                }
+
+            }
+        );
+
+    }
+);
+
 </script>
-
-
 
 {% endblock %}

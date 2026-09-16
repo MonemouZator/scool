@@ -1,4 +1,3 @@
-
 {% extends "login/index.html" %}
 {% load static %}
 
@@ -15,13 +14,25 @@
 <style>
 
 /* ==========================================================
-   STRUCTURE GÉNÉRALE DE LA PAGE
-   ========================================================== */
+   GLOBAL
+========================================================== */
+
+* {
+    box-sizing: border-box;
+}
 
 html,
 body {
     min-height: 100%;
     height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Times New Roman", Times, serif;
+    background: #f4f6f9;
+    color: #000;
 }
 
 .wrapper {
@@ -33,28 +44,28 @@ body {
 
 /* ==========================================================
    ZONE PRINCIPALE
-   ========================================================== */
+========================================================== */
 
 .content-wrapper {
-    background-color: #fff;
+    background: #f4f6f9;
+
     padding: 15px;
 
-    font-family: 'Times New Roman', Times, serif;
+    font-family: "Times New Roman", Times, serif;
+
     font-size: 14px;
 
-    /*
-       Permet de prendre toute la hauteur disponible
-       et de pousser le footer vers le bas.
-    */
     flex: 1 0 auto;
 
     min-height: calc(100vh - 57px) !important;
+
+    overflow-x: hidden;
 }
 
 
 /* ==========================================================
    FOOTER
-   ========================================================== */
+========================================================== */
 
 .main-footer {
     flex-shrink: 0;
@@ -63,126 +74,378 @@ body {
 
 
 /* ==========================================================
-   ZONE FILTRE
-   ========================================================== */
+   FILTRE
+========================================================== */
 
 .filtre-container {
-    background: #f8f9fa;
+    width: 100%;
 
-    border: 1px solid #ddd;
+    background: #fff;
+
+    border: none;
+
+    border-radius: 8px;
+
+    padding: 20px;
+
+    margin-bottom: 25px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.08);
+}
+
+
+/* ==========================================================
+   TITRE FILTRE
+========================================================== */
+
+.filtre-container::before {
+    content: "Filtrer les Bulletins Annuels";
+
+    display: block;
+
+    background: #007bff;
+
+    color: #fff;
+
+    padding: 12px 15px;
+
     border-radius: 6px;
 
-    padding: 15px;
+    margin:
+        -20px
+        -20px
+        20px
+        -20px;
 
+    text-align: center;
+
+    font-size: 24px;
+
+    font-weight: 700;
+}
+
+
+/* ==========================================================
+   CHAMPS
+========================================================== */
+
+.filtre-container .form-group {
     margin-bottom: 15px;
 }
 
-
-/* ==========================================================
-   CHAMPS DU FILTRE
-   ========================================================== */
-
-.filtre-container .form-group {
-    margin-bottom: 0;
-}
-
-
-/* ==========================================================
-   LABELS
-   ========================================================== */
-
 .filtre-container label {
-    font-weight: bold;
-    margin-bottom: 5px;
+    display: block;
+
+    font-weight: 700;
+
+    font-size: 16px;
+
+    margin-bottom: 7px;
+
+    color: #343a40;
 }
 
 
 /* ==========================================================
-   SELECTS
-   ========================================================== */
+   SELECT PERSONNALISÉ
+========================================================== */
 
-.filtre-container select {
+.custom-select-container {
+    position: relative;
+
     width: 100%;
-    min-height: 38px;
+}
+
+.native-select-hidden {
+    position: absolute !important;
+
+    width: 1px !important;
+
+    height: 1px !important;
+
+    padding: 0 !important;
+
+    margin: -1px !important;
+
+    overflow: hidden !important;
+
+    clip: rect(0, 0, 0, 0) !important;
+
+    white-space: nowrap !important;
+
+    border: 0 !important;
+
+    opacity: 0 !important;
+}
+
+.custom-select-display {
+    position: relative;
+
+    width: 100%;
+
+    min-height: 44px;
+
+    padding: 8px 42px 8px 12px;
+
+    border: 1px solid #ced4da;
+
+    border-radius: .25rem;
+
+    background: #fff;
+
+    color: #495057;
+
+    font-family: "Times New Roman", Times, serif;
+
+    font-size: 16px;
+
+    text-align: left;
+
+    cursor: pointer;
+
+    transition:
+        border-color .15s,
+        box-shadow .15s;
+}
+
+.custom-select-display:hover,
+.custom-select-container.open
+.custom-select-display {
+
+    border-color: #80bdff;
+
+    outline: 0;
+
+    box-shadow:
+        0 0 0 .2rem rgba(0,123,255,.15);
+}
+
+.custom-select-display .arrow {
+
+    position: absolute;
+
+    right: 14px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    transition:
+        transform .2s ease;
+}
+
+.custom-select-container.open
+.custom-select-display
+.arrow {
+
+    transform:
+        translateY(-50%)
+        rotate(180deg);
+}
+
+
+/* ==========================================================
+   LISTE SCROLLABLE
+========================================================== */
+
+.custom-select-options {
+
+    position: absolute;
+
+    left: 0;
+    right: 0;
+
+    top: calc(100% + 4px);
+
+    z-index: 99999;
+
+    display: none;
+
+    max-height: 230px;
+
+    overflow-y: auto;
+
+    background: #fff;
+
+    border: 1px solid #80bdff;
+
+    border-radius: .25rem;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.18);
+
+    padding: 4px 0;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+.custom-select-container.open
+.custom-select-options {
+    display: block;
+}
+
+.custom-select-option {
+
+    padding: 10px 12px;
+
+    min-height: 42px;
+
+    font-family:
+        "Times New Roman",
+        Times,
+        serif;
+
+    font-size: 16px;
+
+    line-height: 1.4;
+
+    cursor: pointer;
+
+    background: #fff;
+
+    color: #212529;
+}
+
+.custom-select-option:hover {
+    background: #f1f5f9;
+}
+
+.custom-select-option.selected {
+
+    background: #007bff;
+
+    color: #fff;
+
+    font-weight: 700;
+}
+
+
+/* Scrollbar */
+
+.custom-select-options::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-select-options::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.custom-select-options::-webkit-scrollbar-thumb {
+
+    background: #aaa;
+
+    border-radius: 10px;
+}
+
+.custom-select-options::-webkit-scrollbar-thumb:hover {
+    background: #777;
 }
 
 
 /* ==========================================================
    BOUTONS
-   ========================================================== */
+========================================================== */
 
 .boutons-filtre {
+
     display: flex;
 
     align-items: flex-end;
 
-    /*
-       ESPACE ENTRE LES BOUTONS
-    */
     gap: 20px;
 
     height: 100%;
 }
 
-
-/* Empêcher les boutons de se coller */
-
 .boutons-filtre .btn {
+
     white-space: nowrap;
+
+    min-height: 44px;
+
+    font-size: 16px;
+
+    padding: 8px 18px;
 }
 
 
 /* ==========================================================
    BULLETIN
-   ========================================================== */
+========================================================== */
 
 .bulletin-eleve {
 
-    margin-bottom: 40px;
+    width: 100%;
 
-    padding: 20px;
+    max-width: 1200px;
 
-    border: 2px solid #000;
+    margin:
+        0 auto 40px auto;
+
+    padding: 25px;
+
+    border:
+        2px solid #000;
 
     background-color: #fff;
+
+    border-radius: 8px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.08);
 }
 
 
 /* ==========================================================
-   HEADER DU BULLETIN
-   ========================================================== */
+   HEADER BULLETIN
+========================================================== */
 
 .header-bulletin {
+
+    width: 100%;
 
     display: flex;
 
     justify-content: space-between;
 
-    align-items: flex-start;
+    align-items: center;
 
-    margin-bottom: 15px;
+    gap: 20px;
+
+    margin-bottom: 20px;
+
+    padding: 10px;
 }
 
 
 /* ==========================================================
    PHOTO
-   ========================================================== */
+========================================================== */
 
 .header-bulletin .photo {
 
-    width: 120px;
+    width: 100px;
 
-    height: 150px;
+    height: 100px;
 
-    border: 1px solid #000;
+    border:
+        2px solid #000;
+
+    border-radius: 6px;
 
     object-fit: cover;
+}
+
+.header-bulletin > .photo {
+    flex: 0 0 110px;
 }
 
 
 /* ==========================================================
    CENTRE
-   ========================================================== */
+========================================================== */
 
 .header-bulletin .centre {
 
@@ -190,82 +453,164 @@ body {
 
     text-align: center;
 
-    padding: 0 15px;
+    padding: 0 10px;
 }
 
+.header-bulletin .centre h1 {
 
-.header-bulletin .centre h1,
-.header-bulletin .centre h2,
-.header-bulletin .centre h3,
-.header-bulletin .centre h4,
+    font-size: 28px;
+
+    font-weight: 700;
+
+    margin: 0 0 5px 0;
+}
+
+.header-bulletin .centre h2 {
+
+    font-size: 26px;
+
+    font-weight: 700;
+
+    margin: 8px 0 5px 0;
+}
+
+.header-bulletin .centre h3 {
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    margin: 10px 0 5px 0;
+}
+
+.header-bulletin .centre h4 {
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+    margin: 5px 0;
+}
+
 .header-bulletin .centre h5 {
 
-    margin: 2px 0;
+    font-size: 18px;
+
+    font-weight: 600;
+
+    margin: 3px 0;
 }
 
 
 /* ==========================================================
-   INFORMATIONS ADMINISTRATIVES
-   ========================================================== */
+   INFORMATIONS
+========================================================== */
 
 .header-bulletin .infos {
 
+    flex: 0 0 160px;
+
     text-align: right;
 
-    font-size: 12px;
+    font-size: 16px;
 
-    line-height: 1.3;
+    line-height: 1.4;
+}
+
+.header-bulletin .infos strong {
+    font-weight: 700;
 }
 
 
 /* ==========================================================
    TABLEAUX
-   ========================================================== */
+========================================================== */
 
 .table {
 
     width: 100%;
 
-    border-collapse: collapse;
+    border-collapse: collapse !important;
+
+    table-layout: fixed;
 
     margin-bottom: 15px;
-}
 
+    font-size: 18px;
+
+    color: #000;
+}
 
 .table th,
 .table td {
 
-    border: 1px solid #000;
+    border:
+        2px solid #000 !important;
 
-    padding: 6px;
+    padding: 8px;
 
     text-align: center;
 
+    vertical-align: middle;
+
     background-color: #cce5ff;
 }
-
 
 .table th {
 
     background-color: #007bff;
 
     color: #fff;
+
+    font-size: 18px;
+
+    font-weight: 700;
+}
+
+.table td {
+
+    font-size: 18px;
+
+    font-weight: 600;
+}
+
+
+/* ==========================================================
+   SIGNATURE
+========================================================== */
+
+.mt-4.text-center {
+
+    margin-top: 35px !important;
+
+    text-align: center;
+}
+
+.mt-4.text-center h4 {
+
+    font-size: 21px;
+
+    font-weight: 700;
+
+    margin: 5px 0;
 }
 
 
 /* ==========================================================
    SAUT DE PAGE
-   ========================================================== */
+========================================================== */
 
 .page-break {
 
     page-break-after: always;
+
+    break-after: page;
 }
 
 
 /* ==========================================================
-   RESPONSIVE
-   ========================================================== */
+   TABLETTE
+========================================================== */
 
 @media (max-width: 992px) {
 
@@ -280,94 +625,244 @@ body {
 
 
 /* ==========================================================
-   TABLETTE / MOBILE
-   ========================================================== */
+   MOBILE
+========================================================== */
 
 @media (max-width: 768px) {
 
+    .content-wrapper {
+        padding: 8px;
+    }
 
-    /* ------------------------------------------------------
-       HEADER BULLETIN
-       ------------------------------------------------------ */
+    .filtre-container {
+        padding: 15px;
+    }
+
+    .filtre-container::before {
+
+        margin:
+            -15px
+            -15px
+            15px
+            -15px;
+
+        font-size: 21px;
+    }
+
+    .custom-select-display {
+
+        min-height: 45px;
+
+        font-size: 15px;
+    }
+
+    .custom-select-options {
+
+        max-height: 200px;
+    }
+
+    .custom-select-option {
+
+        font-size: 15px;
+
+        padding: 10px;
+    }
+
+
+    /* HEADER */
 
     .header-bulletin {
 
         flex-direction: column;
 
         align-items: center;
-    }
-
-
-    .header-bulletin .centre {
-
-        margin-top: 10px;
-
-        margin-bottom: 10px;
-    }
-
-
-    .header-bulletin .infos {
 
         text-align: center;
     }
 
+    .header-bulletin > .photo {
 
-    /* ------------------------------------------------------
-       BOUTONS
-       ------------------------------------------------------ */
+        flex: none;
+
+        width: 100px;
+
+        height: 100px;
+    }
+
+    .header-bulletin .centre {
+
+        width: 100%;
+
+        margin-top: 5px;
+
+        margin-bottom: 10px;
+
+        padding: 0;
+    }
+
+    .header-bulletin .centre h1 {
+        font-size: 23px;
+    }
+
+    .header-bulletin .centre h2 {
+        font-size: 21px;
+    }
+
+    .header-bulletin .centre h3 {
+        font-size: 17px;
+    }
+
+    .header-bulletin .centre h4,
+    .header-bulletin .centre h5 {
+        font-size: 15px;
+    }
+
+    .header-bulletin .infos {
+
+        width: 100%;
+
+        flex: none;
+
+        text-align: center;
+
+        font-size: 14px;
+    }
+
+
+    /* TABLEAUX */
+
+    .table {
+        font-size: 15px;
+    }
+
+    .table th,
+    .table td {
+
+        font-size: 15px;
+
+        padding: 6px 4px;
+
+        word-break: break-word;
+
+        overflow-wrap: break-word;
+    }
+
+    .mt-4.text-center h4 {
+        font-size: 18px;
+    }
+
+
+    /* BOUTONS */
 
     .boutons-filtre {
 
         width: 100%;
 
-        gap: 20px;
+        gap: 10px;
     }
-
 
     .boutons-filtre .btn {
 
         flex: 1;
+
+        width: 100%;
     }
 
 }
 
 
 /* ==========================================================
-   IMPRESSION
-   ========================================================== */
+   PETIT TELEPHONE
+========================================================== */
+
+@media (max-width: 380px) {
+
+    .custom-select-display {
+
+        min-height: 44px;
+
+        font-size: 14px;
+    }
+
+    .custom-select-options {
+
+        max-height: 190px;
+    }
+
+    .custom-select-option {
+
+        font-size: 14px;
+
+        padding: 9px 10px;
+    }
+
+    .bulletin-eleve {
+
+        padding: 8px;
+    }
+
+    .header-bulletin .centre h1 {
+        font-size: 20px;
+    }
+
+    .header-bulletin .centre h2 {
+        font-size: 19px;
+    }
+
+    .header-bulletin .centre h3 {
+        font-size: 15px;
+    }
+
+    .table th,
+    .table td {
+
+        font-size: 13px;
+
+        padding: 5px 3px;
+    }
+
+}
+
+
+/* ==========================================================
+   IMPRESSION A4
+========================================================== */
+
+@page {
+
+    size: A4 portrait;
+
+    margin: 6mm;
+}
+
 
 @media print {
 
-
     /* ------------------------------------------------------
-       CACHER LES ÉLÉMENTS INUTILES À L'IMPRESSION
-       ------------------------------------------------------ */
-
-    .btn,
-    form,
-    .breadcrumb,
-    .alert,
-    header,
-    footer,
-    .sidebar,
-    .navbar,
-    .form-inline,
-    .filtre-container {
-
-        display: none !important;
-    }
-
-
-    /* ------------------------------------------------------
-       STRUCTURE
-       ------------------------------------------------------ */
+       PAGE
+    ------------------------------------------------------ */
 
     html,
     body {
 
+        width: 100% !important;
+
         height: auto !important;
 
         min-height: auto !important;
+
+        margin: 0 !important;
+
+        padding: 0 !important;
+
+        background: #fff !important;
+
+        color: #000 !important;
+
+        font-family:
+            "Times New Roman",
+            Times,
+            serif !important;
     }
 
 
@@ -383,94 +878,474 @@ body {
 
     .content-wrapper {
 
+        width: 100% !important;
+
         min-height: auto !important;
 
         height: auto !important;
 
+        margin: 0 !important;
+
+        padding: 0 !important;
+
         flex: none !important;
 
-        margin-left: 0 !important;
+        background: #fff !important;
+
+        overflow: visible !important;
+    }
+
+
+    .content-wrapper > section,
+    .container-fluid,
+    .content {
+
+        width: 100% !important;
+
+        max-width: none !important;
+
+        margin: 0 !important;
 
         padding: 0 !important;
     }
 
 
-    .main-footer {
+    /* ------------------------------------------------------
+       CACHER ELEMENTS INUTILES
+    ------------------------------------------------------ */
+
+    .btn,
+    form,
+    .breadcrumb,
+    .alert,
+    header,
+    footer,
+    .sidebar,
+    .navbar,
+    .form-inline,
+    .filtre-container,
+    .main-footer,
+    hr {
 
         display: none !important;
     }
 
 
     /* ------------------------------------------------------
-       COULEURS TABLEAUX
-       ------------------------------------------------------ */
+       BULLETIN
+    ------------------------------------------------------ */
 
-    .table th,
-    .table td {
+    .bulletin-eleve {
 
-        -webkit-print-color-adjust: exact;
+        width: 100% !important;
 
-        print-color-adjust: exact;
+        max-width: none !important;
 
-        background-color: #cce5ff !important;
+        margin: 0 !important;
 
-        color: #000 !important;
+        padding: 12px !important;
 
-        border: 1px solid #000 !important;
-    }
+        border:
+            3px solid #000 !important;
 
+        border-radius: 0 !important;
 
-    .table th {
+        background: #fff !important;
 
-        background-color: #007bff !important;
+        box-shadow: none !important;
 
-        color: #fff !important;
-    }
+        page-break-inside: avoid !important;
 
-
-    /* ------------------------------------------------------
-       HEADER BULLETIN
-       ------------------------------------------------------ */
-
-    .header-bulletin .centre h1,
-    .header-bulletin .centre h2,
-    .header-bulletin .centre h3,
-    .header-bulletin .centre h4,
-    .header-bulletin .centre h5 {
-
-        color: #000 !important;
+        break-inside: avoid !important;
     }
 
 
     /* ------------------------------------------------------
        SAUT DE PAGE
-       ------------------------------------------------------ */
+    ------------------------------------------------------ */
 
     .page-break {
 
-        display: block;
+        display: block !important;
 
-        page-break-after: always;
+        height: 0 !important;
 
-        break-after: page;
+        page-break-after: always !important;
+
+        break-after: page !important;
     }
 
 
     /* ------------------------------------------------------
-       BULLETIN
-       ------------------------------------------------------ */
+       HEADER
+    ------------------------------------------------------ */
 
-    .bulletin-eleve {
+    .header-bulletin {
 
-        border: 2px solid #000;
+        width: 100% !important;
 
-        margin-bottom: 0;
+        display: flex !important;
 
-        padding: 20px;
+        flex-direction: row !important;
 
-        page-break-inside: avoid;
+        justify-content: space-between !important;
 
-        break-inside: avoid;
+        align-items: center !important;
+
+        gap: 8px !important;
+
+        margin: 0 0 12px 0 !important;
+
+        padding: 6px !important;
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+    }
+
+
+    /* ------------------------------------------------------
+       PHOTO
+    ------------------------------------------------------ */
+
+    .header-bulletin > .photo {
+
+        flex:
+            0 0 90px !important;
+
+        width: 90px !important;
+    }
+
+    .header-bulletin .photo {
+
+        width: 82px !important;
+
+        height: 82px !important;
+
+        object-fit: cover !important;
+
+        border:
+            2px solid #000 !important;
+
+        border-radius: 5px !important;
+    }
+
+
+    /* ------------------------------------------------------
+       CENTRE
+    ------------------------------------------------------ */
+
+    .header-bulletin .centre {
+
+        flex: 1 !important;
+
+        width: auto !important;
+
+        text-align: center !important;
+
+        padding: 0 !important;
+    }
+
+
+    .header-bulletin .centre h1 {
+
+        font-size: 27px !important;
+
+        line-height: 1.05 !important;
+
+        font-weight: 700 !important;
+
+        color: #000 !important;
+
+        margin:
+            0 0 3px 0 !important;
+    }
+
+
+    .header-bulletin .centre h2 {
+
+        font-size: 25px !important;
+
+        line-height: 1.05 !important;
+
+        font-weight: 700 !important;
+
+        color: #000 !important;
+
+        margin:
+            4px 0 !important;
+    }
+
+
+    .header-bulletin .centre h3 {
+
+        font-size: 20px !important;
+
+        line-height: 1.15 !important;
+
+        font-weight: 700 !important;
+
+        color: #000 !important;
+
+        margin:
+            6px 0 4px 0 !important;
+    }
+
+
+    .header-bulletin .centre h4 {
+
+        font-size: 18px !important;
+
+        line-height: 1.15 !important;
+
+        font-weight: 700 !important;
+
+        color: #000 !important;
+
+        margin:
+            3px 0 !important;
+    }
+
+
+    .header-bulletin .centre h5 {
+
+        font-size: 18px !important;
+
+        line-height: 1.05 !important;
+
+        font-weight: 600 !important;
+
+        color: #000 !important;
+
+        margin:
+            2px 0 !important;
+    }
+
+
+    /* ------------------------------------------------------
+       INFORMATIONS DROITE
+    ------------------------------------------------------ */
+
+    .header-bulletin .infos {
+
+        flex:
+            0 0 140px !important;
+
+        width: 140px !important;
+
+        text-align: right !important;
+
+        font-size: 16px !important;
+
+        line-height: 1.3 !important;
+
+        color: #000 !important;
+    }
+
+    .header-bulletin .infos strong {
+
+        font-size: 16px !important;
+
+        font-weight: 700 !important;
+
+        color: #000 !important;
+    }
+
+
+    /* ------------------------------------------------------
+       TABLEAUX
+    ------------------------------------------------------ */
+
+    .table {
+
+        width: 100% !important;
+
+        margin:
+            0 0 10px 0 !important;
+
+        padding: 0 !important;
+
+        table-layout: fixed !important;
+
+        border-collapse: collapse !important;
+
+        font-size: 18px !important;
+
+        color: #000 !important;
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+    }
+
+
+    .table thead,
+    .table tbody,
+    .table tr {
+
+        page-break-inside: avoid !important;
+
+        break-inside: avoid !important;
+    }
+
+
+    .table th,
+    .table td {
+
+        border:
+            2px solid #000 !important;
+
+        padding:
+            8px 6px !important;
+
+        vertical-align: middle !important;
+
+        text-align: center !important;
+
+        font-size: 18px !important;
+
+        line-height: 1.15 !important;
+
+        color: #000 !important;
+
+        word-break: break-word !important;
+
+        overflow-wrap: break-word !important;
+    }
+
+
+    /* ------------------------------------------------------
+       ENTETES TABLEAUX
+    ------------------------------------------------------ */
+
+    .table th {
+
+        background:
+            #007bff !important;
+
+        color:
+            #fff !important;
+
+        font-size:
+            18px !important;
+
+        font-weight:
+            700 !important;
+
+        -webkit-print-color-adjust:
+            exact !important;
+
+        print-color-adjust:
+            exact !important;
+    }
+
+
+    /* ------------------------------------------------------
+       CELLULES
+    ------------------------------------------------------ */
+
+    .table td {
+
+        background:
+            #cce5ff !important;
+
+        color:
+            #000 !important;
+
+        font-size:
+            18px !important;
+
+        font-weight:
+            600 !important;
+
+        -webkit-print-color-adjust:
+            exact !important;
+
+        print-color-adjust:
+            exact !important;
+    }
+
+
+    /* ------------------------------------------------------
+       TABLEAU MOYENNES
+    ------------------------------------------------------ */
+
+    .bulletin-eleve .table:nth-of-type(2) th,
+    .bulletin-eleve .table:nth-of-type(2) td {
+
+        font-size:
+            19px !important;
+    }
+
+
+    /* ------------------------------------------------------
+       SIGNATURE
+    ------------------------------------------------------ */
+
+    .mt-4.text-center {
+
+        width: 100% !important;
+
+        margin-top:
+            28px !important;
+
+        text-align:
+            center !important;
+
+        page-break-inside:
+            avoid !important;
+
+        break-inside:
+            avoid !important;
+    }
+
+    .mt-4.text-center h4 {
+
+        font-size:
+            21px !important;
+
+        line-height:
+            1.2 !important;
+
+        font-weight:
+            700 !important;
+
+        color:
+            #000 !important;
+
+        margin:
+            4px 0 !important;
+    }
+
+
+    /* ------------------------------------------------------
+       EVITER LES COUPURES
+    ------------------------------------------------------ */
+
+    .bulletin-eleve,
+    .header-bulletin,
+    .table,
+    .table tr {
+
+        page-break-inside:
+            avoid !important;
+
+        break-inside:
+            avoid !important;
+    }
+
+
+    /* ------------------------------------------------------
+       COULEURS
+    ------------------------------------------------------ */
+
+    * {
+
+        -webkit-print-color-adjust:
+            exact !important;
+
+        print-color-adjust:
+            exact !important;
     }
 
 }
@@ -479,50 +1354,55 @@ body {
 
 {% endblock %}
 
-
 {% block contenu %}
 
 <div class="content-wrapper">
 
-    <section class="content">
+<section class="content">
 
-        <div class="container-fluid"
-             id="contenu-a-imprimer">
-
-
-            <!-- ======================================================
-                 FORMULAIRE DE FILTRE
-            ======================================================= -->
-
-            <div class="filtre-container">
-
-                <form method="get">
-
-                    <div class="row align-items-end">
+    <div class="container-fluid"
+         id="contenu-a-imprimer">
 
 
-                        <!-- ==================================================
-                             ANNÉE SCOLAIRE
-                        ================================================== -->
+        <!-- ======================================================
+             FORMULAIRE DE FILTRE
+        ======================================================= -->
 
-                        <div class="col-md-3">
+        <div class="filtre-container">
 
-                            <div class="form-group">
+            <form method="get">
 
-                                <label for="annee_scolaire">
-                                    Année scolaire :
-                                </label>
+                <div class="row align-items-end">
+
+
+                    <!-- ==================================================
+                         ANNÉE SCOLAIRE
+                    ================================================== -->
+
+                    <div class="col-md-3">
+
+                        <div class="form-group">
+
+                            <label for="annee_scolaire">
+
+                                Année scolaire :
+
+                            </label>
+
+
+                            <div class="custom-select-container">
 
                                 <select
                                     name="annee_scolaire"
                                     id="annee_scolaire"
-                                    class="form-control"
+                                    class="native-select-hidden"
                                     required
                                 >
 
                                     <option value="">
                                         -- Choisir --
                                     </option>
+
 
                                     {% for annee in annees_scolaires %}
 
@@ -542,33 +1422,88 @@ body {
 
                                 </select>
 
+
+                                <button
+                                    type="button"
+                                    class="custom-select-display"
+                                    aria-haspopup="listbox"
+                                    aria-expanded="false"
+                                >
+
+                                    <span class="selected-text">
+                                        -- Choisir --
+                                    </span>
+
+                                    <i class="fas fa-chevron-down arrow"></i>
+
+                                </button>
+
+
+                                <div
+                                    class="custom-select-options"
+                                    role="listbox"
+                                >
+
+                                    <div
+                                        class="custom-select-option"
+                                        data-value=""
+                                    >
+
+                                        -- Choisir --
+
+                                    </div>
+
+
+                                    {% for annee in annees_scolaires %}
+
+                                        <div
+                                            class="custom-select-option"
+                                            data-value="{{ annee.id }}"
+                                        >
+
+                                            {{ annee.nom }}
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
                             </div>
 
                         </div>
 
+                    </div>
 
-                        <!-- ==================================================
-                             CYCLE
-                        ================================================== -->
 
-                        <div class="col-md-3">
+                    <!-- ==================================================
+                         CYCLE
+                    ================================================== -->
 
-                            <div class="form-group">
+                    <div class="col-md-3">
 
-                                <label for="cycle">
-                                    Cycle :
-                                </label>
+                        <div class="form-group">
+
+                            <label for="cycle">
+
+                                Cycle :
+
+                            </label>
+
+
+                            <div class="custom-select-container">
 
                                 <select
                                     name="cycle"
                                     id="cycle"
-                                    class="form-control"
+                                    class="native-select-hidden"
                                     required
                                 >
 
                                     <option value="">
                                         -- Choisir --
                                     </option>
+
 
                                     {% for c in cycles %}
 
@@ -588,33 +1523,88 @@ body {
 
                                 </select>
 
+
+                                <button
+                                    type="button"
+                                    class="custom-select-display"
+                                    aria-haspopup="listbox"
+                                    aria-expanded="false"
+                                >
+
+                                    <span class="selected-text">
+                                        -- Choisir --
+                                    </span>
+
+                                    <i class="fas fa-chevron-down arrow"></i>
+
+                                </button>
+
+
+                                <div
+                                    class="custom-select-options"
+                                    role="listbox"
+                                >
+
+                                    <div
+                                        class="custom-select-option"
+                                        data-value=""
+                                    >
+
+                                        -- Choisir --
+
+                                    </div>
+
+
+                                    {% for c in cycles %}
+
+                                        <div
+                                            class="custom-select-option"
+                                            data-value="{{ c.id }}"
+                                        >
+
+                                            {{ c.nom }}
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
                             </div>
 
                         </div>
 
+                    </div>
 
-                        <!-- ==================================================
-                             NIVEAU
-                        ================================================== -->
 
-                        <div class="col-md-3">
+                    <!-- ==================================================
+                         NIVEAU
+                    ================================================== -->
 
-                            <div class="form-group">
+                    <div class="col-md-3">
 
-                                <label for="niveau">
-                                    Niveau :
-                                </label>
+                        <div class="form-group">
+
+                            <label for="niveau">
+
+                                Niveau :
+
+                            </label>
+
+
+                            <div class="custom-select-container">
 
                                 <select
                                     name="niveau"
                                     id="niveau"
-                                    class="form-control"
+                                    class="native-select-hidden"
                                     required
                                 >
 
                                     <option value="">
                                         -- Choisir --
                                     </option>
+
 
                                     {% for n in niveaux %}
 
@@ -634,382 +1624,412 @@ body {
 
                                 </select>
 
-                            </div>
-
-                        </div>
-
-
-                        <!-- ==================================================
-                             BOUTONS
-                        ================================================== -->
-
-                        <div class="col-md-3">
-
-                            <div class="boutons-filtre">
-
-
-                                <!-- FILTRER -->
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-primary"
-                                >
-
-                                    <i class="fas fa-filter"></i>
-
-                                    Filtrer
-
-                                </button>
-
-
-                                <!-- IMPRIMER -->
 
                                 <button
                                     type="button"
-                                    class="btn btn-secondary"
-                                    onclick="window.print()"
+                                    class="custom-select-display"
+                                    aria-haspopup="listbox"
+                                    aria-expanded="false"
                                 >
 
-                                    <i class="fas fa-print"></i>
+                                    <span class="selected-text">
+                                        -- Choisir --
+                                    </span>
 
-                                    Imprimer
+                                    <i class="fas fa-chevron-down arrow"></i>
 
                                 </button>
 
 
-                            </div>
+                                <div
+                                    class="custom-select-options"
+                                    role="listbox"
+                                >
 
-                        </div>
+                                    <div
+                                        class="custom-select-option"
+                                        data-value=""
+                                    >
 
+                                        -- Choisir --
 
-                    </div>
-
-                </form>
-
-            </div>
-
-
-            <hr>
-
-
-            <!-- ======================================================
-                 BULLETINS
-            ======================================================= -->
-
-            {% if bulletins_annuels %}
-
-                {% for b in bulletins_annuels %}
+                                    </div>
 
 
-                    <div class="bulletin-eleve">
-
-
-                        <!-- ==================================================
-                             HEADER
-                        ================================================== -->
-
-                        <div class="header-bulletin">
-
-
-                            {% for ecole in ecoles %}
-
-
-                                <!-- ==================================================
-                                     PHOTO
-                                ================================================== -->
-
-                                <div class="photo">
-
-                                    {% if b.eleve.photo %}
-
-                                        <img
-                                            src="{{ b.eleve.photo.url }}"
-                                            class="photo"
-                                            alt="Photo de l'élève"
-                                        >
-
-                                    {% else %}
+                                    {% for n in niveaux %}
 
                                         <div
-                                            style="
-                                                width:120px;
-                                                height:150px;
-                                                display:flex;
-                                                align-items:center;
-                                                justify-content:center;
-                                                border:1px solid #000;
-                                            "
+                                            class="custom-select-option"
+                                            data-value="{{ n.id }}"
                                         >
 
-                                            Pas de photo
+                                            {{ n.nom }}
 
                                         </div>
 
-                                    {% endif %}
+                                    {% endfor %}
 
                                 </div>
-
-
-                                <!-- ==================================================
-                                     CENTRE
-                                ================================================== -->
-
-                                <div class="centre">
-
-                                    <h2>
-                                        {{ ecole.pays }}
-                                    </h2>
-
-                                    <h5 style="margin:0;">
-                                        {{ ecole.devise_pays }}
-                                    </h5>
-
-                                    <h2>
-                                        {{ ecole.nom_ecole }}
-                                    </h2>
-
-                                    <h5 style="margin:0;">
-                                        {{ ecole.devise_ecole }}
-                                    </h5>
-
-                                    <h3>
-                                        Bulletin Annuel –
-                                        {{ annee_scolaire_obj.nom }}
-                                    </h3>
-
-                                    <h5>
-                                        Niveau :
-                                        {{ niveau_obj.nom }}
-                                    </h5>
-
-                                    <h4>
-                                        Élève :
-                                        {{ b.eleve.nom }}
-                                        {{ b.eleve.prenom }}
-                                    </h4>
-
-                                </div>
-
-
-                                <!-- ==================================================
-                                     INFORMATIONS ADMINISTRATIVES
-                                ================================================== -->
-
-                                <div class="infos">
-
-                                    <strong>
-                                        {{ ecole.meapu }}
-                                    </strong>
-
-                                    <br>
-
-                                    <strong>
-                                        IRE/{{ ecole.ire }}
-                                    </strong>
-
-                                    <br>
-
-                                    <strong>
-                                        DPE/{{ ecole.dpe }}
-                                    </strong>
-
-                                    <br>
-
-                                    <strong>
-                                        DSSE/{{ ecole.dsee }}
-                                    </strong>
-
-                                </div>
-
-
-                            {% endfor %}
-
-                        </div>
-
-
-                        <!-- ==================================================
-                             INFORMATIONS ÉLÈVE
-                        ================================================== -->
-
-                        <table class="table">
-
-                            <tr>
-
-                                <th>
-                                    Matricule
-                                </th>
-
-                                <th>
-                                    Nom
-                                </th>
-
-                                <th>
-                                    Prénom
-                                </th>
-
-                                <th>
-                                    Date de naissance
-                                </th>
-
-                            </tr>
-
-
-                            <tr>
-
-                                <td>
-                                    {{ b.eleve.matricule }}
-                                </td>
-
-                                <td>
-                                    {{ b.eleve.nom }}
-                                </td>
-
-                                <td>
-                                    {{ b.eleve.prenom }}
-                                </td>
-
-                                <td>
-                                    {{ b.eleve.date_naissance|date:"d/m/Y" }}
-                                </td>
-
-                            </tr>
-
-                        </table>
-
-
-                        <!-- ==================================================
-                             MOYENNES
-                        ================================================== -->
-
-                        <table class="table">
-
-                            <tr>
-
-                                <th>
-                                    Trimestre 1
-                                </th>
-
-                                <th>
-                                    Trimestre 2
-                                </th>
-
-                                <th>
-                                    Trimestre 3
-                                </th>
-
-                                <th>
-                                    Moyenne Annuelle
-                                </th>
-
-                                <th>
-                                    Observation
-                                </th>
-
-                                <th>
-                                    Rang
-                                </th>
-
-                            </tr>
-
-
-                            <tr>
-
-
-                                {% for m in b.moyennes_trimestrielles %}
-
-                                    <td>
-                                        {{ m }}
-                                    </td>
-
-                                {% endfor %}
-
-
-                                <td>
-                                    {{ b.moyenne_annuelle }}
-                                </td>
-
-
-                                <td>
-                                    {{ b.observation }}
-                                </td>
-
-
-                                <td>
-                                    {{ b.rang }}
-                                </td>
-
-
-                            </tr>
-
-                        </table>
-
-
-                        <!-- ==================================================
-                             SIGNATURE
-                        ================================================== -->
-
-                        {% for ecole in ecoles %}
-
-                            <div class="mt-4 text-center">
-
-                                <h4>
-                                    Directeur :
-                                </h4>
-
-                                <br>
-                                <br>
-
-                                <h4>
-                                    {{ ecole.responsable }}
-                                </h4>
 
                             </div>
 
-                        {% endfor %}
-
+                        </div>
 
                     </div>
 
 
-                    <!-- ======================================================
-                         SAUT DE PAGE ENTRE LES BULLETINS
-                    ======================================================= -->
+                    <!-- ==================================================
+                         BOUTONS
+                    ================================================== -->
 
-                    {% if not forloop.last %}
+                    <div class="col-md-3">
 
-                        <div class="page-break"></div>
-
-                    {% endif %}
+                        <div class="boutons-filtre">
 
 
-                {% endfor %}
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+
+                                <i class="fas fa-filter"></i>
+
+                                Filtrer
+
+                            </button>
 
 
-            {% else %}
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                onclick="window.print()"
+                            >
+
+                                <i class="fas fa-print"></i>
+
+                                Imprimer
+
+                            </button>
 
 
-                <div class="alert alert-info">
+                        </div>
 
-                    Aucun bulletin disponible
-                    pour les critères sélectionnés.
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <hr>
+
+
+        <!-- ======================================================
+             BULLETINS
+        ======================================================= -->
+
+        {% if bulletins_annuels %}
+
+            {% for b in bulletins_annuels %}
+
+                <div class="bulletin-eleve">
+
+
+                    <!-- ==================================================
+                         HEADER
+                    ================================================== -->
+
+                    <div class="header-bulletin">
+
+
+                        {% for ecole in ecoles %}
+
+
+                            <!-- PHOTO -->
+
+                            <div class="photo">
+
+                                {% if b.eleve.photo %}
+
+                                    <img
+                                        src="{{ b.eleve.photo.url }}"
+                                        class="photo"
+                                        alt="Photo de l'élève"
+                                    >
+
+                                {% else %}
+
+                                    <div
+                                        style="
+                                            width:100px;
+                                            height:100px;
+                                            display:flex;
+                                            align-items:center;
+                                            justify-content:center;
+                                            border:2px solid #000;
+                                            font-size:12px;
+                                            text-align:center;
+                                        "
+                                    >
+
+                                        Pas de photo
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- CENTRE -->
+
+                            <div class="centre">
+
+                                <h1>
+                                    {{ ecole.pays }}
+                                </h1>
+
+                                <h5>
+                                    {{ ecole.devise_pays }}
+                                </h5>
+
+                                <h2>
+                                    {{ ecole.nom_ecole }}
+                                </h2>
+
+                                <h5>
+                                    {{ ecole.devise_ecole }}
+                                </h5>
+
+                                <h3>
+                                    Bulletin Annuel –
+                                    {{ annee_scolaire_obj.nom }}
+                                </h3>
+
+                                <h5>
+                                    Niveau :
+                                    {{ niveau_obj.nom }}
+                                </h5>
+
+                                <h4>
+                                    Élève :
+                                    {{ b.eleve.nom }}
+                                    {{ b.eleve.prenom }}
+                                </h4>
+
+                            </div>
+
+
+                            <!-- INFORMATIONS -->
+
+                            <div class="infos">
+
+                                <strong>
+                                    {{ ecole.meapu }}
+                                </strong>
+
+                                <br>
+
+                                <strong>
+                                    IRE/{{ ecole.ire }}
+                                </strong>
+
+                                <br>
+
+                                <strong>
+                                    DPE/{{ ecole.dpe }}
+                                </strong>
+
+                                <br>
+
+                                <strong>
+                                    DSSE/{{ ecole.dsee }}
+                                </strong>
+
+                            </div>
+
+
+                        {% endfor %}
+
+                    </div>
+
+
+                    <!-- ==================================================
+                         INFORMATIONS ELEVE
+                    ================================================== -->
+
+                    <table class="table">
+
+                        <tr>
+
+                            <th>
+                                Matricule
+                            </th>
+
+                            <th>
+                                Nom
+                            </th>
+
+                            <th>
+                                Prénom
+                            </th>
+
+                            <th>
+                                Date de naissance
+                            </th>
+
+                        </tr>
+
+
+                        <tr>
+
+                            <td>
+                                {{ b.eleve.matricule }}
+                            </td>
+
+                            <td>
+                                {{ b.eleve.nom }}
+                            </td>
+
+                            <td>
+                                {{ b.eleve.prenom }}
+                            </td>
+
+                            <td>
+                                {{ b.eleve.date_naissance|date:"d/m/Y" }}
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+
+                    <!-- ==================================================
+                         MOYENNES
+                    ================================================== -->
+
+                    <table class="table">
+
+                        <tr>
+
+                            <th>
+                                Trimestre 1
+                            </th>
+
+                            <th>
+                                Trimestre 2
+                            </th>
+
+                            <th>
+                                Trimestre 3
+                            </th>
+
+                            <th>
+                                Moyenne Annuelle
+                            </th>
+
+                            <th>
+                                Observation
+                            </th>
+
+                            <th>
+                                Rang
+                            </th>
+
+                        </tr>
+
+
+                        <tr>
+
+                            {% for m in b.moyennes_trimestrielles %}
+
+                                <td>
+                                    {{ m }}
+                                </td>
+
+                            {% endfor %}
+
+
+                            <td>
+                                {{ b.moyenne_annuelle }}
+                            </td>
+
+
+                            <td>
+                                {{ b.observation }}
+                            </td>
+
+
+                            <td>
+                                {{ b.rang }}
+                            </td>
+
+                        </tr>
+
+                    </table>
+
+
+                    <!-- ==================================================
+                         SIGNATURE
+                    ================================================== -->
+
+                    {% for ecole in ecoles %}
+
+                        <div class="mt-4 text-center">
+
+                            <h4>
+                                Directeur :
+                            </h4>
+
+                            <br>
+                            <br>
+
+                            <h4>
+                                {{ ecole.responsable }}
+                            </h4>
+
+                        </div>
+
+                    {% endfor %}
+
 
                 </div>
 
 
-            {% endif %}
+                {% if not forloop.last %}
+
+                    <div class="page-break"></div>
+
+                {% endif %}
 
 
-        </div>
+            {% endfor %}
 
-    </section>
+
+        {% else %}
+
+            <div class="alert alert-info">
+
+                Aucun bulletin disponible
+                pour les critères sélectionnés.
+
+            </div>
+
+        {% endif %}
+
+
+    </div>
+
+</section>
+
 
 </div>
 
 {% endblock %}
 
-
 {% block scripte %}
-
 
 <script src="{% static 'base/plugins/jquery/jquery.min.js' %}">
 </script>
@@ -1020,97 +2040,576 @@ body {
 <script src="{% static 'base/js/adminlte.min.js' %}">
 </script>
 
-
 <script>
 
-$(document).ready(function () {
+/* ==========================================================
+   SELECTS PERSONNALISÉS
+========================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
 
 
-    // ==========================================================
-    // CHARGEMENT DES NIVEAUX SELON LE CYCLE
-    // ==========================================================
-
-    $('#cycle').change(function () {
-
-        var cycleId = $(this).val();
+        const containers =
+            document.querySelectorAll(
+                ".custom-select-container"
+            );
 
 
-        if (cycleId) {
+        /* ---------------------------------------------------
+           FERMER TOUS LES MENUS
+        --------------------------------------------------- */
 
-            $.ajax({
+        function closeAll(except = null) {
 
-                url: "{% url 'ajax_niveaux' %}",
+            containers.forEach(
+                function(container) {
 
-                data: {
+                    if (container !== except) {
 
-                    'cycle_id': cycleId
-
-                },
-
-                success: function (data) {
-
-
-                    var $niveau =
-                        $('#niveau');
-
-
-                    $niveau.empty();
-
-
-                    $niveau.append(
-                        '<option value="">-- Choisir --</option>'
-                    );
-
-
-                    data.forEach(function (n) {
-
-
-                        $niveau.append(
-
-                            '<option value="' +
-                            n.id +
-                            '">' +
-                            n.nom +
-                            '</option>'
-
+                        container.classList.remove(
+                            "open"
                         );
 
-                    });
 
-                },
+                        const button =
+                            container.querySelector(
+                                ".custom-select-display"
+                            );
 
 
-                error: function () {
+                        if (button) {
 
-                    alert(
-                        "Impossible de charger les niveaux."
-                    );
+                            button.setAttribute(
+                                "aria-expanded",
+                                "false"
+                            );
+
+                        }
+
+                    }
 
                 }
-
-            });
-
-        }
-
-        else {
-
-
-            $('#niveau').empty();
-
-
-            $('#niveau').append(
-
-                '<option value="">-- Choisir --</option>'
-
             );
 
         }
 
-    });
 
-});
+        /* ---------------------------------------------------
+           INITIALISATION DE CHAQUE SELECT
+        --------------------------------------------------- */
+
+        containers.forEach(
+            function(container) {
+
+
+                const select =
+                    container.querySelector(
+                        "select"
+                    );
+
+
+                const button =
+                    container.querySelector(
+                        ".custom-select-display"
+                    );
+
+
+                const text =
+                    container.querySelector(
+                        ".selected-text"
+                    );
+
+
+                const options =
+                    container.querySelectorAll(
+                        ".custom-select-option"
+                    );
+
+
+                /* -------------------------------------------
+                   SYNCHRONISATION
+                -------------------------------------------- */
+
+                function syncFromSelect() {
+
+                    const selectedOption =
+                        select.options[
+                            select.selectedIndex
+                        ];
+
+
+                    if (!selectedOption) {
+
+                        return;
+
+                    }
+
+
+                    text.textContent =
+                        selectedOption
+                        .textContent
+                        .trim();
+
+
+                    options.forEach(
+                        function(option) {
+
+                            option.classList.toggle(
+                                "selected",
+                                option.dataset.value ===
+                                select.value
+                            );
+
+                        }
+                    );
+
+                }
+
+
+                /* -------------------------------------------
+                   OUVRIR / FERMER
+                -------------------------------------------- */
+
+                button.addEventListener(
+                    "click",
+                    function(event) {
+
+                        event.preventDefault();
+
+
+                        const isOpen =
+                            container.classList
+                            .contains("open");
+
+
+                        closeAll(container);
+
+
+                        container.classList.toggle(
+                            "open",
+                            !isOpen
+                        );
+
+
+                        button.setAttribute(
+                            "aria-expanded",
+                            String(!isOpen)
+                        );
+
+
+                        if (!isOpen) {
+
+                            const selected =
+                                container.querySelector(
+                                    ".custom-select-option.selected"
+                                );
+
+
+                            if (selected) {
+
+                                setTimeout(
+                                    function() {
+
+                                        selected
+                                            .scrollIntoView({
+                                                block:
+                                                    "nearest"
+                                            });
+
+                                    },
+                                    50
+                                );
+
+                            }
+
+                        }
+
+                    }
+                );
+
+
+                /* -------------------------------------------
+                   CHOIX OPTION
+                -------------------------------------------- */
+
+                options.forEach(
+                    function(option) {
+
+                        option.addEventListener(
+                            "click",
+                            function() {
+
+
+                                const value =
+                                    option.dataset.value;
+
+
+                                select.value =
+                                    value;
+
+
+                                syncFromSelect();
+
+
+                                select.dispatchEvent(
+                                    new Event(
+                                        "change",
+                                        {
+                                            bubbles: true
+                                        }
+                                    )
+                                );
+
+
+                                closeAll();
+
+
+                                button.focus();
+
+                            }
+                        );
+
+                    }
+                );
+
+
+                select.addEventListener(
+                    "change",
+                    syncFromSelect
+                );
+
+
+                syncFromSelect();
+
+            }
+        );
+
+
+        /* ---------------------------------------------------
+           CLIC EN DEHORS
+        --------------------------------------------------- */
+
+        document.addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    !event.target.closest(
+                        ".custom-select-container"
+                    )
+                ) {
+
+                    closeAll();
+
+                }
+
+            }
+        );
+
+
+        /* ---------------------------------------------------
+           TOUCHE ECHAP
+        --------------------------------------------------- */
+
+        document.addEventListener(
+            "keydown",
+            function(event) {
+
+                if (event.key === "Escape") {
+
+                    closeAll();
+
+                }
+
+            }
+        );
+
+
+        /* ===================================================
+           AJAX : CHARGEMENT DES NIVEAUX
+        =================================================== */
+
+        $('#cycle').on(
+            'change',
+            function() {
+
+
+                var cycleId =
+                    $(this).val();
+
+
+                var niveauSelect =
+                    $('#niveau')[0];
+
+
+                var niveauContainer =
+                    $('#niveau')
+                    .closest(
+                        '.custom-select-container'
+                    );
+
+
+                var niveauOptions =
+                    niveauContainer.find(
+                        '.custom-select-options'
+                    );
+
+
+                if (cycleId) {
+
+
+                    $.ajax({
+
+                        url:
+                            "{% url 'ajax_niveaux' %}",
+
+                        data: {
+
+                            'cycle_id':
+                                cycleId
+
+                        },
+
+
+                        success:
+                            function(data) {
+
+
+                                /*
+                                   SELECT NATIF
+                                */
+
+                                $('#niveau').empty();
+
+
+                                $('#niveau').append(
+
+                                    '<option value="">' +
+                                    '-- Choisir --' +
+                                    '</option>'
+
+                                );
+
+
+                                /*
+                                   LISTE PERSONNALISÉE
+                                */
+
+                                niveauOptions.empty();
+
+
+                                niveauOptions.append(
+
+                                    '<div ' +
+                                    'class="custom-select-option" ' +
+                                    'data-value="">' +
+
+                                    '-- Choisir --' +
+
+                                    '</div>'
+
+                                );
+
+
+                                data.forEach(
+                                    function(n) {
+
+
+                                        /*
+                                           SELECT
+                                        */
+
+                                        $('#niveau').append(
+
+                                            '<option value="' +
+                                            n.id +
+                                            '">' +
+                                            n.nom +
+                                            '</option>'
+
+                                        );
+
+
+                                        /*
+                                           LISTE CUSTOM
+                                        */
+
+                                        niveauOptions.append(
+
+                                            '<div ' +
+                                            'class="custom-select-option" ' +
+                                            'data-value="' +
+                                            n.id +
+                                            '">' +
+
+                                            n.nom +
+
+                                            '</div>'
+
+                                        );
+
+                                    }
+                                );
+
+
+                                /*
+                                   REBRANCHER LES CLICS
+                                   SUR LES NOUVELLES OPTIONS
+                                */
+
+                                const newOptions =
+                                    niveauOptions.find(
+                                        '.custom-select-option'
+                                    );
+
+
+                                const niveauButton =
+                                    niveauContainer.find(
+                                        '.custom-select-display'
+                                    );
+
+
+                                const niveauText =
+                                    niveauContainer.find(
+                                        '.selected-text'
+                                    );
+
+
+                                newOptions.off('click');
+
+
+                                newOptions.on(
+                                    'click',
+                                    function() {
+
+
+                                        const value =
+                                            $(this)
+                                            .data('value');
+
+
+                                        niveauSelect.value =
+                                            value;
+
+
+                                        niveauText.text(
+                                            $(this)
+                                            .text()
+                                            .trim()
+                                        );
+
+
+                                        newOptions.removeClass(
+                                            'selected'
+                                        );
+
+
+                                        $(this).addClass(
+                                            'selected'
+                                        );
+
+
+                                        niveauSelect.dispatchEvent(
+                                            new Event(
+                                                'change',
+                                                {
+                                                    bubbles:
+                                                        true
+                                                }
+                                            )
+                                        );
+
+
+                                        closeAll();
+
+
+                                        niveauButton.focus();
+
+                                    }
+                                );
+
+
+                                /*
+                                   AFFICHAGE PAR DEFAUT
+                                */
+
+                                niveauText.text(
+                                    '-- Choisir --'
+                                );
+
+
+                            },
+
+
+                        error:
+                            function() {
+
+                                alert(
+                                    "Impossible de charger les niveaux."
+                                );
+
+                            }
+
+                    });
+
+                }
+
+                else {
+
+
+                    /*
+                       SELECT
+                    */
+
+                    $('#niveau').empty();
+
+
+                    $('#niveau').append(
+
+                        '<option value="">' +
+                        '-- Choisir --' +
+                        '</option>'
+
+                    );
+
+
+                    /*
+                       CUSTOM SELECT
+                    */
+
+                    niveauOptions.empty();
+
+
+                    niveauOptions.append(
+
+                        '<div ' +
+                        'class="custom-select-option" ' +
+                        'data-value="">' +
+
+                        '-- Choisir --' +
+
+                        '</div>'
+
+                    );
+
+
+                    niveauContainer
+                        .find('.selected-text')
+                        .text(
+                            '-- Choisir --'
+                        );
+
+                }
+
+            }
+        );
+
+
+    }
+);
 
 </script>
 
 {% endblock %}
-
