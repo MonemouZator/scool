@@ -140,7 +140,7 @@ def validate_birthdate(value):
         )
     )
 
-    if age < 8:
+    if age < 3:
 
         raise ValidationError(
             "L'élève doit avoir au moins 8 ans."
@@ -2632,6 +2632,558 @@ def liste_eleves_par_classe(request):
     )
 
 
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+
+from .models import Eleve, EleveInscrit
+
+
+@login_required
+def get_eleve_info(request):
+
+    matricule = request.GET.get('matricule', '').strip()
+    contact_pere = request.GET.get('contact_pere', '').strip()
+    eleve_id = request.GET.get('id', '').strip()
+
+    eleve = None
+
+    # =========================================================
+    # FONCTION INTERNE : GÉNÉRER UN MATRICULE
+    # =========================================================
+
+    def generer_matricule(eleve):
+
+        # Si l'élève possède déjà un matricule,
+        # on le conserve.
+        if eleve.matricule:
+            return eleve.matricule
+
+        import re
+        import unicodedata
+
+        def nettoyer(texte):
+
+            if not texte:
+                return ''
+
+            texte = unicodedata.normalize(
+                'NFD',
+                str(texte)
+            )
+
+            texte = ''.join(
+                caractere
+                for caractere in texte
+                if unicodedata.category(caractere) != 'Mn'
+            )
+
+            texte = re.sub(
+                r'[^A-Za-z]',
+                '',
+                texte
+            )
+
+            return texte.upper()
+
+        # -----------------------------------------------------
+        # NOM
+        # -----------------------------------------------------
+
+        nom = nettoyer(
+            getattr(eleve, 'nom', '')
+        )
+
+        # -----------------------------------------------------
+        # PRÉNOM
+        # -----------------------------------------------------
+
+        prenom = nettoyer(
+            getattr(eleve, 'prenom', '')
+        )
+
+        # -----------------------------------------------------
+        # ANNÉE DE NAISSANCE
+        # -----------------------------------------------------
+
+        date_naissance = getattr(
+            eleve,
+            'date_naissance',
+            None
+        )
+
+        if date_naissance:
+
+            annee_naissance = str(
+                date_naissance.year
+            )
+
+        else:
+
+            annee_naissance = '0000'
+
+        # -----------------------------------------------------
+        # 2 PREMIÈRES LETTRES NOM
+        # -----------------------------------------------------
+
+        partie_nom = nom[:2].ljust(2, 'X')
+
+        # -----------------------------------------------------
+        # 2 PREMIÈRES LETTRES PRÉNOM
+        # -----------------------------------------------------
+
+        partie_prenom = prenom[:2].ljust(2, 'X')
+
+        # -----------------------------------------------------
+        # BASE DU MATRICULE
+        # Exemple :
+        # MONEMOU + ZATOR + 2001
+        # => MOZA2001
+        # -----------------------------------------------------
+
+        base = (
+            partie_nom +
+            partie_prenom +
+            annee_naissance
+        )
+
+        # -----------------------------------------------------
+        # PREMIER MATRICULE
+        # -----------------------------------------------------
+
+        matricule_final = base
+
+        # -----------------------------------------------------
+        # VÉRIFIER SI LE MATRICULE EXISTE
+        # -----------------------------------------------------
+
+        if not Eleve.objects.filter(
+            matricule__iexact=matricule_final
+        ).exists():
+
+            return matricule_final
+
+        # -----------------------------------------------------
+        # SI EXISTE :
+        # MOZA2001 → MOZA200101
+        # MOZA200102
+        # MOZA200103
+        # ...
+        # -----------------------------------------------------
+
+        compteur = 1
+
+        while True:
+
+            suffixe = str(
+                compteur
+            ).zfill(2)
+
+            matricule_final = (
+                base +
+                suffixe
+            )
+
+            existe = Eleve.objects.filter(
+                matricule__iexact=matricule_final
+            ).exists()
+
+            if not existe:
+                return matricule_final
+
+            compteur += 1
+
+    # =========================================================
+    # 1. RECHERCHE PAR ID
+    # =========================================================
+
+    if eleve_id:
+
+        try:
+
+            eleve = Eleve.objects.filter(
+                id=int(eleve_id)
+            ).first()
+
+        except (ValueError, TypeError):
+
+            eleve = None
+
+        if not eleve:
+
+            return JsonResponse({
+                'success': False,
+                'error': 'Élève introuvable.'
+            })
+
+    # =========================================================
+    # 2. RECHERCHE PAR MATRICULE
+    # =========================================================
+
+    elif matricule:
+
+        eleve = Eleve.objects.filter(
+            matricule__iexact=matricule
+        ).first()
+
+        if not eleve:
+
+            return JsonResponse({
+                'success': False,
+                'error': 'Aucun élève ne possède ce matricule.'
+            })
+
+    # =========================================================
+    # 3. RECHERCHE PAR CONTACT DU PÈRE
+    # =========================================================
+
+    elif contact_pere:
+
+        eleves = Eleve.objects.filter(
+            contact_parent__iexact=contact_pere
+        ).order_by(
+            'nom',
+            'prenom'
+        )
+
+        nombre = eleves.count()
+
+        # -----------------------------------------------------
+        # AUCUN ÉLÈVE
+        # -----------------------------------------------------
+
+        if nombre == 0:
+
+            return JsonResponse({
+                'success': False,
+                'error': 'Aucun élève trouvé avec ce contact.'
+            })
+
+        # -----------------------------------------------------
+        # PLUSIEURS ÉLÈVES
+        # -----------------------------------------------------
+
+        if nombre > 1:
+
+            liste = []
+
+            for enfant in eleves:
+
+                liste.append({
+
+                    'id': enfant.id,
+
+                    'matricule': (
+                        enfant.matricule
+                        or ''
+                    ),
+
+                    'nom': (
+                        enfant.nom
+                        or ''
+                    ),
+
+                    'prenom': (
+                        enfant.prenom
+                        or ''
+                    ),
+
+                    'sexe': getattr(
+                        enfant,
+                        'genre',
+                        ''
+                    ) or '',
+
+                    'date_naissance': (
+
+                        enfant.date_naissance.strftime(
+                            '%Y-%m-%d'
+                        )
+
+                        if enfant.date_naissance
+
+                        else ''
+                    ),
+
+                })
+
+            return JsonResponse({
+
+                'success': True,
+
+                'type': 'plusieurs_eleves',
+
+                'eleves': liste
+            })
+
+        # -----------------------------------------------------
+        # UN SEUL ÉLÈVE
+        # -----------------------------------------------------
+
+        eleve = eleves.first()
+
+    # =========================================================
+    # 4. AUCUN CRITÈRE
+    # =========================================================
+
+    else:
+
+        return JsonResponse({
+
+            'success': False,
+
+            'error':
+                'Veuillez saisir un matricule ou '
+                'le contact du père.'
+        })
+
+    # =========================================================
+    # 5. GÉNÉRER IMMÉDIATEMENT LE MATRICULE
+    # =========================================================
+
+    matricule_genere = False
+
+    if not eleve.matricule:
+
+        nouveau_matricule = generer_matricule(
+            eleve
+        )
+
+        eleve.matricule = nouveau_matricule
+
+        eleve.save(
+            update_fields=['matricule']
+        )
+
+        matricule_genere = True
+
+    # =========================================================
+    # 6. PHOTO
+    # =========================================================
+
+    photo_url = ''
+
+    try:
+
+        if eleve.photo:
+
+            photo_url = eleve.photo.url
+
+    except Exception:
+
+        photo_url = ''
+
+    # =========================================================
+    # 7. INFORMATIONS SCOLAIRES
+    # =========================================================
+
+    annee_id = getattr(
+        eleve,
+        'annee_scolaire_id',
+        None
+    )
+
+    niveau_id = getattr(
+        eleve,
+        'niveau_id',
+        None
+    )
+
+    groupe_id = getattr(
+        eleve,
+        'groupe_classe_id',
+        None
+    )
+
+    # =========================================================
+    # 8. DERNIÈRE INSCRIPTION
+    # =========================================================
+
+    try:
+
+        inscription = (
+            EleveInscrit.objects
+            .filter(eleve=eleve)
+            .select_related(
+                'annee_scolaire',
+                'niveau',
+                'groupe_classe'
+            )
+            .order_by('-annee_scolaire_id')
+            .first()
+        )
+
+        if inscription:
+
+            if inscription.annee_scolaire_id:
+
+                annee_id = (
+                    inscription.annee_scolaire_id
+                )
+
+            if inscription.niveau_id:
+
+                niveau_id = (
+                    inscription.niveau_id
+                )
+
+            if inscription.groupe_classe_id:
+
+                groupe_id = (
+                    inscription.groupe_classe_id
+                )
+
+    except Exception:
+
+        pass
+
+    # =========================================================
+    # 9. TYPE DE RECHERCHE
+    # =========================================================
+
+    if matricule:
+
+        type_recherche = 'matricule'
+
+    elif contact_pere:
+
+        type_recherche = 'contact_pere'
+
+    else:
+
+        type_recherche = 'eleve'
+
+    # =========================================================
+    # 10. RÉPONSE
+    # =========================================================
+
+    return JsonResponse({
+
+        'success': True,
+
+        'type': type_recherche,
+
+        # ID
+        'id': eleve.id,
+
+        # MATRICULE
+        'matricule': (
+            eleve.matricule
+            or ''
+        ),
+
+        'matricule_genere':
+            matricule_genere,
+
+        # ÉLÈVE
+        'nom': (
+            eleve.nom
+            or ''
+        ),
+
+        'prenom': (
+            eleve.prenom
+            or ''
+        ),
+
+        'date_naissance': (
+
+            eleve.date_naissance.strftime(
+                '%Y-%m-%d'
+            )
+
+            if eleve.date_naissance
+
+            else ''
+        ),
+
+        'lieu_naissance': getattr(
+            eleve,
+            'lieu_naissance',
+            ''
+        ) or '',
+
+        # SEXE
+        'sexe': getattr(
+            eleve,
+            'genre',
+            ''
+        ) or '',
+
+        'genre': getattr(
+            eleve,
+            'genre',
+            ''
+        ) or '',
+
+        # CONTACT ÉLÈVE
+        'contact': getattr(
+            eleve,
+            'telephone',
+            ''
+        ) or '',
+
+        'telephone': getattr(
+            eleve,
+            'telephone',
+            ''
+        ) or '',
+
+        # PÈRE
+        'pere': getattr(
+            eleve,
+            'pere',
+            ''
+        ) or '',
+
+        'fp': getattr(
+            eleve,
+            'profession_pere',
+            ''
+        ) or '',
+
+        'cp': getattr(
+            eleve,
+            'contact_parent',
+            ''
+        ) or '',
+
+        'contact_pere': getattr(
+            eleve,
+            'contact_parent',
+            ''
+        ) or '',
+
+        # MÈRE
+        'mere': getattr(
+            eleve,
+            'mere',
+            ''
+        ) or '',
+
+        'fm': getattr(
+            eleve,
+            'profession_mere',
+            ''
+        ) or '',
+
+        'cm': getattr(
+            eleve,
+            'contact_mere',
+            ''
+        ) or '',
+
+        # PHOTO
+        'photo_url': photo_url,
+
+        # SCOLARITÉ
+        'annee_id': annee_id,
+
+        'niveau_id': niveau_id,
+
+        'groupe_id': groupe_id,
+
+    })
+
 # ============================================================
 # RÉINSCRIPTION
 # ============================================================
@@ -2641,23 +3193,44 @@ def reinscription_eleve(request):
 
     eleves = (
         Eleve.objects
-        .filter(
-            actif=True
-        )
+        .filter(actif=True)
         .order_by(
             'nom',
             'prenom'
         )
     )
 
-    niveaux = Niveau.objects.all().order_by('nom')
-    groupes = GroupeClasse.objects.all().order_by('nom')
-    annees = AnneeScolaire.objects.all().order_by('-id')
+    niveaux = (
+        Niveau.objects
+        .all()
+        .order_by('nom')
+    )
+
+    groupes = (
+        GroupeClasse.objects
+        .all()
+        .order_by('nom')
+    )
+
+    annees = (
+        AnneeScolaire.objects
+        .all()
+        .order_by('-id')
+    )
+
+    # ========================================================
+    # POST
+    # ========================================================
 
     if request.method == "POST":
 
-        matricule = request.POST.get(
+        matricule_recherche = request.POST.get(
             "matricule",
+            ""
+        ).strip()
+
+        contact_pere = request.POST.get(
+            "contact_pere",
             ""
         ).strip()
 
@@ -2674,19 +3247,36 @@ def reinscription_eleve(request):
         )
 
         # ====================================================
-        # VALIDATION
+        # VALIDATION RECHERCHE
         # ====================================================
 
         if (
-            not matricule
-            or not niveau_id
+            not matricule_recherche
+            and not contact_pere
+        ):
+
+            messages.error(
+                request,
+                "Veuillez saisir le matricule ou le contact du père."
+            )
+
+            return redirect(
+                "reinscrire_eleve"
+            )
+
+        # ====================================================
+        # VALIDATION SCOLAIRE
+        # ====================================================
+
+        if (
+            not niveau_id
             or not groupe_id
             or not annee_id
         ):
 
             messages.error(
                 request,
-                "Tous les champs sont obligatoires."
+                "Veuillez sélectionner le niveau, la classe et l'année scolaire."
             )
 
             return redirect(
@@ -2694,22 +3284,107 @@ def reinscription_eleve(request):
             )
 
         # ====================================================
-        # ÉLÈVE
+        # RECHERCHE ÉLÈVE
         # ====================================================
 
-        eleve = (
-            Eleve.objects
-            .filter(
-                matricule__iexact=matricule
+        eleve = None
+
+        # ====================================================
+        # 1. RECHERCHE PAR MATRICULE
+        # ====================================================
+
+        if matricule_recherche:
+
+            eleve = (
+                Eleve.objects
+                .filter(
+                    matricule__iexact=matricule_recherche
+                )
+                .first()
             )
-            .first()
-        )
+
+            if not eleve:
+
+                messages.error(
+                    request,
+                    "Aucun élève trouvé avec ce matricule."
+                )
+
+                return redirect(
+                    "reinscrire_eleve"
+                )
+
+        # ====================================================
+        # 2. RECHERCHE PAR CONTACT DU PÈRE
+        # ====================================================
+
+        elif contact_pere:
+
+            eleves_trouves = (
+                Eleve.objects
+                .filter(
+                    contact_parent__iexact=contact_pere
+                )
+                .order_by(
+                    'nom',
+                    'prenom'
+                )
+            )
+
+            nombre_eleves = (
+                eleves_trouves.count()
+            )
+
+            # ------------------------------------------------
+            # AUCUN ÉLÈVE
+            # ------------------------------------------------
+
+            if nombre_eleves == 0:
+
+                messages.error(
+                    request,
+                    "Aucun élève trouvé avec ce contact du père."
+                )
+
+                return redirect(
+                    "reinscrire_eleve"
+                )
+
+            # ------------------------------------------------
+            # PLUSIEURS ENFANTS
+            # ------------------------------------------------
+
+            if nombre_eleves > 1:
+
+                messages.error(
+                    request,
+                    (
+                        "Plusieurs élèves utilisent ce contact. "
+                        "Veuillez utiliser le matricule."
+                    )
+                )
+
+                return redirect(
+                    "reinscrire_eleve"
+                )
+
+            # ------------------------------------------------
+            # UN SEUL ÉLÈVE
+            # ------------------------------------------------
+
+            eleve = (
+                eleves_trouves.first()
+            )
+
+        # ====================================================
+        # VÉRIFICATION
+        # ====================================================
 
         if not eleve:
 
             messages.error(
                 request,
-                "Aucun élève trouvé avec ce matricule."
+                "Élève introuvable."
             )
 
             return redirect(
@@ -2717,7 +3392,174 @@ def reinscription_eleve(request):
             )
 
         # ====================================================
-        # OBJETS
+        # GÉNÉRATION AUTOMATIQUE DU MATRICULE
+        # ====================================================
+
+        matricule_attribue = False
+
+        if not eleve.matricule:
+
+            # =================================================
+            # NOM
+            # =================================================
+
+            nom = (
+                eleve.nom or ""
+            ).strip().upper()
+
+            # =================================================
+            # PRÉNOM
+            # =================================================
+
+            prenom = (
+                eleve.prenom or ""
+            ).strip().upper()
+
+            # =================================================
+            # NETTOYAGE DES ACCENTS
+            # =================================================
+
+            import unicodedata
+
+            nom = ''.join(
+                caractere
+                for caractere in unicodedata.normalize(
+                    'NFD',
+                    nom
+                )
+                if unicodedata.category(
+                    caractere
+                ) != 'Mn'
+            )
+
+            prenom = ''.join(
+                caractere
+                for caractere in unicodedata.normalize(
+                    'NFD',
+                    prenom
+                )
+                if unicodedata.category(
+                    caractere
+                ) != 'Mn'
+            )
+
+            # =================================================
+            # CONSERVATION DES LETTRES UNIQUEMENT
+            # =================================================
+
+            nom = ''.join(
+                caractere
+                for caractere in nom
+                if caractere.isalpha()
+            )
+
+            prenom = ''.join(
+                caractere
+                for caractere in prenom
+                if caractere.isalpha()
+            )
+
+            # =================================================
+            # 2 LETTRES DU NOM
+            # =================================================
+
+            partie_nom = (
+                nom[:2]
+                if nom
+                else "XX"
+            )
+
+            if len(partie_nom) == 1:
+                partie_nom += "X"
+
+            # =================================================
+            # 2 LETTRES DU PRÉNOM
+            # =================================================
+
+            partie_prenom = (
+                prenom[:2]
+                if prenom
+                else "XX"
+            )
+
+            if len(partie_prenom) == 1:
+                partie_prenom += "X"
+
+            # =================================================
+            # ANNÉE DE NAISSANCE
+            # =================================================
+
+            if eleve.date_naissance:
+
+                annee_naissance = str(
+                    eleve.date_naissance.year
+                )
+
+            else:
+
+                annee_naissance = str(
+                    date.today().year
+                )
+
+            # =================================================
+            # BASE
+            #
+            # Exemple :
+            # MONEMOU + ZATOR + 2001
+            #
+            # devient :
+            # MOZA2001
+            # =================================================
+
+            base_matricule = (
+                partie_nom
+                + partie_prenom
+                + annee_naissance
+            ).upper()
+
+            # =================================================
+            # NUMÉRO UNIQUE
+            # =================================================
+
+            compteur = 1
+
+            nouveau_matricule = (
+                f"{base_matricule}{compteur:02d}"
+            )
+
+            while (
+                Eleve.objects
+                .filter(
+                    matricule__iexact=
+                    nouveau_matricule
+                )
+                .exists()
+            ):
+
+                compteur += 1
+
+                nouveau_matricule = (
+                    f"{base_matricule}{compteur:02d}"
+                )
+
+            # =================================================
+            # ENREGISTREMENT
+            # =================================================
+
+            eleve.matricule = (
+                nouveau_matricule
+            )
+
+            eleve.save(
+                update_fields=[
+                    "matricule"
+                ]
+            )
+
+            matricule_attribue = True
+
+        # ====================================================
+        # RÉCUPÉRATION DES OBJETS
         # ====================================================
 
         niveau = get_object_or_404(
@@ -2767,10 +3609,18 @@ def reinscription_eleve(request):
             )
         )
 
+        # ====================================================
+        # INSCRIPTION EXISTANTE
+        # ====================================================
+
         if not created:
 
             inscription.niveau = niveau
-            inscription.groupe_classe = groupe
+
+            inscription.groupe_classe = (
+                groupe
+            )
+
             inscription.actif = True
 
             inscription.save()
@@ -2781,6 +3631,10 @@ def reinscription_eleve(request):
                 f"(inscription mise à jour)."
             )
 
+        # ====================================================
+        # NOUVELLE INSCRIPTION
+        # ====================================================
+
         else:
 
             message = (
@@ -2790,12 +3644,18 @@ def reinscription_eleve(request):
             )
 
         # ====================================================
-        # MAINTENIR LES CHAMPS LEGACY ELEVE
+        # CHAMPS LEGACY ELEVE
         # ====================================================
 
         eleve.niveau = niveau
-        eleve.groupe_classe = groupe
-        eleve.annee_scolaire = annee
+
+        eleve.groupe_classe = (
+            groupe
+        )
+
+        eleve.annee_scolaire = (
+            annee
+        )
 
         eleve.save()
 
@@ -2839,15 +3699,35 @@ def reinscription_eleve(request):
         # HISTORIQUE
         # ====================================================
 
+        action = (
+            f"A réinscrit l'élève "
+            f"{eleve.prenom} {eleve.nom} "
+            f"en {niveau.nom} "
+            f"pour l'année {annee.nom}"
+        )
+
+        if matricule_attribue:
+
+            action += (
+                f" — matricule automatique attribué : "
+                f"{eleve.matricule}"
+            )
+
         Historique.objects.create(
             user=request.user,
-            action=(
-                f"A réinscrit l'élève "
-                f"{eleve.prenom} {eleve.nom} "
-                f"en {niveau.nom} "
-                f"pour l'année {annee.nom}"
-            )
+            action=action
         )
+
+        # ====================================================
+        # MESSAGE FINAL
+        # ====================================================
+
+        if matricule_attribue:
+
+            message += (
+                f" Matricule automatique attribué : "
+                f"{eleve.matricule}."
+            )
 
         messages.success(
             request,
@@ -2857,6 +3737,10 @@ def reinscription_eleve(request):
         return redirect(
             "reinscrire_eleve"
         )
+
+    # ========================================================
+    # AFFICHAGE
+    # ========================================================
 
     return render(
         request,
@@ -2868,457 +3752,6 @@ def reinscription_eleve(request):
             "annees": annees
         }
     )
-
-
-# ============================================================
-# AJAX : INFORMATIONS D'UN ÉLÈVE
-# ============================================================
-
-@login_required
-def get_eleve_info(request):
-
-    matricule = request.GET.get(
-        'matricule',
-        ''
-    ).strip()
-
-    contact_pere = request.GET.get(
-        'contact_pere',
-        ''
-    ).strip()
-
-    eleve_id = request.GET.get(
-        'id',
-        ''
-    ).strip()
-
-    # ========================================================
-    # CONSTRUCTION DES DONNÉES
-    # ========================================================
-
-    def construire_donnees(
-        eleve,
-        inscription=None
-    ):
-
-        # ----------------------------------------------------
-        # Si une inscription existe,
-        # elle est prioritaire pour les données scolaires.
-        # ----------------------------------------------------
-
-        if inscription:
-
-            annee_id = (
-                inscription.annee_scolaire_id
-                or ''
-            )
-
-            niveau_id = (
-                inscription.niveau_id
-                or ''
-            )
-
-            groupe_id = (
-                inscription.groupe_classe_id
-                or ''
-            )
-
-        else:
-
-            annee_id = (
-                eleve.annee_scolaire_id
-                or ''
-            )
-
-            niveau_id = (
-                eleve.niveau_id
-                or ''
-            )
-
-            groupe_id = (
-                eleve.groupe_classe_id
-                or ''
-            )
-
-        # ----------------------------------------------------
-        # DONNÉES
-        # ----------------------------------------------------
-
-        return {
-            'success': True,
-
-            'id':
-                eleve.id,
-
-            'matricule':
-                eleve.matricule or '',
-
-            'nom':
-                eleve.nom or '',
-
-            'prenom':
-                eleve.prenom or '',
-
-            'date_naissance': (
-                eleve.date_naissance.strftime(
-                    '%Y-%m-%d'
-                )
-                if eleve.date_naissance
-                else ''
-            ),
-
-            'lieu_naissance':
-                eleve.lieu_naissance or '',
-
-            'sexe':
-                eleve.genre or '',
-
-            'contact':
-                eleve.telephone or '',
-
-            'pere':
-                eleve.pere or '',
-
-            'fp':
-                eleve.profession_pere or '',
-
-            'cp':
-                eleve.contact_parent or '',
-
-            'mere':
-                eleve.mere or '',
-
-            'fm':
-                eleve.profession_mere or '',
-
-            'cm':
-                eleve.contact_mere or '',
-
-            'photo_url': (
-                eleve.photo.url
-                if eleve.photo
-                else ''
-            ),
-
-            'annee_id':
-                annee_id,
-
-            'niveau_id':
-                niveau_id,
-
-            'groupe_id':
-                groupe_id,
-        }
-
-    # ========================================================
-    # RECHERCHE PAR ID
-    # ========================================================
-
-    if eleve_id:
-
-        try:
-
-            eleve = get_object_or_404(
-                Eleve,
-                id=eleve_id
-            )
-
-            inscription = (
-                EleveInscrit.objects
-                .select_related(
-                    'niveau',
-                    'groupe_classe',
-                    'annee_scolaire'
-                )
-                .filter(
-                    eleve=eleve,
-                    actif=True
-                )
-                .order_by(
-                    '-annee_scolaire_id'
-                )
-                .first()
-            )
-
-            return JsonResponse(
-                construire_donnees(
-                    eleve,
-                    inscription
-                )
-            )
-
-        except Exception:
-
-            return JsonResponse({
-                'success': False,
-                'error':
-                    'Élève introuvable.'
-            })
-
-    # ========================================================
-    # RECHERCHE PAR MATRICULE
-    # ========================================================
-
-    if matricule:
-
-        eleve = (
-            Eleve.objects
-            .filter(
-                matricule__iexact=matricule
-            )
-            .first()
-        )
-
-        if not eleve:
-
-            return JsonResponse({
-                'success': False,
-                'error':
-                    'Élève introuvable avec ce matricule.'
-            })
-
-        inscription = (
-            EleveInscrit.objects
-            .select_related(
-                'niveau',
-                'groupe_classe',
-                'annee_scolaire'
-            )
-            .filter(
-                eleve=eleve,
-                actif=True
-            )
-            .order_by(
-                '-annee_scolaire_id'
-            )
-            .first()
-        )
-
-        data = construire_donnees(
-            eleve,
-            inscription
-        )
-
-        data['type'] = 'matricule'
-
-        return JsonResponse(
-            data
-        )
-
-    # ========================================================
-    # RECHERCHE PAR CONTACT DU PÈRE
-    # ========================================================
-
-    if contact_pere:
-
-        eleves = (
-            Eleve.objects
-            .filter(
-                contact_parent__iexact=contact_pere
-            )
-            .order_by(
-                'nom',
-                'prenom'
-            )
-        )
-
-        if not eleves.exists():
-
-            return JsonResponse({
-                'success': False,
-                'error':
-                    "Aucun élève trouvé avec ce contact du père."
-            })
-
-        # ----------------------------------------------------
-        # UN SEUL ENFANT
-        # ----------------------------------------------------
-
-        if eleves.count() == 1:
-
-            eleve = eleves.first()
-
-            inscription = (
-                EleveInscrit.objects
-                .select_related(
-                    'niveau',
-                    'groupe_classe',
-                    'annee_scolaire'
-                )
-                .filter(
-                    eleve=eleve,
-                    actif=True
-                )
-                .order_by(
-                    '-annee_scolaire_id'
-                )
-                .first()
-            )
-
-            data = construire_donnees(
-                eleve,
-                inscription
-            )
-
-            data['type'] = 'contact_pere'
-
-            return JsonResponse(
-                data
-            )
-
-        # ----------------------------------------------------
-        # PLUSIEURS ENFANTS
-        # ----------------------------------------------------
-
-        liste_eleves = []
-
-        for eleve in eleves:
-
-            liste_eleves.append({
-                'id':
-                    eleve.id,
-
-                'matricule':
-                    eleve.matricule or '',
-
-                'nom':
-                    eleve.nom or '',
-
-                'prenom':
-                    eleve.prenom or '',
-
-                'sexe':
-                    eleve.genre or '',
-
-                'date_naissance': (
-                    eleve.date_naissance.strftime(
-                        '%Y-%m-%d'
-                    )
-                    if eleve.date_naissance
-                    else ''
-                ),
-            })
-
-        return JsonResponse({
-            'success':
-                True,
-
-            'type':
-                'plusieurs_eleves',
-
-            'eleves':
-                liste_eleves
-        })
-
-    # ========================================================
-    # AUCUNE RECHERCHE
-    # ========================================================
-
-    return JsonResponse({
-        'success':
-            False,
-
-        'error':
-            'Veuillez saisir le matricule ou le contact du père.'
-    })
-
-
-# ============================================================
-# GÉNÉRATION D'UN MATRICULE
-# ============================================================
-
-def generer_matricule(eleve):
-
-    # ========================================================
-    # NOM
-    # ========================================================
-
-    nom = (
-        eleve.nom
-        or ''
-    ).strip().upper()
-
-    nom = re.sub(
-        r'[^A-Z]',
-        '',
-        nom
-    )
-
-    nom_code = (
-        nom[:2]
-        if len(nom) >= 2
-        else nom.ljust(2, 'X')
-    )
-
-    # ========================================================
-    # PRÉNOM
-    # ========================================================
-
-    prenom = (
-        eleve.prenom
-        or ''
-    ).strip().upper()
-
-    prenom = re.sub(
-        r'[^A-Z]',
-        '',
-        prenom
-    )
-
-    prenom_code = (
-        prenom[:2]
-        if len(prenom) >= 2
-        else prenom.ljust(2, 'X')
-    )
-
-    # ========================================================
-    # ANNÉE
-    # ========================================================
-
-    if eleve.date_naissance:
-
-        annee_naissance = str(
-            eleve.date_naissance.year
-        )
-
-    else:
-
-        annee_naissance = '0000'
-
-    # ========================================================
-    # PRÉFIXE
-    # ========================================================
-
-    prefixe = (
-        nom_code
-        + prenom_code
-        + annee_naissance
-    )
-
-    # ========================================================
-    # NUMÉRO
-    # ========================================================
-
-    for numero in range(1, 100):
-
-        suffixe = f"{numero:02d}"
-
-        matricule = (
-            prefixe
-            + suffixe
-        )
-
-        if not Eleve.objects.filter(
-            matricule=matricule
-        ).exists():
-
-            return matricule
-
-    raise ValueError(
-        "Impossible de générer un matricule unique."
-    )
-
-
 
 # ============================================================
 # GESTION DES BADGES ÉLÈVES

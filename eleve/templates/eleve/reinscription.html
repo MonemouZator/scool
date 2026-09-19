@@ -1,51 +1,646 @@
+
 {% extends "login/index.html" %}
 {% load static %}
 
 {% block styl_parent %}
 
-<title>eleve | Réinscription</title>
+<title>Réinscription d'un élève</title>
 
 <link rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+      href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,600,700&display=fallback">
 
 <link rel="stylesheet"
       href="{% static 'base/plugins/fontawesome-free/css/all.min.css' %}">
-
-<link rel="stylesheet"
-      href="{% static 'base/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %}">
-
-<link rel="stylesheet"
-      href="{% static 'base/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %}">
-
-<link rel="stylesheet"
-      href="{% static 'base/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
 
 <link rel="stylesheet"
       href="{% static 'base/css/adminlte.min.css' %}">
 
 <style>
 
-    #photo_preview {
-        width: 150px;
-        height: 150px;
-        object-fit: cover;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background: #f5f5f5;
+/* =========================================================
+   CONFIGURATION GÉNÉRALE
+========================================================= */
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden !important;
+}
+
+body {
+    background: #f4f6f9;
+}
+
+
+/* =========================================================
+   WRAPPER ADMINLTE
+========================================================= */
+
+.wrapper {
+    min-height: 100vh !important;
+    height: 100vh !important;
+}
+
+
+/* =========================================================
+   MENU GAUCHE FIXE
+========================================================= */
+
+.main-sidebar {
+    position: fixed !important;
+
+    top: 0 !important;
+    left: 0 !important;
+    bottom: 0 !important;
+
+    height: 100vh !important;
+
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    z-index: 1038 !important;
+}
+
+
+/* Empêche le contenu du menu de provoquer
+   un défilement horizontal */
+
+.main-sidebar .sidebar {
+    overflow-x: hidden !important;
+}
+
+
+/* =========================================================
+   ZONE PRINCIPALE
+   C'EST ELLE QUI DOIT DÉFILER
+========================================================= */
+
+.content-wrapper {
+
+    overflow-x: hidden !important;
+
+    overflow-y: auto !important;
+
+    height: calc(100vh - 57px) !important;
+
+    min-height: calc(100vh - 57px) !important;
+
+    padding-bottom: 40px !important;
+
+}
+
+
+/* =========================================================
+   CONTENU
+========================================================= */
+
+.content {
+    width: 100%;
+
+    overflow-x: hidden;
+}
+
+
+.reinscription-wrapper {
+
+    width: 100%;
+
+    padding: 20px;
+
+}
+
+
+/* =========================================================
+   EN-TÊTE
+========================================================= */
+
+.page-header {
+
+    background: linear-gradient(
+        135deg,
+        #2563eb,
+        #1d4ed8
+    );
+
+    color: white;
+
+    border-radius: 12px;
+
+    padding: 20px 25px;
+
+    margin-bottom: 20px;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, .08);
+
+}
+
+.page-header h3 {
+
+    margin: 0;
+
+    font-weight: 600;
+
+}
+
+.page-header p {
+
+    margin: 5px 0 0;
+
+    opacity: .9;
+
+}
+
+
+/* =========================================================
+   CARTES
+========================================================= */
+
+.reinscription-wrapper .card {
+
+    border: none;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 3px 15px rgba(0, 0, 0, .06);
+
+    margin-bottom: 20px;
+
+}
+
+.reinscription-wrapper .card-header {
+
+    border-radius:
+        12px 12px 0 0 !important;
+
+    font-weight: 600;
+
+}
+
+.reinscription-wrapper .card-title {
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================================
+   FORMULAIRE
+========================================================= */
+
+.form-group label {
+
+    font-weight: 600;
+
+    color: #374151;
+
+}
+
+.form-control,
+.custom-select {
+
+    border-radius: 8px;
+
+    min-height: 42px;
+
+}
+
+.form-control:focus,
+.custom-select:focus {
+
+    border-color: #2563eb;
+
+    box-shadow:
+        0 0 0 .15rem
+        rgba(37, 99, 235, .15);
+
+}
+
+
+/* =========================================================
+   ZONE RECHERCHE
+========================================================= */
+
+.search-box {
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 10px;
+
+    padding: 18px;
+
+}
+
+.search-help {
+
+    font-size: 13px;
+
+    color: #6b7280;
+
+    margin-top: 5px;
+
+}
+
+
+#selection_eleve_container {
+
+    display: none;
+
+    margin-top: 15px;
+
+}
+
+#selection_eleve {
+
+    min-height: 45px;
+
+}
+
+
+/* =========================================================
+   CHARGEMENT
+========================================================= */
+
+.loading-search {
+
+    display: none;
+
+    margin-top: 8px;
+
+    color: #2563eb;
+
+    font-size: 13px;
+
+}
+
+.loading-search i {
+
+    margin-right: 5px;
+
+}
+
+
+/* =========================================================
+   PHOTO
+========================================================= */
+
+.student-photo-wrapper {
+
+    text-align: center;
+
+}
+
+.student-photo {
+
+    width: 150px;
+
+    height: 150px;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+
+    border: 4px solid #e5e7eb;
+
+    background: #f3f4f6;
+
+    display: none;
+
+    margin: 0 auto 15px;
+
+}
+
+.photo-placeholder {
+
+    width: 150px;
+
+    height: 150px;
+
+    border-radius: 50%;
+
+    background: #f3f4f6;
+
+    border: 4px solid #e5e7eb;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: 0 auto 15px;
+
+    color: #9ca3af;
+
+    font-size: 50px;
+
+}
+
+
+/* =========================================================
+   MATRICULE GÉNÉRÉ
+========================================================= */
+
+.matricule-genere {
+
+    animation:
+        matriculeFlash 1s ease-in-out;
+
+    font-weight: 700;
+
+}
+
+@keyframes matriculeFlash {
+
+    0% {
+        background-color: #dbeafe;
     }
 
-    .recherche-loading {
-        display: none;
-        margin-top: 5px;
+    50% {
+        background-color: #bbf7d0;
     }
 
-    .champ-charge {
-        background-color: #f8fff8;
+    100% {
+        background-color: #ffffff;
     }
+
+}
+
+
+/* =========================================================
+   BOUTON
+========================================================= */
+
+.btn-reinscription {
+
+    min-height: 48px;
+
+    border-radius: 8px;
+
+    font-weight: 600;
+
+    padding: 10px 25px;
+
+}
+
+.required {
+
+    color: #dc2626;
+
+}
+
+
+/* =========================================================
+   INFO
+========================================================= */
+
+.info-box {
+
+    background: #eff6ff;
+
+    border-left:
+        4px solid #2563eb;
+
+    padding: 12px 15px;
+
+    border-radius: 6px;
+
+    margin-bottom: 15px;
+
+    color: #1e40af;
+
+}
+
+
+/* =========================================================
+   SCROLLBAR CONTENU
+========================================================= */
+
+.content-wrapper::-webkit-scrollbar {
+
+    width: 8px;
+
+}
+
+.content-wrapper::-webkit-scrollbar-track {
+
+    background: #f1f5f9;
+
+}
+
+.content-wrapper::-webkit-scrollbar-thumb {
+
+    background: #cbd5e1;
+
+    border-radius: 10px;
+
+}
+
+.content-wrapper::-webkit-scrollbar-thumb:hover {
+
+    background: #94a3b8;
+
+}
+
+
+/* =========================================================
+   SCROLLBAR MENU
+========================================================= */
+
+.main-sidebar::-webkit-scrollbar {
+
+    width: 5px;
+
+}
+
+.main-sidebar::-webkit-scrollbar-track {
+
+    background: transparent;
+
+}
+
+.main-sidebar::-webkit-scrollbar-thumb {
+
+    background:
+        rgba(255, 255, 255, .20);
+
+    border-radius: 10px;
+
+}
+
+
+/* =========================================================
+   RESPONSIVE TABLETTE
+========================================================= */
+
+@media (max-width: 991.98px) {
+
+    .main-sidebar {
+
+        position: fixed !important;
+
+        top: 0 !important;
+
+        bottom: 0 !important;
+
+        height: 100vh !important;
+
+        overflow-y: auto !important;
+
+        z-index: 1050 !important;
+
+    }
+
+    .content-wrapper {
+
+        margin-left: 0 !important;
+
+        width: 100% !important;
+
+        height:
+            calc(100vh - 57px) !important;
+
+        min-height:
+            calc(100vh - 57px) !important;
+
+        overflow-y: auto !important;
+
+        overflow-x: hidden !important;
+
+    }
+
+    .reinscription-wrapper {
+
+        padding: 15px;
+
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE MOBILE
+========================================================= */
+
+@media (max-width: 767px) {
+
+    .reinscription-wrapper {
+
+        padding: 10px;
+
+    }
+
+    .page-header {
+
+        padding: 15px;
+
+    }
+
+    .page-header h3 {
+
+        font-size: 20px;
+
+    }
+
+    .page-header p {
+
+        font-size: 14px;
+
+    }
+
+    .reinscription-wrapper .card-body {
+
+        padding: 15px;
+
+    }
+
+    .student-photo,
+    .photo-placeholder {
+
+        width: 120px;
+
+        height: 120px;
+
+    }
+
+    .photo-placeholder {
+
+        font-size: 40px;
+
+    }
+
+    .btn-reinscription {
+
+        width: 100%;
+
+        margin-top: 10px;
+
+    }
+
+}
+
+
+/* =========================================================
+   PETITS TÉLÉPHONES
+========================================================= */
+
+@media (max-width: 480px) {
+
+    .reinscription-wrapper {
+
+        padding: 8px;
+
+    }
+
+    .page-header {
+
+        padding: 14px;
+
+        border-radius: 10px;
+
+    }
+
+    .page-header h3 {
+
+        font-size: 18px;
+
+    }
+
+    .page-header p {
+
+        font-size: 13px;
+
+    }
+
+    .reinscription-wrapper .card {
+
+        border-radius: 9px;
+
+        margin-bottom: 14px;
+
+    }
+
+    .reinscription-wrapper .card-header {
+
+        padding: 12px 14px;
+
+    }
+
+    .reinscription-wrapper .card-body {
+
+        padding: 14px;
+
+    }
+
+}
 
 </style>
-
-{% endblock %}
+{% endblock styl_parent %}
 
 
 {% block body %}
@@ -57,702 +652,278 @@
 
 {% block contenu %}
 
-<div class="content-wrapper p-4"
-     style="max-height: calc(100vh - 150px); overflow-y:auto;">
-
-    <!-- ====================================================== -->
-    <!-- HEADER -->
-    <!-- ====================================================== -->
-
-    <section class="content-header">
-
-        <div class="container-fluid">
-
-            <div class="row mb-2">
-
-                <div class="col-sm-6">
-
-                    <h1>
-                        RÉINSCRIPTION DES ÉLÈVES
-                    </h1>
-
-                </div>
-
-                <div class="col-sm-6">
-
-                    <ol class="breadcrumb float-sm-right">
-
-                        <li class="breadcrumb-item">
-
-                            <a href="{% url 'home' %}">
-                                Accueil
-                            </a>
-
-                        </li>
-
-                        <li class="breadcrumb-item active">
-                            Réinscription
-                        </li>
-
-                    </ol>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ====================================================== -->
-    <!-- CONTENU -->
-    <!-- ====================================================== -->
+<div class="content-wrapper">
 
     <section class="content">
 
-        <div class="container-fluid">
+        <div class="container-fluid reinscription-wrapper">
 
-            <div class="row">
+            <!-- =====================================================
+                 EN-TÊTE
+            ====================================================== -->
 
-                <div class="col-12">
+            <div class="page-header">
 
-                    <div class="card">
+                <h3>
+                    <i class="fas fa-user-graduate mr-2"></i>
+                    Réinscription d'un élève
+                </h3>
 
-                        <div class="card-header">
+                <p>
+                    Rechercher un ancien élève et effectuer sa
+                    réinscription pour une nouvelle année scolaire.
+                </p>
 
-                            <h3 class="card-title">
-                                Informations de l'élève
-                            </h3>
+            </div>
+
+
+            <!-- =====================================================
+                 MESSAGES
+            ====================================================== -->
+
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="alert
+                        {% if message.tags == 'error' %}
+                            alert-danger
+                        {% elif message.tags == 'success' %}
+                            alert-success
+                        {% elif message.tags == 'warning' %}
+                            alert-warning
+                        {% else %}
+                            alert-info
+                        {% endif %}
+                        alert-dismissible fade show">
+
+                        <i class="fas
+                            {% if message.tags == 'error' %}
+                                fa-exclamation-circle
+                            {% elif message.tags == 'success' %}
+                                fa-check-circle
+                            {% else %}
+                                fa-info-circle
+                            {% endif %}
+                            mr-1">
+                        </i>
+
+                        {{ message }}
+
+                        <button type="button"
+                                class="close"
+                                data-dismiss="alert">
+
+                            <span>&times;</span>
+
+                        </button>
+
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+
+            <!-- =====================================================
+                 FORMULAIRE
+            ====================================================== -->
+
+            <form method="POST"
+                  enctype="multipart/form-data"
+                  action="{% url 'reinscrire_eleve' %}"
+                  id="form_reinscription">
+
+                {% csrf_token %}
+
+
+                <!-- ID INTERNE -->
+
+                <input type="hidden"
+                       name="eleve_id"
+                       id="eleve_id"
+                       value="">
+
+
+                <!-- =================================================
+                     RECHERCHE
+                ================================================== -->
+
+                <div class="card">
+
+                    <div class="card-header bg-primary">
+
+                        <h3 class="card-title">
+
+                            <i class="fas fa-search mr-2"></i>
+
+                            Recherche d'un ancien élève
+
+                        </h3>
+
+                    </div>
+
+
+                    <div class="card-body">
+
+                        <div class="info-box">
+
+                            <strong>
+                                Comment rechercher ?
+                            </strong>
+
+                            <br>
+
+                            Saisissez soit le
+                            <strong>matricule</strong>,
+                            soit le
+                            <strong>contact du père</strong>.
+
+                            <br>
+
+                            <small>
+
+                                Le matricule permet de retrouver
+                                directement un élève.
+
+                                Le contact du père permet de retrouver
+                                tous les enfants associés à ce contact.
+
+                                Si l'élève n'a pas encore de matricule,
+                                celui-ci sera généré automatiquement.
+
+                            </small>
 
                         </div>
 
 
-                        <div class="card-body">
+                        <div class="search-box">
 
-                            <form
-                                action="{% url 'reinscrire_eleve' %}"
-                                method="post"
-                                enctype="multipart/form-data"
-                                class="row"
-                                id="form_reinscription"
-                            >
+                            <div class="row">
 
-                                {% csrf_token %}
-
-
-                                <!-- ================================================== -->
-                                <!-- MESSAGES -->
-                                <!-- ================================================== -->
-
-                                {% if messages %}
-
-                                    <div class="col-12">
-
-                                        {% for message in messages %}
-
-                                            <div class="alert alert-success">
-
-                                                <i class="fas fa-check-circle"></i>
-
-                                                {{ message }}
-
-                                            </div>
-
-                                        {% endfor %}
-
-                                    </div>
-
-                                {% endif %}
-
-
-                                <!-- ================================================== -->
-                                <!-- RECHERCHE -->
-                                <!-- ================================================== -->
-
-                                <div class="col-12">
-
-                                    <div class="alert alert-info">
-
-                                        <i class="fas fa-info-circle"></i>
-
-                                        <strong>Recherche d'un ancien élève</strong>
-
-                                        <br>
-
-                                        Saisissez soit le
-                                        <strong>matricule</strong>,
-                                        soit le
-                                        <strong>contact du père</strong>.
-
-                                    </div>
-
-                                </div>
-
-
-                                <!-- ================================================== -->
                                 <!-- MATRICULE -->
-                                <!-- ================================================== -->
 
-                                <div class="form-group col-md-6">
+                                <div class="col-md-6">
 
-                                    <label for="matricule">
+                                    <div class="form-group">
 
-                                        <i class="fas fa-id-card"></i>
+                                        <label for="matricule">
 
-                                        Matricule :
+                                            <i class="fas fa-id-card mr-1"></i>
 
-                                    </label>
+                                            Matricule
 
-                                    <input
-                                        type="text"
-                                        class="form-control"
-                                        id="matricule"
-                                        name="matricule"
-                                        placeholder="Entrer le matricule"
-                                        autocomplete="off"
-                                    >
+                                        </label>
 
-                                    <small class="text-muted">
+                                        <input type="text"
+                                               class="form-control"
+                                               id="matricule"
+                                               name="matricule"
+                                               placeholder="Ex : MOZA2001"
+                                               autocomplete="off">
 
-                                        Recherche directe d'un élève.
+                                        <div class="search-help">
 
-                                    </small>
+                                            Recherche directe d'un élève.
 
-                                </div>
+                                        </div>
 
+                                        <div id="loading_matricule"
+                                             class="loading-search">
 
-                                <!-- ================================================== -->
-                                <!-- CONTACT PÈRE RECHERCHE -->
-                                <!-- ================================================== -->
+                                            <i class="fas fa-spinner fa-spin"></i>
 
-                                <div class="form-group col-md-6">
+                                            Recherche en cours...
 
-                                    <label for="contact_recherche">
-
-                                        <i class="fas fa-phone"></i>
-
-                                        Contact du père :
-
-                                    </label>
-
-                                    <input
-                                        type="tel"
-                                        class="form-control"
-                                        id="contact_recherche"
-                                        name="contact_pere"
-                                        placeholder="Entrer le contact du père"
-                                        autocomplete="off"
-                                    >
-
-                                    <div
-                                        id="recherche_loading"
-                                        class="recherche-loading text-primary"
-                                    >
-
-                                        <i class="fas fa-spinner fa-spin"></i>
-
-                                        Recherche en cours...
+                                        </div>
 
                                     </div>
 
-                                    <small class="text-muted">
-
-                                        Permet de retrouver tous les enfants
-                                        associés à ce contact.
-
-                                    </small>
-
                                 </div>
 
 
-                                <!-- ================================================== -->
-                                <!-- LISTE DES ENFANTS -->
-                                <!-- ================================================== -->
+                                <!-- CONTACT PÈRE -->
 
-                                <div
-                                    class="form-group col-12"
-                                    id="selection_eleve_container"
-                                    style="display:none;"
-                                >
+                                <div class="col-md-6">
+
+                                    <div class="form-group">
+
+                                        <label for="contact_recherche">
+
+                                            <i class="fas fa-phone mr-1"></i>
+
+                                            Contact du père
+
+                                        </label>
+
+                                        <input type="text"
+                                               class="form-control"
+                                               id="contact_recherche"
+                                               name="contact_pere"
+                                               placeholder="Ex : 622000000"
+                                               autocomplete="off">
+
+                                        <div class="search-help">
+
+                                            Permet de retrouver tous les
+                                            enfants associés à ce contact.
+
+                                        </div>
+
+                                        <div id="loading_contact"
+                                             class="loading-search">
+
+                                            <i class="fas fa-spinner fa-spin"></i>
+
+                                            Recherche en cours...
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- =================================================
+                                 PLUSIEURS ENFANTS
+                            ================================================== -->
+
+                            <div id="selection_eleve_container">
+
+                                <div class="form-group">
 
                                     <label for="selection_eleve">
 
-                                        <i class="fas fa-users"></i>
+                                        <i class="fas fa-users mr-1"></i>
 
-                                        Plusieurs élèves trouvés :
+                                        Plusieurs élèves trouvés
 
                                     </label>
 
-                                    <select
-                                        class="form-control"
-                                        id="selection_eleve"
-                                    >
+                                    <select class="form-control"
+                                            id="selection_eleve">
 
                                         <option value="">
-                                            Sélectionner l'élève
+
+                                            -- Sélectionner l'élève --
+
                                         </option>
 
                                     </select>
 
-                                </div>
+                                    <small class="text-muted">
 
+                                        Sélectionnez l'enfant concerné
+                                        pour charger automatiquement
+                                        toutes ses informations.
 
-                                <!-- ================================================== -->
-                                <!-- ANNÉE -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="anne">
-
-                                        Année scolaire :
-
-                                    </label>
-
-                                    <select
-                                        name="annee"
-                                        class="form-control"
-                                        id="anne"
-                                        required
-                                    >
-
-                                        <option value="">
-                                            Sélectionner une année scolaire
-                                        </option>
-
-                                        {% for anne in annees %}
-
-                                            <option value="{{ anne.id }}">
-
-                                                {{ anne.nom }}
-
-                                            </option>
-
-                                        {% endfor %}
-
-                                    </select>
+                                    </small>
 
                                 </div>
 
-
-                                <!-- ================================================== -->
-                                <!-- NIVEAU -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="nive">
-
-                                        Niveau :
-
-                                    </label>
-
-                                    <select
-                                        name="niveau"
-                                        class="form-control"
-                                        id="nive"
-                                        required
-                                    >
-
-                                        <option value="">
-                                            Sélectionner un niveau
-                                        </option>
-
-                                        {% for nive in niveaux %}
-
-                                            <option value="{{ nive.id }}">
-
-                                                {{ nive.nom }}
-
-                                            </option>
-
-                                        {% endfor %}
-
-                                    </select>
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- GROUPE -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="group">
-
-                                        Classe :
-
-                                    </label>
-
-                                    <select
-                                        name="groupe"
-                                        class="form-control"
-                                        id="group"
-                                        required
-                                    >
-
-                                        <option value="">
-                                            Sélectionner un groupe
-                                        </option>
-
-                                        {% for group in groupes %}
-
-                                            <option value="{{ group.id }}">
-
-                                                {{ group }}
-
-                                            </option>
-
-                                        {% endfor %}
-
-                                    </select>
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- NOM -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="nom">
-                                        Nom :
-                                    </label>
-
-                                    <input
-                                        type="text"
-                                        class="form-control champ-charge"
-                                        id="nom"
-                                        name="nom"
-                                        required
-                                    >
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- PRÉNOM -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="prenom">
-                                        Prénom :
-                                    </label>
-
-                                    <input
-                                        type="text"
-                                        class="form-control champ-charge"
-                                        id="prenom"
-                                        name="prenom"
-                                        required
-                                    >
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- DATE -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="date">
-                                        Date de naissance :
-                                    </label>
-
-                                    <input
-                                        type="date"
-                                        class="form-control champ-charge"
-                                        id="date"
-                                        name="date"
-                                        required
-                                    >
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- LIEU -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="lieu">
-                                        Lieu de naissance :
-                                    </label>
-
-                                    <input
-                                        type="text"
-                                        class="form-control champ-charge"
-                                        id="lieu"
-                                        name="lieu"
-                                        required
-                                    >
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- SEXE -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="sexe">
-                                        Sexe :
-                                    </label>
-
-                                    <select
-                                        class="form-control champ-charge"
-                                        id="sexe"
-                                        name="sexe"
-                                        required
-                                    >
-
-                                        <option value="">
-                                            Sélectionner
-                                        </option>
-
-                                        <option value="Homme">
-                                            Masculin
-                                        </option>
-
-                                        <option value="Femme">
-                                            Féminin
-                                        </option>
-
-                                    </select>
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- CONTACT ÉLÈVE -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="contact">
-                                        Contact élève :
-                                    </label>
-
-                                    <input
-                                        type="tel"
-                                        class="form-control champ-charge"
-                                        id="contact"
-                                        name="contact"
-                                    >
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- PHOTO -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label>
-                                        Photo actuelle :
-                                    </label>
-
-                                    <br>
-
-                                    <img
-                                        id="photo_preview"
-                                        src=""
-                                        alt="Photo de l'élève"
-                                    >
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- NOUVELLE PHOTO -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="photo">
-
-                                        Changer la photo :
-
-                                    </label>
-
-                                    <input
-                                        type="file"
-                                        class="form-control"
-                                        id="photo"
-                                        name="photo"
-                                        accept="image/*"
-                                    >
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- PÈRE -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="pere">
-
-                                        Nom et prénom du père :
-
-                                    </label>
-
-                                    <input
-                                        type="text"
-                                        class="form-control champ-charge"
-                                        id="pere"
-                                        name="pere"
-                                        required
-                                    >
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- PROFESSION PÈRE -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="fp">
-
-                                        Fonction du père :
-
-                                    </label>
-
-                                    <input
-                                        type="text"
-                                        class="form-control champ-charge"
-                                        id="fp"
-                                        name="fp"
-                                        required
-                                    >
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- CONTACT PÈRE -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="cp">
-
-                                        Contact du père :
-
-                                    </label>
-
-                                    <input
-                                        type="tel"
-                                        class="form-control champ-charge"
-                                        id="cp"
-                                        name="cp"
-                                        required
-                                    >
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- MÈRE -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="mere">
-
-                                        Nom et prénom de la mère :
-
-                                    </label>
-
-                                    <input
-                                        type="text"
-                                        class="form-control champ-charge"
-                                        id="mere"
-                                        name="mere"
-                                        required
-                                    >
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- PROFESSION MÈRE -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="fm">
-
-                                        Fonction de la mère :
-
-                                    </label>
-
-                                    <input
-                                        type="text"
-                                        class="form-control champ-charge"
-                                        id="fm"
-                                        name="fm"
-                                        required
-                                    >
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- CONTACT MÈRE -->
-                                <!-- ================================================== -->
-
-                                <div class="form-group col-md-6">
-
-                                    <label for="cm">
-
-                                        Contact de la mère :
-
-                                    </label>
-
-                                    <input
-                                        type="tel"
-                                        class="form-control champ-charge"
-                                        id="cm"
-                                        name="cm"
-                                        required
-                                    >
-
-                                </div>
-
-
-                                <!-- ================================================== -->
-                                <!-- BOUTON -->
-                                <!-- ================================================== -->
-
-                                <div class="col-12 mt-3">
-
-                                    <button
-                                        type="submit"
-                                        class="btn btn-primary"
-                                        id="btn_reinscrire"
-                                    >
-
-                                        <i class="fas fa-user-plus"></i>
-
-                                        Réinscrire
-
-                                    </button>
-
-                                </div>
-
-                            </form>
+                            </div>
 
                         </div>
 
@@ -760,7 +931,578 @@
 
                 </div>
 
-            </div>
+
+                <!-- =================================================
+                     INFORMATIONS SCOLAIRES
+                ================================================== -->
+
+                <div class="card">
+
+                    <div class="card-header bg-success">
+
+                        <h3 class="card-title">
+
+                            <i class="fas fa-school mr-2"></i>
+
+                            Informations de réinscription
+
+                        </h3>
+
+                    </div>
+
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <!-- ANNÉE -->
+
+                            <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                    <label for="anne">
+
+                                        Année scolaire
+
+                                        <span class="required">*</span>
+
+                                    </label>
+
+                                    <select name="annee"
+                                            id="anne"
+                                            class="form-control"
+                                            required>
+
+                                        <option value="">
+
+                                            -- Sélectionner l'année --
+
+                                        </option>
+
+                                        {% for annee in annees %}
+
+                                            <option value="{{ annee.id }}">
+
+                                                {{ annee }}
+
+                                            </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- NIVEAU -->
+
+                            <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                    <label for="nive">
+
+                                        Niveau
+
+                                        <span class="required">*</span>
+
+                                    </label>
+
+                                    <select name="niveau"
+                                            id="nive"
+                                            class="form-control"
+                                            required>
+
+                                        <option value="">
+
+                                            -- Sélectionner le niveau --
+
+                                        </option>
+
+                                        {% for niveau in niveaux %}
+
+                                            <option value="{{ niveau.id }}">
+
+                                                {{ niveau }}
+
+                                            </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- GROUPE -->
+
+                            <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                    <label for="group">
+
+                                        Classe / Groupe
+
+                                        <span class="required">*</span>
+
+                                    </label>
+
+                                    <select name="groupe"
+                                            id="group"
+                                            class="form-control"
+                                            required>
+
+                                        <option value="">
+
+                                            -- Sélectionner la classe --
+
+                                        </option>
+
+                                        {% for groupe in groupes %}
+
+                                            <option value="{{ groupe.id }}">
+
+                                                {{ groupe }}
+
+                                            </option>
+
+                                        {% endfor %}
+
+                                    </select>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     INFORMATIONS ÉLÈVE
+                ================================================== -->
+
+                <div class="card">
+
+                    <div class="card-header bg-info">
+
+                        <h3 class="card-title">
+
+                            <i class="fas fa-user mr-2"></i>
+
+                            Informations de l'élève
+
+                        </h3>
+
+                    </div>
+
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-md-9">
+
+                                <div class="row">
+
+                                    <!-- NOM -->
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+
+                                            <label for="nom">
+                                                Nom
+                                            </label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="nom"
+                                                   name="nom"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- PRÉNOM -->
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+
+                                            <label for="prenom">
+                                                Prénom
+                                            </label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="prenom"
+                                                   name="prenom"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- DATE -->
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+
+                                            <label for="date">
+                                                Date de naissance
+                                            </label>
+
+                                            <input type="date"
+                                                   class="form-control"
+                                                   id="date"
+                                                   name="date"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- LIEU -->
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+
+                                            <label for="lieu">
+                                                Lieu de naissance
+                                            </label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="lieu"
+                                                   name="lieu"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- SEXE -->
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+
+                                            <label for="sexe">
+                                                Sexe
+                                            </label>
+
+                                            <select class="form-control"
+                                                    id="sexe"
+                                                    name="sexe"
+                                                    disabled>
+
+                                                <option value="">
+                                                    -- Sélectionner --
+                                                </option>
+
+                                                <option value="Homme">
+                                                    Homme
+                                                </option>
+
+                                                <option value="Femme">
+                                                    Femme
+                                                </option>
+
+                                            </select>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- CONTACT -->
+
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+
+                                            <label for="contact">
+                                                Contact
+                                            </label>
+
+                                            <input type="text"
+                                                   class="form-control"
+                                                   id="contact"
+                                                   name="contact"
+                                                   readonly>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- PHOTO -->
+
+                            <div class="col-md-3">
+
+                                <div class="student-photo-wrapper">
+
+                                    <div id="photo_placeholder"
+                                         class="photo-placeholder">
+
+                                        <i class="fas fa-user"></i>
+
+                                    </div>
+
+                                    <img id="photo_preview"
+                                         class="student-photo"
+                                         src=""
+                                         alt="Photo de l'élève">
+
+                                    <div class="form-group">
+
+                                        <label for="photo">
+                                            Changer la photo
+                                        </label>
+
+                                        <input type="file"
+                                               class="form-control-file"
+                                               id="photo"
+                                               name="photo"
+                                               accept="image/*">
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     PÈRE
+                ================================================== -->
+
+                <div class="card">
+
+                    <div class="card-header bg-secondary">
+
+                        <h3 class="card-title">
+
+                            <i class="fas fa-male mr-2"></i>
+
+                            Informations du père
+
+                        </h3>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                    <label for="pere">
+                                        Nom et prénom du père
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="pere"
+                                           name="pere"
+                                           readonly>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                    <label for="fp">
+                                        Profession
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="fp"
+                                           name="fp"
+                                           readonly>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                    <label for="cp">
+                                        Contact
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="cp"
+                                           name="cp"
+                                           readonly>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     MÈRE
+                ================================================== -->
+
+                <div class="card">
+
+                    <div class="card-header bg-warning">
+
+                        <h3 class="card-title">
+
+                            <i class="fas fa-female mr-2"></i>
+
+                            Informations de la mère
+
+                        </h3>
+
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                    <label for="mere">
+                                        Nom et prénom de la mère
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="mere"
+                                           name="mere"
+                                           readonly>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                    <label for="fm">
+                                        Profession
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="fm"
+                                           name="fm"
+                                           readonly>
+
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-4">
+
+                                <div class="form-group">
+
+                                    <label for="cm">
+                                        Contact
+                                    </label>
+
+                                    <input type="text"
+                                           class="form-control"
+                                           id="cm"
+                                           name="cm"
+                                           readonly>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================================
+                     BOUTONS
+                ================================================== -->
+
+                <div class="card">
+
+                    <div class="card-body">
+
+                        <div class="d-flex justify-content-between flex-wrap">
+
+                            <a href="{% url 'fondateur.dashbord' %}"
+                               class="btn btn-secondary">
+
+                                <i class="fas fa-arrow-left mr-1"></i>
+
+                                Retour
+
+                            </a>
+
+
+                            <button type="submit"
+                                    class="btn btn-primary btn-reinscription"
+                                    id="btn_reinscrire">
+
+                                <i class="fas fa-user-plus mr-1"></i>
+
+                                Réinscrire l'élève
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
 
         </div>
 
@@ -768,7 +1510,7 @@
 
 </div>
 
-{% endblock %}
+{% endblock contenu %}
 
 
 {% block scripte %}
@@ -777,740 +1519,735 @@
 
 <script src="{% static 'base/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
-<script src="{% static 'base/plugins/datatables/jquery.dataTables.min.js' %}"></script>
-
-<script src="{% static 'base/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
-
-<script src="{% static 'base/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
-
-<script src="{% static 'base/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
-
-<script src="{% static 'base/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
-
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
-
-<script src="{% static 'base/plugins/jszip/jszip.min.js' %}"></script>
-
-<script src="{% static 'base/plugins/pdfmake/pdfmake.min.js' %}"></script>
-
-<script src="{% static 'base/plugins/pdfmake/vfs_fonts.js' %}"></script>
-
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
-
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
-
-<script src="{% static 'base/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
-
 <script src="{% static 'base/js/adminlte.min.js' %}"></script>
-
-<script src="{% static 'base/js/demo.js' %}"></script>
 
 
 <script>
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener('DOMContentLoaded', function () {
 
-    // ==========================================================
-    // ÉLÉMENTS
-    // ==========================================================
+    /* =========================================================
+       ÉLÉMENTS
+    ========================================================== */
 
     const matriculeInput =
-        document.getElementById("matricule");
+        document.getElementById('matricule');
 
-    const contactRechercheInput =
-        document.getElementById("contact_recherche");
+    const contactRecherche =
+        document.getElementById('contact_recherche');
 
     const selectionContainer =
-        document.getElementById("selection_eleve_container");
+        document.getElementById('selection_eleve_container');
 
     const selectionEleve =
-        document.getElementById("selection_eleve");
+        document.getElementById('selection_eleve');
 
-    const loading =
-        document.getElementById("recherche_loading");
+    const photoInput =
+        document.getElementById('photo');
 
     const photoPreview =
-        document.getElementById("photo_preview");
+        document.getElementById('photo_preview');
+
+    const photoPlaceholder =
+        document.getElementById('photo_placeholder');
+
+    const eleveIdInput =
+        document.getElementById('eleve_id');
+
+    const loadingMatricule =
+        document.getElementById('loading_matricule');
+
+    const loadingContact =
+        document.getElementById('loading_contact');
+
+    const formulaire =
+        document.getElementById('form_reinscription');
+
+    const bouton =
+        document.getElementById('btn_reinscrire');
+
+    const urlRecherche =
+        "{% url 'get_eleve_info' %}";
 
 
-    // ==========================================================
-    // REMPLIR TOUS LES CHAMPS
-    // ==========================================================
+    /* =========================================================
+       PHOTO
+    ========================================================== */
+
+    function afficherPhoto(url) {
+
+        if (url) {
+
+            photoPreview.src = url;
+            photoPreview.style.display = 'block';
+            photoPlaceholder.style.display = 'none';
+
+        } else {
+
+            photoPreview.src = '';
+            photoPreview.style.display = 'none';
+            photoPlaceholder.style.display = 'flex';
+
+        }
+
+    }
+
+
+    /* =========================================================
+       VIDER LES INFORMATIONS
+    ========================================================== */
+
+    function viderInformations() {
+
+        if (eleveIdInput) {
+            eleveIdInput.value = '';
+        }
+
+        document.getElementById('nom').value = '';
+        document.getElementById('prenom').value = '';
+        document.getElementById('date').value = '';
+        document.getElementById('lieu').value = '';
+        document.getElementById('sexe').value = '';
+        document.getElementById('contact').value = '';
+
+        document.getElementById('pere').value = '';
+        document.getElementById('fp').value = '';
+        document.getElementById('cp').value = '';
+
+        document.getElementById('mere').value = '';
+        document.getElementById('fm').value = '';
+        document.getElementById('cm').value = '';
+
+        afficherPhoto('');
+
+    }
+
+
+    /* =========================================================
+       REMPLIR LE FORMULAIRE
+    ========================================================== */
 
     function remplirFormulaire(data) {
 
-        console.log(
-            "REMPLISSAGE DU FORMULAIRE :",
-            JSON.stringify(data, null, 4)
-        );
+        if (!data) {
+            return;
+        }
+
+        /* ID */
+
+        if (eleveIdInput) {
+
+            eleveIdInput.value =
+                data.id || '';
+
+        }
 
 
-        // ======================================================
-        // INFORMATIONS ÉLÈVE
-        // ======================================================
+        /* MATRICULE */
 
-        document.getElementById("matricule").value =
-            data.matricule || "";
+        if (matriculeInput) {
 
-        document.getElementById("nom").value =
-            data.nom || "";
+            matriculeInput.value =
+                data.matricule || '';
 
-        document.getElementById("prenom").value =
-            data.prenom || "";
+            if (data.matricule_genere) {
 
-        document.getElementById("date").value =
-            data.date_naissance || "";
+                matriculeInput.classList.add(
+                    'matricule-genere'
+                );
 
-        document.getElementById("lieu").value =
-            data.lieu_naissance || "";
+                matriculeInput.classList.add(
+                    'is-valid'
+                );
 
-        document.getElementById("sexe").value =
-            data.sexe || "";
+                setTimeout(function () {
 
-        document.getElementById("contact").value =
-            data.contact || "";
+                    matriculeInput.classList.remove(
+                        'matricule-genere'
+                    );
 
+                }, 2500);
 
-        // ======================================================
-        // INFORMATIONS PÈRE
-        // ======================================================
+            }
 
-        document.getElementById("pere").value =
-            data.pere || "";
-
-        document.getElementById("fp").value =
-            data.fp || "";
-
-        document.getElementById("cp").value =
-            data.cp || "";
+        }
 
 
-        // ======================================================
-        // INFORMATIONS MÈRE
-        // ======================================================
+        /* NOM */
 
-        document.getElementById("mere").value =
-            data.mere || "";
-
-        document.getElementById("fm").value =
-            data.fm || "";
-
-        document.getElementById("cm").value =
-            data.cm || "";
+        document.getElementById('nom').value =
+            data.nom || '';
 
 
-        // ======================================================
-        // ANNÉE SCOLAIRE
-        // ======================================================
+        /* PRÉNOM */
 
-        const annee =
-            document.getElementById("anne");
+        document.getElementById('prenom').value =
+            data.prenom || '';
+
+
+        /* DATE */
+
+        document.getElementById('date').value =
+            data.date_naissance || '';
+
+
+        /* LIEU */
+
+        document.getElementById('lieu').value =
+            data.lieu_naissance || '';
+
+
+        /* SEXE */
+
+        const sexe =
+            document.getElementById('sexe');
+
+        if (sexe) {
+
+            sexe.value =
+                data.sexe ||
+                data.genre ||
+                '';
+
+        }
+
+
+        /* CONTACT ÉLÈVE */
+
+        document.getElementById('contact').value =
+            data.contact ||
+            data.telephone ||
+            '';
+
+
+        /* PÈRE */
+
+        document.getElementById('pere').value =
+            data.pere || '';
+
+        document.getElementById('fp').value =
+            data.fp || '';
+
+        document.getElementById('cp').value =
+            data.cp ||
+            data.contact_pere ||
+            '';
+
+
+        /* MÈRE */
+
+        document.getElementById('mere').value =
+            data.mere || '';
+
+        document.getElementById('fm').value =
+            data.fm || '';
+
+        document.getElementById('cm').value =
+            data.cm || '';
+
+
+        /* CONTACT DE RECHERCHE */
+
+        if (contactRecherche) {
+
+            contactRecherche.value =
+                data.cp ||
+                data.contact_pere ||
+                '';
+
+        }
+
+
+        /* ANNÉE */
 
         if (
             data.annee_id !== null &&
             data.annee_id !== undefined
         ) {
 
-            annee.value =
-                String(data.annee_id);
+            const annee =
+                document.getElementById('anne');
+
+            if (annee) {
+
+                annee.value =
+                    String(data.annee_id);
+
+            }
 
         }
 
 
-        // ======================================================
-        // NIVEAU
-        // ======================================================
-
-        const niveau =
-            document.getElementById("nive");
+        /* NIVEAU */
 
         if (
             data.niveau_id !== null &&
             data.niveau_id !== undefined
         ) {
 
-            niveau.value =
-                String(data.niveau_id);
+            const niveau =
+                document.getElementById('nive');
+
+            if (niveau) {
+
+                niveau.value =
+                    String(data.niveau_id);
+
+            }
 
         }
 
 
-        // ======================================================
-        // GROUPE
-        // ======================================================
-
-        const groupe =
-            document.getElementById("group");
+        /* GROUPE */
 
         if (
             data.groupe_id !== null &&
             data.groupe_id !== undefined
         ) {
 
-            groupe.value =
-                String(data.groupe_id);
+            const groupe =
+                document.getElementById('group');
+
+            if (groupe) {
+
+                groupe.value =
+                    String(data.groupe_id);
+
+            }
 
         }
 
 
-        // ======================================================
-        // PHOTO
-        // ======================================================
+        /* PHOTO */
 
-        if (data.photo_url) {
-
-            photoPreview.src =
-                data.photo_url;
-
-        } else {
-
-            photoPreview.removeAttribute("src");
-
-        }
-
-
-        // ======================================================
-        // CONTACT DE RECHERCHE
-        // ======================================================
-
-        if (data.cp) {
-
-            contactRechercheInput.value =
-                data.cp;
-
-        }
-
-
-        // ======================================================
-        // CACHER LA LISTE
-        // ======================================================
-
-        selectionContainer.style.display =
-            "none";
-
-
-        // ======================================================
-        // MESSAGE CONSOLE
-        // ======================================================
-
-        console.log(
-            "Tous les champs ont été remplis."
+        afficherPhoto(
+            data.photo_url || ''
         );
+
+
+        /* CACHER LA LISTE */
+
+        if (selectionContainer) {
+
+            selectionContainer.style.display =
+                'none';
+
+        }
 
     }
 
 
-    // ==========================================================
-    // RECHERCHE
-    // ==========================================================
+    /* =========================================================
+       RECHERCHE AJAX
+    ========================================================== */
 
-    function rechercher(parametre) {
+    async function rechercher(
+        parametre,
+        typeRecherche
+    ) {
 
-        console.log(
-            "Recherche :",
-            parametre
-        );
-
-
-        loading.style.display =
-            "block";
+        if (!parametre) {
+            return;
+        }
 
 
-        fetch(
-            "{% url 'get_eleve_info' %}?" + parametre,
-            {
-                method: "GET",
-                headers: {
-                    "X-Requested-With": "XMLHttpRequest",
-                    "Accept": "application/json"
-                },
-                cache: "no-store"
-            }
-        )
+        /* CHARGEMENT */
 
-        .then(function (response) {
+        if (
+            typeRecherche === 'matricule'
+        ) {
 
-            console.log(
-                "Statut HTTP :",
-                response.status
-            );
+            loadingMatricule.style.display =
+                'block';
+
+        } else {
+
+            loadingContact.style.display =
+                'block';
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    urlRecherche +
+                    '?' +
+                    parametre,
+                    {
+                        method: 'GET',
+
+                        headers: {
+                            'X-Requested-With':
+                                'XMLHttpRequest',
+
+                            'Accept':
+                                'application/json'
+                        },
+
+                        cache: 'no-store'
+                    }
+                );
 
 
             if (!response.ok) {
 
                 throw new Error(
-                    "Erreur HTTP " +
+                    'HTTP ' +
                     response.status
                 );
 
             }
 
 
-            return response.json();
+            const data =
+                await response.json();
 
-        })
-
-        .then(function (data) {
 
             console.log(
-                "Réponse get_eleve_info :",
-                JSON.stringify(data, null, 4)
-            );
-
-
-            // ==================================================
-            // ERREUR DJANGO
-            // ==================================================
-
-            if (!data.success) {
-
-                alert(
-                    data.error ||
-                    "Élève introuvable."
-                );
-
-                return;
-
-            }
-
-
-            // ==================================================
-            // CAS : PLUSIEURS ÉLÈVES
-            // ==================================================
-
-            if (
-                data.type === "plusieurs_eleves"
-            ) {
-
-                console.log(
-                    "Plusieurs élèves trouvés :",
-                    data.eleves
-                );
-
-
-                selectionEleve.innerHTML = "";
-
-
-                const premiereOption =
-                    document.createElement("option");
-
-                premiereOption.value = "";
-
-                premiereOption.textContent =
-                    "Sélectionner l'élève";
-
-                selectionEleve.appendChild(
-                    premiereOption
-                );
-
-
-                data.eleves.forEach(
-                    function (eleve) {
-
-                        const option =
-                            document.createElement("option");
-
-
-                        option.value =
-                            eleve.id;
-
-
-                        let texte =
-                            eleve.nom +
-                            " " +
-                            eleve.prenom;
-
-
-                        if (eleve.matricule) {
-
-                            texte +=
-                                " — " +
-                                eleve.matricule;
-
-                        }
-
-
-                        if (eleve.sexe) {
-
-                            texte +=
-                                " — " +
-                                eleve.sexe;
-
-                        }
-
-
-                        if (eleve.date_naissance) {
-
-                            texte +=
-                                " — " +
-                                eleve.date_naissance;
-
-                        }
-
-
-                        option.textContent =
-                            texte;
-
-
-                        selectionEleve.appendChild(
-                            option
-                        );
-
-                    }
-                );
-
-
-                selectionContainer.style.display =
-                    "block";
-
-
-                return;
-
-            }
-
-
-            // ==================================================
-            // CAS : ÉLÈVE UNIQUE
-            // ==================================================
-
-            /*
-             *
-             * IMPORTANT :
-             *
-             * La réponse avec ?id=2 ou ?id=3
-             * n'a pas de "type".
-             *
-             * Elle contient directement :
-             *
-             * success
-             * id
-             * matricule
-             * nom
-             * prenom
-             * etc.
-             *
-             * Donc on teste data.id.
-             *
-             */
-
-            if (data.id) {
-
-                remplirFormulaire(data);
-
-                return;
-
-            }
-
-
-            // ==================================================
-            // CAS MATRICULE / CONTACT DIRECT
-            // ==================================================
-
-            if (
-                data.type === "matricule" ||
-                data.type === "contact_pere" ||
-                data.type === "eleve"
-            ) {
-
-                remplirFormulaire(data);
-
-                return;
-
-            }
-
-
-            // ==================================================
-            // RÉPONSE INCONNUE
-            // ==================================================
-
-            console.error(
-                "Réponse inconnue :",
+                'Réponse get_eleve_info :',
                 data
             );
 
-            alert(
-                "Les informations reçues du serveur sont incorrectes."
-            );
 
-        })
+            /* ERREUR */
 
-        .catch(function (error) {
+            if (!data.success) {
+
+                viderInformations();
+
+                alert(
+                    data.error ||
+                    data.message ||
+                    'Élève introuvable.'
+                );
+
+                return;
+
+            }
+
+
+            /* =================================================
+               PLUSIEURS ÉLÈVES
+            ================================================= */
+
+            if (
+                data.type ===
+                'plusieurs_eleves'
+            ) {
+
+                selectionEleve.innerHTML = '';
+
+                const optionInitial =
+                    document.createElement('option');
+
+                optionInitial.value = '';
+
+                optionInitial.textContent =
+                    '-- Sélectionner l’élève --';
+
+                selectionEleve.appendChild(
+                    optionInitial
+                );
+
+
+                if (
+                    Array.isArray(data.eleves)
+                ) {
+
+                    data.eleves.forEach(
+                        function (eleve) {
+
+                            const option =
+                                document.createElement(
+                                    'option'
+                                );
+
+                            option.value =
+                                eleve.id;
+
+
+                            let texte =
+                                (
+                                    eleve.nom || ''
+                                ) +
+                                ' ' +
+                                (
+                                    eleve.prenom || ''
+                                );
+
+
+                            if (eleve.matricule) {
+
+                                texte +=
+                                    ' — ' +
+                                    eleve.matricule;
+
+                            } else {
+
+                                texte +=
+                                    ' — Matricule à générer';
+
+                            }
+
+
+                            if (eleve.date_naissance) {
+
+                                texte +=
+                                    ' — né(e) le ' +
+                                    eleve.date_naissance;
+
+                            }
+
+
+                            option.textContent =
+                                texte;
+
+                            selectionEleve.appendChild(
+                                option
+                            );
+
+                        }
+                    );
+
+                }
+
+
+                selectionContainer.style.display =
+                    'block';
+
+                viderInformations();
+
+                return;
+
+            }
+
+
+            /* =================================================
+               ÉLÈVE UNIQUE
+            ================================================= */
+
+            remplirFormulaire(data);
+
+
+        } catch (error) {
 
             console.error(
-                "Erreur recherche :",
+                'Erreur AJAX :',
                 error
             );
 
-
             alert(
-                "Impossible de récupérer les informations de l'élève."
+                'Impossible de récupérer les informations de l’élève.'
             );
 
-        })
+        } finally {
 
-        .finally(function () {
+            loadingMatricule.style.display =
+                'none';
 
-            loading.style.display =
-                "none";
+            loadingContact.style.display =
+                'none';
 
-        });
+        }
 
     }
 
 
-    // ==========================================================
-    // RECHERCHE PAR MATRICULE
-    // ==========================================================
+    /* =========================================================
+       MATRICULE
+    ========================================================== */
 
-    matriculeInput.addEventListener(
-        "blur",
-        function () {
+    if (matriculeInput) {
 
-            const matricule =
-                this.value.trim();
+        matriculeInput.addEventListener(
+            'blur',
+            function () {
 
+                const valeur =
+                    this.value.trim();
 
-            if (!matricule) {
+                if (!valeur) {
+                    return;
+                }
 
-                return;
+                contactRecherche.value = '';
 
-            }
-
-
-            // Effacer le contact de recherche
-
-            contactRechercheInput.value = "";
-
-
-            // Cacher la liste
-
-            selectionContainer.style.display =
-                "none";
-
-
-            rechercher(
-                "matricule=" +
-                encodeURIComponent(
-                    matricule
-                )
-            );
-
-        }
-    );
-
-
-    // ==========================================================
-    // MATRICULE + ENTER
-    // ==========================================================
-
-    matriculeInput.addEventListener(
-        "keydown",
-        function (event) {
-
-            if (event.key !== "Enter") {
-
-                return;
+                rechercher(
+                    'matricule=' +
+                    encodeURIComponent(valeur),
+                    'matricule'
+                );
 
             }
+        );
 
 
-            event.preventDefault();
-
-
-            const matricule =
-                this.value.trim();
-
-
-            if (!matricule) {
-
-                return;
-
-            }
-
-
-            contactRechercheInput.value = "";
-
-
-            selectionContainer.style.display =
-                "none";
-
-
-            rechercher(
-                "matricule=" +
-                encodeURIComponent(
-                    matricule
-                )
-            );
-
-        }
-    );
-
-
-    // ==========================================================
-    // RECHERCHE PAR CONTACT DU PÈRE
-    // ==========================================================
-
-    contactRechercheInput.addEventListener(
-        "blur",
-        function () {
-
-            const contact =
-                this.value.trim();
-
-
-            if (!contact) {
-
-                return;
-
-            }
-
-
-            matriculeInput.value = "";
-
-
-            selectionContainer.style.display =
-                "none";
-
-
-            rechercher(
-                "contact_pere=" +
-                encodeURIComponent(
-                    contact
-                )
-            );
-
-        }
-    );
-
-
-    // ==========================================================
-    // CONTACT PÈRE + ENTER
-    // ==========================================================
-
-    contactRechercheInput.addEventListener(
-        "keydown",
-        function (event) {
-
-            if (event.key !== "Enter") {
-
-                return;
-
-            }
-
-
-            event.preventDefault();
-
-
-            const contact =
-                this.value.trim();
-
-
-            if (!contact) {
-
-                return;
-
-            }
-
-
-            matriculeInput.value = "";
-
-
-            selectionContainer.style.display =
-                "none";
-
-
-            rechercher(
-                "contact_pere=" +
-                encodeURIComponent(
-                    contact
-                )
-            );
-
-        }
-    );
-
-
-    // ==========================================================
-    // ⭐ SÉLECTION D'UN ENFANT
-    // ==========================================================
-
-    selectionEleve.addEventListener(
-        "change",
-        function () {
-
-            const id =
-                this.value.trim();
-
-
-            console.log(
-                "ÉLÈVE SÉLECTIONNÉ, ID =",
-                id
-            );
-
-
-            if (!id) {
-
-                return;
-
-            }
-
-
-            /*
-             *
-             * IMPORTANT :
-             *
-             * On envoie l'ID à Django.
-             *
-             * Django retourne ensuite toutes
-             * les informations de cet élève.
-             *
-             */
-
-            rechercher(
-                "id=" +
-                encodeURIComponent(id)
-            );
-
-        }
-    );
-
-
-    // ==========================================================
-    // APERÇU DE LA NOUVELLE PHOTO
-    // ==========================================================
-
-    const photoInput =
-        document.getElementById("photo");
-
-
-    if (photoInput) {
-
-        photoInput.addEventListener(
-            "change",
+        matriculeInput.addEventListener(
+            'keydown',
             function (event) {
 
-                const fichier =
-                    event.target.files[0];
+                if (event.key !== 'Enter') {
+                    return;
+                }
+
+                event.preventDefault();
+
+                const valeur =
+                    this.value.trim();
+
+                if (!valeur) {
+                    return;
+                }
+
+                contactRecherche.value = '';
+
+                rechercher(
+                    'matricule=' +
+                    encodeURIComponent(valeur),
+                    'matricule'
+                );
+
+            }
+        );
+
+    }
 
 
-                if (!fichier) {
+    /* =========================================================
+       CONTACT PÈRE
+    ========================================================== */
+
+    if (contactRecherche) {
+
+        contactRecherche.addEventListener(
+            'blur',
+            function () {
+
+                const valeur =
+                    this.value.trim();
+
+                if (!valeur) {
+                    return;
+                }
+
+                matriculeInput.value = '';
+
+                rechercher(
+                    'contact_pere=' +
+                    encodeURIComponent(valeur),
+                    'contact'
+                );
+
+            }
+        );
+
+
+        contactRecherche.addEventListener(
+            'keydown',
+            function (event) {
+
+                if (event.key !== 'Enter') {
+                    return;
+                }
+
+                event.preventDefault();
+
+                const valeur =
+                    this.value.trim();
+
+                if (!valeur) {
+                    return;
+                }
+
+                matriculeInput.value = '';
+
+                rechercher(
+                    'contact_pere=' +
+                    encodeURIComponent(valeur),
+                    'contact'
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       SÉLECTION D'UN ENFANT
+    ========================================================== */
+
+    if (selectionEleve) {
+
+        selectionEleve.addEventListener(
+            'change',
+            function () {
+
+                const id =
+                    this.value.trim();
+
+                if (!id) {
+
+                    viderInformations();
 
                     return;
 
                 }
 
 
+                /*
+                 * IMPORTANT :
+                 *
+                 * Cette requête demande à Django
+                 * les informations complètes de l'élève.
+                 *
+                 * Si le matricule est absent,
+                 * le backend doit le générer ici.
+                 */
+
+                rechercher(
+                    'id=' +
+                    encodeURIComponent(id),
+                    'contact'
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================================================
+       PHOTO
+    ========================================================== */
+
+    if (photoInput) {
+
+        photoInput.addEventListener(
+            'change',
+            function () {
+
+                const fichier =
+                    this.files[0];
+
+                if (!fichier) {
+                    return;
+                }
+
+
                 if (
                     !fichier.type.startsWith(
-                        "image/"
+                        'image/'
                     )
                 ) {
 
                     alert(
-                        "Veuillez sélectionner une image."
+                        'Veuillez sélectionner une image.'
                     );
 
-                    this.value = "";
+                    this.value = '';
 
                     return;
 
@@ -1522,10 +2259,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
                 reader.onload =
-                    function (e) {
+                    function (event) {
 
-                        photoPreview.src =
-                            e.target.result;
+                        afficherPhoto(
+                            event.target.result
+                        );
 
                     };
 
@@ -1539,8 +2277,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
 
+
+    /* =========================================================
+       DOUBLE SOUMISSION
+    ========================================================== */
+
+    if (
+        formulaire &&
+        bouton
+    ) {
+
+        formulaire.addEventListener(
+            'submit',
+            function () {
+
+                bouton.disabled = true;
+
+                bouton.innerHTML =
+                    '<i class="fas fa-spinner fa-spin mr-1"></i>' +
+                    ' Réinscription en cours...';
+
+            }
+        );
+
+    }
+
 });
 
 </script>
 
-{% endblock %}
+{% endblock scripte %}
+
